@@ -1,4 +1,4 @@
-import type { Dictionary } from '../../../../dictionaries';
+import type { Dictionary } from '@dictionaries';
 import { CareersHeroSection } from './careers-hero-section';
 import { CareersOpeningsSection } from './careers-openings-section';
 

@@ -1,4 +1,4 @@
-import type { Dictionary } from '../../../../dictionaries';
+import type { Dictionary } from '@dictionaries';
 
 export type DashboardHeaderProps = {
   dict: Dictionary;

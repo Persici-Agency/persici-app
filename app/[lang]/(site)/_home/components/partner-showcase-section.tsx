@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import type { Dictionary } from '../../../dictionaries';
+import type { Dictionary } from '@dictionaries';
 import { VideoPreviewModal } from './video-modal';
 
 export type PartnerShowcaseSectionProps = {

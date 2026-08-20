@@ -19,7 +19,15 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "@dictionaries": ["./app/[lang]/dictionaries"],
+      "@dictionaries/*": ["./app/[lang]/dictionaries/*"],
+      "@shared/*": ["./app/[lang]/(site)/_shared/*"],
+      "@shared": ["./app/[lang]/(site)/_shared"],
+      "@dashboard-shared/*": ["./app/[lang]/(dashboard)/_shared/*"],
+      "@dashboard-shared": ["./app/[lang]/(dashboard)/_shared"],
+      "@lib/*": ["./app/[lang]/_lib/*"],
+      "shared/*": ["./app/[lang]/(site)/_shared/*"]
     }
   },
   "include": [

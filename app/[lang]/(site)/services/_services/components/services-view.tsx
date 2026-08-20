@@ -1,4 +1,4 @@
-import type { Dictionary } from '../../../../dictionaries';
+import type { Dictionary } from '@dictionaries';
 import { ServicesHeroSection } from './services-hero-section';
 import { ServicesGridSection } from './services-grid-section';
 import { ServicesCtaSection } from './services-cta-section';

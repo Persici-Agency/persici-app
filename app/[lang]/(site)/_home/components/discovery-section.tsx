@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import type { Dictionary } from '../../../dictionaries';
+import type { Dictionary } from '@dictionaries';
 import { DiscoveryCallForm } from './discovery-form';
 
 export type DiscoverySectionProps = {

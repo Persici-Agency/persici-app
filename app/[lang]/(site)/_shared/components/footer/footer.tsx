@@ -1,6 +1,6 @@
 import Link from 'next/link';
-import { Logo } from '../logo';
-import type { Dictionary } from '../../../../dictionaries';
+import { Logo } from '@shared/components/logo';
+import type { Dictionary } from '@dictionaries';
 
 export type FooterProps = {
   lang: string;

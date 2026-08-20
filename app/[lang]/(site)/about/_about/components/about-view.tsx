@@ -1,4 +1,4 @@
-import type { Dictionary } from '../../../../dictionaries';
+import type { Dictionary } from '@dictionaries';
 import { AboutHeroSection } from './about-hero-section';
 import { AboutValuesSection } from './about-values-section';
 import { AboutCtaSection } from './about-cta-section';

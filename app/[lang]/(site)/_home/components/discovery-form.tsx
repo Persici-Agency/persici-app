@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import type { Dictionary } from '../../../dictionaries';
+import type { Dictionary } from '@dictionaries';
 
 export function DiscoveryCallForm({ dict }: { dict: Dictionary }) {
   const [submitted, setSubmitted] = useState(false);

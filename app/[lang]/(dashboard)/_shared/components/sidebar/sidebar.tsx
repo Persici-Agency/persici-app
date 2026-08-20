@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { Logo } from '../logo';
 import { getSidebarLinks } from '../../services';
-import type { Dictionary } from '../../../../dictionaries';
+import type { Dictionary } from '@dictionaries';
 
 export type DashboardSidebarProps = {
   lang: string;

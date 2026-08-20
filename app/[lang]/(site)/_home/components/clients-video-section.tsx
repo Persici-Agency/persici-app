@@ -1,4 +1,4 @@
-import type { Dictionary } from '../../../dictionaries';
+import type { Dictionary } from '@dictionaries';
 import { VideoTestimonialsCarousel } from './video-testimonials-carousel';
 
 export type ClientsVideoSectionProps = {

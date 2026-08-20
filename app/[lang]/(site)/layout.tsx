@@ -1,6 +1,6 @@
-import { getDictionary, hasLocale } from '../dictionaries';
+import { getDictionary, hasLocale } from '@dictionaries';
 import { notFound } from 'next/navigation';
-import { Header, Footer } from './_shared/components';
+import { Header, Footer } from '@shared/components';
 
 export default async function SiteLayout({
   children,

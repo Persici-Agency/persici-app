@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import type { Dictionary } from '../../../../dictionaries';
+import type { Dictionary } from '@dictionaries';
 import { getContactOffices } from '../services';
 
 export function ContactFormSection({ dict }: { dict: Dictionary }) {

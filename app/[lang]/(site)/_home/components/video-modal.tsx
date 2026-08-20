@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import type { Dictionary } from '../../../dictionaries';
+import type { Dictionary } from '@dictionaries';
 
 export function VideoPreviewModal({ dict }: { dict: Dictionary }) {
   const [isOpen, setIsOpen] = useState(false);

@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
-import { getDictionary, hasLocale } from '../dictionaries';
-import { createMetadata } from '../_lib/metadata';
-import type { Locale } from '../_lib/i18n';
+import { getDictionary, hasLocale } from '@dictionaries';
+import { createMetadata } from '@lib/metadata';
+import type { Locale } from '@lib/i18n';
 import { HomeView } from './_home';
 
 export async function generateMetadata({ params }: PageProps<'/[lang]'>) {

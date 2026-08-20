@@ -1,4 +1,4 @@
-import type { Dictionary } from '../../../../dictionaries';
+import type { Dictionary } from '@dictionaries';
 import { WorkHeroSection } from './work-hero-section';
 import { WorkGridSection } from './work-grid-section';
 import { WorkCtaSection } from './work-cta-section';

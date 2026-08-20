@@ -1,7 +1,7 @@
-import { getDictionary, hasLocale } from '../../dictionaries';
+import { getDictionary, hasLocale } from '@dictionaries';
 import { notFound } from 'next/navigation';
-import { createMetadata } from '../../_lib/metadata';
-import type { Locale } from '../../_lib/i18n';
+import { createMetadata } from '@lib/metadata';
+import type { Locale } from '@lib/i18n';
 import { CareersView } from './_careers';
 
 export async function generateMetadata({ params }: PageProps<'/[lang]/careers'>) {

@@ -1,6 +1,6 @@
-import { getDictionary, hasLocale } from '../dictionaries';
+import { getDictionary, hasLocale } from '@dictionaries';
 import { notFound } from 'next/navigation';
-import { DashboardSidebar, DashboardHeader } from './_shared/components';
+import { DashboardSidebar, DashboardHeader } from '@dashboard-shared/components';
 
 export default async function DashboardLayout({
   children,

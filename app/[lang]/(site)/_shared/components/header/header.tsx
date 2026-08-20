@@ -3,9 +3,9 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Logo } from '../logo';
-import { LanguageSwitcher } from '../language-switcher';
-import type { Dictionary } from '../../../../dictionaries';
+import { Logo } from '@shared/components/logo';
+import { LanguageSwitcher } from '@shared/components/language-switcher';
+import type { Dictionary } from '@dictionaries';
 
 export type HeaderProps = {
   lang: string;

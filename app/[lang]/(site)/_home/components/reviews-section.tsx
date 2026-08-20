@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import type { Dictionary } from '../../../dictionaries';
+import type { Dictionary } from '@dictionaries';
 
 export type ReviewsSectionProps = {
   lang: string;

@@ -1,4 +1,4 @@
-import type { Dictionary } from '../../../../dictionaries';
+import type { Dictionary } from '@dictionaries';
 import { ContactHeroSection } from './contact-hero-section';
 import { ContactFormSection } from './contact-form-section';
 
