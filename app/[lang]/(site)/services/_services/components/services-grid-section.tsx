@@ -1,16 +1,17 @@
 import Link from 'next/link';
 import { getServicesList } from '../services';
+import { sectionContainer, featureCard } from '@shared';
 
 export function ServicesGridSection({ lang }: { lang: string }) {
   const services = getServicesList();
 
   return (
-    <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+    <section className={`${sectionContainer} py-12`}>
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-2">
         {services.map((svc) => (
           <div
             key={svc.slug}
-            className="group flex flex-col justify-between rounded-3xl border border-black/10 bg-white p-8 shadow-sm transition-all duration-300 hover:border-persici-crimson/30 hover:shadow-xl"
+            className={featureCard}
           >
             <div>
               <div className="text-3xl">{svc.icon}</div>
@@ -36,3 +37,4 @@ export function ServicesGridSection({ lang }: { lang: string }) {
     </section>
   );
 }
+

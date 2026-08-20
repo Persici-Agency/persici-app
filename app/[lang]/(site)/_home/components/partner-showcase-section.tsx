@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import type { Dictionary } from '@dictionaries';
 import { VideoPreviewModal } from './video-modal';
+import { sectionContainer } from '@shared';
 
 export type PartnerShowcaseSectionProps = {
   dict: Dictionary;
@@ -8,7 +9,7 @@ export type PartnerShowcaseSectionProps = {
 
 export function PartnerShowcaseSection({ dict }: PartnerShowcaseSectionProps) {
   return (
-    <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+    <section className={`${sectionContainer} py-12`}>
       <h2 className="text-center font-primary text-2xl font-bold tracking-tight text-foreground sm:text-3xl lg:text-4xl">
         {dict.partnerShowcase.title}
       </h2>

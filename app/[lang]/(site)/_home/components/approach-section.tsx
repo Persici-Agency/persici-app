@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import type { Dictionary } from '@dictionaries';
+import { sectionContainer, btnOutline, btnArrowIcon } from '@shared';
 
 export type ApproachSectionProps = {
   lang: string;
@@ -9,7 +10,7 @@ export type ApproachSectionProps = {
 
 export function ApproachSection({ lang, dict }: ApproachSectionProps) {
   return (
-    <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+    <section className={`${sectionContainer} py-20`}>
       <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12">
         {/* Left Column: Team Image with Floating Badge */}
         <div className="relative lg:col-span-6">
@@ -81,13 +82,11 @@ export function ApproachSection({ lang, dict }: ApproachSectionProps) {
               className="inline-flex items-center gap-2 rounded-full bg-persici-crimson px-6 py-3 text-xs font-semibold text-white shadow-md shadow-persici-crimson/25 transition-all hover:bg-persici-crimson-80 hover:shadow-lg active:scale-98"
             >
               <span>{dict.approach.ctaPrimary}</span>
-              <span className="flex h-4 w-4 items-center justify-center rounded-full bg-white/20 text-[10px]">
-                →
-              </span>
+              <span className={btnArrowIcon}>→</span>
             </Link>
             <Link
               href={`/${lang}/work`}
-              className="inline-flex items-center gap-2 rounded-full border border-black/15 bg-white/60 px-6 py-3 text-xs font-semibold text-foreground backdrop-blur-xs transition-all hover:bg-black/5 active:scale-98"
+              className={btnOutline}
             >
               <span>{dict.approach.ctaSecondary}</span>
               <span className="flex h-4 w-4 items-center justify-center rounded-full bg-black/10 text-[10px]">
@@ -100,3 +99,4 @@ export function ApproachSection({ lang, dict }: ApproachSectionProps) {
     </section>
   );
 }
+

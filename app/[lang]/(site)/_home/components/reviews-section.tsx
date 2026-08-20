@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import type { Dictionary } from '@dictionaries';
+import { sectionContainer, sectionHeading, baseCard, bannerStrip, btnArrowIcon } from '@shared';
 
 export type ReviewsSectionProps = {
   lang: string;
@@ -18,14 +19,14 @@ export function ReviewsSection({ lang, dict }: ReviewsSectionProps) {
 
   return (
     <section className="bg-persici-black/[0.02] py-20">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className={sectionContainer}>
         {/* Section Header */}
         <div className="text-center">
           <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3.5 py-1 text-xs font-semibold text-emerald-700">
             <span className="flex text-emerald-600">{'★★★★★'}</span>
             <span>{dict.reviews.scoreLabel}</span>
           </div>
-          <h2 className="mt-4 font-primary text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
+          <h2 className={`mt-4 ${sectionHeading}`}>
             {dict.reviews.title}
           </h2>
         </div>
@@ -35,7 +36,7 @@ export function ReviewsSection({ lang, dict }: ReviewsSectionProps) {
           {reviewsList.map((rev, index) => (
             <div
               key={index}
-              className="flex flex-col justify-between rounded-3xl border border-black/10 bg-white p-6 shadow-sm transition-all hover:shadow-md"
+              className={`flex flex-col justify-between ${baseCard}`}
             >
               <div>
                 <div className="flex items-center justify-between">
@@ -59,7 +60,7 @@ export function ReviewsSection({ lang, dict }: ReviewsSectionProps) {
         </div>
 
         {/* Banner Strip */}
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 rounded-2xl border border-black/10 bg-white px-6 py-4 shadow-sm sm:flex-row">
+        <div className={`mt-12 ${bannerStrip}`}>
           <p className="font-primary text-sm font-semibold text-foreground">
             {dict.reviews.bannerText}
           </p>
@@ -68,12 +69,11 @@ export function ReviewsSection({ lang, dict }: ReviewsSectionProps) {
             className="inline-flex items-center gap-2 rounded-full bg-persici-crimson px-5 py-2.5 text-xs font-semibold text-white shadow-sm shadow-persici-crimson/20 transition-all hover:bg-persici-crimson-80 hover:shadow-md"
           >
             <span>{dict.reviews.bannerCta}</span>
-            <span className="flex h-4 w-4 items-center justify-center rounded-full bg-white/20 text-[10px]">
-              →
-            </span>
+            <span className={btnArrowIcon}>→</span>
           </Link>
         </div>
       </div>
     </section>
   );
 }
+

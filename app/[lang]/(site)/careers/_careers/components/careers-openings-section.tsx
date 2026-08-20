@@ -1,16 +1,17 @@
 import Link from 'next/link';
 import { getJobOpenings } from '../services';
+import { sectionContainer, sectionHeading, sectionSubtitle, featureCard } from '@shared';
 
 export function CareersOpeningsSection({ lang }: { lang: string }) {
   const openings = getJobOpenings();
 
   return (
-    <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+    <section className={`${sectionContainer} py-12`}>
       <div className="text-center mb-12">
-        <h2 className="font-primary text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
+        <h2 className={sectionHeading}>
           Open Positions
         </h2>
-        <p className="mt-4 text-sm text-foreground/60">
+        <p className={sectionSubtitle}>
           Work with high-caliber brands across the Middle East, Scandinavia, and Europe.
         </p>
       </div>
@@ -20,7 +21,7 @@ export function CareersOpeningsSection({ lang }: { lang: string }) {
           <Link
             key={job.slug}
             href={`/${lang}/careers/${job.slug}`}
-            className="group flex flex-col justify-between rounded-3xl border border-black/10 bg-white p-8 shadow-sm transition-all duration-300 hover:border-persici-crimson/30 hover:shadow-xl"
+            className={featureCard}
           >
             <div>
               <div className="flex items-center justify-between text-xs text-foreground/60">
@@ -44,3 +45,4 @@ export function CareersOpeningsSection({ lang }: { lang: string }) {
     </section>
   );
 }
+
