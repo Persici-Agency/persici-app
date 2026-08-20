@@ -1,0 +1,137 @@
+@import "tailwindcss";
+
+/* =============================================
+   PERSICI — Design Tokens & Global Styles
+   ============================================= */
+
+:root {
+  /* Brand Colors */
+  --persici-crimson: #D83427;
+  --persici-blush: #EF8C7D;
+  --persici-black: #121212;
+  --persici-white: #FFFAFA;
+
+  /* Crimson Shades */
+  --persici-crimson-80: #E05C52;
+  --persici-crimson-50: #EC9A93;
+  --persici-crimson-30: #F4C1BC;
+
+  /* Blush Shades */
+  --persici-blush-80: #F2A397;
+  --persici-blush-50: #F7C6BE;
+  --persici-blush-30: #FAE0DB;
+
+  /* Black Shades */
+  --persici-black-80: #414141;
+  --persici-black-50: #898989;
+  --persici-black-30: #B8B8B8;
+
+  /* Semantic */
+  --background: var(--persici-white);
+  --foreground: var(--persici-black);
+}
+
+/* =============================================
+   Tailwind @theme — Design Token Registration
+   ============================================= */
+
+@theme inline {
+  /* Colors */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-persici-crimson: var(--persici-crimson);
+  --color-persici-crimson-80: var(--persici-crimson-80);
+  --color-persici-crimson-50: var(--persici-crimson-50);
+  --color-persici-crimson-30: var(--persici-crimson-30);
+
+  --color-persici-blush: var(--persici-blush);
+  --color-persici-blush-80: var(--persici-blush-80);
+  --color-persici-blush-50: var(--persici-blush-50);
+  --color-persici-blush-30: var(--persici-blush-30);
+
+  --color-persici-black: var(--persici-black);
+  --color-persici-black-80: var(--persici-black-80);
+  --color-persici-black-50: var(--persici-black-50);
+  --color-persici-black-30: var(--persici-black-30);
+
+  --color-persici-white: var(--persici-white);
+
+  /* Fonts */
+  --font-primary: var(--font-primary);
+  --font-secondary: var(--font-secondary);
+  --font-mono: var(--font-mono);
+}
+
+/* =============================================
+   Base Styles
+   ============================================= */
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-secondary), "Roboto", sans-serif;
+}
+
+/* Primary font utility */
+.font-primary {
+  font-family: var(--font-primary), "Lexend Deca", sans-serif;
+}
+
+/* Mono font utility */
+.font-mono {
+  font-family: var(--font-mono), "Roboto Mono", monospace;
+}
+
+/* =============================================
+   RTL Support
+   ============================================= */
+
+[dir="rtl"] {
+  font-family: var(--font-secondary), "Roboto", "Segoe UI", Tahoma, sans-serif;
+}
+
+[dir="rtl"] .font-primary {
+  font-family: var(--font-primary), "Lexend Deca", "Segoe UI", Tahoma, sans-serif;
+}
+
+/* =============================================
+   Selection & Focus
+   ============================================= */
+
+::selection {
+  background-color: var(--persici-crimson);
+  color: white;
+}
+
+:focus-visible {
+  outline: 2px solid var(--persici-crimson);
+  outline-offset: 2px;
+}
+
+/* =============================================
+   Scrollbar (optional, subtle)
+   ============================================= */
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--persici-black-30);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--persici-black-50);
+}

@@ -1,0 +1,234 @@
+{
+  "meta": {
+    "title": "Persici — Specialists in eCommerce & Digital Growth",
+    "description": "We help ambitious direct-to-consumer and enterprise brands scale with predictable and profitable growth through full-funnel digital marketing, CRO, and high-performance engineering."
+  },
+  "nav": {
+    "home": "Home",
+    "services": "Services",
+    "work": "Work",
+    "about": "About",
+    "insights": "Insights",
+    "careers": "Careers",
+    "contact": "Contact",
+    "bookCall": "Book a call",
+    "menu": "Menu"
+  },
+  "hero": {
+    "title": "Specialists in eCommerce growth",
+    "subtitle": "We help ambitious brands scale with predictable and profitable growth. Driven by full-funnel digital marketing, data intelligence, and conversion engineering.",
+    "cta": "Book a call",
+    "ratingScore": "5.0",
+    "ratingLabel": "Rated 4.9/5 by 50+ leading brands",
+    "trustedBy": "Trusted by industry-leading fast-growing brands"
+  },
+  "partnerShowcase": {
+    "title": "Your online growth partner",
+    "videoSpeaker": "Faris Al-Otaibi",
+    "videoRole": "Founder & CEO",
+    "quote": "Working with Persici has been our best growth decision. Their team's strategy and execution gave us 3.4x growth in under 6 months. A true growth partner.",
+    "author": "Marcus Lindqvist",
+    "role": "Founder & Managing Director",
+    "company": "Nordic Retail Group"
+  },
+  "heritage": {
+    "title": "Rooted in excellence. Built for growth.",
+    "desc1": "Persici is a specialized growth and digital agency founded on the principle that modern DTC & omnichannel brands need deep domain expertise, tailored high-performance teams, and absolute transparency in execution.",
+    "desc2": "We act as your dedicated growth arm, taking full ownership of your customer acquisition, conversion optimization, retention loops, and data architecture to scale revenue sustainably.",
+    "ctaPrimary": "Work with us",
+    "ctaSecondary": "Meet the team",
+    "badge": "Growth Architecture"
+  },
+  "growthServices": {
+    "title": "Our growth services",
+    "rating": "Rated 4.9/5 on 50+ client reviews",
+    "paidSocial": {
+      "tag": "Meta • TikTok • Snapchat",
+      "title": "Paid Social & Acquisition",
+      "description": "We maximize ROI through data-driven campaigns across Meta, TikTok, and emerging channels. Scaling budgets while systematically driving down acquisition costs."
+    },
+    "googleAds": {
+      "tag": "Google Ads & YouTube",
+      "title": "Google Ads & High-Intent Search",
+      "description": "Capture high-intent traffic with precision Search, Shopping, Performance Max, and YouTube ad campaigns. Target customers right when they are ready to buy."
+    },
+    "shopify": {
+      "tag": "Shopify Plus & CRO",
+      "title": "Shopify Engineering & CRO",
+      "description": "High-converting web experiences, headless eCommerce architectures, and systematic A/B testing designed to maximize average order value and lifetime retention."
+    },
+    "bannerText": "Ready to scale your eCommerce brand?",
+    "bannerCta": "Book a discovery call"
+  },
+  "clientVideos": {
+    "title": "Meet clients we scale",
+    "client1": {
+      "name": "Sarah Jensen",
+      "role": "Chief Marketing Officer",
+      "company": "Lumina Beauty",
+      "quote": "We saw a 140% revenue surge within 90 days. Persici's team is truly an indispensable extension of our own."
+    },
+    "client2": {
+      "name": "Tariq Al-Mansoor",
+      "role": "Founder & CEO",
+      "company": "Urban Pulse Apparel",
+      "quote": "Their creative testing pipeline cut our customer acquisition cost by 42% while simultaneously tripling our monthly ad spend."
+    },
+    "client3": {
+      "name": "Elena Rostova",
+      "role": "Head of Digital Growth",
+      "company": "Klar Activewear",
+      "quote": "From custom web development to multi-channel performance media, their attention to detail and execution speed is unmatched."
+    }
+  },
+  "approach": {
+    "title": "Our approach to eCommerce growth",
+    "teamBadgeTitle": "Your Dedicated Growth Team",
+    "teamBadgeSubtitle": "Strategy • Media Buying • Design • Engineering",
+    "desc1": "At Persici, we do not believe in cookie-cutter playbooks. We build custom growth engines tailored to your unit economics, inventory dynamics, and brand positioning. From full-funnel paid media to custom engineering, every initiative is calculated for net-profitable scale.",
+    "desc2": "We embed directly within your team, maintaining continuous communication, daily data monitoring, and weekly sprint reviews to ensure seamless agility and explosive growth.",
+    "ctaPrimary": "Book a call",
+    "ctaSecondary": "View case studies"
+  },
+  "reviews": {
+    "score": "4.9",
+    "scoreLabel": "4.9 score on 50+ client reviews",
+    "title": "Words from those we scale",
+    "r1": {
+      "name": "Alexander Holm",
+      "company": "Nordic Living",
+      "review": "The strategic clarity and direct weekly communication from the Persici team is unmatched. In 4 months, our international revenue grew over 210% with profitable ROAS.",
+      "verified": "Verified Client"
+    },
+    "r2": {
+      "name": "Nadia Bensalem",
+      "company": "Atelier Chic",
+      "review": "Persici transformed our Shopify store speed, UI, and checkout conversion rate. Combined with their Meta ad scaling, our monthly GMV doubled within one quarter.",
+      "verified": "Verified Client"
+    },
+    "r3": {
+      "name": "Henrik Møller",
+      "company": "Pure Scandinavia",
+      "review": "Finding an agency that truly understands both high-level creative direction and deep performance data is rare. Persici has exceeded every benchmark we set.",
+      "verified": "Verified Client"
+    },
+    "r4": {
+      "name": "Karim Al-Hassan",
+      "company": "Prime Goods Co.",
+      "review": "Their creative testing velocity is unreal. We went from burning cash on generic ads to having 8 evergreen winning ad angles in our first 6 weeks of partnership.",
+      "verified": "Verified Client"
+    },
+    "r5": {
+      "name": "Camilla Lind",
+      "company": "Glow Cosmetics",
+      "review": "The team at Persici treated our budget like their own. Transparent reporting, proactive suggestions, and zero fluff. Could not recommend them more highly.",
+      "verified": "Verified Client"
+    },
+    "r6": {
+      "name": "Omar Farouq",
+      "company": "Elevate Essentials",
+      "review": "Within 30 days of onboarding, they rebuilt our tracking infrastructure, fixed server-side tracking, and restructured Google Ads. The ROI has been phenomenal.",
+      "verified": "Verified Client"
+    },
+    "bannerText": "Ready to scale your eCommerce brand?",
+    "bannerCta": "Book a discovery call"
+  },
+  "discovery": {
+    "title": "Schedule your free 30-minute discovery call",
+    "desc": "In this 30-minute growth strategy session, we'll analyze your current marketing bottlenecks, identify immediate conversion and revenue wins, and assess if our growth framework is a fit for your brand.",
+    "quote": "That 30-minute discovery call provided more actionable commercial clarity than months of standard agency reports.",
+    "quoteAuthor": "Christian Vestergaard",
+    "quoteRole": "Co-Founder & COO, Vester Goods",
+    "form": {
+      "badge": "Discovery Session",
+      "title": "eCommerce Growth Discovery Call",
+      "duration": "30 Min • Video Meeting (Google Meet / Zoom)",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "email": "Work Email",
+      "website": "Store Website / URL",
+      "revenue": "Monthly Online Revenue",
+      "revenueOption1": "Under $25,000 / month",
+      "revenueOption2": "$25,000 - $100,000 / month",
+      "revenueOption3": "$100,000 - $500,000 / month",
+      "revenueOption4": "$500,000+ / month",
+      "submit": "Schedule Discovery Call",
+      "submitting": "Reserving your slot...",
+      "successTitle": "Call Request Received!",
+      "successMsg": "Thank you! Our growth director will reach out within 2 hours with calendar invitation details."
+    }
+  },
+  "footer": {
+    "brandDesc": "Persici is a high-performance digital and growth agency specializing in full-funnel eCommerce acceleration, creative strategy, and bespoke digital engineering.",
+    "bookCall": "Book a call",
+    "quickLinks": "Navigation",
+    "legal": "Legal & Contact",
+    "rights": "All rights reserved.",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "partnersTitle": "Certified Partner Ecosystem",
+    "partners": {
+      "meta": "Meta Business Partner",
+      "google": "Google Premier Partner",
+      "shopify": "Shopify Plus Partner",
+      "klaviyo": "Klaviyo Elite Partner"
+    }
+  },
+  "common": {
+    "learnMore": "Learn More",
+    "getInTouch": "Get in Touch",
+    "bookDiscovery": "Book a Discovery Call",
+    "viewCaseStudies": "View Case Studies",
+    "backToHome": "Back to Home",
+    "notFound": "Page Not Found",
+    "notFoundDescription": "The page you're looking for doesn't exist or has been moved.",
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "tryAgain": "Try Again"
+  },
+  "about": {
+    "title": "About Persici",
+    "description": "We are a forward-thinking digital agency committed to delivering exceptional experiences."
+  },
+  "services": {
+    "title": "Our Services",
+    "description": "End-to-end digital solutions from strategy to execution.",
+    "strategy": "Strategy & Consulting",
+    "design": "Experience Design",
+    "engineering": "Engineering & Technology",
+    "data": "Data & Analytics",
+    "marketing": "Digital Marketing"
+  },
+  "work": {
+    "title": "Our Work",
+    "description": "Explore our portfolio of digital transformation projects.",
+    "viewProject": "View Project"
+  },
+  "insights": {
+    "title": "Insights",
+    "description": "Thought leadership, articles, and industry perspectives.",
+    "readMore": "Read More"
+  },
+  "careers": {
+    "title": "Careers",
+    "description": "Join our team and shape the future of digital.",
+    "viewPosition": "View Position"
+  },
+  "contact": {
+    "title": "Contact Us",
+    "description": "Let's start a conversation about your next project.",
+    "name": "Name",
+    "email": "Email",
+    "message": "Message",
+    "send": "Send Message"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "overview": "Overview",
+    "content": "Content",
+    "projects": "Projects",
+    "services": "Services",
+    "media": "Media Library",
+    "settings": "Settings"
+  }
+}
