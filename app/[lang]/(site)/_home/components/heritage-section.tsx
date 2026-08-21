@@ -42,7 +42,7 @@ export function HeritageSection({ lang, dict }: HeritageSectionProps) {
             <HomeButton
               href={`/${lang}/about`}
               title={dict.heritage.ctaSecondary}
-              className="border border-black/15 bg-dark/5 text-dark"
+              className="border border-black/15 bg-light/30 text-dark"
               iconClassName="bg-dark text-light"
               currentLang={lang}
               isLangEffectIcon={true}
