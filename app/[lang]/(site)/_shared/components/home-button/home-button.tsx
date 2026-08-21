@@ -40,7 +40,7 @@ export const HomeButton = ({
     );
 
     const baseClasses = cn(
-        "group inline-flex items-center gap-2 rounded-full bg-persici-black px-6 py-2 text-sm font-medium text-white shadow-xs transition-all active:scale-98 cursor-pointer select-none",
+        "group inline-flex items-center gap-2 rounded-full bg-persici-black px-6 py-2 text-sm font-medium text-white transition-all active:scale-98 cursor-pointer select-none",
         (disabled || loading) && "pointer-events-none opacity-50 cursor-not-allowed",
         className
     );

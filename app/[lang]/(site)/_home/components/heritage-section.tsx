@@ -35,14 +35,14 @@ export function HeritageSection({ lang, dict }: HeritageSectionProps) {
             <HomeButton
               href={`/${lang}/contact`}
               title={dict.heritage.ctaPrimary}
-              className="bg-persici-crimson text-white shadow-md shadow-persici-crimson/25 px-6 py-3 text-xs"
+              className="bg-persici-crimson text-white"
               currentLang={lang}
               isLangEffectIcon={true}
             />
             <HomeButton
               href={`/${lang}/about`}
               title={dict.heritage.ctaSecondary}
-              className="border border-black/15 bg-white/60 text-foreground px-6 py-3 text-xs"
+              className="border border-black/15 bg-white/60 text-foreground"
               iconClassName="bg-black/10 text-black"
               currentLang={lang}
               isLangEffectIcon={true}

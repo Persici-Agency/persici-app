@@ -1,7 +1,9 @@
 import type { Dictionary } from "@dictionaries";
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
 
-export const cn = (...inputs: (string | undefined | null | false)[]): string => {
-    return inputs.filter(Boolean).join(" ");
+export const cn = (...inputs: ClassValue[]): string => {
+    return twMerge(clsx(inputs));
 };
 
 export const getDict = async (lang: string): Promise<Dictionary> => {
