@@ -78,7 +78,7 @@ export function ReviewsSection({ lang, dict, reviews: customReviews }: ReviewsSe
             <HomeButton
               href={`/${lang}/contact`}
               title={dict.reviews.bannerCta}
-              className="bg-persici-crimson text-white shadow-sm shadow-persici-crimson/20 px-5 py-2.5 text-xs"
+              className="bg-persici-crimson text-white shadow-sm shadow-persici-crimson/20"
               currentLang={lang}
               isLangEffectIcon={true}
             />

@@ -68,7 +68,6 @@ export function GrowthServicesSection({ lang, dict }: GrowthServicesSectionProps
           <HomeButton
             href={`/${lang}/contact`}
             title={dict.growthServices.bannerCta}
-            className="bg-persici-black text-white px-5 py-2.5 text-xs"
             currentLang={lang}
             isLangEffectIcon={true}
           />

@@ -71,14 +71,14 @@ export function ApproachSection({ lang, dict }: ApproachSectionProps) {
             <HomeButton
               href={`/${lang}/contact`}
               title={dict.approach.ctaPrimary}
-              className="bg-persici-crimson text-white shadow-md shadow-persici-crimson/25 px-6 py-3 text-xs"
+              className="bg-persici-crimson text-white shadow-md shadow-persici-crimson/25"
               currentLang={lang}
               isLangEffectIcon={true}
             />
             <HomeButton
               href={`/${lang}/work`}
               title={dict.approach.ctaSecondary}
-              className="border border-black/15 bg-white/60 text-foreground px-6 py-3 text-xs"
+              className="border border-black/15 bg-white/60 text-foreground"
               iconClassName="bg-black/10 text-black"
               currentLang={lang}
               isLangEffectIcon={true}

@@ -46,7 +46,7 @@ export function DiscoveryCallForm({ dict }: { dict: Dictionary }) {
           type="button"
           onClick={() => setSubmitted(false)}
           title={dict.common.backToHome}
-          className="mt-6 bg-persici-black text-white px-6 py-2 text-xs"
+          className="mt-6"
           isLangEffectIcon={true}
         />
       </div>
@@ -149,7 +149,7 @@ export function DiscoveryCallForm({ dict }: { dict: Dictionary }) {
           disabled={loading}
           loading={loading}
           title={loading ? dict.discovery.form.submitting : dict.discovery.form.submit}
-          className="mt-4 w-full justify-center bg-persici-crimson text-white shadow-lg shadow-persici-crimson/25 py-3 text-xs"
+          className="mt-4 w-full justify-center bg-persici-crimson text-white shadow-lg shadow-persici-crimson/25"
           isLangEffectIcon={true}
         />
       </form>

@@ -29,7 +29,7 @@ export function Footer({ lang, dict }: FooterProps) {
               <HomeButton
                 href={`/${lang}/contact`}
                 title={dict.footer.bookCall}
-                className="bg-persici-crimson text-white shadow-md shadow-persici-crimson/25 px-5 py-2.5 text-xs"
+                className="bg-persici-crimson text-white shadow-md shadow-persici-crimson/25"
                 currentLang={lang}
                 isLangEffectIcon={true}
               />
