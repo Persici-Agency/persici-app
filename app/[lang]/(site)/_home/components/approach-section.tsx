@@ -78,8 +78,8 @@ export function ApproachSection({ lang, dict }: ApproachSectionProps) {
             <HomeButton
               href={`/${lang}/work`}
               title={dict.approach.ctaSecondary}
-              className="border border-black/15 bg-white/60 text-foreground"
-              iconClassName="bg-black/10 text-black"
+              className="border border-black/15 bg-dark/5 text-dark"
+              iconClassName="bg-dark text-light"
               currentLang={lang}
               isLangEffectIcon={true}
             />

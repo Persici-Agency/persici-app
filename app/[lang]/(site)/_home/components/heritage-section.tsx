@@ -50,42 +50,50 @@ export function HeritageSection({ lang, dict }: HeritageSectionProps) {
           </div>
         </FadeUp>
 
-        {/* Right Column: 3-Photo Collage Grid with Central Badge */}
+        {/* Right Column: 3-Photo Collage Grid with Central Brand Badge */}
         <FadeUp delay={200} duration={800} distance={28} className="relative lg:col-span-6">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="relative grid grid-cols-2 gap-3.5 sm:gap-4.5">
             {/* Top Wide Photo */}
             {collage[0] && (
-              <div className="col-span-2 relative aspect-[16/9] overflow-hidden rounded-3xl border border-black/5 shadow-md">
+              <div className="col-span-2 relative aspect-[16/9] sm:aspect-[16/8.5] overflow-hidden rounded-2xl sm:rounded-3xl border border-black/5 shadow-md">
                 <Image
                   src={collage[0].src}
                   alt={collage[0].alt}
                   fill
+                  sizes="(max-width: 1024px) 100vw, 50vw"
                   className="object-cover"
                 />
               </div>
             )}
 
-            {/* Bottom Photos */}
-            {collage.slice(1, 3).map((item) => (
+            {/* Bottom Left & Right Photos */}
+            {collage.slice(1, 3).map((item, idx) => (
               <div
-                key={item.id || item.src}
-                className="relative aspect-square overflow-hidden rounded-3xl border border-black/5 shadow-md"
+                key={item.id || item.src || idx}
+                className="relative aspect-[4/3] sm:aspect-square overflow-hidden rounded-2xl sm:rounded-3xl border border-black/5 shadow-md"
               >
                 <Image
                   src={item.src}
                   alt={item.alt}
                   fill
+                  sizes="(max-width: 1024px) 50vw, 25vw"
                   className="object-cover"
                 />
               </div>
             ))}
-          </div>
 
-          {/* Central Floating Badge */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex h-14 w-14 items-center justify-center rounded-full bg-persici-crimson text-white shadow-xl shadow-persici-crimson/30 border-4 border-white transition-transform duration-500 hover:scale-110">
-            <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-            </svg>
+            {/* Central Floating Brand Badge */}
+            <div
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 flex h-16 w-16 sm:h-20 sm:w-20 md:h-22 md:w-22 items-center justify-center rounded-full border-[6px] sm:border-[8px] border-white bg-persici-crimson shadow-2xl shadow-persici-crimson/40 transition-transform duration-500 hover:scale-110"
+              aria-hidden="true"
+            >
+              <div className="relative h-8 w-8 sm:h-10 sm:w-10">
+                <svg viewBox="0 0 100 100" fill="none" className="h-full w-full">
+                  <circle cx="38" cy="52" r="32" fill="#EF8C7D" />
+                  <circle cx="58" cy="46" r="34" fill="#FFFFFF" />
+                </svg>
+              </div>
+            </div>
           </div>
         </FadeUp>
       </div>
