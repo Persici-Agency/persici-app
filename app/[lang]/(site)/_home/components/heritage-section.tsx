@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import type { Dictionary } from '@dictionaries';
-import { sectionContainer, HomeButton } from '@shared';
+import { sectionContainer, HomeButton, FadeUp } from '@shared';
 
 export type HeritageSectionProps = {
   lang: string;
@@ -17,7 +17,7 @@ export function HeritageSection({ lang, dict }: HeritageSectionProps) {
 
       <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12">
         {/* Left Column: Copy & CTAs */}
-        <div className="lg:col-span-6">
+        <FadeUp delay={0} duration={800} distance={24} className="lg:col-span-6">
           <h2 className="font-primary text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
             {dict.heritage.title}
           </h2>
@@ -45,10 +45,10 @@ export function HeritageSection({ lang, dict }: HeritageSectionProps) {
               isLangEffectIcon={true}
             />
           </div>
-        </div>
+        </FadeUp>
 
         {/* Right Column: 3-Photo Collage Grid with Central Badge */}
-        <div className="relative lg:col-span-6">
+        <FadeUp delay={200} duration={800} distance={28} className="relative lg:col-span-6">
           <div className="grid grid-cols-2 gap-4">
             {/* Top Wide Photo */}
             <div className="col-span-2 relative aspect-[16/9] overflow-hidden rounded-3xl border border-black/5 shadow-md">
@@ -82,13 +82,14 @@ export function HeritageSection({ lang, dict }: HeritageSectionProps) {
           </div>
 
           {/* Central Floating Badge */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex h-14 w-14 items-center justify-center rounded-full bg-persici-crimson text-white shadow-xl shadow-persici-crimson/30 border-4 border-white">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex h-14 w-14 items-center justify-center rounded-full bg-persici-crimson text-white shadow-xl shadow-persici-crimson/30 border-4 border-white transition-transform duration-500 hover:scale-110">
             <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
             </svg>
           </div>
-        </div>
+        </FadeUp>
       </div>
     </section>
   );
 }
+

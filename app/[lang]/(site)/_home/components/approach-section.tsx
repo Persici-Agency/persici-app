@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import type { Dictionary } from '@dictionaries';
-import { sectionContainer, HomeButton } from '@shared';
+import { sectionContainer, HomeButton, FadeUp } from '@shared';
 
 export type ApproachSectionProps = {
   lang: string;
@@ -12,7 +12,7 @@ export function ApproachSection({ lang, dict }: ApproachSectionProps) {
     <section className={`${sectionContainer} py-20`}>
       <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12">
         {/* Left Column: Team Image with Floating Badge */}
-        <div className="relative lg:col-span-6">
+        <FadeUp delay={0} duration={800} distance={28} className="relative lg:col-span-6">
           <div className="relative aspect-[4/3] overflow-hidden rounded-3xl border border-black/5 shadow-xl">
             <Image
               src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1000&q=80"
@@ -61,10 +61,10 @@ export function ApproachSection({ lang, dict }: ApproachSectionProps) {
               </div>
             </div>
           </div>
-        </div>
+        </FadeUp>
 
         {/* Right Column: Approach Copy & CTAs */}
-        <div className="mt-8 lg:mt-0 lg:col-span-6">
+        <FadeUp delay={200} duration={800} distance={24} className="mt-8 lg:mt-0 lg:col-span-6">
           <h2 className="font-primary text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
             {dict.approach.title}
           </h2>
@@ -92,9 +92,10 @@ export function ApproachSection({ lang, dict }: ApproachSectionProps) {
               isLangEffectIcon={true}
             />
           </div>
-        </div>
+        </FadeUp>
       </div>
     </section>
   );
 }
+
 
