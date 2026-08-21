@@ -39,3 +39,27 @@ export type ClientLogosMarqueeProps = {
     fadeMask?: boolean;
     direction?: 'left' | 'right';
 };
+
+export interface SocialProofAvatar {
+    src: string;
+    alt?: string;
+    id?: string | number;
+}
+
+export type AvatarSize = 'xs' | 'sm' | 'md' | 'lg' | number;
+
+export type SocialProofProps = {
+    avatars?: (string | SocialProofAvatar)[];
+    ratingLabel?: React.ReactNode;
+    rating?: number | string;
+    stars?: React.ReactNode;
+    starsCount?: number;
+    className?: string;
+    avatarContainerClassName?: string;
+    avatarClassName?: string;
+    starsClassName?: string;
+    labelClassName?: string;
+    size?: AvatarSize;
+};
+
+export type AvatarSocialProofProps = SocialProofProps;

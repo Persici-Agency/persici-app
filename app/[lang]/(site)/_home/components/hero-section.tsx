@@ -1,6 +1,6 @@
-import Image from 'next/image';
 import type { Dictionary } from '@dictionaries';
-import { HomeButton, ClientLogosMarquee, FadeUp } from '@shared/components';
+import { HomeButton, ClientLogosMarquee, FadeUp, AvatarSocialProof } from '@shared/components';
+import { socialProofAvatars } from '@shared/data';
 
 export type HeroSectionProps = {
   lang: string;
@@ -36,56 +36,16 @@ export function HeroSection({ lang, dict }: HeroSectionProps) {
             <HomeButton
               href={`/${lang}/contact`}
               title={dict.hero.cta}
-              className="bg-persici-crimson text-white shadow-lg shadow-persici-crimson/25 px-7 py-3.5 sm:text-sm"
+              className="bg-persici-crimson text-white"
               currentLang={lang}
               isLangEffectIcon={true}
             />
 
             {/* Rating / Avatar Social Proof */}
-            <div className="flex items-center gap-3">
-              <div className="flex -space-x-2 rtl:space-x-reverse">
-                <div className="relative h-8 w-8 overflow-hidden rounded-full border-2 border-white">
-                  <Image
-                    src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80"
-                    alt="Client avatar"
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <div className="relative h-8 w-8 overflow-hidden rounded-full border-2 border-white">
-                  <Image
-                    src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80"
-                    alt="Client avatar"
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <div className="relative h-8 w-8 overflow-hidden rounded-full border-2 border-white">
-                  <Image
-                    src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&q=80"
-                    alt="Client avatar"
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <div className="relative h-8 w-8 overflow-hidden rounded-full border-2 border-white">
-                  <Image
-                    src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&q=80"
-                    alt="Client avatar"
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-              </div>
-              <div className="text-start">
-                <div className="flex items-center text-amber-500 text-xs">
-                  {'★★★★★'}
-                </div>
-                <span className="text-[11px] font-medium text-foreground/70">
-                  {dict.hero.ratingLabel}
-                </span>
-              </div>
-            </div>
+            <AvatarSocialProof
+              avatars={socialProofAvatars}
+              ratingLabel={dict.hero.ratingLabel}
+            />
           </div>
         </FadeUp>
       </div>
