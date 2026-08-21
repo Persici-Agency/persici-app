@@ -6,6 +6,7 @@ import type { Dictionary } from '@dictionaries';
 import { FadeUp } from '@shared/components';
 import { getHomeVideoTestimonials } from '../services';
 import type { VideoTestimonialItem } from '@shared/types';
+import { sectionHeading } from '../../_shared';
 
 export interface VideoTestimonialsCarouselProps {
   dict: Dictionary;
@@ -105,7 +106,7 @@ export function VideoTestimonialsCarousel({
       <FadeUp delay={0} duration={750} distance={20}>
         <div className="mb-10 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
           <div>
-            <h2 className="font-primary text-2xl font-bold tracking-tight text-white sm:text-3xl lg:text-4xl">
+            <h2 className={sectionHeading + ' text-white'}>
               {dict.clientVideos.title}
             </h2>
             <p className="mt-2 text-sm text-white/60">
@@ -222,11 +223,10 @@ export function VideoTestimonialsCarousel({
                 key={pageIdx}
                 type="button"
                 onClick={() => setCurrentPage(pageIdx)}
-                className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
-                  currentPage === pageIdx
-                    ? 'w-8 bg-persici-crimson shadow-sm shadow-persici-crimson/50'
-                    : 'w-2 bg-white/25 hover:bg-white/50'
-                }`}
+                className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${currentPage === pageIdx
+                  ? 'w-8 bg-persici-crimson shadow-sm shadow-persici-crimson/50'
+                  : 'w-2 bg-white/25 hover:bg-white/50'
+                  }`}
                 aria-label={`Jump to page ${pageIdx + 1} (clients ${pageIdx * cardsPerPage + 1} to ${Math.min((pageIdx + 1) * cardsPerPage, items.length)})`}
               />
             ))}
