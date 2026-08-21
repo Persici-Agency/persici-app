@@ -1,5 +1,5 @@
 import type { Dictionary } from '@dictionaries';
-import { sectionContainer, sectionHeading, featureCard, bannerStrip, HomeButton, FadeUp } from '@shared';
+import { sectionContainer, sectionHeading, featureCard, bannerStrip, HomeButton, FadeUp, AvatarSocialProof, socialProofAvatars } from '@shared';
 import { getHomeGrowthServices } from '../services';
 
 export type GrowthServicesSectionProps = {
@@ -31,10 +31,13 @@ export function GrowthServicesSection({ lang, dict }: GrowthServicesSectionProps
             </h2>
           </div>
           <div className="flex items-center gap-2">
-            <div className="flex text-amber-500 text-sm">{'★★★★★'}</div>
-            <span className="text-xs font-semibold text-foreground/70">
-              {dict.growthServices.rating}
-            </span>
+            {/* Rating / Avatar Social Proof */}
+            <AvatarSocialProof
+              avatars={socialProofAvatars}
+              ratingLabel={dict.hero.ratingLabel}
+              size="lg"
+              starsClassName="text-xl"
+            />
           </div>
         </div>
       </FadeUp>

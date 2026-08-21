@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import type { Dictionary } from '@dictionaries';
-import { sectionContainer, HomeButton, FadeUp } from '@shared';
+import { sectionContainer, HomeButton, FadeUp, sectionHeading } from '@shared';
 import { getHomeHeritageCollage } from '../services';
 
 export type HeritageSectionProps = {
@@ -21,13 +21,13 @@ export function HeritageSection({ lang, dict }: HeritageSectionProps) {
       <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12">
         {/* Left Column: Copy & CTAs */}
         <FadeUp delay={0} duration={800} distance={24} className="lg:col-span-6">
-          <h2 className="font-primary text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
+          <h2 className={sectionHeading}>
             {dict.heritage.title}
           </h2>
-          <p className="mt-6 text-sm leading-relaxed text-foreground/75 sm:text-base">
+          <p className="pt-5 mt-6 text-sm leading-relaxed text-foreground/75 sm:text-base">
             {dict.heritage.desc1}
           </p>
-          <p className="mt-4 text-sm leading-relaxed text-foreground/75 sm:text-base">
+          <p className="p-2 mt-4 text-sm leading-relaxed text-foreground/75 sm:text-base">
             {dict.heritage.desc2}
           </p>
 
@@ -84,7 +84,7 @@ export function HeritageSection({ lang, dict }: HeritageSectionProps) {
 
             {/* Central Floating Brand Badge */}
             <div
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 flex h-16 w-16 sm:h-20 sm:w-20 md:h-22 md:w-22 items-center justify-center rounded-full border-[6px] sm:border-[8px] border-white bg-persici-crimson shadow-2xl shadow-persici-crimson/40 transition-transform duration-500 hover:scale-110"
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 flex h-16 w-16 sm:h-20 sm:w-20 md:h-22 md:w-22 items-center justify-center rounded-full border-[6px] sm:border-[8px] border-white bg-persici-crimson transition-transform duration-500 hover:scale-110"
               aria-hidden="true"
             >
               <div className="relative h-8 w-8 sm:h-10 sm:w-10">

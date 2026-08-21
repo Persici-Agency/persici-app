@@ -1,7 +1,7 @@
 import type { Dictionary } from '@dictionaries';
 import { VideoPreviewModal } from './video-modal';
 import { DarkTestimonialCard } from './dark-testimonial-card';
-import { sectionContainer, FadeUp } from '@shared';
+import { sectionContainer, FadeUp, sectionHeading } from '@shared';
 
 export type PartnerShowcaseSectionProps = {
   dict: Dictionary;
@@ -11,7 +11,7 @@ export function PartnerShowcaseSection({ dict }: PartnerShowcaseSectionProps) {
   return (
     <section className={`${sectionContainer} py-12`}>
       <FadeUp delay={0} duration={750} distance={20}>
-        <h2 className="text-center font-primary text-2xl font-bold tracking-tight text-foreground sm:text-3xl lg:text-4xl">
+        <h2 className={sectionHeading + ` text-center font-bold`}>
           {dict.partnerShowcase.title}
         </h2>
       </FadeUp>
