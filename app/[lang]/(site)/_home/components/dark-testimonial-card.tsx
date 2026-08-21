@@ -61,7 +61,7 @@ export function DarkTestimonialCard({
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       className={cn(
-        'group relative flex flex-col justify-between rounded-3xl border border-white/10 bg-persici-black p-8 text-white shadow-2xl transition-all duration-300 lg:p-10',
+        'group relative flex h-full flex-col justify-between rounded-3xl border border-white/10 bg-persici-black p-8 text-white shadow-2xl transition-all duration-300 lg:p-10',
         className
       )}
     >

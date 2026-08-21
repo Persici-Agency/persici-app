@@ -29,7 +29,7 @@ export function AvatarSocialProof({
   const renderStars = () => {
     if (stars) return stars;
     if (typeof rating === 'number') {
-      return '★'.repeat(Math.max(1, Math.min(5, Math.round(rating))));
+      return `'★'`.repeat(Math.max(1, Math.min(5, Math.round(rating))));
     }
     if (typeof rating === 'string') {
       return rating;
@@ -71,11 +71,11 @@ export function AvatarSocialProof({
       {/* Stars & Rating Label */}
       {(ratingLabel || rating || stars) && (
         <div className="text-start">
-          <div className={cn('flex items-center text-amber-500 text-xs', starsClassName)}>
+          <div className={cn('flex items-center text-amber-500 text-md', starsClassName)}>
             {renderStars()}
           </div>
           {ratingLabel && (
-            <span className={cn('text-[11px] font-medium text-foreground/70', labelClassName)}>
+            <span className={cn('text-sm font-medium text-foreground/70', labelClassName)}>
               {ratingLabel}
             </span>
           )}

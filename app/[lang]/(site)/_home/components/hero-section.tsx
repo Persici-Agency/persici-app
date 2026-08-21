@@ -45,6 +45,8 @@ export function HeroSection({ lang, dict }: HeroSectionProps) {
             <AvatarSocialProof
               avatars={socialProofAvatars}
               ratingLabel={dict.hero.ratingLabel}
+              size="lg"
+              starsClassName="text-xl"
             />
           </div>
         </FadeUp>
