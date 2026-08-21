@@ -172,6 +172,41 @@ export interface HeritageCollageItem extends BaseMongoDocument {
 }
 
 // 6. Growth Services (Home & Catalog)
+export type PlatformBadgeKey = 'meta' | 'tiktok' | 'snapchat' | 'google-ads' | 'googleAds' | 'shopify' | string;
+export type ServiceCardWidth = 'full' | '1/2' | '1/3' | '2/3' | '1/4' | '3/4' | string;
+
+export interface GrowthServiceBadge {
+  id?: string;
+  title?: string;
+  icon?: React.ReactNode;
+  platform?: PlatformBadgeKey;
+  bg?: string;
+  color?: string;
+  iconColor?: string;
+  className?: string;
+  iconClassName?: string;
+}
+
+export interface GrowthServiceCardProps {
+  title: React.ReactNode;
+  description: React.ReactNode;
+  platforms?: (PlatformBadgeKey | GrowthServiceBadge)[];
+  badges?: GrowthServiceBadge[];
+  icons?: React.ReactNode[];
+  width?: ServiceCardWidth;
+  iconColor?: string;
+  iconBg?: string;
+  iconClassName?: string;
+  tag?: string;
+  tagColor?: string;
+  dotColor?: string;
+  className?: string;
+  cardClassName?: string;
+  delay?: number;
+  duration?: number;
+  distance?: number;
+}
+
 export interface GrowthServiceItem extends BaseMongoDocument {
   key?: string;
   tag: string;
@@ -179,6 +214,10 @@ export interface GrowthServiceItem extends BaseMongoDocument {
   description: string;
   tagColor?: string;
   dotColor?: string;
+  platforms?: (PlatformBadgeKey | GrowthServiceBadge)[];
+  width?: ServiceCardWidth;
+  iconColor?: string;
+  iconBg?: string;
   order?: number;
 }
 

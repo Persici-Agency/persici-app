@@ -6,6 +6,4 @@ export * from './home-button';
 export * from './client-logos-marquee';
 export * from './fade-up';
 export * from './avatar-social-proof';
-
-
-
+export * from './growth-service-card';

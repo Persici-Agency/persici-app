@@ -209,6 +209,8 @@ export const growthServicesHome: GrowthServiceItem[] = [
     description: 'We grow brands through performance-driven campaigns across Meta, TikTok, and Snapchat. From creative strategy to targeting and scaling, we help you win on paid social - wherever your audience is.',
     tagColor: 'text-persici-crimson',
     dotColor: 'bg-persici-crimson',
+    platforms: ['meta', 'tiktok', 'snapchat'],
+    width: '1/2',
     order: 1,
   },
   {
@@ -219,6 +221,8 @@ export const growthServicesHome: GrowthServiceItem[] = [
     description: 'We drive high-intent traffic with smart bidding and sharp targeting. Our campaigns turn clicks into loyal customers.',
     tagColor: 'text-amber-600',
     dotColor: 'bg-amber-500',
+    platforms: ['google-ads'],
+    width: '1/2',
     order: 2,
   },
   {
@@ -229,6 +233,8 @@ export const growthServicesHome: GrowthServiceItem[] = [
     description: 'With an in-house development team, we build and optimise Shopify stores for maximum conversions - combining sharp design with data-driven improvements that drive real growth.',
     tagColor: 'text-emerald-600',
     dotColor: 'bg-emerald-500',
+    platforms: ['shopify'],
+    width: 'full',
     order: 3,
   },
 ];
