@@ -3,21 +3,25 @@
 import { useState } from 'react';
 import type { Dictionary } from '@dictionaries';
 import { HomeButton } from '@shared/components/home-button';
+import { getHomeDiscoveryRevenueOptions } from '../services';
+import type { DiscoveryFormData } from '@shared/types';
 
 export function DiscoveryCallForm({ dict }: { dict: Dictionary }) {
+  const revenueOptions = getHomeDiscoveryRevenueOptions();
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<DiscoveryFormData>({
     firstName: '',
     lastName: '',
     email: '',
     website: '',
-    revenue: '$25,000 - $100,000 / month',
+    revenue: revenueOptions[1]?.value || '25k-100k',
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    // Simulates Next.js 16 Server Action or API route call
     setTimeout(() => {
       setLoading(false);
       setSubmitted(true);
@@ -132,10 +136,11 @@ export function DiscoveryCallForm({ dict }: { dict: Dictionary }) {
             onChange={(e) => setFormData({ ...formData, revenue: e.target.value })}
             className="mt-1 w-full rounded-xl border border-black/10 bg-black/[0.02] px-3.5 py-2.5 text-xs text-foreground outline-none transition-all focus:border-persici-crimson focus:bg-white focus:ring-2 focus:ring-persici-crimson/20"
           >
-            <option value="under-25k">{dict.discovery.form.revenueOption1}</option>
-            <option value="25k-100k">{dict.discovery.form.revenueOption2}</option>
-            <option value="100k-500k">{dict.discovery.form.revenueOption3}</option>
-            <option value="500k-plus">{dict.discovery.form.revenueOption4}</option>
+            {revenueOptions.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {dict.discovery.form[opt.labelKey as keyof typeof dict.discovery.form] || opt.label}
+              </option>
+            ))}
           </select>
         </div>
 

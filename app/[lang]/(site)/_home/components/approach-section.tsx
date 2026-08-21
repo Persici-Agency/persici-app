@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import type { Dictionary } from '@dictionaries';
 import { sectionContainer, HomeButton, FadeUp } from '@shared';
+import { getHomeApproachTeam } from '../services';
 
 export type ApproachSectionProps = {
   lang: string;
@@ -8,6 +9,8 @@ export type ApproachSectionProps = {
 };
 
 export function ApproachSection({ lang, dict }: ApproachSectionProps) {
+  const teamAvatars = getHomeApproachTeam();
+
   return (
     <section className={`${sectionContainer} py-20`}>
       <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12">
@@ -34,30 +37,19 @@ export function ApproachSection({ lang, dict }: ApproachSectionProps) {
                 </p>
               </div>
               <div className="flex -space-x-1.5 rtl:space-x-reverse">
-                <div className="relative h-7 w-7 overflow-hidden rounded-full border border-white">
-                  <Image
-                    src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80"
-                    alt="Team avatar"
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <div className="relative h-7 w-7 overflow-hidden rounded-full border border-white">
-                  <Image
-                    src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80"
-                    alt="Team avatar"
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <div className="relative h-7 w-7 overflow-hidden rounded-full border border-white">
-                  <Image
-                    src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&q=80"
-                    alt="Team avatar"
-                    fill
-                    className="object-cover"
-                  />
-                </div>
+                {teamAvatars.map((member, idx) => (
+                  <div
+                    key={member.id || idx}
+                    className="relative h-7 w-7 overflow-hidden rounded-full border border-white"
+                  >
+                    <Image
+                      src={member.avatar}
+                      alt={member.alt || `Team avatar ${idx + 1}`}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                ))}
               </div>
             </div>
           </div>
@@ -97,5 +89,3 @@ export function ApproachSection({ lang, dict }: ApproachSectionProps) {
     </section>
   );
 }
-
-

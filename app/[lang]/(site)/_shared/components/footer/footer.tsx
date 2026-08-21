@@ -2,23 +2,15 @@ import Link from 'next/link';
 import { Logo } from '@shared/components/logo';
 import { HomeButton } from '@shared/components/home-button';
 import type { Dictionary } from '@dictionaries';
+import { siteNavLinks } from '@shared/data';
+import type { FooterProps } from '@shared/types';
 
-export type FooterProps = {
-  lang: string;
-  dict: Dictionary;
-};
+export type { FooterProps };
 
 export function Footer({ lang, dict }: FooterProps) {
   const currentYear = new Date().getFullYear();
 
-  const navLinks = [
-    { key: 'services', href: `/${lang}/services` },
-    { key: 'work', href: `/${lang}/work` },
-    { key: 'about', href: `/${lang}/about` },
-    { key: 'insights', href: `/${lang}/insights` },
-    { key: 'careers', href: `/${lang}/careers` },
-    { key: 'contact', href: `/${lang}/contact` },
-  ] as const;
+  const navLinks = siteNavLinks.filter((l) => l.key !== 'home');
 
   return (
     <footer className="relative border-t border-white/10 bg-persici-black text-white">
@@ -61,7 +53,7 @@ export function Footer({ lang, dict }: FooterProps) {
               {navLinks.map((link) => (
                 <li key={link.key}>
                   <Link
-                    href={link.href}
+                    href={`/${lang}${link.href}`}
                     className="text-xs text-white/70 transition-colors hover:text-persici-blush"
                   >
                     {dict.nav[link.key as keyof typeof dict.nav]}

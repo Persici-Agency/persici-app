@@ -1,8 +1,6 @@
-import type { Dictionary } from '@dictionaries';
+import type { DashboardHeaderProps } from '../../types';
 
-export type DashboardHeaderProps = {
-  dict: Dictionary;
-};
+export type { DashboardHeaderProps };
 
 export function DashboardHeader({ dict }: DashboardHeaderProps) {
   return (

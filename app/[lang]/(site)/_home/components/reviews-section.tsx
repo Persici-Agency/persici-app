@@ -1,20 +1,28 @@
 import type { Dictionary } from '@dictionaries';
 import { sectionContainer, sectionHeading, baseCard, bannerStrip, HomeButton, FadeUp } from '@shared';
+import { getHomeReviews } from '../services';
+import type { ReviewItem } from '@shared/types';
 
 export type ReviewsSectionProps = {
   lang: string;
   dict: Dictionary;
+  reviews?: ReviewItem[];
 };
 
-export function ReviewsSection({ lang, dict }: ReviewsSectionProps) {
-  const reviewsList = [
-    dict.reviews.r1,
-    dict.reviews.r2,
-    dict.reviews.r3,
-    dict.reviews.r4,
-    dict.reviews.r5,
-    dict.reviews.r6,
-  ];
+export function ReviewsSection({ lang, dict, reviews: customReviews }: ReviewsSectionProps) {
+  const baseReviews = customReviews || getHomeReviews();
+
+  const reviewsList = baseReviews.map((rev, index) => {
+    const dictKey = `r${index + 1}` as keyof typeof dict.reviews;
+    const localized = (dict.reviews[dictKey] || {}) as Partial<ReviewItem>;
+    return {
+      ...rev,
+      name: localized.name || rev.name,
+      company: localized.company || rev.company,
+      review: localized.review || rev.review,
+      verified: localized.verified || rev.verified,
+    };
+  });
 
   return (
     <section className="bg-persici-black/[0.02] py-20">
@@ -35,7 +43,7 @@ export function ReviewsSection({ lang, dict }: ReviewsSectionProps) {
         {/* 6 Review Cards Grid */}
         <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {reviewsList.map((rev, index) => (
-            <FadeUp key={index} delay={80 * index} duration={750} distance={24} className="h-full">
+            <FadeUp key={rev.id || index} delay={80 * index} duration={750} distance={24} className="h-full">
               <div
                 className={`h-full flex flex-col justify-between ${baseCard}`}
               >
@@ -80,5 +88,3 @@ export function ReviewsSection({ lang, dict }: ReviewsSectionProps) {
     </section>
   );
 }
-
-
