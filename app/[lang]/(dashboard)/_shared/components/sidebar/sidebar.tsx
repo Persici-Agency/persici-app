@@ -1,12 +1,9 @@
 import Link from 'next/link';
 import { Logo } from '../logo';
 import { getSidebarLinks } from '../../services';
-import type { Dictionary } from '@dictionaries';
+import type { DashboardSidebarProps } from '../../types';
 
-export type DashboardSidebarProps = {
-  lang: string;
-  dict: Dictionary;
-};
+export type { DashboardSidebarProps };
 
 export function DashboardSidebar({ lang, dict }: DashboardSidebarProps) {
   const sidebarLinks = getSidebarLinks();

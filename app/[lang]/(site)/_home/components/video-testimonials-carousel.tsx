@@ -4,27 +4,31 @@ import { useState } from 'react';
 import Image from 'next/image';
 import type { Dictionary } from '@dictionaries';
 import { FadeUp } from '@shared/components';
+import { getHomeVideoTestimonials } from '../services';
+import type { VideoTestimonialItem } from '@shared/types';
 
-export function VideoTestimonialsCarousel({ dict }: { dict: Dictionary }) {
+export function VideoTestimonialsCarousel({
+  dict,
+  testimonials,
+}: {
+  dict: Dictionary;
+  testimonials?: VideoTestimonialItem[];
+}) {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const baseItems = testimonials || getHomeVideoTestimonials();
 
-  const items = [
-    {
-      ...dict.clientVideos.client1,
-      image:
-        'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=800&q=80',
-    },
-    {
-      ...dict.clientVideos.client2,
-      image:
-        'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80',
-    },
-    {
-      ...dict.clientVideos.client3,
-      image:
-        'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=800&q=80',
-    },
-  ];
+  // Combine typed database items with dictionary localization if matching
+  const items = baseItems.map((item, idx) => {
+    const dictKey = `client${idx + 1}` as keyof typeof dict.clientVideos;
+    const localized = (dict.clientVideos[dictKey] || {}) as Partial<VideoTestimonialItem>;
+    return {
+      ...item,
+      name: localized.name || item.name,
+      role: localized.role || item.role,
+      company: localized.company || item.company,
+      quote: localized.quote || item.quote,
+    };
+  });
 
   const prev = () => {
     setCurrentIndex((prevIdx) => (prevIdx === 0 ? items.length - 1 : prevIdx - 1));
@@ -66,7 +70,7 @@ export function VideoTestimonialsCarousel({ dict }: { dict: Dictionary }) {
       {/* 3 Video Cards Grid */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
         {items.map((item, idx) => (
-          <FadeUp key={idx} delay={100 + idx * 120} duration={750} distance={24} className="h-full">
+          <FadeUp key={item.id || idx} delay={100 + idx * 120} duration={750} distance={24} className="h-full">
             <div
               className={`group relative overflow-hidden rounded-3xl border border-white/10 bg-neutral-900 transition-all duration-300 hover:border-persici-crimson/50 hover:shadow-2xl hover:shadow-persici-crimson/10 ${
                 currentIndex === idx ? 'ring-2 ring-persici-crimson/40' : ''
@@ -128,4 +132,3 @@ export function VideoTestimonialsCarousel({ dict }: { dict: Dictionary }) {
     </div>
   );
 }
-

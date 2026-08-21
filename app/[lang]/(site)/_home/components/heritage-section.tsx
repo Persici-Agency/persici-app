@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import type { Dictionary } from '@dictionaries';
 import { sectionContainer, HomeButton, FadeUp } from '@shared';
+import { getHomeHeritageCollage } from '../services';
 
 export type HeritageSectionProps = {
   lang: string;
@@ -8,6 +9,8 @@ export type HeritageSectionProps = {
 };
 
 export function HeritageSection({ lang, dict }: HeritageSectionProps) {
+  const collage = getHomeHeritageCollage();
+
   return (
     <section className={`relative ${sectionContainer} py-20`}>
       {/* Geometric Angular Background Accent */}
@@ -51,34 +54,31 @@ export function HeritageSection({ lang, dict }: HeritageSectionProps) {
         <FadeUp delay={200} duration={800} distance={28} className="relative lg:col-span-6">
           <div className="grid grid-cols-2 gap-4">
             {/* Top Wide Photo */}
-            <div className="col-span-2 relative aspect-[16/9] overflow-hidden rounded-3xl border border-black/5 shadow-md">
-              <Image
-                src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1000&q=80"
-                alt="Team strategy workshop"
-                fill
-                className="object-cover"
-              />
-            </div>
+            {collage[0] && (
+              <div className="col-span-2 relative aspect-[16/9] overflow-hidden rounded-3xl border border-black/5 shadow-md">
+                <Image
+                  src={collage[0].src}
+                  alt={collage[0].alt}
+                  fill
+                  className="object-cover"
+                />
+              </div>
+            )}
 
-            {/* Bottom Left Photo */}
-            <div className="relative aspect-square overflow-hidden rounded-3xl border border-black/5 shadow-md">
-              <Image
-                src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=600&q=80"
-                alt="Growth discussion"
-                fill
-                className="object-cover"
-              />
-            </div>
-
-            {/* Bottom Right Photo */}
-            <div className="relative aspect-square overflow-hidden rounded-3xl border border-black/5 shadow-md">
-              <Image
-                src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&w=600&q=80"
-                alt="Engineering & sprint review"
-                fill
-                className="object-cover"
-              />
-            </div>
+            {/* Bottom Photos */}
+            {collage.slice(1, 3).map((item) => (
+              <div
+                key={item.id || item.src}
+                className="relative aspect-square overflow-hidden rounded-3xl border border-black/5 shadow-md"
+              >
+                <Image
+                  src={item.src}
+                  alt={item.alt}
+                  fill
+                  className="object-cover"
+                />
+              </div>
+            ))}
           </div>
 
           {/* Central Floating Badge */}
@@ -92,4 +92,3 @@ export function HeritageSection({ lang, dict }: HeritageSectionProps) {
     </section>
   );
 }
-
