@@ -28,7 +28,7 @@ export function Header({ lang, dict }: HeaderProps) {
 
   return (
     <header className="fixed top-0 z-50 w-full transition-all duration-200">
-      <div className={`${sectionContainer} max-w-9xl flex h-20 items-center justify-between`}>
+      <div className={`${sectionContainer} max-w-9xl flex h-25 items-center justify-between`}>
         {/* Left: Brand Logo */}
         <div className="flex items-center">
           <Logo lang={lang} variant="dark" />
@@ -63,6 +63,7 @@ export function Header({ lang, dict }: HeaderProps) {
           <HomeButton
             href={`/${lang}/contact`}
             title={dict.nav.bookCall}
+            className="hidden sm:inline-flex"
             currentLang={lang}
             isLangEffectIcon={true}
           />
@@ -118,16 +119,14 @@ export function Header({ lang, dict }: HeaderProps) {
               </Link>
             ))}
             <div className="pt-2">
-              <Link
+              <HomeButton
                 href={`/${lang}/contact`}
                 onClick={() => setMobileMenuOpen(false)}
-                className="flex w-full items-center justify-center gap-2 rounded-full bg-persici-black py-2.5 text-sm font-medium text-white shadow-xs"
-              >
-                <span>{dict.nav.bookCall}</span>
-                <span className="flex h-4 w-4 items-center justify-center rounded-full bg-white/20 text-[10px]">
-                  →
-                </span>
-              </Link>
+                title={dict.nav.bookCall}
+                className="w-full justify-center"
+                currentLang={lang}
+                isLangEffectIcon={true}
+              />
             </div>
           </nav>
         </div>

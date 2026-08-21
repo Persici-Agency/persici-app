@@ -1,6 +1,5 @@
-import Link from 'next/link';
 import type { Dictionary } from '@dictionaries';
-import { sectionContainer, sectionHeading, baseCard, bannerStrip, btnArrowIcon } from '@shared';
+import { sectionContainer, sectionHeading, baseCard, bannerStrip, HomeButton } from '@shared';
 
 export type ReviewsSectionProps = {
   lang: string;
@@ -64,13 +63,13 @@ export function ReviewsSection({ lang, dict }: ReviewsSectionProps) {
           <p className="font-primary text-sm font-semibold text-foreground">
             {dict.reviews.bannerText}
           </p>
-          <Link
+          <HomeButton
             href={`/${lang}/contact`}
-            className="inline-flex items-center gap-2 rounded-full bg-persici-crimson px-5 py-2.5 text-xs font-semibold text-white shadow-sm shadow-persici-crimson/20 transition-all hover:bg-persici-crimson-80 hover:shadow-md"
-          >
-            <span>{dict.reviews.bannerCta}</span>
-            <span className={btnArrowIcon}>→</span>
-          </Link>
+            title={dict.reviews.bannerCta}
+            className="bg-persici-crimson text-white shadow-sm shadow-persici-crimson/20 px-5 py-2.5 text-xs"
+            currentLang={lang}
+            isLangEffectIcon={true}
+          />
         </div>
       </div>
     </section>

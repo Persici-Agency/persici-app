@@ -1,6 +1,5 @@
-import Link from 'next/link';
 import type { Dictionary } from '@dictionaries';
-import { sectionContainer, sectionHeading, featureCard, bannerStrip, btnArrowIcon } from '@shared';
+import { sectionContainer, sectionHeading, featureCard, bannerStrip, HomeButton } from '@shared';
 
 export type GrowthServicesSectionProps = {
   lang: string;
@@ -74,13 +73,13 @@ export function GrowthServicesSection({ lang, dict }: GrowthServicesSectionProps
         <p className="font-primary text-sm font-semibold text-foreground">
           {dict.growthServices.bannerText}
         </p>
-        <Link
+        <HomeButton
           href={`/${lang}/contact`}
-          className="inline-flex items-center gap-2 rounded-full bg-persici-black px-5 py-2.5 text-xs font-semibold text-white transition-all hover:bg-persici-crimson hover:shadow-md"
-        >
-          <span>{dict.growthServices.bannerCta}</span>
-          <span className={btnArrowIcon}>→</span>
-        </Link>
+          title={dict.growthServices.bannerCta}
+          className="bg-persici-black text-white px-5 py-2.5 text-xs"
+          currentLang={lang}
+          isLangEffectIcon={true}
+        />
       </div>
     </section>
   );

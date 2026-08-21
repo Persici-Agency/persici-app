@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import type { Dictionary } from '@dictionaries';
+import { HomeButton } from '@shared/components/home-button';
 
 export function DiscoveryCallForm({ dict }: { dict: Dictionary }) {
   const [submitted, setSubmitted] = useState(false);
@@ -37,13 +38,13 @@ export function DiscoveryCallForm({ dict }: { dict: Dictionary }) {
         <p className="mt-2 text-sm text-foreground/70">
           {dict.discovery.form.successMsg}
         </p>
-        <button
+        <HomeButton
           type="button"
           onClick={() => setSubmitted(false)}
-          className="mt-6 inline-flex items-center rounded-full bg-persici-black px-6 py-2 text-xs font-semibold text-white transition-opacity hover:opacity-90"
-        >
-          {dict.common.backToHome}
-        </button>
+          title={dict.common.backToHome}
+          className="mt-6 bg-persici-black text-white px-6 py-2 text-xs"
+          isLangEffectIcon={true}
+        />
       </div>
     );
   }
@@ -138,22 +139,14 @@ export function DiscoveryCallForm({ dict }: { dict: Dictionary }) {
           </select>
         </div>
 
-        <button
+        <HomeButton
           type="submit"
           disabled={loading}
-          className="mt-4 flex w-full items-center justify-center gap-2 rounded-full bg-persici-crimson py-3 text-xs font-semibold text-white shadow-lg shadow-persici-crimson/25 transition-all hover:bg-persici-crimson-80 hover:shadow-xl active:scale-[0.99] disabled:opacity-75"
-        >
-          {loading ? (
-            <span>{dict.discovery.form.submitting}</span>
-          ) : (
-            <>
-              <span>{dict.discovery.form.submit}</span>
-              <span className="flex h-4 w-4 items-center justify-center rounded-full bg-white/20 text-[10px]">
-                →
-              </span>
-            </>
-          )}
-        </button>
+          loading={loading}
+          title={loading ? dict.discovery.form.submitting : dict.discovery.form.submit}
+          className="mt-4 w-full justify-center bg-persici-crimson text-white shadow-lg shadow-persici-crimson/25 py-3 text-xs"
+          isLangEffectIcon={true}
+        />
       </form>
     </div>
   );

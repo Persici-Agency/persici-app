@@ -1,7 +1,7 @@
 import Image from 'next/image';
-import Link from 'next/link';
 import type { Dictionary } from '@dictionaries';
-import { getClientLogos } from '../services';
+import { HomeButton } from '@shared/components/home-button';
+import { ClientLogosMarquee } from '@shared/components/client-logos-marquee';
 
 export type HeroSectionProps = {
   lang: string;
@@ -9,10 +9,8 @@ export type HeroSectionProps = {
 };
 
 export function HeroSection({ lang, dict }: HeroSectionProps) {
-  const clientLogos = getClientLogos();
-
   return (
-    <section className="relative pt-12 pb-20 sm:pt-20 sm:pb-28">
+    <section className="relative pt-12 pb-20 sm:pt-55 sm:pb-28">
       {/* Subtle Ambient Radial Glow */}
       <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 flex justify-center overflow-hidden">
         <div className="h-[480px] w-[800px] rounded-full bg-gradient-to-b from-persici-blush/25 via-persici-crimson/10 to-transparent blur-3xl opacity-70" />
@@ -20,7 +18,7 @@ export function HeroSection({ lang, dict }: HeroSectionProps) {
 
       <div className="mx-auto max-w-5xl px-4 text-center sm:px-6 lg:px-8">
         {/* Main Headline */}
-        <h1 className="font-primary text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl lg:text-7xl">
+        <h1 className="font-primary text-5xl font-extrabold leading-30 tracking-tight text-foreground sm:text-7xl lg:text-8xl">
           {dict.hero.title}
         </h1>
 
@@ -31,15 +29,13 @@ export function HeroSection({ lang, dict }: HeroSectionProps) {
 
         {/* CTA & Rating Row */}
         <div className="mt-8 flex flex-col items-center justify-center gap-6 sm:flex-row sm:gap-8">
-          <Link
+          <HomeButton
             href={`/${lang}/contact`}
-            className="inline-flex items-center gap-2 rounded-full bg-persici-crimson px-7 py-3.5 text-xs font-semibold text-white shadow-lg shadow-persici-crimson/25 transition-all hover:bg-persici-crimson-80 hover:shadow-xl active:scale-98 sm:text-sm"
-          >
-            <span>{dict.hero.cta}</span>
-            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white/20 text-xs">
-              →
-            </span>
-          </Link>
+            title={dict.hero.cta}
+            className="bg-persici-crimson text-white shadow-lg shadow-persici-crimson/25 px-7 py-3.5 sm:text-sm"
+            currentLang={lang}
+            isLangEffectIcon={true}
+          />
 
           {/* Rating / Avatar Social Proof */}
           <div className="flex items-center gap-3">
@@ -89,29 +85,11 @@ export function HeroSection({ lang, dict }: HeroSectionProps) {
         </div>
       </div>
 
-      {/* Client Logos Strip */}
+      {/* Animated Infinite Client Logos Marquee */}
       <div className="mx-auto mt-16 max-w-7xl px-4 sm:px-6 lg:px-8">
-        <p className="text-center text-xs font-semibold uppercase tracking-wider text-foreground/40">
-          {dict.hero.trustedBy}
-        </p>
-        <div className="mt-8 grid grid-cols-3 items-center justify-center gap-6 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8">
-          {clientLogos.map((client) => (
-            <div
-              key={client.name}
-              className="group flex h-12 items-center justify-center rounded-xl p-2 transition-all"
-              title={client.name}
-            >
-              <Image
-                src={client.src}
-                alt={client.name}
-                width={110}
-                height={40}
-                className="max-h-8 w-auto object-contain opacity-50 grayscale transition-all duration-300 group-hover:opacity-100 group-hover:grayscale-0"
-              />
-            </div>
-          ))}
-        </div>
+        <ClientLogosMarquee title={dict.hero.trustedBy} />
       </div>
     </section>
   );
 }
+

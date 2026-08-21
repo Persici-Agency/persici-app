@@ -1,6 +1,7 @@
 export * from './hero-section';
 export * from './video-modal';
 export * from './partner-showcase-section';
+export * from './dark-testimonial-card';
 export * from './heritage-section';
 export * from './growth-services-section';
 export * from './video-testimonials-carousel';
@@ -10,3 +11,4 @@ export * from './reviews-section';
 export * from './discovery-form';
 export * from './discovery-section';
 export * from './home-view';
+

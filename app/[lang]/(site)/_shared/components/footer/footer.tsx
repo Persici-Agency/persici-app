@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Logo } from '@shared/components/logo';
+import { HomeButton } from '@shared/components/home-button';
 import type { Dictionary } from '@dictionaries';
 
 export type FooterProps = {
@@ -33,15 +34,13 @@ export function Footer({ lang, dict }: FooterProps) {
               {dict.footer.brandDesc}
             </p>
             <div className="mt-6">
-              <Link
+              <HomeButton
                 href={`/${lang}/contact`}
-                className="inline-flex items-center gap-2 rounded-full bg-persici-crimson px-5 py-2.5 text-xs font-semibold text-white shadow-md shadow-persici-crimson/25 transition-all hover:bg-persici-crimson-80 hover:shadow-lg"
-              >
-                <span>{dict.footer.bookCall}</span>
-                <span className="flex h-4 w-4 items-center justify-center rounded-full bg-white/20 text-[10px]">
-                  →
-                </span>
-              </Link>
+                title={dict.footer.bookCall}
+                className="bg-persici-crimson text-white shadow-md shadow-persici-crimson/25 px-5 py-2.5 text-xs"
+                currentLang={lang}
+                isLangEffectIcon={true}
+              />
             </div>
           </div>
 

@@ -368,11 +368,57 @@ body {
   background: transparent;
 }
 
-::-webkit-scrollbar-thumb {
-  background: var(--persici-black-30);
-  border-radius: 4px;
-}
-
 ::-webkit-scrollbar-thumb:hover {
   background: var(--persici-black-50);
+}
+
+/* =============================================
+   Infinite Logo Marquee Animation
+   ============================================= */
+
+@keyframes marquee-left {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-100%, 0, 0);
+  }
+}
+
+@keyframes marquee-right {
+  0% {
+    transform: translate3d(-100%, 0, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.animate-marquee {
+  display: flex;
+  flex-shrink: 0;
+  animation: marquee-left 35s linear infinite;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+.animate-marquee-reverse {
+  display: flex;
+  flex-shrink: 0;
+  animation: marquee-right 35s linear infinite;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+[dir="rtl"] .animate-marquee {
+  animation-name: marquee-right;
+}
+
+[dir="rtl"] .animate-marquee-reverse {
+  animation-name: marquee-left;
+}
+
+.pause-on-hover:hover .animate-marquee,
+.pause-on-hover:hover .animate-marquee-reverse {
+  animation-play-state: paused;
 }
