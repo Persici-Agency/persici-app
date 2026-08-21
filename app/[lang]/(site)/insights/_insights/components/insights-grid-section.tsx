@@ -1,17 +1,18 @@
 import Link from 'next/link';
 import { getInsightsArticles } from '../services';
+import { sectionContainer, featureCard } from '@shared';
 
 export function InsightsGridSection({ lang }: { lang: string }) {
   const articles = getInsightsArticles();
 
   return (
-    <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+    <section className={`${sectionContainer} py-12`}>
       <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
         {articles.map((art) => (
           <Link
             key={art.slug}
             href={`/${lang}/insights/${art.slug}`}
-            className="group flex flex-col justify-between rounded-3xl border border-black/10 bg-white p-8 shadow-sm transition-all duration-300 hover:border-persici-crimson/30 hover:shadow-xl"
+            className={featureCard}
           >
             <div>
               <div className="flex items-center justify-between text-xs text-foreground/60">
@@ -35,3 +36,4 @@ export function InsightsGridSection({ lang }: { lang: string }) {
     </section>
   );
 }
+

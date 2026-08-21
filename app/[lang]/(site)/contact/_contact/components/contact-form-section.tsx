@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import type { Dictionary } from '@dictionaries';
 import { getContactOffices } from '../services';
+import { sectionContainer, inputField, btnArrowIcon } from '@shared';
 
 export function ContactFormSection({ dict }: { dict: Dictionary }) {
   const [submitted, setSubmitted] = useState(false);
@@ -19,7 +20,7 @@ export function ContactFormSection({ dict }: { dict: Dictionary }) {
   };
 
   return (
-    <section className="mx-auto max-w-7xl px-4 pb-20 sm:px-6 lg:px-8">
+    <section className={`${sectionContainer} pb-20`}>
       <div className="grid grid-cols-1 gap-12 lg:grid-cols-12">
         {/* Form Column */}
         <div className="lg:col-span-7">
@@ -47,7 +48,7 @@ export function ContactFormSection({ dict }: { dict: Dictionary }) {
                   <input
                     type="text"
                     required
-                    className="mt-1 w-full rounded-xl border border-black/10 bg-black/[0.02] px-4 py-3 text-xs text-foreground outline-none transition-all focus:border-persici-crimson focus:bg-white focus:ring-2 focus:ring-persici-crimson/20"
+                    className={inputField}
                     placeholder="Your Name"
                   />
                 </div>
@@ -59,7 +60,7 @@ export function ContactFormSection({ dict }: { dict: Dictionary }) {
                   <input
                     type="email"
                     required
-                    className="mt-1 w-full rounded-xl border border-black/10 bg-black/[0.02] px-4 py-3 text-xs text-foreground outline-none transition-all focus:border-persici-crimson focus:bg-white focus:ring-2 focus:ring-persici-crimson/20"
+                    className={inputField}
                     placeholder="you@brand.com"
                   />
                 </div>
@@ -71,7 +72,7 @@ export function ContactFormSection({ dict }: { dict: Dictionary }) {
                   <textarea
                     rows={4}
                     required
-                    className="mt-1 w-full rounded-xl border border-black/10 bg-black/[0.02] px-4 py-3 text-xs text-foreground outline-none transition-all focus:border-persici-crimson focus:bg-white focus:ring-2 focus:ring-persici-crimson/20"
+                    className={inputField}
                     placeholder="Tell us about your brand, current monthly revenue, and growth objectives..."
                   />
                 </div>
@@ -82,9 +83,7 @@ export function ContactFormSection({ dict }: { dict: Dictionary }) {
                   className="mt-4 flex w-full items-center justify-center gap-2 rounded-full bg-persici-crimson py-3.5 text-xs font-semibold text-white shadow-lg shadow-persici-crimson/25 transition-all hover:bg-persici-crimson-80 hover:shadow-xl active:scale-[0.99]"
                 >
                   <span>{loading ? 'Sending...' : dict.contact.send}</span>
-                  <span className="flex h-4 w-4 items-center justify-center rounded-full bg-white/20 text-[10px]">
-                    →
-                  </span>
+                  <span className={btnArrowIcon}>→</span>
                 </button>
               </form>
             )}

@@ -5,13 +5,8 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Logo } from '@shared/components/logo';
 import { LanguageSwitcher } from '@shared/components/language-switcher';
-import type { Dictionary } from '@dictionaries';
-
-export type HeaderProps = {
-  lang: string;
-  dict: Dictionary;
-};
-
+import type { HeaderProps } from '@shared/types';
+import { HomeButton, sectionContainer } from "@shared";
 export function Header({ lang, dict }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
@@ -32,8 +27,8 @@ export function Header({ lang, dict }: HeaderProps) {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full transition-all duration-200">
-      <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+    <header className="fixed top-0 z-50 w-full transition-all duration-200">
+      <div className={`${sectionContainer} max-w-9xl flex h-25 items-center justify-between`}>
         {/* Left: Brand Logo */}
         <div className="flex items-center">
           <Logo lang={lang} variant="dark" />
@@ -41,7 +36,7 @@ export function Header({ lang, dict }: HeaderProps) {
 
         {/* Center: Floating Pill Navigation */}
         <nav
-          className="hidden md:flex items-center gap-1 rounded-full border border-black/5 bg-white/80 px-4 py-1.5 shadow-xs backdrop-blur-md"
+          className="hidden md:flex items-center gap-1 rounded-full  bg-black/5 px-3 py-1.5 shadow-xs backdrop-blur-md"
           aria-label="Main navigation"
         >
           {navLinks.map((link) => {
@@ -50,11 +45,10 @@ export function Header({ lang, dict }: HeaderProps) {
               <Link
                 key={link.key}
                 href={link.href}
-                className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition-all ${
-                  active
-                    ? 'bg-persici-black text-white'
-                    : 'text-persici-black/75 hover:text-persici-black hover:bg-black/5'
-                }`}
+                className={`rounded-full px-3.5 py-2 text-sm font-[500] transition-all ${active
+                  ? 'bg-persici-white text-black'
+                  : 'text-persici-black/75 hover:text-persici-black hover:bg-black/5'
+                  }`}
               >
                 {dict.nav[link.key as keyof typeof dict.nav]}
               </Link>
@@ -66,15 +60,13 @@ export function Header({ lang, dict }: HeaderProps) {
         <div className="flex items-center gap-3">
           <LanguageSwitcher currentLang={lang} />
 
-          <Link
+          <HomeButton
             href={`/${lang}/contact`}
-            className="hidden sm:inline-flex items-center gap-2 rounded-full bg-persici-black px-4 py-2 text-xs font-medium text-white shadow-xs transition-all hover:bg-persici-black-80 hover:shadow-md active:scale-98"
-          >
-            <span>{dict.nav.bookCall}</span>
-            <span className="flex h-4 w-4 items-center justify-center rounded-full bg-white/20 text-[10px]">
-              →
-            </span>
-          </Link>
+            title={dict.nav.bookCall}
+            className="hidden sm:inline-flex"
+            currentLang={lang}
+            isLangEffectIcon={true}
+          />
 
           {/* Mobile menu button */}
           <button
@@ -118,26 +110,23 @@ export function Header({ lang, dict }: HeaderProps) {
                 key={link.key}
                 href={link.href}
                 onClick={() => setMobileMenuOpen(false)}
-                className={`rounded-lg px-3 py-2 text-sm font-medium ${
-                  isActive(link.href)
-                    ? 'bg-persici-crimson text-white'
-                    : 'text-foreground hover:bg-black/5'
-                }`}
+                className={`rounded-lg px-3 py-2 text-sm font-medium ${isActive(link.href)
+                  ? 'bg-persici-crimson text-white'
+                  : 'text-foreground hover:bg-black/5'
+                  }`}
               >
                 {dict.nav[link.key as keyof typeof dict.nav]}
               </Link>
             ))}
             <div className="pt-2">
-              <Link
+              <HomeButton
                 href={`/${lang}/contact`}
                 onClick={() => setMobileMenuOpen(false)}
-                className="flex w-full items-center justify-center gap-2 rounded-full bg-persici-black py-2.5 text-sm font-medium text-white shadow-xs"
-              >
-                <span>{dict.nav.bookCall}</span>
-                <span className="flex h-4 w-4 items-center justify-center rounded-full bg-white/20 text-[10px]">
-                  →
-                </span>
-              </Link>
+                title={dict.nav.bookCall}
+                className="w-full justify-center"
+                currentLang={lang}
+                isLangEffectIcon={true}
+              />
             </div>
           </nav>
         </div>

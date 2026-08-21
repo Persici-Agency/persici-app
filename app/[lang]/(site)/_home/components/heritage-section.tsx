@@ -1,6 +1,6 @@
 import Image from 'next/image';
-import Link from 'next/link';
 import type { Dictionary } from '@dictionaries';
+import { sectionContainer, HomeButton } from '@shared';
 
 export type HeritageSectionProps = {
   lang: string;
@@ -9,7 +9,7 @@ export type HeritageSectionProps = {
 
 export function HeritageSection({ lang, dict }: HeritageSectionProps) {
   return (
-    <section className="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+    <section className={`relative ${sectionContainer} py-20`}>
       {/* Geometric Angular Background Accent */}
       <div className="pointer-events-none absolute inset-y-0 start-0 -z-10 w-1/2 opacity-30">
         <div className="h-full w-full bg-[radial-gradient(#d83427_1px,transparent_1px)] [background-size:20px_20px]" />
@@ -29,24 +29,21 @@ export function HeritageSection({ lang, dict }: HeritageSectionProps) {
           </p>
 
           <div className="mt-8 flex flex-wrap items-center gap-4">
-            <Link
+            <HomeButton
               href={`/${lang}/contact`}
-              className="inline-flex items-center gap-2 rounded-full bg-persici-crimson px-6 py-3 text-xs font-semibold text-white shadow-md shadow-persici-crimson/25 transition-all hover:bg-persici-crimson-80 hover:shadow-lg active:scale-98"
-            >
-              <span>{dict.heritage.ctaPrimary}</span>
-              <span className="flex h-4 w-4 items-center justify-center rounded-full bg-white/20 text-[10px]">
-                →
-              </span>
-            </Link>
-            <Link
+              title={dict.heritage.ctaPrimary}
+              className="bg-persici-crimson text-white shadow-md shadow-persici-crimson/25 px-6 py-3 text-xs"
+              currentLang={lang}
+              isLangEffectIcon={true}
+            />
+            <HomeButton
               href={`/${lang}/about`}
-              className="inline-flex items-center gap-2 rounded-full border border-black/15 bg-white/60 px-6 py-3 text-xs font-semibold text-foreground backdrop-blur-xs transition-all hover:bg-black/5 active:scale-98"
-            >
-              <span>{dict.heritage.ctaSecondary}</span>
-              <span className="flex h-4 w-4 items-center justify-center rounded-full bg-black/10 text-[10px]">
-                →
-              </span>
-            </Link>
+              title={dict.heritage.ctaSecondary}
+              className="border border-black/15 bg-white/60 text-foreground px-6 py-3 text-xs"
+              iconClassName="bg-black/10 text-black"
+              currentLang={lang}
+              isLangEffectIcon={true}
+            />
           </div>
         </div>
 

@@ -1,19 +1,15 @@
 import type { Dictionary } from '@dictionaries';
+import { heroSectionWrapper, heroContainer, badgePill, heroHeading, heroDescription } from '@shared';
 
 export function WorkHeroSection({ dict }: { dict: Dictionary }) {
   return (
-    <section className="pt-12 pb-16 text-center sm:pt-20">
-      <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-        <span className="inline-block rounded-full bg-persici-crimson/10 px-3.5 py-1 text-xs font-semibold text-persici-crimson">
-          Proven Outcomes
-        </span>
-        <h1 className="mt-4 font-primary text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-          {dict.work.title}
-        </h1>
-        <p className="mt-6 text-base leading-relaxed text-foreground/70 sm:text-lg">
-          {dict.work.description}
-        </p>
+    <section className={heroSectionWrapper}>
+      <div className={heroContainer}>
+        <span className={badgePill}>Proven Outcomes</span>
+        <h1 className={heroHeading}>{dict.work.title}</h1>
+        <p className={heroDescription}>{dict.work.description}</p>
       </div>
     </section>
   );
 }
+

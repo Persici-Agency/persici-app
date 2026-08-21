@@ -1,5 +1,5 @@
-import Link from 'next/link';
 import type { Dictionary } from '@dictionaries';
+import { sectionContainer, sectionHeading, featureCard, bannerStrip, HomeButton } from '@shared';
 
 export type GrowthServicesSectionProps = {
   lang: string;
@@ -8,10 +8,10 @@ export type GrowthServicesSectionProps = {
 
 export function GrowthServicesSection({ lang, dict }: GrowthServicesSectionProps) {
   return (
-    <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+    <section className={`${sectionContainer} py-16`}>
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
         <div>
-          <h2 className="font-primary text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
+          <h2 className={sectionHeading}>
             {dict.growthServices.title}
           </h2>
         </div>
@@ -26,7 +26,7 @@ export function GrowthServicesSection({ lang, dict }: GrowthServicesSectionProps
       {/* 3 Service Cards */}
       <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-3">
         {/* Card 1: Paid Social */}
-        <div className="group rounded-3xl border border-black/10 bg-white p-8 shadow-sm transition-all duration-300 hover:border-persici-crimson/30 hover:shadow-xl">
+        <div className={featureCard}>
           <div className="flex items-center gap-2 text-xs font-semibold text-persici-crimson">
             <span className="inline-block h-2 w-2 rounded-full bg-persici-crimson" />
             {dict.growthServices.paidSocial.tag}
@@ -40,7 +40,7 @@ export function GrowthServicesSection({ lang, dict }: GrowthServicesSectionProps
         </div>
 
         {/* Card 2: Google Ads */}
-        <div className="group rounded-3xl border border-black/10 bg-white p-8 shadow-sm transition-all duration-300 hover:border-persici-crimson/30 hover:shadow-xl">
+        <div className={featureCard}>
           <div className="flex items-center gap-2 text-xs font-semibold text-amber-600">
             <span className="inline-block h-2 w-2 rounded-full bg-amber-500" />
             {dict.growthServices.googleAds.tag}
@@ -54,7 +54,7 @@ export function GrowthServicesSection({ lang, dict }: GrowthServicesSectionProps
         </div>
 
         {/* Card 3: Shopify & CRO */}
-        <div className="group rounded-3xl border border-black/10 bg-white p-8 shadow-sm transition-all duration-300 hover:border-persici-crimson/30 hover:shadow-xl">
+        <div className={featureCard}>
           <div className="flex items-center gap-2 text-xs font-semibold text-emerald-600">
             <span className="inline-block h-2 w-2 rounded-full bg-emerald-500" />
             {dict.growthServices.shopify.tag}
@@ -69,20 +69,19 @@ export function GrowthServicesSection({ lang, dict }: GrowthServicesSectionProps
       </div>
 
       {/* Bottom Banner Strip */}
-      <div className="mt-8 flex flex-col items-center justify-between gap-4 rounded-2xl border border-black/10 bg-white px-6 py-4 shadow-sm sm:flex-row">
+      <div className={`mt-8 ${bannerStrip}`}>
         <p className="font-primary text-sm font-semibold text-foreground">
           {dict.growthServices.bannerText}
         </p>
-        <Link
+        <HomeButton
           href={`/${lang}/contact`}
-          className="inline-flex items-center gap-2 rounded-full bg-persici-black px-5 py-2.5 text-xs font-semibold text-white transition-all hover:bg-persici-crimson hover:shadow-md"
-        >
-          <span>{dict.growthServices.bannerCta}</span>
-          <span className="flex h-4 w-4 items-center justify-center rounded-full bg-white/20 text-[10px]">
-            →
-          </span>
-        </Link>
+          title={dict.growthServices.bannerCta}
+          className="bg-persici-black text-white px-5 py-2.5 text-xs"
+          currentLang={lang}
+          isLangEffectIcon={true}
+        />
       </div>
     </section>
   );
 }
+

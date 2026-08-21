@@ -29,7 +29,33 @@
     "quote": "Working with Persici has been our best growth decision. Their team's strategy and execution gave us 3.4x growth in under 6 months. A true growth partner.",
     "author": "Marcus Lindqvist",
     "role": "Founder & Managing Director",
-    "company": "Nordic Retail Group"
+    "company": "Nordic Retail Group",
+    "testimonials": [
+      {
+        "quote": "Working with Persici has been our best growth decision. Their team's strategy and execution gave us 3.4x growth in under 6 months. A true growth partner.",
+        "author": "Marcus Lindqvist",
+        "role": "Founder & Managing Director",
+        "company": "Nordic Retail Group",
+        "metric": "+340% Revenue",
+        "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80"
+      },
+      {
+        "quote": "Persici scaled our Shopify store from regional to multi-country leader. Their conversion engineering and paid media expertise are second to none.",
+        "author": "Layla Al-Khatib",
+        "role": "Head of eCommerce",
+        "company": "Silk & Stone Apparel",
+        "metric": "4.2x ROAS",
+        "avatar": "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=200&q=80"
+      },
+      {
+        "quote": "They don't just run campaigns—they understand unit economics, margin optimization, and inventory velocity. Indispensable for scaling.",
+        "author": "David Bergström",
+        "role": "Chief Operating Officer",
+        "company": "Klar Activewear",
+        "metric": "-38% CAC",
+        "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80"
+      }
+    ]
   },
   "heritage": {
     "title": "Rooted in excellence. Built for growth.",

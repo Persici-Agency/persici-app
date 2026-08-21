@@ -1,16 +1,17 @@
 import { getAboutValues } from '../services';
+import { sectionContainer, sectionHeading, sectionSubtitle, baseCard } from '@shared';
 
 export function AboutValuesSection() {
   const values = getAboutValues();
 
   return (
     <section className="bg-persici-black/[0.02] py-20">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className={sectionContainer}>
         <div className="text-center">
-          <h2 className="font-primary text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
+          <h2 className={sectionHeading}>
             Our Core Principles
           </h2>
-          <p className="mt-4 text-sm text-foreground/60">
+          <p className={sectionSubtitle}>
             The foundation behind every growth breakthrough we engineer.
           </p>
         </div>
@@ -19,7 +20,7 @@ export function AboutValuesSection() {
           {values.map((v, i) => (
             <div
               key={i}
-              className="rounded-3xl border border-black/10 bg-white p-6 shadow-sm transition-all hover:shadow-md"
+              className={baseCard}
             >
               <div className="text-3xl">{v.icon}</div>
               <h3 className="mt-4 font-primary text-lg font-bold text-foreground">
@@ -35,3 +36,4 @@ export function AboutValuesSection() {
     </section>
   );
 }
+

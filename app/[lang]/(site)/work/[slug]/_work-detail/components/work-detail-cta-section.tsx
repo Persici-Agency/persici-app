@@ -1,28 +1,27 @@
 import Link from 'next/link';
+import { ctaSectionWrapper, ctaCard, ctaHeading, ctaDescription, btnCrimson, btnDarkOutline, btnArrowIcon } from '@shared';
 
 export function WorkDetailCtaSection({ lang }: { lang: string }) {
   return (
-    <section className="mx-auto max-w-7xl px-4 py-20 text-center sm:px-6 lg:px-8">
-      <div className="rounded-3xl bg-persici-black px-6 py-16 text-white sm:px-12 sm:py-20">
-        <h2 className="font-primary text-3xl font-extrabold tracking-tight sm:text-4xl">
+    <section className={ctaSectionWrapper}>
+      <div className={ctaCard}>
+        <h2 className={ctaHeading}>
           Ready to achieve similar breakthroughs?
         </h2>
-        <p className="mx-auto mt-4 max-w-xl text-sm text-white/70">
+        <p className={ctaDescription}>
           Book a 30-minute discovery call to explore our tailored scaling strategy for your brand.
         </p>
         <div className="mt-8 flex justify-center gap-4">
           <Link
             href={`/${lang}/contact`}
-            className="inline-flex items-center gap-2 rounded-full bg-persici-crimson px-8 py-3.5 text-xs font-semibold text-white shadow-lg shadow-persici-crimson/25 transition-all hover:bg-persici-crimson-80 hover:shadow-xl"
+            className={btnCrimson}
           >
             <span>Book a call</span>
-            <span className="flex h-4 w-4 items-center justify-center rounded-full bg-white/20 text-[10px]">
-              →
-            </span>
+            <span className={btnArrowIcon}>→</span>
           </Link>
           <Link
             href={`/${lang}/work`}
-            className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-6 py-3.5 text-xs font-semibold text-white transition-all hover:bg-white/10"
+            className={btnDarkOutline}
           >
             <span>All Case Studies</span>
           </Link>
@@ -31,3 +30,4 @@ export function WorkDetailCtaSection({ lang }: { lang: string }) {
     </section>
   );
 }
+
