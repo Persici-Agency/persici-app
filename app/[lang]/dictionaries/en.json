@@ -246,6 +246,26 @@
       "successMsg": "Thank you! Our growth director will reach out within 2 hours with calendar invitation details."
     }
   },
+  "floatingAppointment": {
+    "advisorName": "Hanan",
+    "advisorRole": "Senior Growth Advisor",
+    "title": "Schedule your free 30-minute discovery call",
+    "subtitle": "This call is for ambitious eCommerce brands ready to take their growth to the next level.",
+    "urgencyText": "Only few slots are left.",
+    "selectTime": "Select time slot",
+    "cta": "Schedule a discovery call",
+    "submitting": "Reserving slot...",
+    "step1Title": "Pick Date & Time",
+    "step2Title": "Your Information",
+    "fullName": "Full Name",
+    "email": "Work Email",
+    "website": "Store Website / URL",
+    "revenue": "Current Monthly Revenue",
+    "confirmBooking": "Confirm Booking",
+    "successTitle": "Appointment Scheduled!",
+    "successMsg": "We've reserved your 30-minute growth session. Calendar invitation sent to your email.",
+    "poweredBy": "Powered by Persici Growth OS"
+  },
   "footer": {
     "brandDesc": "Persici is a high-performance digital and growth agency specializing in full-funnel eCommerce acceleration, creative strategy, and bespoke digital engineering.",
     "bookCall": "Book a call",
