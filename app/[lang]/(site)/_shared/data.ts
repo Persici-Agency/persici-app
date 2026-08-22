@@ -527,14 +527,16 @@ export const approachTeamAvatars: GrowthTeamMember[] = [
 ];
 
 // ============================================================================
-// 9. Reviews
+// 9. Reviews (MongoDB Collection Seed: 'client_reviews')
+// NOTE: Structured according to BaseMongoDocument for future MongoDB persistence
 // ============================================================================
 export const reviewsList: ReviewItem[] = [
   {
     id: '1',
-    name: 'Alexander Holm',
-    company: 'Nordic Living',
-    review: 'The strategic clarity and direct weekly communication from the Persici team is unmatched. In 4 months, our international revenue grew over 210% with profitable ROAS.',
+    name: 'Shab Stafford',
+    role: 'CEO & Founder',
+    company: 'Silk & Thread Studio',
+    review: 'The best decision I made for my business! Handing over performance acquisition to someone else is not easy, but Persici delivered beyond expectations. Our monthly revenue grew 3.4x in five months.',
     verified: 'Verified Client',
     rating: 5,
     isVerified: true,
@@ -542,9 +544,10 @@ export const reviewsList: ReviewItem[] = [
   },
   {
     id: '2',
-    name: 'Nadia Bensalem',
-    company: 'Atelier Chic',
-    review: 'Persici transformed our Shopify store speed, UI, and checkout conversion rate. Combined with their Meta ad scaling, our monthly GMV doubled within one quarter.',
+    name: 'Varsha Mohandas',
+    role: 'Founder & Director',
+    company: 'Lumière Living',
+    review: 'Highly recommend Persici! They helped us with our paid social and search ad campaigns. Planning to our tailored unit economics, weekly sprint reporting, and proactive follow-ups were top notch.',
     verified: 'Verified Client',
     rating: 5,
     isVerified: true,
@@ -552,9 +555,10 @@ export const reviewsList: ReviewItem[] = [
   },
   {
     id: '3',
-    name: 'Henrik Møller',
-    company: 'Pure Scandinavia',
-    review: 'Finding an agency that truly understands both high-level creative direction and deep performance data is rare. Persici has exceeded every benchmark we set.',
+    name: 'Maryam Sahem',
+    role: 'Co-Founder',
+    company: 'Khayal Fine Jewelry',
+    review: 'Thanks to Persici, our luxury DTC brand has experienced a remarkable surge in sales and glowing feedback. Their expertise in crafting compelling ads has elevated our brand to new heights.',
     verified: 'Verified Client',
     rating: 5,
     isVerified: true,
@@ -562,9 +566,10 @@ export const reviewsList: ReviewItem[] = [
   },
   {
     id: '4',
-    name: 'Karim Al-Hassan',
-    company: 'Prime Goods Co.',
-    review: 'Their creative testing velocity is unreal. We went from burning cash on generic ads to having 8 evergreen winning ad angles in our first 6 weeks of partnership.',
+    name: 'Tanya Shumeiko',
+    role: 'Marketing Manager',
+    company: 'Nordic Cleanse',
+    review: 'We have been working with Persici for over eight months and our blended ROAS reached 6.2x. Revenue tripled compared to our historical average. Seamless execution and deep integrity.',
     verified: 'Verified Client',
     rating: 5,
     isVerified: true,
@@ -572,9 +577,10 @@ export const reviewsList: ReviewItem[] = [
   },
   {
     id: '5',
-    name: 'Camilla Lind',
-    company: 'Glow Cosmetics',
-    review: 'The team at Persici treated our budget like their own. Transparent reporting, proactive suggestions, and zero fluff. Could not recommend them more highly.',
+    name: 'Jm Fernández',
+    role: 'Co-Owner',
+    company: 'Moda Artisans',
+    review: 'The Persici team has been an outstanding growth partner for all digital acquisition. Their understanding of GCC markets and CRO combined with our creative vision yielded record profits.',
     verified: 'Verified Client',
     rating: 5,
     isVerified: true,
@@ -582,13 +588,36 @@ export const reviewsList: ReviewItem[] = [
   },
   {
     id: '6',
-    name: 'Omar Farouq',
-    company: 'Elevate Essentials',
-    review: 'Within 30 days of onboarding, they rebuilt our tracking infrastructure, fixed server-side tracking, and restructured Google Ads. The ROI has been phenomenal.',
+    name: 'Farah Y.',
+    role: 'Partner',
+    company: 'Aura Perfumes',
+    review: 'I have been working with Persici for a year now. We scaled immensely and achieved 7.5x ROAS on Meta and TikTok. Strongly recommend to any ambitious DTC brand looking to scale.',
     verified: 'Verified Client',
     rating: 5,
     isVerified: true,
     order: 6,
+  },
+  {
+    id: '7',
+    name: 'Alexander Holm',
+    role: 'Founder & CEO',
+    company: 'Nordic Living',
+    review: 'The strategic clarity and direct weekly communication from the Persici team is unmatched. In 4 months, our international revenue grew over 210% with profitable ROAS.',
+    verified: 'Verified Client',
+    rating: 5,
+    isVerified: true,
+    order: 7,
+  },
+  {
+    id: '8',
+    name: 'Nadia Bensalem',
+    role: 'Head of Growth',
+    company: 'Atelier Chic',
+    review: 'Persici transformed our Shopify store speed, UI, and checkout conversion rate. Combined with their Meta ad scaling, our monthly GMV doubled within one quarter.',
+    verified: 'Verified Client',
+    rating: 5,
+    isVerified: true,
+    order: 8,
   },
 ];
 

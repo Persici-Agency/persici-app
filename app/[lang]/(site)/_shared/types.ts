@@ -243,6 +243,7 @@ export interface GrowthTeamMember extends BaseMongoDocument {
 // 8. Reviews
 export interface ReviewItem extends BaseMongoDocument {
   name: string;
+  role?: string;
   company: string;
   review: string;
   verified?: string;
