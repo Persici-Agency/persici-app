@@ -4,60 +4,24 @@ import { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import type { Dictionary } from '@dictionaries';
 import { cn } from '@shared/utils';
+import type { TestimonialItem, DarkTestimonialCardProps } from '@shared/types';
+import { getHomeDefaultTestimonials } from '../services';
 
-export type TestimonialItem = {
-  quote: string;
-  author: string;
-  role: string;
-  company: string;
-  metric?: string;
-  avatar?: string;
-};
-
-export type DarkTestimonialCardProps = {
-  dict: Dictionary;
-  autoPlayInterval?: number; // in milliseconds (default 5000)
-  className?: string;
-};
+export type { TestimonialItem, DarkTestimonialCardProps };
 
 export function DarkTestimonialCard({
   dict,
   autoPlayInterval = 5000,
   className,
+  testimonials: customTestimonials,
 }: DarkTestimonialCardProps) {
   const showcase = dict.partnerShowcase;
-
-  const defaultTestimonials: TestimonialItem[] = [
-    {
-      quote: showcase.quote,
-      author: showcase.author,
-      role: showcase.role,
-      company: showcase.company,
-      metric: '+340% Revenue',
-      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
-    },
-    {
-      quote:
-        'Persici scaled our Shopify store from regional to multi-country leader. Their conversion engineering and paid media expertise are second to none.',
-      author: 'Layla Al-Khatib',
-      role: 'Head of eCommerce',
-      company: 'Silk & Stone Apparel',
-      metric: '4.2x ROAS',
-      avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=200&q=80',
-    },
-    {
-      quote:
-        "They don't just run campaigns—they understand unit economics, margin optimization, and inventory velocity. Indispensable for scaling.",
-      author: 'David Bergström',
-      role: 'Chief Operating Officer',
-      company: 'Klar Activewear',
-      metric: '-38% CAC',
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80',
-    },
-  ];
+  const defaultList = getHomeDefaultTestimonials();
 
   const testimonials: TestimonialItem[] =
-    (showcase as unknown as { testimonials?: TestimonialItem[] })?.testimonials || defaultTestimonials;
+    customTestimonials ||
+    (showcase as unknown as { testimonials?: TestimonialItem[] })?.testimonials ||
+    defaultList;
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
@@ -97,7 +61,7 @@ export function DarkTestimonialCard({
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       className={cn(
-        'group relative flex flex-col justify-between rounded-3xl border border-white/10 bg-persici-black p-8 text-white shadow-2xl transition-all duration-300 lg:p-10',
+        'group relative flex h-full flex-col justify-between rounded-3xl border border-white/10 bg-persici-black p-8 text-white shadow-2xl transition-all duration-300 lg:p-10',
         className
       )}
     >

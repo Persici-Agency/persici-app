@@ -17,7 +17,7 @@
   "hero": {
     "title": "Specialists in eCommerce growth",
     "subtitle": "We help ambitious brands scale with predictable and profitable growth. Driven by full-funnel digital marketing, data intelligence, and conversion engineering.",
-    "cta": "Book a call",
+    "cta": "Collaborate with us",
     "ratingScore": "5.0",
     "ratingLabel": "Rated 4.9/5 by 50+ leading brands",
     "trustedBy": "Trusted by industry-leading fast-growing brands"
@@ -70,21 +70,22 @@
     "rating": "Rated 4.9/5 on 50+ client reviews",
     "paidSocial": {
       "tag": "Meta • TikTok • Snapchat",
-      "title": "Paid Social & Acquisition",
-      "description": "We maximize ROI through data-driven campaigns across Meta, TikTok, and emerging channels. Scaling budgets while systematically driving down acquisition costs."
+      "title": "Paid Social",
+      "description": "We grow brands through performance-driven campaigns across Meta, TikTok, and Snapchat. From creative strategy to targeting and scaling, we help you win on paid social - wherever your audience is."
     },
     "googleAds": {
       "tag": "Google Ads & YouTube",
-      "title": "Google Ads & High-Intent Search",
-      "description": "Capture high-intent traffic with precision Search, Shopping, Performance Max, and YouTube ad campaigns. Target customers right when they are ready to buy."
+      "title": "Google Ads",
+      "description": "We drive high-intent traffic with smart bidding and sharp targeting. Our campaigns turn clicks into loyal customers."
     },
     "shopify": {
       "tag": "Shopify Plus & CRO",
-      "title": "Shopify Engineering & CRO",
-      "description": "High-converting web experiences, headless eCommerce architectures, and systematic A/B testing designed to maximize average order value and lifetime retention."
+      "title": "Shopify",
+      "description": "With an in-house development team, we build and optimise Shopify stores for maximum conversions - combining sharp design with data-driven improvements that drive real growth."
     },
     "bannerText": "Ready to scale your eCommerce brand?",
-    "bannerCta": "Book a discovery call"
+    "bannerCta": "Book call",
+    "bannerSecondaryCta": "Explore testimonials"
   },
   "clientVideos": {
     "title": "Meet clients we scale",
@@ -108,56 +109,117 @@
     }
   },
   "approach": {
+    "teamBadgeLabel": "Team Persici",
+    "teamBadgeTitle": "Your team of specialists",
     "title": "Our approach to eCommerce growth",
-    "teamBadgeTitle": "Your Dedicated Growth Team",
-    "teamBadgeSubtitle": "Strategy • Media Buying • Design • Engineering",
-    "desc1": "At Persici, we do not believe in cookie-cutter playbooks. We build custom growth engines tailored to your unit economics, inventory dynamics, and brand positioning. From full-funnel paid media to custom engineering, every initiative is calculated for net-profitable scale.",
-    "desc2": "We embed directly within your team, maintaining continuous communication, daily data monitoring, and weekly sprint reviews to ensure seamless agility and explosive growth.",
-    "ctaPrimary": "Book a call",
-    "ctaSecondary": "View case studies"
+    "desc1": "At Persici, we work as a dedicated growth partner, with a deep understanding of the regional market and a focus on ROI. We deliver tailored strategies - not templates. No freelancers, no shortcuts - just a small, senior team focused on long-term, scalable results.",
+    "desc2": "We combine hands-on execution with clear communication: performance updates weekly, full WhatsApp access, and no surprises - only growth.",
+    "ctaPrimary": "Book call",
+    "ctaSecondary": "More about us"
   },
   "reviews": {
     "score": "4.9",
     "scoreLabel": "4.9 score on 50+ client reviews",
     "title": "Words from those we scale",
     "r1": {
+      "name": "Shab Stafford",
+      "role": "CEO & Founder",
+      "company": "Silk & Thread Studio",
+      "review": "The best decision I made for my business! Handing over performance acquisition to someone else is not easy, but Persici delivered beyond expectations. Our monthly revenue grew 3.4x in five months.",
+      "verified": "Verified Client"
+    },
+    "r2": {
+      "name": "Varsha Mohandas",
+      "role": "Founder & Director",
+      "company": "Lumière Living",
+      "review": "Highly recommend Persici! They helped us with our paid social and search ad campaigns. Planning to our tailored unit economics, weekly sprint reporting, and proactive follow-ups were top notch.",
+      "verified": "Verified Client"
+    },
+    "r3": {
+      "name": "Maryam Sahem",
+      "role": "Co-Founder",
+      "company": "Khayal Fine Jewelry",
+      "review": "Thanks to Persici, our luxury DTC brand has experienced a remarkable surge in sales and glowing feedback. Their expertise in crafting compelling ads has elevated our brand to new heights.",
+      "verified": "Verified Client"
+    },
+    "r4": {
+      "name": "Tanya Shumeiko",
+      "role": "Marketing Manager",
+      "company": "Nordic Cleanse",
+      "review": "We have been working with Persici for over eight months and our blended ROAS reached 6.2x. Revenue tripled compared to our historical average. Seamless execution and deep integrity.",
+      "verified": "Verified Client"
+    },
+    "r5": {
+      "name": "Jm Fernández",
+      "role": "Co-Owner",
+      "company": "Moda Artisans",
+      "review": "The Persici team has been an outstanding growth partner for all digital acquisition. Their understanding of GCC markets and CRO combined with our creative vision yielded record profits.",
+      "verified": "Verified Client"
+    },
+    "r6": {
+      "name": "Farah Y.",
+      "role": "Partner",
+      "company": "Aura Perfumes",
+      "review": "I have been working with Persici for a year now. We scaled immensely and achieved 7.5x ROAS on Meta and TikTok. Strongly recommend to any ambitious DTC brand looking to scale.",
+      "verified": "Verified Client"
+    },
+    "r7": {
       "name": "Alexander Holm",
+      "role": "Founder & CEO",
       "company": "Nordic Living",
       "review": "The strategic clarity and direct weekly communication from the Persici team is unmatched. In 4 months, our international revenue grew over 210% with profitable ROAS.",
       "verified": "Verified Client"
     },
-    "r2": {
+    "r8": {
       "name": "Nadia Bensalem",
+      "role": "Head of Growth",
       "company": "Atelier Chic",
       "review": "Persici transformed our Shopify store speed, UI, and checkout conversion rate. Combined with their Meta ad scaling, our monthly GMV doubled within one quarter.",
       "verified": "Verified Client"
     },
-    "r3": {
-      "name": "Henrik Møller",
-      "company": "Pure Scandinavia",
-      "review": "Finding an agency that truly understands both high-level creative direction and deep performance data is rare. Persici has exceeded every benchmark we set.",
-      "verified": "Verified Client"
-    },
-    "r4": {
-      "name": "Karim Al-Hassan",
-      "company": "Prime Goods Co.",
-      "review": "Their creative testing velocity is unreal. We went from burning cash on generic ads to having 8 evergreen winning ad angles in our first 6 weeks of partnership.",
-      "verified": "Verified Client"
-    },
-    "r5": {
-      "name": "Camilla Lind",
-      "company": "Glow Cosmetics",
-      "review": "The team at Persici treated our budget like their own. Transparent reporting, proactive suggestions, and zero fluff. Could not recommend them more highly.",
-      "verified": "Verified Client"
-    },
-    "r6": {
-      "name": "Omar Farouq",
-      "company": "Elevate Essentials",
-      "review": "Within 30 days of onboarding, they rebuilt our tracking infrastructure, fixed server-side tracking, and restructured Google Ads. The ROI has been phenomenal.",
-      "verified": "Verified Client"
-    },
     "bannerText": "Ready to scale your eCommerce brand?",
     "bannerCta": "Book a discovery call"
+  },
+  "homeContact": {
+    "leftTitle": "Ready to learn more?",
+    "point1": "Discuss your unique business challenges",
+    "point2": "Explore custom growth solutions built for your industry",
+    "point3": "Get proven performance media & CRO guidance",
+    "point4": "Identify the next step that fits your revenue goals",
+    "trustedBy": "Trusted by leading eCommerce brands in the region.",
+    "title": "Get in touch",
+    "subtitle": "Submit the form below and one of our experts will reach out.",
+    "requiredNote": "* Required field",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "company": "Company",
+    "email": "Email",
+    "country": "Country",
+    "countryPlaceholder": "Select a country",
+    "jobTitle": "Job Title",
+    "reason": "Reason for contacting",
+    "reasonPlaceholder": "Select reason",
+    "reasons": {
+      "paidSocial": "Paid Social & Scaling (Meta, TikTok)",
+      "googleAds": "Google Ads & High-Intent Search",
+      "shopifyCro": "Shopify Plus & CRO Engineering",
+      "fullFunnel": "Full-Funnel Growth Partnership",
+      "consultation": "Strategic Growth Consultation"
+    },
+    "message": "Message",
+    "messagePlaceholder": "How can we help you scale?",
+    "verifyHuman": "Verify you are human",
+    "notRobot": "I'm not a robot",
+    "recaptchaPrivacy": "Privacy",
+    "recaptchaTerms": "Terms",
+    "verified": "Verified human",
+    "consent": "Sign me up to receive growth case studies, playbooks, and industry updates.",
+    "submit": "Submit",
+    "submitting": "Sending...",
+    "disclaimer": "By submitting this form, you authorize Persici to contact you regarding your inquiry. Read our Privacy Policy for more detail or opt out at any time.",
+    "successTitle": "Thank you for reaching out!",
+    "successMsg": "We have received your message. One of our senior growth strategists will review your inquiry and connect with you within 24 hours.",
+    "reset": "Send another inquiry"
   },
   "discovery": {
     "title": "Schedule your free 30-minute discovery call",
@@ -183,6 +245,26 @@
       "successTitle": "Call Request Received!",
       "successMsg": "Thank you! Our growth director will reach out within 2 hours with calendar invitation details."
     }
+  },
+  "floatingAppointment": {
+    "advisorName": "Hanan",
+    "advisorRole": "Senior Growth Advisor",
+    "title": "Schedule your free 30-minute discovery call",
+    "subtitle": "This call is for ambitious eCommerce brands ready to take their growth to the next level.",
+    "urgencyText": "Only few slots are left.",
+    "selectTime": "Select time slot",
+    "cta": "Schedule a discovery call",
+    "submitting": "Reserving slot...",
+    "step1Title": "Pick Date & Time",
+    "step2Title": "Your Information",
+    "fullName": "Full Name",
+    "email": "Work Email",
+    "website": "Store Website / URL",
+    "revenue": "Current Monthly Revenue",
+    "confirmBooking": "Confirm Booking",
+    "successTitle": "Appointment Scheduled!",
+    "successMsg": "We've reserved your 30-minute growth session. Calendar invitation sent to your email.",
+    "poweredBy": "Powered by Persici Growth OS"
   },
   "footer": {
     "brandDesc": "Persici is a high-performance digital and growth agency specializing in full-funnel eCommerce acceleration, creative strategy, and bespoke digital engineering.",

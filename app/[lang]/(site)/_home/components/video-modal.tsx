@@ -3,9 +3,19 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import type { Dictionary } from '@dictionaries';
+import { getHomePartnerShowcase } from '../services';
+import type { PartnerShowcaseData } from '@shared/types';
 
-export function VideoPreviewModal({ dict }: { dict: Dictionary }) {
+export function VideoPreviewModal({
+  dict,
+  showcase: customShowcase,
+}: {
+  dict: Dictionary;
+  showcase?: PartnerShowcaseData;
+}) {
   const [isOpen, setIsOpen] = useState(false);
+  const defaultShowcase = getHomePartnerShowcase();
+  const showcase = customShowcase || defaultShowcase;
 
   return (
     <>
@@ -14,7 +24,7 @@ export function VideoPreviewModal({ dict }: { dict: Dictionary }) {
         className="group relative aspect-[16/10] w-full cursor-pointer overflow-hidden rounded-3xl border border-black/5 bg-persici-black shadow-xl"
       >
         <Image
-          src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1200&q=80"
+          src={showcase.videoCoverImage}
           alt="Persici Growth Strategy Session"
           fill
           sizes="(max-width: 1024px) 100vw, 50vw"
@@ -26,7 +36,7 @@ export function VideoPreviewModal({ dict }: { dict: Dictionary }) {
         <div className="absolute bottom-6 start-6 flex items-center gap-3">
           <div className="relative h-10 w-10 overflow-hidden rounded-full border border-white/30">
             <Image
-              src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80"
+              src={showcase.speakerAvatar || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80'}
               alt={dict.partnerShowcase.videoSpeaker}
               fill
               className="object-cover"
@@ -67,14 +77,14 @@ export function VideoPreviewModal({ dict }: { dict: Dictionary }) {
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
-                className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20"
+                className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20 cursor-pointer"
               >
                 ✕
               </button>
             </div>
             <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-black">
               <Image
-                src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1200&q=80"
+                src={showcase.videoCoverImage}
                 alt="Growth Preview"
                 fill
                 className="object-cover opacity-60"

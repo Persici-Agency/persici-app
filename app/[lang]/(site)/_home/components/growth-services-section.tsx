@@ -1,5 +1,15 @@
 import type { Dictionary } from '@dictionaries';
-import { sectionContainer, sectionHeading, featureCard, bannerStrip, HomeButton } from '@shared';
+import {
+  sectionContainer,
+  sectionPaddingY,
+  sectionHeading,
+  HomeButton,
+  FadeUp,
+  AvatarSocialProof,
+  GrowthServiceCard,
+  socialProofAvatars,
+} from '@shared';
+import { getHomeGrowthServices } from '../services';
 
 export type GrowthServicesSectionProps = {
   lang: string;
@@ -7,81 +17,90 @@ export type GrowthServicesSectionProps = {
 };
 
 export function GrowthServicesSection({ lang, dict }: GrowthServicesSectionProps) {
+  const baseServices = getHomeGrowthServices();
+
+  const services = baseServices.map((svc) => {
+    const dictData = svc.key && dict.growthServices[svc.key as keyof typeof dict.growthServices];
+    const localized =
+      typeof dictData === 'object' && dictData !== null
+        ? (dictData as { tag?: string; title?: string; description?: string })
+        : {};
+    return {
+      ...svc,
+      tag: localized.tag || svc.tag,
+      title: localized.title || svc.title,
+      description: localized.description || svc.description,
+    };
+  });
+
   return (
-    <section className={`${sectionContainer} py-16`}>
-      <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-        <div>
-          <h2 className={sectionHeading}>
-            {dict.growthServices.title}
-          </h2>
+    <section className={`${sectionContainer} ${sectionPaddingY}`}>
+      {/* Header Row */}
+      <FadeUp delay={0} duration={750} distance={20}>
+        <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+          <div>
+            <h2 className={sectionHeading}>
+              {dict.growthServices.title}
+            </h2>
+          </div>
+          <div className="flex items-center gap-2">
+            <AvatarSocialProof
+              avatars={socialProofAvatars}
+              ratingLabel={dict.hero.ratingLabel}
+              size="lg"
+              starsClassName="text-xl"
+            />
+          </div>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="flex text-amber-500 text-sm">{'★★★★★'}</div>
-          <span className="text-xs font-semibold text-foreground/70">
-            {dict.growthServices.rating}
-          </span>
-        </div>
+      </FadeUp>
+
+      {/* Dynamic Growth Service Cards Grid driven by each service's width attribute */}
+      <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2">
+        {services.map((svc, index) => (
+          <GrowthServiceCard
+            key={svc.id || index}
+            title={svc.title}
+            description={svc.description}
+            platforms={svc.platforms}
+            width={svc.width}
+            iconColor={svc.iconColor}
+            iconBg={svc.iconBg}
+            tag={svc.tag}
+            tagColor={svc.tagColor}
+            dotColor={svc.dotColor}
+            delay={100 + index * 100}
+          />
+        ))}
       </div>
 
-      {/* 3 Service Cards */}
-      <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-3">
-        {/* Card 1: Paid Social */}
-        <div className={featureCard}>
-          <div className="flex items-center gap-2 text-xs font-semibold text-persici-crimson">
-            <span className="inline-block h-2 w-2 rounded-full bg-persici-crimson" />
-            {dict.growthServices.paidSocial.tag}
-          </div>
-          <h3 className="mt-4 font-primary text-xl font-bold text-foreground">
-            {dict.growthServices.paidSocial.title}
-          </h3>
-          <p className="mt-3 text-xs leading-relaxed text-foreground/70 sm:text-sm">
-            {dict.growthServices.paidSocial.description}
+      {/* Bottom Banner Strip with Dual Action Buttons */}
+      <FadeUp delay={450} duration={750} distance={20}>
+        <div className="mt-8 flex flex-col items-center justify-between gap-6 rounded-3xl border border-black/10 bg-persici-black/[0.02] p-6 sm:px-8 sm:py-6 shadow-sm md:flex-row">
+          <p className="font-primary text-base font-bold text-foreground sm:text-lg">
+            {dict.growthServices.bannerText}
           </p>
-        </div>
-
-        {/* Card 2: Google Ads */}
-        <div className={featureCard}>
-          <div className="flex items-center gap-2 text-xs font-semibold text-amber-600">
-            <span className="inline-block h-2 w-2 rounded-full bg-amber-500" />
-            {dict.growthServices.googleAds.tag}
+          <div className="flex flex-wrap items-center gap-3">
+            <HomeButton
+              href={`/${lang}/work`}
+              title={
+                (dict.growthServices as unknown as { bannerSecondaryCta?: string })
+                  .bannerSecondaryCta || dict.nav.work
+              }
+              className="border border-black/15 bg-light/30 text-dark"
+              iconClassName="bg-dark text-light"
+              currentLang={lang}
+              isLangEffectIcon={true}
+            />
+            <HomeButton
+              href={`/${lang}/contact`}
+              title={dict.growthServices.bannerCta}
+              className="bg-persici-crimson text-white shadow-md shadow-persici-crimson/25"
+              currentLang={lang}
+              isLangEffectIcon={true}
+            />
           </div>
-          <h3 className="mt-4 font-primary text-xl font-bold text-foreground">
-            {dict.growthServices.googleAds.title}
-          </h3>
-          <p className="mt-3 text-xs leading-relaxed text-foreground/70 sm:text-sm">
-            {dict.growthServices.googleAds.description}
-          </p>
         </div>
-
-        {/* Card 3: Shopify & CRO */}
-        <div className={featureCard}>
-          <div className="flex items-center gap-2 text-xs font-semibold text-emerald-600">
-            <span className="inline-block h-2 w-2 rounded-full bg-emerald-500" />
-            {dict.growthServices.shopify.tag}
-          </div>
-          <h3 className="mt-4 font-primary text-xl font-bold text-foreground">
-            {dict.growthServices.shopify.title}
-          </h3>
-          <p className="mt-3 text-xs leading-relaxed text-foreground/70 sm:text-sm">
-            {dict.growthServices.shopify.description}
-          </p>
-        </div>
-      </div>
-
-      {/* Bottom Banner Strip */}
-      <div className={`mt-8 ${bannerStrip}`}>
-        <p className="font-primary text-sm font-semibold text-foreground">
-          {dict.growthServices.bannerText}
-        </p>
-        <HomeButton
-          href={`/${lang}/contact`}
-          title={dict.growthServices.bannerCta}
-          className="bg-persici-black text-white px-5 py-2.5 text-xs"
-          currentLang={lang}
-          isLangEffectIcon={true}
-        />
-      </div>
+      </FadeUp>
     </section>
   );
 }
-

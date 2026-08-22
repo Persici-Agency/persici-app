@@ -1,6 +1,6 @@
 import { getDictionary, hasLocale } from '@dictionaries';
 import { notFound } from 'next/navigation';
-import { Header, Footer } from '@shared/components';
+import { Header, Footer, FloatingAppointmentWidget } from '@shared/components';
 
 export default async function SiteLayout({
   children,
@@ -19,6 +19,8 @@ export default async function SiteLayout({
       <Header lang={lang} dict={dict} />
       <main className="flex-1">{children}</main>
       <Footer lang={lang} dict={dict} />
+      <FloatingAppointmentWidget lang={lang} dict={dict} />
     </>
   );
 }
+

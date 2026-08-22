@@ -9,6 +9,7 @@ export * from './clients-video-section';
 export * from './approach-section';
 export * from './reviews-section';
 export * from './discovery-form';
-export * from './discovery-section';
+export * from './home-contact-section';
 export * from './home-view';
+
 

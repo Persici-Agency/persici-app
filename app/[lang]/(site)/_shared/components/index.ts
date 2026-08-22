@@ -4,5 +4,10 @@ export * from './header';
 export * from './footer';
 export * from './home-button';
 export * from './client-logos-marquee';
+export * from './fade-up';
+export * from './avatar-social-proof';
+export * from './growth-service-card';
+export * from './swiper-wrapper';
+export * from './floating-appointment-widget';
 
 

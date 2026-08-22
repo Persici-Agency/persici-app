@@ -1,18 +1,37 @@
-export interface SidebarLink {
-  key: string;
-  href: string;
-  icon: string;
-}
+import type {
+  SidebarLink,
+  DashboardMetric,
+  DashboardProject,
+  DashboardService,
+  DashboardActivity,
+} from '../types';
+import {
+  sidebarLinks,
+  dashboardOverviewMetrics,
+  dashboardRecentActivities,
+  dashboardProjectsSummary,
+  dashboardServicesSummary,
+} from '../data';
 
-export const sidebarLinks: SidebarLink[] = [
-  { key: 'overview', href: '/dashboard', icon: '📊' },
-  { key: 'content', href: '/dashboard/content', icon: '📝' },
-  { key: 'projects', href: '/dashboard/projects', icon: '💼' },
-  { key: 'services', href: '/dashboard/services', icon: '⚙️' },
-  { key: 'media', href: '/dashboard/media', icon: '🖼️' },
-  { key: 'settings', href: '/dashboard/settings', icon: '🔧' },
-];
+export type { SidebarLink, DashboardMetric, DashboardProject, DashboardService, DashboardActivity };
+export { sidebarLinks, dashboardOverviewMetrics, dashboardRecentActivities, dashboardProjectsSummary, dashboardServicesSummary };
 
 export function getSidebarLinks(): SidebarLink[] {
   return sidebarLinks;
+}
+
+export function getDashboardMetrics(): DashboardMetric[] {
+  return dashboardOverviewMetrics;
+}
+
+export function getDashboardActivities(): DashboardActivity[] {
+  return dashboardRecentActivities;
+}
+
+export function getDashboardProjects(): DashboardProject[] {
+  return dashboardProjectsSummary;
+}
+
+export function getDashboardServices(): DashboardService[] {
+  return dashboardServicesSummary;
 }

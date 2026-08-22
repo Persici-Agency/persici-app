@@ -1,13 +1,13 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { getProjectsList } from '../services';
-import { sectionContainer } from '@shared';
+import { sectionContainer, sectionPaddingY } from '@shared';
 
 export function WorkGridSection({ lang }: { lang: string }) {
   const projects = getProjectsList();
 
   return (
-    <section className={`${sectionContainer} py-12`}>
+    <section className={`${sectionContainer} ${sectionPaddingY}`}>
       <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
         {projects.map((proj) => (
           <Link

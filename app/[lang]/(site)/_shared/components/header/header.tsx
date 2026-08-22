@@ -7,18 +7,16 @@ import { Logo } from '@shared/components/logo';
 import { LanguageSwitcher } from '@shared/components/language-switcher';
 import type { HeaderProps } from '@shared/types';
 import { HomeButton, sectionContainer } from "@shared";
+import { siteNavLinks } from '@shared/data';
+
 export function Header({ lang, dict }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
 
-  const navLinks = [
-    { key: 'home', href: `/${lang}` },
-    { key: 'services', href: `/${lang}/services` },
-    { key: 'work', href: `/${lang}/work` },
-    { key: 'about', href: `/${lang}/about` },
-    { key: 'insights', href: `/${lang}/insights` },
-    { key: 'contact', href: `/${lang}/contact` },
-  ] as const;
+  const navLinks = siteNavLinks.map((link) => ({
+    ...link,
+    href: link.href === '/' ? `/${lang}` : `/${lang}${link.href}`,
+  }));
 
   const isActive = (href: string) => {
     if (href === `/${lang}` && pathname === `/${lang}`) return true;
@@ -36,7 +34,7 @@ export function Header({ lang, dict }: HeaderProps) {
 
         {/* Center: Floating Pill Navigation */}
         <nav
-          className="hidden md:flex items-center gap-1 rounded-full  bg-black/5 px-3 py-1.5 shadow-xs backdrop-blur-md"
+          className="hidden md:flex items-center gap-1 rounded-full bg-black/5 px-3 py-1.5 shadow-xs backdrop-blur-md"
           aria-label="Main navigation"
         >
           {navLinks.map((link) => {
@@ -45,10 +43,11 @@ export function Header({ lang, dict }: HeaderProps) {
               <Link
                 key={link.key}
                 href={link.href}
-                className={`rounded-full px-3.5 py-2 text-sm font-[500] transition-all ${active
-                  ? 'bg-persici-white text-black'
-                  : 'text-persici-black/75 hover:text-persici-black hover:bg-black/5'
-                  }`}
+                className={`rounded-full px-3.5 py-2 text-sm font-[500] transition-all ${
+                  active
+                    ? 'bg-persici-white text-black'
+                    : 'text-persici-black/75 hover:text-persici-black hover:bg-black/5'
+                }`}
               >
                 {dict.nav[link.key as keyof typeof dict.nav]}
               </Link>
@@ -110,10 +109,11 @@ export function Header({ lang, dict }: HeaderProps) {
                 key={link.key}
                 href={link.href}
                 onClick={() => setMobileMenuOpen(false)}
-                className={`rounded-lg px-3 py-2 text-sm font-medium ${isActive(link.href)
-                  ? 'bg-persici-crimson text-white'
-                  : 'text-foreground hover:bg-black/5'
-                  }`}
+                className={`rounded-lg px-3 py-2 text-sm font-medium ${
+                  isActive(link.href)
+                    ? 'bg-persici-crimson text-white'
+                    : 'text-foreground hover:bg-black/5'
+                }`}
               >
                 {dict.nav[link.key as keyof typeof dict.nav]}
               </Link>

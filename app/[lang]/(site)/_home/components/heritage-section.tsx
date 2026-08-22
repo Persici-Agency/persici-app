@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import type { Dictionary } from '@dictionaries';
-import { sectionContainer, HomeButton } from '@shared';
+import { sectionContainer, sectionPaddingY, HomeButton, FadeUp, sectionHeading } from '@shared';
+import { getHomeHeritageCollage } from '../services';
 
 export type HeritageSectionProps = {
   lang: string;
@@ -8,8 +9,10 @@ export type HeritageSectionProps = {
 };
 
 export function HeritageSection({ lang, dict }: HeritageSectionProps) {
+  const collage = getHomeHeritageCollage();
+
   return (
-    <section className={`relative ${sectionContainer} py-20`}>
+    <section className={`relative ${sectionContainer} ${sectionPaddingY}`}>
       {/* Geometric Angular Background Accent */}
       <div className="pointer-events-none absolute inset-y-0 start-0 -z-10 w-1/2 opacity-30">
         <div className="h-full w-full bg-[radial-gradient(#d83427_1px,transparent_1px)] [background-size:20px_20px]" />
@@ -17,14 +20,14 @@ export function HeritageSection({ lang, dict }: HeritageSectionProps) {
 
       <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12">
         {/* Left Column: Copy & CTAs */}
-        <div className="lg:col-span-6">
-          <h2 className="font-primary text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
+        <FadeUp delay={0} duration={800} distance={24} className="lg:col-span-6">
+          <h2 className={sectionHeading}>
             {dict.heritage.title}
           </h2>
-          <p className="mt-6 text-sm leading-relaxed text-foreground/75 sm:text-base">
+          <p className="pt-5 mt-6 text-sm leading-relaxed text-foreground/75 sm:text-base">
             {dict.heritage.desc1}
           </p>
-          <p className="mt-4 text-sm leading-relaxed text-foreground/75 sm:text-base">
+          <p className="p-2 mt-4 text-sm leading-relaxed text-foreground/75 sm:text-base">
             {dict.heritage.desc2}
           </p>
 
@@ -32,62 +35,67 @@ export function HeritageSection({ lang, dict }: HeritageSectionProps) {
             <HomeButton
               href={`/${lang}/contact`}
               title={dict.heritage.ctaPrimary}
-              className="bg-persici-crimson text-white shadow-md shadow-persici-crimson/25 px-6 py-3 text-xs"
+              className="bg-persici-crimson text-white"
               currentLang={lang}
               isLangEffectIcon={true}
             />
             <HomeButton
               href={`/${lang}/about`}
               title={dict.heritage.ctaSecondary}
-              className="border border-black/15 bg-white/60 text-foreground px-6 py-3 text-xs"
-              iconClassName="bg-black/10 text-black"
+              className="border border-black/15 bg-light/30 text-dark"
+              iconClassName="bg-dark text-light"
               currentLang={lang}
               isLangEffectIcon={true}
             />
           </div>
-        </div>
+        </FadeUp>
 
-        {/* Right Column: 3-Photo Collage Grid with Central Badge */}
-        <div className="relative lg:col-span-6">
-          <div className="grid grid-cols-2 gap-4">
+        {/* Right Column: 3-Photo Collage Grid with Central Brand Badge */}
+        <FadeUp delay={200} duration={800} distance={28} className="relative lg:col-span-6">
+          <div className="relative grid grid-cols-2 gap-3.5 sm:gap-4.5">
             {/* Top Wide Photo */}
-            <div className="col-span-2 relative aspect-[16/9] overflow-hidden rounded-3xl border border-black/5 shadow-md">
-              <Image
-                src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1000&q=80"
-                alt="Team strategy workshop"
-                fill
-                className="object-cover"
-              />
-            </div>
+            {collage[0] && (
+              <div className="col-span-2 relative aspect-[16/9] sm:aspect-[16/8.5] overflow-hidden rounded-2xl sm:rounded-3xl border border-black/5 shadow-md">
+                <Image
+                  src={collage[0].src}
+                  alt={collage[0].alt}
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  className="object-cover"
+                />
+              </div>
+            )}
 
-            {/* Bottom Left Photo */}
-            <div className="relative aspect-square overflow-hidden rounded-3xl border border-black/5 shadow-md">
-              <Image
-                src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=600&q=80"
-                alt="Growth discussion"
-                fill
-                className="object-cover"
-              />
-            </div>
+            {/* Bottom Left & Right Photos */}
+            {collage.slice(1, 3).map((item, idx) => (
+              <div
+                key={item.id || item.src || idx}
+                className="relative aspect-[4/3] sm:aspect-square overflow-hidden rounded-2xl sm:rounded-3xl border border-black/5 shadow-md"
+              >
+                <Image
+                  src={item.src}
+                  alt={item.alt}
+                  fill
+                  sizes="(max-width: 1024px) 50vw, 25vw"
+                  className="object-cover"
+                />
+              </div>
+            ))}
 
-            {/* Bottom Right Photo */}
-            <div className="relative aspect-square overflow-hidden rounded-3xl border border-black/5 shadow-md">
-              <Image
-                src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&w=600&q=80"
-                alt="Engineering & sprint review"
-                fill
-                className="object-cover"
-              />
+            {/* Central Floating Brand Badge */}
+            <div
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 flex h-16 w-16 sm:h-20 sm:w-20 md:h-22 md:w-22 items-center justify-center rounded-full border-[6px] sm:border-[8px] border-white bg-persici-crimson transition-transform duration-500 hover:scale-110"
+              aria-hidden="true"
+            >
+              <div className="relative h-8 w-8 sm:h-10 sm:w-10">
+                <svg viewBox="0 0 100 100" fill="none" className="h-full w-full">
+                  <circle cx="38" cy="52" r="32" fill="#EF8C7D" />
+                  <circle cx="58" cy="46" r="34" fill="#FFFFFF" />
+                </svg>
+              </div>
             </div>
           </div>
-
-          {/* Central Floating Badge */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex h-14 w-14 items-center justify-center rounded-full bg-persici-crimson text-white shadow-xl shadow-persici-crimson/30 border-4 border-white">
-            <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-            </svg>
-          </div>
-        </div>
+        </FadeUp>
       </div>
     </section>
   );

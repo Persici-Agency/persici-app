@@ -1,11 +1,11 @@
 import { getAboutValues } from '../services';
-import { sectionContainer, sectionHeading, sectionSubtitle, baseCard } from '@shared';
+import { sectionContainer, sectionPaddingY, sectionHeading, sectionSubtitle, baseCard } from '@shared';
 
 export function AboutValuesSection() {
   const values = getAboutValues();
 
   return (
-    <section className="bg-persici-black/[0.02] py-20">
+    <section className={`bg-persici-black/[0.02] ${sectionPaddingY}`}>
       <div className={sectionContainer}>
         <div className="text-center">
           <h2 className={sectionHeading}>
