@@ -2,6 +2,7 @@
 // Layout & Section Containers
 // ==========================================
 export const sectionContainer = 'mx-auto max-w-8xl px-4 sm:px-6 lg:px-8';
+export const sectionPaddingY = 'py-20 sm:py-25 md:py-35';
 export const heroSectionWrapper = 'pt-12 pb-16 text-center sm:pt-20';
 export const heroContainer = 'mx-auto max-w-4xl px-4 sm:px-6 lg:px-8';
 export const ctaSectionWrapper = 'mx-auto max-w-7xl px-4 py-20 text-center sm:px-6 lg:px-8';

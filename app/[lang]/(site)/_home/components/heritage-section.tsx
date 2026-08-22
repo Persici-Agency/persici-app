@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import type { Dictionary } from '@dictionaries';
-import { sectionContainer, HomeButton, FadeUp, sectionHeading } from '@shared';
+import { sectionContainer, sectionPaddingY, HomeButton, FadeUp, sectionHeading } from '@shared';
 import { getHomeHeritageCollage } from '../services';
 
 export type HeritageSectionProps = {
@@ -12,7 +12,7 @@ export function HeritageSection({ lang, dict }: HeritageSectionProps) {
   const collage = getHomeHeritageCollage();
 
   return (
-    <section className={`relative ${sectionContainer} py-20`}>
+    <section className={`relative ${sectionContainer} ${sectionPaddingY}`}>
       {/* Geometric Angular Background Accent */}
       <div className="pointer-events-none absolute inset-y-0 start-0 -z-10 w-1/2 opacity-30">
         <div className="h-full w-full bg-[radial-gradient(#d83427_1px,transparent_1px)] [background-size:20px_20px]" />

@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import type { Dictionary } from '@dictionaries';
-import { sectionContainer, HomeButton, FadeUp } from '@shared';
+import { sectionContainer, sectionPaddingY, HomeButton, FadeUp } from '@shared';
 import { getHomeApproachTeam } from '../services';
 
 export type ApproachSectionProps = {
@@ -12,7 +12,7 @@ export function ApproachSection({ lang, dict }: ApproachSectionProps) {
   const teamAvatars = getHomeApproachTeam();
 
   return (
-    <section className={`${sectionContainer} py-20`}>
+    <section className={`${sectionContainer} ${sectionPaddingY}`}>
       <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12">
         {/* Left Column: Team Image with Floating Badge */}
         <FadeUp delay={0} duration={800} distance={28} className="relative lg:col-span-6">

@@ -1,6 +1,7 @@
 import type { Dictionary } from '@dictionaries';
 import {
   sectionContainer,
+  sectionPaddingY,
   sectionHeading,
   HomeButton,
   FadeUp,
@@ -33,7 +34,7 @@ export function GrowthServicesSection({ lang, dict }: GrowthServicesSectionProps
   });
 
   return (
-    <section className={`${sectionContainer} py-16`}>
+    <section className={`${sectionContainer} ${sectionPaddingY}`}>
       {/* Header Row */}
       <FadeUp delay={0} duration={750} distance={20}>
         <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">

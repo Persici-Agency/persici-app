@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import type { Dictionary } from '@dictionaries';
 import { DiscoveryCallForm } from './discovery-form';
-import { sectionContainer, FadeUp } from '@shared';
+import { sectionContainer, sectionPaddingY, FadeUp } from '@shared';
 
 export type DiscoverySectionProps = {
   dict: Dictionary;
@@ -9,7 +9,7 @@ export type DiscoverySectionProps = {
 
 export function DiscoverySection({ dict }: DiscoverySectionProps) {
   return (
-    <section className={`${sectionContainer} py-20`}>
+    <section className={`${sectionContainer} ${sectionPaddingY}`}>
       <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12">
         {/* Left Column: Heading & Pull Quote */}
         <FadeUp delay={0} duration={800} distance={24} className="lg:col-span-5">

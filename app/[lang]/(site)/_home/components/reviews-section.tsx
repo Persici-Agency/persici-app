@@ -1,5 +1,5 @@
 import type { Dictionary } from '@dictionaries';
-import { sectionContainer, sectionHeading, baseCard, bannerStrip, HomeButton, FadeUp } from '@shared';
+import { sectionContainer, sectionPaddingY, sectionHeading, baseCard, bannerStrip, HomeButton, FadeUp } from '@shared';
 import { getHomeReviews } from '../services';
 import type { ReviewItem } from '@shared/types';
 
@@ -25,7 +25,7 @@ export function ReviewsSection({ lang, dict, reviews: customReviews }: ReviewsSe
   });
 
   return (
-    <section className="bg-persici-black/[0.02] py-20">
+    <section className={`bg-persici-black/[0.02] ${sectionPaddingY}`}>
       <div className={sectionContainer}>
         {/* Section Header */}
         <FadeUp delay={0} duration={750} distance={20}>

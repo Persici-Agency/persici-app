@@ -1,12 +1,12 @@
 import Link from 'next/link';
 import { getJobOpenings } from '../services';
-import { sectionContainer, sectionHeading, sectionSubtitle, featureCard } from '@shared';
+import { sectionContainer, sectionPaddingY, sectionHeading, sectionSubtitle, featureCard } from '@shared';
 
 export function CareersOpeningsSection({ lang }: { lang: string }) {
   const openings = getJobOpenings();
 
   return (
-    <section className={`${sectionContainer} py-12`}>
+    <section className={`${sectionContainer} ${sectionPaddingY}`}>
       <div className="text-center mb-12">
         <h2 className={sectionHeading}>
           Open Positions

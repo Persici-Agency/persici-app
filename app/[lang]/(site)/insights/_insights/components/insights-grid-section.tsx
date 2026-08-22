@@ -1,12 +1,12 @@
 import Link from 'next/link';
 import { getInsightsArticles } from '../services';
-import { sectionContainer, featureCard } from '@shared';
+import { sectionContainer, sectionPaddingY, featureCard } from '@shared';
 
 export function InsightsGridSection({ lang }: { lang: string }) {
   const articles = getInsightsArticles();
 
   return (
-    <section className={`${sectionContainer} py-12`}>
+    <section className={`${sectionContainer} ${sectionPaddingY}`}>
       <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
         {articles.map((art) => (
           <Link
