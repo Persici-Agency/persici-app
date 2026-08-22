@@ -5,6 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:prod": "next build && node scripts/prepare-standalone.mjs",
+    "bundle:hostinger": "npm run build:prod && node scripts/bundle-zip.mjs",
     "start": "next start",
     "lint": "eslint",
     "optimize-images": "node scripts/optimize-images.mjs"
