@@ -1,67 +1,49 @@
 'use client';
 
 import React, { useEffect, useRef, useState, useCallback } from 'react';
+import Image from 'next/image';
+import { getClientLogos } from '@shared/services';
+import type {
+  ClientLogo,
+  LogoSize,
+  SwiperGap,
+  SwiperSpeed,
+  SwiperDirection,
+  SwiperWrapperProps,
+} from '@shared/types';
 import { cn } from '@shared/utils';
 
-export type SwiperDirection = 'left' | 'right' | 'forward' | 'reverse';
-export type SwiperSpeed = 'slow' | 'normal' | 'fast' | number;
-export type SwiperGap = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | number;
+export type {
+  SwiperDirection,
+  SwiperSpeed,
+  SwiperGap,
+  LogoSize,
+  SwiperWrapperProps,
+  ClientLogo,
+};
 
-export interface SwiperWrapperProps<T = unknown> {
-  /** Optional React children to iterate over and animate */
-  children?: React.ReactNode;
-  /** Optional dataset to iterate over if using renderItem */
-  data?: T[];
-  /** Optional render function defining the component layout for each item */
-  renderItem?: (item: T, index: number) => React.ReactNode;
-  /** Optional custom key extractor for React list keys */
-  keyExtractor?: (item: T, index: number) => string | number;
-  /** Moving speed: 'slow', 'normal', 'fast', or duration in seconds (e.g. 50) */
-  speed?: SwiperSpeed;
-  /** Moving direction: 'left' (forward) or 'right' (reverse) */
-  direction?: SwiperDirection;
-  /** Whether the animation pauses when hovering over the marquee */
-  stopOnHover?: boolean;
-  /** Alias for stopOnHover */
-  pauseOnHover?: boolean;
-  /** Enable click and drag / touch drag to scrub through cards (default: true) */
-  draggable?: boolean;
-  /** Stop automatic moving while actively dragging (default: true) */
-  stopOnDrag?: boolean;
-  /** Enable throw / fling momentum physics on fast drag release (default: true) */
-  enableMomentum?: boolean;
-  /** Momentum friction decay factor between 0.85 and 0.98 (default: 0.94) */
-  friction?: number;
-  /** Gap between iterated cards */
-  gap?: SwiperGap;
-  /** Whether to render gradient fade masks on the left and right */
-  fadeMask?: boolean;
-  /** Custom gradient fade width class (default: 'w-20 sm:w-36 md:w-52') */
-  fadeWidthClass?: string;
-  /** Custom gradient fade background color class (default: 'from-background') */
-  fadeGradientClass?: string;
-  /** Outer container class */
-  className?: string;
-  /** Inner track row container class */
-  trackClassName?: string;
-  /** Individual item container class */
-  itemClassName?: string;
-  /** Optional section title or label placed above the swiper */
-  title?: React.ReactNode;
-}
+const sizeStyles: Record<
+  'xs' | 'sm' | 'md' | 'lg' | 'xl',
+  { item: string; img: string; width: number; height: number }
+> = {
+  xs: { item: 'h-12 w-28 sm:w-32', img: 'max-h-8 sm:max-h-9 w-auto', width: 120, height: 40 },
+  sm: { item: 'h-16 w-36 sm:w-40', img: 'max-h-11 sm:max-h-12 w-auto', width: 150, height: 50 },
+  md: { item: 'h-20 sm:h-24 w-44 sm:w-52 lg:w-56', img: 'max-h-14 sm:max-h-16 lg:max-h-18 w-auto', width: 190, height: 70 },
+  lg: { item: 'h-24 sm:h-28 w-52 sm:w-60 lg:w-64', img: 'max-h-18 sm:max-h-20 lg:max-h-22 w-auto', width: 220, height: 85 },
+  xl: { item: 'h-28 sm:h-32 w-60 sm:w-72 lg:w-80', img: 'max-h-22 sm:max-h-24 lg:max-h-28 w-auto', width: 260, height: 100 },
+};
 
 const gapStyles: Record<'xs' | 'sm' | 'md' | 'lg' | 'xl', string> = {
-  xs: 'gap-3 sm:gap-4 pe-3 sm:pe-4',
-  sm: 'gap-4 sm:gap-6 pe-4 sm:pe-6',
-  md: 'gap-6 sm:gap-8 pe-6 sm:pe-8',
-  lg: 'gap-8 sm:gap-10 pe-8 sm:pe-10',
-  xl: 'gap-10 sm:gap-12 pe-10 sm:pe-12',
+  xs: 'gap-3 sm:gap-4 lg:gap-6 pr-3 sm:pr-4 lg:pr-6',
+  sm: 'gap-4 sm:gap-6 lg:gap-8 pr-4 sm:pr-6 lg:pr-8',
+  md: 'gap-6 sm:gap-8 lg:gap-10 pr-6 sm:pr-8 lg:pr-10',
+  lg: 'gap-8 sm:gap-10 lg:gap-14 pr-8 sm:pr-10 lg:pr-14',
+  xl: 'gap-10 sm:gap-14 lg:gap-18 pr-10 sm:pr-14 lg:pr-18',
 };
 
 function getSpeedPixelsPerSecond(speed: SwiperSpeed = 'normal'): number {
   if (typeof speed === 'number') {
-    // If numeric duration in seconds provided, convert roughly to ~40-60 px/s
-    return Math.max(10, 1800 / speed);
+    return Math.max(10, speed <= 150 ? 1800 / speed : speed);
   }
   const map: Record<'slow' | 'normal' | 'fast', number> = {
     slow: 22,
@@ -71,9 +53,20 @@ function getSpeedPixelsPerSecond(speed: SwiperSpeed = 'normal'): number {
   return map[speed] || 42;
 }
 
+/**
+ * Normalizes offset continuously into the [-loopWidth, 0] interval
+ * regardless of whether offset is positive or negative.
+ */
+function normalizeOffset(offset: number, loopWidth: number): number {
+  if (loopWidth <= 0) return 0;
+  const remainder = offset % loopWidth;
+  return remainder > 0 ? remainder - loopWidth : remainder;
+}
+
 export function SwiperWrapper<T = unknown>({
   children,
   data,
+  logos,
   renderItem,
   keyExtractor,
   speed = 'normal',
@@ -85,6 +78,8 @@ export function SwiperWrapper<T = unknown>({
   enableMomentum = true,
   friction = 0.94,
   gap = 'md',
+  space,
+  infiniteLoop = true,
   fadeMask = true,
   fadeWidthClass = 'w-20 sm:w-36 md:w-52',
   fadeGradientClass,
@@ -92,11 +87,16 @@ export function SwiperWrapper<T = unknown>({
   trackClassName,
   itemClassName,
   title,
+  titleClassName,
+  showTitle = true,
+  logoSize = 'md',
+  logoClassName,
 }: SwiperWrapperProps<T>) {
-  const hasContent = Boolean(children || (data && data.length > 0));
+  const isLogoMode = !children && !(data && data.length > 0 && renderItem);
+  const effectiveLogos = isLogoMode ? (logos || getClientLogos()) : [];
+  const hasContent = Boolean(children || (data && data.length > 0) || effectiveLogos.length > 0);
 
   const shouldPauseOnHover = pauseOnHover !== undefined ? pauseOnHover : stopOnHover;
-  const isReverse = direction === 'right' || direction === 'reverse';
 
   const containerRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
@@ -105,7 +105,26 @@ export function SwiperWrapper<T = unknown>({
   const [isHovered, setIsHovered] = useState(false);
   const [isDraggingState, setIsDraggingState] = useState(false);
 
-  // Physics animation state refs (avoid React re-render overhead during 60/120fps RAF loop)
+  // Keep latest configuration in ref for 60/120fps RAF loop
+  const configRef = useRef({
+    friction,
+    stopOnDrag,
+    shouldPauseOnHover,
+    speed,
+    direction,
+  });
+
+  useEffect(() => {
+    configRef.current = {
+      friction,
+      stopOnDrag,
+      shouldPauseOnHover,
+      speed,
+      direction,
+    };
+  }, [friction, stopOnDrag, shouldPauseOnHover, speed, direction]);
+
+  // Physics animation state refs (avoids React re-render overhead during 60/120fps RAF loop)
   const offsetRef = useRef<number>(0);
   const isDraggingRef = useRef<boolean>(false);
   const startPointerXRef = useRef<number>(0);
@@ -116,63 +135,83 @@ export function SwiperWrapper<T = unknown>({
   const hasMovedRef = useRef<boolean>(false);
   const isHoveredRef = useRef<boolean>(false);
 
-  // Keep hover ref in sync
   useEffect(() => {
     isHoveredRef.current = isHovered;
   }, [isHovered]);
 
-  const isNumericGap = typeof gap === 'number';
-  const gapClass = !isNumericGap ? gapStyles[gap as keyof typeof gapStyles] || gapStyles.md : '';
+  const effectiveGap: SwiperGap = space ?? gap;
+  const isNumericGap = typeof effectiveGap === 'number';
+  const gapClass = !isNumericGap
+    ? gapStyles[effectiveGap as keyof typeof gapStyles] || gapStyles.md
+    : '';
+
+  const isNumericSize = typeof logoSize === 'number';
+  const currentSizeConfig = isNumericSize
+    ? null
+    : sizeStyles[logoSize as keyof typeof sizeStyles] || sizeStyles.md;
 
   // Calculate base speed in pixels/sec with RTL awareness
   const getBaseVelocity = useCallback((): number => {
-    const pxPerSec = getSpeedPixelsPerSecond(speed);
+    const pxPerSec = getSpeedPixelsPerSecond(configRef.current.speed);
     const isRTL = typeof document !== 'undefined' && document.documentElement.dir === 'rtl';
+    const dir = configRef.current.direction;
 
-    // If RTL, reversing inverts naturally
-    let mult = isReverse ? 1 : -1;
-    if (isRTL) {
-      mult = isReverse ? -1 : 1;
+    let moveDirection: 'left' | 'right';
+    if (dir === 'left') {
+      moveDirection = 'left';
+    } else if (dir === 'right') {
+      moveDirection = 'right';
+    } else if (dir === 'reverse') {
+      moveDirection = isRTL ? 'left' : 'right';
+    } else {
+      // default / 'forward'
+      moveDirection = isRTL ? 'right' : 'left';
     }
-    return mult * pxPerSec;
-  }, [speed, isReverse]);
 
-  // Main 60-120fps physics & animation loop
+    // In uniform LTR coordinates:
+    // 'left' decreases offset (negative velocity)
+    // 'right' increases offset (positive velocity)
+    return moveDirection === 'left' ? -pxPerSec : pxPerSec;
+  }, []);
+
+  // Main 60-120fps physics & animation loop (active only when infiniteLoop is true)
   useEffect(() => {
-    if (!hasContent) return;
+    if (!hasContent || !infiniteLoop) return;
 
     let animationFrameId: number;
     let lastTime = performance.now();
 
     const animate = (currentTime: number) => {
-      const deltaSeconds = Math.min((currentTime - lastTime) / 1000, 0.08); // cap at 80ms to avoid huge jumps on tab switch
+      const deltaSeconds = Math.min((currentTime - lastTime) / 1000, 0.08);
       lastTime = currentTime;
 
       const track = trackRef.current;
       const loop1 = loop1Ref.current;
 
       if (track && loop1) {
-        const loopWidth = loop1.offsetWidth || 1;
+        const loopWidth = loop1.offsetWidth || 0;
+        const {
+          friction: curFriction,
+          stopOnDrag: curStopOnDrag,
+          shouldPauseOnHover: curShouldPause,
+        } = configRef.current;
 
-        if (isDraggingRef.current) {
-          // While actively dragging, position is controlled by pointer events
-          // and auto-scrolling is paused
+        if (isDraggingRef.current && curStopOnDrag) {
+          // Controlled by pointer events during active drag
         } else {
-          // Apply momentum velocity if present from a recent fling/throw
+          // Apply fling momentum physics decay
           if (Math.abs(momentumVelocityRef.current) > 0.5) {
             offsetRef.current += momentumVelocityRef.current * deltaSeconds;
 
-            // Exponential friction decay
-            const decay = Math.pow(Math.max(0.7, Math.min(0.99, friction)), deltaSeconds * 60);
+            const decay = Math.pow(Math.max(0.7, Math.min(0.99, curFriction)), deltaSeconds * 60);
             momentumVelocityRef.current *= decay;
 
             if (Math.abs(momentumVelocityRef.current) <= 0.5) {
               momentumVelocityRef.current = 0;
             }
           } else {
-            // Normal continuous auto-scrolling
             momentumVelocityRef.current = 0;
-            const isPausedByHover = shouldPauseOnHover && isHoveredRef.current;
+            const isPausedByHover = curShouldPause && isHoveredRef.current;
 
             if (!isPausedByHover) {
               const baseVelocity = getBaseVelocity();
@@ -180,14 +219,13 @@ export function SwiperWrapper<T = unknown>({
             }
           }
 
-          // Seamless infinite modulo wrapping
-          // Keep offset normalized within [-loopWidth, 0] or [0, loopWidth]
+          // Continuous glitch-free modulo wrapping in both left and right directions
           if (loopWidth > 0) {
-            offsetRef.current = ((offsetRef.current % loopWidth) - loopWidth) % loopWidth;
+            offsetRef.current = normalizeOffset(offsetRef.current, loopWidth);
           }
         }
 
-        // Apply hardware-accelerated 3D transform
+        // Hardware-accelerated GPU 3D transform
         track.style.transform = `translate3d(${offsetRef.current}px, 0, 0)`;
       }
 
@@ -199,13 +237,12 @@ export function SwiperWrapper<T = unknown>({
     return () => {
       cancelAnimationFrame(animationFrameId);
     };
-  }, [hasContent, getBaseVelocity, shouldPauseOnHover, friction]);
+  }, [hasContent, infiniteLoop, getBaseVelocity]);
 
-  // Pointer Event Handlers for Drag & Throw
+  // Pointer Event Handlers for Drag & Throw Momentum
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (!draggable) return;
+    if (!draggable || !infiniteLoop) return;
 
-    // Capture pointer
     try {
       e.currentTarget.setPointerCapture(e.pointerId);
     } catch {
@@ -224,7 +261,7 @@ export function SwiperWrapper<T = unknown>({
   };
 
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (!isDraggingRef.current) return;
+    if (!isDraggingRef.current || !infiniteLoop) return;
 
     const currentX = e.clientX;
     const now = performance.now();
@@ -235,20 +272,17 @@ export function SwiperWrapper<T = unknown>({
       hasMovedRef.current = true;
     }
 
-    // Move track directly under pointer
     offsetRef.current += deltaX;
 
-    // Wrap immediately during drag so track never runs out of cards
-    const loopWidth = loop1Ref.current?.offsetWidth || 1;
+    const loopWidth = loop1Ref.current?.offsetWidth || 0;
     if (loopWidth > 0) {
-      offsetRef.current = ((offsetRef.current % loopWidth) - loopWidth) % loopWidth;
+      offsetRef.current = normalizeOffset(offsetRef.current, loopWidth);
     }
 
     if (trackRef.current) {
       trackRef.current.style.transform = `translate3d(${offsetRef.current}px, 0, 0)`;
     }
 
-    // Exponential moving average for velocity calculation (px / second)
     const instantVelocity = (deltaX / deltaTime) * 1000;
     velocityRef.current = 0.7 * instantVelocity + 0.3 * velocityRef.current;
 
@@ -270,14 +304,11 @@ export function SwiperWrapper<T = unknown>({
     isDraggingRef.current = false;
     setIsDraggingState(false);
 
-    // If thrown with velocity and momentum is enabled, launch fling momentum
-    if (enableMomentum) {
+    if (enableMomentum && infiniteLoop) {
       const now = performance.now();
       const timeSinceLastMove = now - lastPointerTimeRef.current;
 
-      // Only apply momentum if released while moving (within 100ms)
       if (timeSinceLastMove < 100 && Math.abs(velocityRef.current) > 30) {
-        // Clamp maximum throw velocity for smooth, controlled motion
         const maxVelocity = 2800;
         const clampedVelocity = Math.max(-maxVelocity, Math.min(maxVelocity, velocityRef.current));
         momentumVelocityRef.current = clampedVelocity;
@@ -299,9 +330,13 @@ export function SwiperWrapper<T = unknown>({
     return `loop-${loopIndex}-item-${idx}`;
   };
 
-  const renderTrackItems = (loopIndex: number, isFirstLoop: boolean) => {
+  const renderTrackItems = (loopIndex: number) => {
     if (children) {
-      return children;
+      return (
+        <React.Fragment key={`loop-frag-${loopIndex}`}>
+          {children}
+        </React.Fragment>
+      );
     }
     if (data && renderItem) {
       return data.map((item, index) => (
@@ -313,6 +348,37 @@ export function SwiperWrapper<T = unknown>({
         </div>
       ));
     }
+    if (effectiveLogos.length > 0) {
+      return effectiveLogos.map((client, idx) => (
+        <div
+          key={`logo-${loopIndex}-${client.name}-${idx}`}
+          className={cn(
+            'group flex items-center justify-center transition-all duration-300 hover:scale-105',
+            !isNumericSize && currentSizeConfig?.item,
+            logoClassName,
+            itemClassName
+          )}
+          style={
+            isNumericSize
+              ? { height: `${logoSize}px`, width: `${(logoSize as number) * 3}px` }
+              : undefined
+          }
+          title={client.name}
+        >
+          <Image
+            src={client.src}
+            alt={client.name}
+            width={currentSizeConfig?.width || 190}
+            height={currentSizeConfig?.height || 70}
+            className={cn(
+              'object-contain opacity-65 grayscale contrast-125 transition-all duration-300 group-hover:opacity-100 group-hover:grayscale-0',
+              !isNumericSize && currentSizeConfig?.img
+            )}
+            style={isNumericSize ? { maxHeight: `${logoSize}px`, width: 'auto' } : undefined}
+          />
+        </div>
+      ));
+    }
     return null;
   };
 
@@ -320,72 +386,153 @@ export function SwiperWrapper<T = unknown>({
 
   return (
     <div className={cn('relative w-full overflow-hidden py-3', className)}>
-      {title && <div className="mb-6">{title}</div>}
+      {showTitle && title && (
+        typeof title === 'string' ? (
+          <p
+            className={cn(
+              'mb-6 text-center text-xs font-semibold uppercase tracking-wider text-foreground/40',
+              titleClassName
+            )}
+          >
+            {title}
+          </p>
+        ) : (
+          <div className={cn('mb-6', titleClassName)}>{title}</div>
+        )
+      )}
 
-      {/* Main Interactive Swiper Track Container */}
-      <div
-        ref={containerRef}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-        onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        onPointerUp={handlePointerUp}
-        onPointerCancel={handlePointerCancel}
-        className={cn(
-          'relative w-full overflow-hidden touch-pan-y select-none',
-          draggable ? (isDraggingState ? 'cursor-grabbing' : 'cursor-grab') : '',
-          fadeMask && '[mask-image:linear-gradient(to_right,transparent_0%,black_8%,black_92%,transparent_100%)]'
-        )}
-      >
+      {infiniteLoop ? (
+        /* Continuous Smooth GPU Swiper Track with uniform LTR coordinate system */
         <div
-          ref={trackRef}
-          className={cn('flex w-max items-center will-change-transform', trackClassName)}
-          style={{ transform: 'translate3d(0, 0, 0)' }}
+          ref={containerRef}
+          dir="ltr"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
+          onPointerCancel={handlePointerCancel}
+          className={cn(
+            'relative w-full overflow-hidden touch-pan-y select-none',
+            draggable ? (isDraggingState ? 'cursor-grabbing' : 'cursor-grab') : '',
+            fadeMask && '[mask-image:linear-gradient(to_right,transparent_0%,black_8%,black_92%,transparent_100%)]'
+          )}
         >
-          {/* Loop 1 */}
           <div
-            ref={loop1Ref}
-            className={cn('flex shrink-0 items-center justify-around', gapClass)}
-            style={isNumericGap ? { gap: `${gap}px`, paddingInlineEnd: `${gap}px` } : undefined}
+            ref={trackRef}
+            dir="ltr"
+            className={cn('flex w-max items-center will-change-transform', trackClassName)}
+            style={{ transform: 'translate3d(0, 0, 0)' }}
           >
-            {renderTrackItems(1, true)}
+            {/* Loop 1 (Primary measurement track) */}
+            <div
+              ref={loop1Ref}
+              className={cn('flex shrink-0 items-center justify-around', gapClass)}
+              style={isNumericGap ? { gap: `${effectiveGap}px`, paddingRight: `${effectiveGap}px` } : undefined}
+            >
+              {renderTrackItems(1)}
+            </div>
+
+            {/* Loop 2 (Seamless loop replica) */}
+            <div
+              className={cn('flex shrink-0 items-center justify-around', gapClass)}
+              style={isNumericGap ? { gap: `${effectiveGap}px`, paddingRight: `${effectiveGap}px` } : undefined}
+              aria-hidden="true"
+            >
+              {renderTrackItems(2)}
+            </div>
+
+            {/* Loop 3 (Extended buffer for wide monitors & RTL right-scroll) */}
+            <div
+              className={cn('flex shrink-0 items-center justify-around', gapClass)}
+              style={isNumericGap ? { gap: `${effectiveGap}px`, paddingRight: `${effectiveGap}px` } : undefined}
+              aria-hidden="true"
+            >
+              {renderTrackItems(3)}
+            </div>
+
+            {/* Loop 4 (Extended buffer for ultra-wide monitors) */}
+            <div
+              className={cn('flex shrink-0 items-center justify-around', gapClass)}
+              style={isNumericGap ? { gap: `${effectiveGap}px`, paddingRight: `${effectiveGap}px` } : undefined}
+              aria-hidden="true"
+            >
+              {renderTrackItems(4)}
+            </div>
           </div>
 
-          {/* Loop 2 (Seamless loop replica for continuous infinite scrolling) */}
-          <div
-            className={cn('flex shrink-0 items-center justify-around', gapClass)}
-            style={isNumericGap ? { gap: `${gap}px`, paddingInlineEnd: `${gap}px` } : undefined}
-            aria-hidden="true"
-          >
-            {renderTrackItems(2, false)}
-          </div>
+          {/* Left & Right Soft Gradient Overlays for High-End Fade Effect */}
+          {fadeMask && (
+            <>
+              <div
+                className={cn(
+                  'pointer-events-none absolute inset-y-0 left-0 z-10 bg-gradient-to-r from-background to-transparent',
+                  fadeWidthClass,
+                  fadeGradientClass
+                )}
+                aria-hidden="true"
+              />
+              <div
+                className={cn(
+                  'pointer-events-none absolute inset-y-0 right-0 z-10 bg-gradient-to-l from-background to-transparent',
+                  fadeWidthClass,
+                  fadeGradientClass
+                )}
+                aria-hidden="true"
+              />
+            </>
+          )}
         </div>
-
-        {/* Left & Right Soft Gradient Overlays for High-End Fade Effect */}
-        {fadeMask && (
-          <>
-            <div
-              className={cn(
-                'pointer-events-none absolute inset-y-0 start-0 z-10 bg-gradient-to-r from-background to-transparent rtl:bg-gradient-to-l',
-                fadeWidthClass,
-                fadeGradientClass
-              )}
-              aria-hidden="true"
-            />
-            <div
-              className={cn(
-                'pointer-events-none absolute inset-y-0 end-0 z-10 bg-gradient-to-l from-background to-transparent rtl:bg-gradient-to-r',
-                fadeWidthClass,
-                fadeGradientClass
-              )}
-              aria-hidden="true"
-            />
-          </>
-        )}
-      </div>
+      ) : (
+        /* Static responsive fallback when infiniteLoop is false */
+        <div className="w-full">
+          {children ? (
+            <div className={cn('flex flex-wrap items-center justify-center', gapClass)}>
+              {children}
+            </div>
+          ) : data && renderItem ? (
+            <div className={cn('flex flex-wrap items-center justify-center', gapClass)}>
+              {data.map((item, idx) => (
+                <div key={keyExtractor ? keyExtractor(item, idx) : idx} className={itemClassName}>
+                  {renderItem(item, idx)}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 items-center justify-center gap-6 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-8">
+              {effectiveLogos.map((client, idx) => (
+                <div
+                  key={`logo-static-${client.name}-${idx}`}
+                  className={cn(
+                    'group flex items-center justify-center p-2 transition-all duration-300 hover:scale-105',
+                    !isNumericSize && currentSizeConfig?.item,
+                    logoClassName,
+                    itemClassName
+                  )}
+                  style={isNumericSize ? { height: `${logoSize}px` } : undefined}
+                  title={client.name}
+                >
+                  <Image
+                    src={client.src}
+                    alt={client.name}
+                    width={currentSizeConfig?.width || 190}
+                    height={currentSizeConfig?.height || 70}
+                    className={cn(
+                      'object-contain opacity-65 grayscale contrast-125 transition-all duration-300 group-hover:opacity-100 group-hover:grayscale-0',
+                      !isNumericSize && currentSizeConfig?.img
+                    )}
+                    style={isNumericSize ? { maxHeight: `${logoSize}px`, width: 'auto' } : undefined}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
 
-// Aliases for developer convenience
+// Aliases for backwards compatibility and developer convenience
 export const MarqueeWrapper = SwiperWrapper;
+export const ClientLogosMarquee = SwiperWrapper;

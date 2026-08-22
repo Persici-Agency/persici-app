@@ -1,5 +1,5 @@
 import type { Dictionary } from '@dictionaries';
-import { HomeButton, ClientLogosMarquee, FadeUp, AvatarSocialProof } from '@shared/components';
+import { HomeButton, SwiperWrapper, FadeUp, AvatarSocialProof } from '@shared/components';
 import { socialProofAvatars } from '@shared/data';
 
 export type HeroSectionProps = {
@@ -55,7 +55,7 @@ export function HeroSection({ lang, dict }: HeroSectionProps) {
       {/* Animated Infinite Client Logos Marquee */}
       <FadeUp delay={450} duration={800} distance={20}>
         <div className="mx-auto mt-16 max-w-7xl px-4 sm:px-6 lg:px-8">
-          <ClientLogosMarquee title={dict.hero.trustedBy} />
+          <SwiperWrapper title={dict.hero.trustedBy} />
         </div>
       </FadeUp>
     </section>

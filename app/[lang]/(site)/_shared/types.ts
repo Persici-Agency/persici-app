@@ -53,26 +53,45 @@ export type HomeButtonProps = {
 };
 
 export type LogoSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | number;
-export type MarqueeSpeed = 'slow' | 'normal' | 'fast' | number;
-export type MarqueeGap = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | number;
+export type SwiperSpeed = 'slow' | 'normal' | 'fast' | number;
+export type SwiperGap = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | number;
+export type SwiperDirection = 'left' | 'right' | 'forward' | 'reverse';
 
-export type ClientLogosMarqueeProps = {
-  title?: string;
-  titleClassName?: string;
+// Legacy aliases
+export type MarqueeSpeed = SwiperSpeed;
+export type MarqueeGap = SwiperGap;
+
+export interface SwiperWrapperProps<T = unknown> {
+  children?: React.ReactNode;
+  data?: T[];
+  logos?: ClientLogo[];
+  renderItem?: (item: T, index: number) => React.ReactNode;
+  keyExtractor?: (item: T, index: number) => string | number;
+  speed?: SwiperSpeed;
+  direction?: SwiperDirection;
+  stopOnHover?: boolean;
+  pauseOnHover?: boolean;
+  draggable?: boolean;
+  stopOnDrag?: boolean;
+  enableMomentum?: boolean;
+  friction?: number;
+  gap?: SwiperGap;
+  space?: SwiperGap;
+  infiniteLoop?: boolean;
+  fadeMask?: boolean;
+  fadeWidthClass?: string;
+  fadeGradientClass?: string;
   className?: string;
-  logoClassName?: string;
+  trackClassName?: string;
+  itemClassName?: string;
+  title?: React.ReactNode;
+  titleClassName?: string;
   showTitle?: boolean;
   logoSize?: LogoSize;
-  speed?: MarqueeSpeed;
-  gap?: MarqueeGap;
-  space?: MarqueeGap;
-  infiniteLoop?: boolean;
-  pauseOnHover?: boolean;
-  stopOnHover?: boolean;
-  fadeMask?: boolean;
-  direction?: 'left' | 'right';
-  logos?: ClientLogo[];
-};
+  logoClassName?: string;
+}
+
+export type ClientLogosMarqueeProps = SwiperWrapperProps<ClientLogo>;
 
 // ============================================================================
 // Domain Entities & MongoDB Schemas

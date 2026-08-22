@@ -6,7 +6,7 @@ import {
   sectionContainer,
   sectionPaddingY,
   FadeUp,
-  ClientLogosMarquee,
+  SwiperWrapper,
   HomeButton,
 } from '@shared';
 
@@ -148,10 +148,10 @@ export function HomeContactSection({ lang, dict }: HomeContactSectionProps) {
                   </ul>
                 </div>
 
-                {/* Bottom Trust Row with ClientLogosMarquee */}
+                {/* Bottom Trust Row with SwiperWrapper */}
                 <div className="mt-10 sm:mt-14 border-t border-black/10 pt-6">
                   <div className="w-full overflow-hidden">
-                    <ClientLogosMarquee
+                    <SwiperWrapper
                       title={dict.homeContact?.trustedBy || 'Trusted by leading eCommerce brands in the region.'}
                       showTitle={true}
                       titleClassName="text-center"
