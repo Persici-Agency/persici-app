@@ -120,7 +120,7 @@ export function HomeContactSection({ lang, dict }: HomeContactSectionProps) {
           <source src="/Videos/AI Solutions for the Enterprise.mp4" type="video/mp4" />
         </video>
         {/* Subtle Ambient Overlay for Depth & Contrast */}
-        <div className="absolute inset-0 bg-black/40 backdrop-blur-[0.5px]" />
+        <div className="absolute inset-0 backdrop-blur-[0.5px]" />
       </div>
 
       {/* Main Centered Contact Card (Structured with sectionContainer) */}
@@ -159,7 +159,7 @@ export function HomeContactSection({ lang, dict }: HomeContactSectionProps) {
                       speed="normal"
                       gap="sm"
                       fadeMask={true}
-                      stopOnHover={true}
+                      stopOnHover={false}
                       className="py-1"
                     />
                   </div>
