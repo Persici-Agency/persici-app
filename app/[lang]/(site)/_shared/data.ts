@@ -436,26 +436,93 @@ export const servicesList: ServiceItem[] = [
 ];
 
 // ============================================================================
-// 8. Approach & Team
+// 8. Approach & Team (MongoDB Collection Seed: 'team_members')
+// NOTE: Structured according to BaseMongoDocument for future MongoDB persistence
 // ============================================================================
 export const approachTeamAvatars: GrowthTeamMember[] = [
   {
     id: '1',
+    name: 'Sarah Al-Mansoor',
     avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80',
-    alt: 'Team avatar 1',
+    alt: 'Sarah Al-Mansoor - Growth Director',
     role: 'Growth Director',
   },
   {
     id: '2',
+    name: 'Karim Zaid',
     avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80',
-    alt: 'Team avatar 2',
-    role: 'Performance Media Buyer',
+    alt: 'Karim Zaid - Performance Media Lead',
+    role: 'Performance Media Lead',
   },
   {
     id: '3',
-    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&q=80',
-    alt: 'Team avatar 3',
-    role: 'Lead CRO Engineer',
+    name: 'Rami Haddad',
+    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&q=80',
+    alt: 'Rami Haddad - Senior Media Buyer',
+    role: 'Senior Media Buyer',
+  },
+  {
+    id: '4',
+    name: 'Alex Vance',
+    avatar: 'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=150&q=80',
+    alt: 'Alex Vance - Creative Director',
+    role: 'Creative Director',
+  },
+  {
+    id: '5',
+    name: 'David Keller',
+    avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=150&q=80',
+    alt: 'David Keller - Full-Stack Engineer',
+    role: 'Full-Stack Engineer',
+  },
+  {
+    id: '6',
+    name: 'Leila Benali',
+    avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=150&q=80',
+    alt: 'Leila Benali - CRO & UX Specialist',
+    role: 'CRO & UX Specialist',
+  },
+  {
+    id: '7',
+    name: 'Marcus Thorne',
+    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=150&q=80',
+    alt: 'Marcus Thorne - Data & Tracking Lead',
+    role: 'Data & Tracking Lead',
+  },
+  {
+    id: '8',
+    name: 'Christian Holm',
+    avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=150&q=80',
+    alt: 'Christian Holm - Retention Strategist',
+    role: 'Retention Strategist',
+  },
+  {
+    id: '9',
+    name: 'Tariq Nabil',
+    avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=150&q=80',
+    alt: 'Tariq Nabil - Paid Search Specialist',
+    role: 'Paid Search Specialist',
+  },
+  {
+    id: '10',
+    name: 'Elena Rostova',
+    avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=150&q=80',
+    alt: 'Elena Rostova - Brand Strategist',
+    role: 'Brand Strategist',
+  },
+  {
+    id: '11',
+    name: 'Omar Farooq',
+    avatar: 'https://images.unsplash.com/photo-1534751516642-a171edd2521d?auto=format&fit=crop&w=150&q=80',
+    alt: 'Omar Farooq - Senior Copywriter',
+    role: 'Senior Copywriter',
+  },
+  {
+    id: '12',
+    name: 'Nour Kassam',
+    avatar: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=150&q=80',
+    alt: 'Nour Kassam - Motion Graphics Lead',
+    role: 'Motion Graphics Lead',
   },
 ];
 

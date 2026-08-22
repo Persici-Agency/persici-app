@@ -109,13 +109,13 @@
     }
   },
   "approach": {
+    "teamBadgeLabel": "Team Persici",
+    "teamBadgeTitle": "Your team of specialists",
     "title": "Our approach to eCommerce growth",
-    "teamBadgeTitle": "Your Dedicated Growth Team",
-    "teamBadgeSubtitle": "Strategy • Media Buying • Design • Engineering",
-    "desc1": "At Persici, we do not believe in cookie-cutter playbooks. We build custom growth engines tailored to your unit economics, inventory dynamics, and brand positioning. From full-funnel paid media to custom engineering, every initiative is calculated for net-profitable scale.",
-    "desc2": "We embed directly within your team, maintaining continuous communication, daily data monitoring, and weekly sprint reviews to ensure seamless agility and explosive growth.",
-    "ctaPrimary": "Book a call",
-    "ctaSecondary": "View case studies"
+    "desc1": "At Persici, we work as a dedicated growth partner, with a deep understanding of the regional market and a focus on ROI. We deliver tailored strategies - not templates. No freelancers, no shortcuts - just a small, senior team focused on long-term, scalable results.",
+    "desc2": "We combine hands-on execution with clear communication: performance updates weekly, full WhatsApp access, and no surprises - only growth.",
+    "ctaPrimary": "Book call",
+    "ctaSecondary": "More about us"
   },
   "reviews": {
     "score": "4.9",
