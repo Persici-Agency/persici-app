@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import type { Dictionary } from '@dictionaries';
 import { DiscoveryCallForm } from './discovery-form';
-import { sectionContainer, sectionPaddingY, FadeUp } from '@shared';
+import { sectionContainer, sectionPaddingY, FadeUp, sectionHeading } from '@shared';
 
 export type DiscoverySectionProps = {
   dict: Dictionary;
@@ -12,8 +12,8 @@ export function DiscoverySection({ dict }: DiscoverySectionProps) {
     <section className={`${sectionContainer} ${sectionPaddingY}`}>
       <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12">
         {/* Left Column: Heading & Pull Quote */}
-        <FadeUp delay={0} duration={800} distance={24} className="lg:col-span-5">
-          <h2 className="font-primary text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
+        <FadeUp delay={0} duration={800} distance={24} className="lg:col-span-7">
+          <h2 className={sectionHeading}>
             {dict.discovery.title}
           </h2>
           <p className="mt-6 text-sm leading-relaxed text-foreground/75 sm:text-base">
@@ -47,7 +47,7 @@ export function DiscoverySection({ dict }: DiscoverySectionProps) {
         </FadeUp>
 
         {/* Right Column: Interactive Booking Form */}
-        <FadeUp delay={200} duration={800} distance={28} className="lg:col-span-7">
+        <FadeUp delay={200} duration={800} distance={28} className="lg:col-span-5">
           <DiscoveryCallForm dict={dict} />
         </FadeUp>
       </div>
