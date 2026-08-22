@@ -90,101 +90,37 @@ export function HomeContactSection({ lang, dict }: HomeContactSectionProps) {
     setIsSubmitted(false);
   };
 
+  const videoRef = React.useRef<HTMLVideoElement>(null);
+
+  React.useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.defaultMuted = true;
+      videoRef.current.muted = true;
+      videoRef.current.play().catch(() => {
+        // Autoplay policy handled
+      });
+    }
+  }, []);
+
   return (
-    <section className={`relative overflow-hidden bg-gradient-to-br from-[#8C150C] via-[#D83427] to-[#540D07] ${sectionPaddingY}`}>
-      {/* High-Fidelity Animated Concentric Wave Background */}
+    <section className={`relative overflow-hidden bg-persici-black ${sectionPaddingY}`}>
+      {/* Background Video from Videos Folder */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
-        {/* Ambient Glowing Orbs */}
-        <div className="absolute -top-32 -start-32 h-[32rem] w-[32rem] rounded-full bg-persici-blush/25 blur-3xl animate-wave-glow" />
-        <div
-          className="absolute -bottom-40 -end-32 h-[36rem] w-[36rem] rounded-full bg-persici-crimson-400/20 blur-3xl animate-wave-glow"
-          style={{ animationDelay: '4.5s' }}
-        />
-
-        {/* Concentric Flowing Wave Ribbons */}
-        <svg
-          className="animate-wave-1 absolute inset-0 h-full w-full object-cover opacity-60"
-          preserveAspectRatio="none"
-          viewBox="0 0 1600 1000"
-          fill="none"
+        <video
+          ref={videoRef}
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="auto"
+          src="/Videos/AI%20Solutions%20for%20the%20Enterprise.mp4"
+          className="absolute inset-0 h-full w-full object-cover"
         >
-          {/* Wave Band 1 */}
-          <path
-            d="M-200,-100 C200,150 400,600 -100,1100 L-200,1100 Z"
-            fill="url(#waveBandGrad1)"
-          />
-          {/* Wave Band 2 */}
-          <path
-            d="M-50,-100 C400,180 650,650 100,1100 L-50,1100 Z"
-            fill="url(#waveBandGrad2)"
-          />
-          {/* Wave Band 3 */}
-          <path
-            d="M150,-100 C650,220 900,700 350,1100 L150,1100 Z"
-            fill="url(#waveBandGrad1)"
-          />
-          {/* Wave Band 4 */}
-          <path
-            d="M380,-100 C900,260 1150,750 600,1100 L380,1100 Z"
-            fill="url(#waveBandGrad2)"
-          />
-          {/* Wave Band 5 */}
-          <path
-            d="M620,-100 C1150,300 1400,800 850,1100 L620,1100 Z"
-            fill="url(#waveBandGrad1)"
-          />
-          {/* Wave Band 6 */}
-          <path
-            d="M880,-100 C1400,340 1650,850 1100,1100 L880,1100 Z"
-            fill="url(#waveBandGrad2)"
-          />
-          {/* Wave Band 7 */}
-          <path
-            d="M1150,-100 C1650,380 1850,900 1350,1100 L1150,1100 Z"
-            fill="url(#waveBandGrad1)"
-          />
-          {/* Wave Band 8 */}
-          <path
-            d="M1400,-100 C1850,420 2050,950 1600,1100 L1400,1100 Z"
-            fill="url(#waveBandGrad2)"
-          />
-
-          <defs>
-            <linearGradient id="waveBandGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#EF8C7D" stopOpacity="0.45" />
-              <stop offset="50%" stopColor="#D83427" stopOpacity="0.15" />
-              <stop offset="100%" stopColor="#430C08" stopOpacity="0.6" />
-            </linearGradient>
-            <linearGradient id="waveBandGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.25" />
-              <stop offset="45%" stopColor="#E05C52" stopOpacity="0.1" />
-              <stop offset="100%" stopColor="#1C1C1C" stopOpacity="0.5" />
-            </linearGradient>
-          </defs>
-        </svg>
-
-        {/* Secondary Cross Undulation */}
-        <svg
-          className="animate-wave-2 absolute inset-0 h-full w-full object-cover opacity-40"
-          preserveAspectRatio="none"
-          viewBox="0 0 1600 1000"
-          fill="none"
-        >
-          <path
-            d="M-100,500 C300,700 700,300 1100,600 C1400,800 1600,450 1700,550 L1700,1100 L-100,1100 Z"
-            fill="url(#waveCrossGrad)"
-          />
-          <defs>
-            <linearGradient id="waveCrossGrad" x1="100%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="#EF8C7D" stopOpacity="0.3" />
-              <stop offset="50%" stopColor="#D83427" stopOpacity="0.05" />
-              <stop offset="100%" stopColor="#430C08" stopOpacity="0.4" />
-            </linearGradient>
-          </defs>
-        </svg>
-
-        {/* Soft Radial Vignette Overlay */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_transparent_40%,_rgba(67,12,8,0.5)_100%)]" />
+          <source src="/Videos/AI%20Solutions%20for%20the%20Enterprise.mp4" type="video/mp4" />
+          <source src="/Videos/AI Solutions for the Enterprise.mp4" type="video/mp4" />
+        </video>
+        {/* Subtle Ambient Overlay for Depth & Contrast */}
+        <div className="absolute inset-0 bg-black/40 backdrop-blur-[0.5px]" />
       </div>
 
       {/* Main Centered Contact Card (Structured with sectionContainer) */}
