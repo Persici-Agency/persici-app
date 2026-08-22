@@ -119,7 +119,7 @@ export function VideoTestimonialsCarousel({
               <button
                 type="button"
                 onClick={prev}
-                className="flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-white/5 text-white transition-all hover:scale-105 hover:border-persici-crimson hover:bg-persici-crimson hover:text-white cursor-pointer active:scale-95"
+                className="flex h-11 w-11 items-center rtl:rotate-180 justify-center rounded-full border border-white/20 bg-white/5 text-white transition-all hover:scale-105 hover:border-persici-crimson hover:bg-persici-crimson hover:text-white cursor-pointer active:scale-95"
                 aria-label="Previous 3 clients"
                 title="Previous clients"
               >
@@ -128,7 +128,7 @@ export function VideoTestimonialsCarousel({
               <button
                 type="button"
                 onClick={next}
-                className="flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-white/5 text-white transition-all hover:scale-105 hover:border-persici-crimson hover:bg-persici-crimson hover:text-white cursor-pointer active:scale-95"
+                className="flex h-11 w-11 items-center rtl:rotate-180 justify-center rounded-full border border-white/20 bg-white/5 text-white transition-all hover:scale-105 hover:border-persici-crimson hover:bg-persici-crimson hover:text-white cursor-pointer active:scale-95"
                 aria-label="Next 3 clients"
                 title="Next clients"
               >

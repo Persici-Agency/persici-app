@@ -69,7 +69,6 @@ export interface SwiperWrapperProps<T = unknown> {
   keyExtractor?: (item: T, index: number) => string | number;
   speed?: SwiperSpeed;
   direction?: SwiperDirection;
-  stopOnHover?: boolean;
   pauseOnHover?: boolean;
   draggable?: boolean;
   stopOnDrag?: boolean;

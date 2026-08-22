@@ -71,8 +71,7 @@ export function SwiperWrapper<T = unknown>({
   keyExtractor,
   speed = 'normal',
   direction = 'left',
-  stopOnHover = true,
-  pauseOnHover,
+  pauseOnHover = true,
   draggable = true,
   stopOnDrag = true,
   enableMomentum = true,
@@ -96,8 +95,6 @@ export function SwiperWrapper<T = unknown>({
   const effectiveLogos = isLogoMode ? (logos || getClientLogos()) : [];
   const hasContent = Boolean(children || (data && data.length > 0) || effectiveLogos.length > 0);
 
-  const shouldPauseOnHover = pauseOnHover !== undefined ? pauseOnHover : stopOnHover;
-
   const containerRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const loop1Ref = useRef<HTMLDivElement>(null);
@@ -109,7 +106,7 @@ export function SwiperWrapper<T = unknown>({
   const configRef = useRef({
     friction,
     stopOnDrag,
-    shouldPauseOnHover,
+    pauseOnHover,
     speed,
     direction,
   });
@@ -118,11 +115,11 @@ export function SwiperWrapper<T = unknown>({
     configRef.current = {
       friction,
       stopOnDrag,
-      shouldPauseOnHover,
+      pauseOnHover,
       speed,
       direction,
     };
-  }, [friction, stopOnDrag, shouldPauseOnHover, speed, direction]);
+  }, [friction, stopOnDrag, pauseOnHover, speed, direction]);
 
   // Physics animation state refs (avoids React re-render overhead during 60/120fps RAF loop)
   const offsetRef = useRef<number>(0);
@@ -193,7 +190,7 @@ export function SwiperWrapper<T = unknown>({
         const {
           friction: curFriction,
           stopOnDrag: curStopOnDrag,
-          shouldPauseOnHover: curShouldPause,
+          pauseOnHover: curPauseOnHover,
         } = configRef.current;
 
         if (isDraggingRef.current && curStopOnDrag) {
@@ -211,7 +208,7 @@ export function SwiperWrapper<T = unknown>({
             }
           } else {
             momentumVelocityRef.current = 0;
-            const isPausedByHover = curShouldPause && isHoveredRef.current;
+            const isPausedByHover = curPauseOnHover && isHoveredRef.current;
 
             if (!isPausedByHover) {
               const baseVelocity = getBaseVelocity();

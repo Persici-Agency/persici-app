@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
+import ReCAPTCHA from 'react-google-recaptcha';
 import type { Dictionary } from '@dictionaries';
 import {
   sectionContainer,
@@ -17,10 +18,11 @@ export type HomeContactSectionProps = {
 
 export function HomeContactSection({ lang, dict }: HomeContactSectionProps) {
   const [isVerifiedHuman, setIsVerifiedHuman] = useState(false);
-  const [isVerifyingCaptcha, setIsVerifyingCaptcha] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [consent, setConsent] = useState(true);
+
+  const recaptchaRef = useRef<ReCAPTCHA>(null);
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -55,13 +57,8 @@ export function HomeContactSection({ lang, dict }: HomeContactSectionProps) {
     'Other',
   ];
 
-  const handleCaptchaClick = () => {
-    if (isVerifiedHuman || isVerifyingCaptcha) return;
-    setIsVerifyingCaptcha(true);
-    setTimeout(() => {
-      setIsVerifyingCaptcha(false);
-      setIsVerifiedHuman(true);
-    }, 650);
+  const handleCaptchaChange = (token: string | null) => {
+    setIsVerifiedHuman(Boolean(token));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -88,6 +85,7 @@ export function HomeContactSection({ lang, dict }: HomeContactSectionProps) {
     });
     setIsVerifiedHuman(false);
     setIsSubmitted(false);
+    recaptchaRef.current?.reset();
   };
 
   const videoRef = React.useRef<HTMLVideoElement>(null);
@@ -159,7 +157,7 @@ export function HomeContactSection({ lang, dict }: HomeContactSectionProps) {
                       speed="normal"
                       gap="sm"
                       fadeMask={true}
-                      stopOnHover={false}
+                      pauseOnHover={false}
                       className="py-1"
                     />
                   </div>
@@ -327,74 +325,18 @@ export function HomeContactSection({ lang, dict }: HomeContactSectionProps) {
                       />
                     </div>
 
-                    {/* Authentic Google reCAPTCHA v2 Widget */}
-                    <div className="pt-1">
-                      <div
-                        onClick={handleCaptchaClick}
-                        className="flex w-[302px] items-center justify-between rounded-sm border border-[#d3d3d3] bg-[#f9f9f9] px-3 py-2.5 shadow-2xs cursor-pointer select-none transition-colors hover:border-[#b2b2b2]"
-                        role="button"
-                        tabIndex={0}
-                        aria-label="Google reCAPTCHA verification"
-                      >
-                        {/* Left: Checkbox & Text */}
-                        <div className="flex items-center gap-3">
-                          <div
-                            className={`flex h-7 w-7 items-center justify-center rounded-[2px] border-2 bg-white transition-all ${isVerifiedHuman
-                              ? 'border-transparent text-emerald-600'
-                              : 'border-[#c1c1c1]'
-                              }`}
-                          >
-                            {isVerifyingCaptcha ? (
-                              <div className="h-4 w-4 animate-spin rounded-full border-2 border-[#1a73e8] border-t-transparent" />
-                            ) : isVerifiedHuman ? (
-                              <span className="text-xl font-bold text-emerald-600">✓</span>
-                            ) : null}
-                          </div>
-                          <span className="font-sans text-[13px] font-normal text-[#222]">
-                            {dict.homeContact?.notRobot || "I'm not a robot"}
-                          </span>
-                        </div>
-
-                        {/* Right: Google reCAPTCHA Branding */}
-                        <div className="flex flex-col items-center justify-center text-center">
-                          {/* Official Google reCAPTCHA 3-arrow logo */}
-                          <svg className="h-8 w-8" viewBox="0 0 64 64" fill="none">
-                            <path
-                              d="M32 6C17.64 6 6 17.64 6 32c0 5.6 1.76 10.8 4.76 15.08l4.4-4.4C13.04 39.56 12 35.92 12 32c0-11.04 8.96-20 20-20v6l10-8-10-8V6z"
-                              fill="#1A73E8"
-                            />
-                            <path
-                              d="M58 32c0-5.6-1.76-10.8-4.76-15.08l-4.4 4.4C50.96 24.44 52 28.08 52 32c0 11.04-8.96 20-20 20v-6l-10 8 10 8v-6c14.36 0 26-11.64 26-26z"
-                              fill="#4285F4"
-                            />
-                            <path
-                              d="M20.88 47.12C23.96 49.6 27.8 51.2 32 51.2c7.08 0 13.2-3.68 16.72-9.28l5.2 3.08C49.6 52.48 41.36 57.2 32 57.2c-5.72 0-10.96-2.12-15.04-5.64l3.92-4.44z"
-                              fill="#9AA0A6"
-                            />
-                          </svg>
-                          <span className="text-[10px] font-medium text-[#555] -mt-0.5">reCAPTCHA</span>
-                          <div className="flex items-center gap-1 text-[8px] text-[#555] mt-0.5">
-                            <a
-                              href="https://www.google.com/intl/en/policies/privacy/"
-                              target="_blank"
-                              rel="noreferrer"
-                              onClick={(e) => e.stopPropagation()}
-                              className="hover:underline"
-                            >
-                              {dict.homeContact?.recaptchaPrivacy || 'Privacy'}
-                            </a>
-                            <span>-</span>
-                            <a
-                              href="https://www.google.com/intl/en/policies/terms/"
-                              target="_blank"
-                              rel="noreferrer"
-                              onClick={(e) => e.stopPropagation()}
-                              className="hover:underline"
-                            >
-                              {dict.homeContact?.recaptchaTerms || 'Terms'}
-                            </a>
-                          </div>
-                        </div>
+                    {/* Google reCAPTCHA v2 Widget */}
+                    <div className="pt-2">
+                      <div className="inline-block overflow-hidden rounded-sm border border-black/10 shadow-2xs">
+                        <ReCAPTCHA
+                          ref={recaptchaRef}
+                          sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'}
+                          onChange={handleCaptchaChange}
+                          onExpired={() => handleCaptchaChange(null)}
+                          onErrored={() => handleCaptchaChange(null)}
+                          hl={lang}
+                          theme="light"
+                        />
                       </div>
                     </div>
 
