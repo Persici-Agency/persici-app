@@ -106,7 +106,7 @@ export function ReviewsSection({ lang, dict, reviews: customReviews }: ReviewsSe
               stopOnDrag={true}
               enableMomentum={true}
               friction={0.94}
-              stopOnHover={false}
+              pauseOnHover={false}
               gap="md"
               fadeMask={true}
               fadeWidthClass="w-24 sm:w-44 md:w-64"
@@ -124,7 +124,7 @@ export function ReviewsSection({ lang, dict, reviews: customReviews }: ReviewsSe
               stopOnDrag={true}
               enableMomentum={true}
               friction={0.94}
-              stopOnHover={false}
+              pauseOnHover={false}
               gap="md"
               fadeMask={true}
               fadeWidthClass="w-24 sm:w-44 md:w-64"

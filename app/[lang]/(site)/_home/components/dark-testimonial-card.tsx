@@ -132,7 +132,7 @@ export function DarkTestimonialCard({
               className="flex h-7 w-7 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/80 transition-all hover:bg-white/20 hover:text-white"
               aria-label="Previous opinion"
             >
-              <span className="text-xs rtl:rotate-180">‹</span>
+              <span className="text-xs">‹</span>
             </button>
             <button
               type="button"
@@ -140,7 +140,7 @@ export function DarkTestimonialCard({
               className="flex h-7 w-7 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/80 transition-all hover:bg-white/20 hover:text-white"
               aria-label="Next opinion"
             >
-              <span className="text-xs rtl:rotate-180">›</span>
+              <span className="text-xs">›</span>
             </button>
           </div>
         </div>
