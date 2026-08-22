@@ -31,6 +31,7 @@ function getSpeedDuration(speed: MarqueeSpeed = 'normal'): string {
 
 export function ClientLogosMarquee({
   title,
+  titleClassName,
   className,
   logoClassName,
   showTitle = true,
@@ -66,7 +67,7 @@ export function ClientLogosMarquee({
   return (
     <div className={cn('w-full overflow-hidden py-6', className)}>
       {showTitle && title && (
-        <p className="mb-8 text-center text-xs font-semibold uppercase tracking-wider text-foreground/40">
+        <p className={cn("mb-8 text-center text-xs font-semibold uppercase tracking-wider text-foreground/40", titleClassName)}>
           {title}
         </p>
       )}

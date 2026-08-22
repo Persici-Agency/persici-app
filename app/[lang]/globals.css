@@ -423,4 +423,59 @@ body {
   animation-play-state: paused;
 }
 
+/* =============================================
+   Animated Crimson Waves Background
+   ============================================= */
+
+@keyframes wave-drift-1 {
+  0% {
+    transform: translate3d(0, 0, 0) scaleY(1) rotate(0deg);
+  }
+  50% {
+    transform: translate3d(-2%, 3%, 0) scaleY(1.08) rotate(1deg);
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scaleY(1) rotate(0deg);
+  }
+}
+
+@keyframes wave-drift-2 {
+  0% {
+    transform: translate3d(0, 0, 0) scaleX(1) rotate(0deg);
+  }
+  50% {
+    transform: translate3d(2%, -3%, 0) scaleX(1.06) rotate(-1deg);
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scaleX(1) rotate(0deg);
+  }
+}
+
+@keyframes wave-pulse-glow {
+  0%, 100% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.15);
+  }
+}
+
+.animate-wave-1 {
+  animation: wave-drift-1 16s ease-in-out infinite;
+  will-change: transform;
+}
+
+.animate-wave-2 {
+  animation: wave-drift-2 22s ease-in-out infinite;
+  will-change: transform;
+}
+
+.animate-wave-glow {
+  animation: wave-pulse-glow 9s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+
 

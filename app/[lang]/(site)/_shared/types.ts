@@ -58,6 +58,7 @@ export type MarqueeGap = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | number;
 
 export type ClientLogosMarqueeProps = {
   title?: string;
+  titleClassName?: string;
   className?: string;
   logoClassName?: string;
   showTitle?: boolean;

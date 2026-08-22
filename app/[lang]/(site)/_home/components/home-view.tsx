@@ -6,7 +6,7 @@ import { GrowthServicesSection } from './growth-services-section';
 import { ClientsVideoSection } from './clients-video-section';
 import { ApproachSection } from './approach-section';
 import { ReviewsSection } from './reviews-section';
-import { DiscoverySection } from './discovery-section';
+import { HomeContactSection } from './home-contact-section';
 
 export type HomeViewProps = {
   lang: string;
@@ -37,8 +37,8 @@ export function HomeView({ lang, dict }: HomeViewProps) {
       {/* 7. Words from Those We Scale (Reviews Wall) */}
       <ReviewsSection lang={lang} dict={dict} />
 
-      {/* 8. Schedule 30-Minute Discovery Call */}
-      <DiscoverySection dict={dict} />
+      {/* 8. Contact Us / Get In Touch Section (with Animated Crimson Wave Background) */}
+      <HomeContactSection lang={lang} dict={dict} />
     </div>
   );
 }
