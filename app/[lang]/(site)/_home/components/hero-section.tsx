@@ -1,6 +1,7 @@
 import type { Dictionary } from '@dictionaries';
 import { HomeButton, SwiperWrapper, FadeUp, AvatarSocialProof } from '@shared/components';
 import { socialProofAvatars } from '@shared/data';
+import { heroHeading } from '@shared';
 
 export type HeroSectionProps = {
   lang: string;
@@ -18,7 +19,7 @@ export function HeroSection({ lang, dict }: HeroSectionProps) {
       <div className="mx-auto max-w-5xl px-4 text-center sm:px-6 lg:px-8">
         {/* Main Headline */}
         <FadeUp delay={0} duration={800} distance={28} blur={true}>
-          <h1 className="font-primary text-5xl font-extrabold leading-15 sm:leading-20 lg:leading-30 tracking-tight text-foreground sm:text-7xl lg:text-8xl">
+          <h1 className={heroHeading}>
             {dict.hero.title}
           </h1>
         </FadeUp>

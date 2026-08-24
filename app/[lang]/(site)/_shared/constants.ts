@@ -11,9 +11,9 @@ export const ctaSectionWrapper = 'mx-auto max-w-7xl px-4 py-20 text-center sm:px
 // Typography & Badges
 // ==========================================
 export const badgePill = 'inline-block rounded-full bg-persici-crimson/10 px-3.5 py-1 text-xs font-semibold text-persici-crimson';
-export const heroHeading = 'mt-4 font-primary text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl lg:text-6xl';
+export const heroHeading = 'font-primary text-5xl font-extrabold leading-15 sm:leading-20 lg:leading-30 rtl:leading-20 rtl:sm:leading-30 rtl:lg:leading-40 tracking-tight text-foreground sm:text-7xl lg:text-8xl';
 export const heroDescription = 'mt-6 text-base leading-relaxed text-foreground/70 sm:text-lg';
-export const sectionHeading = 'font-primary text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl lg:text-6xl';
+export const sectionHeading = 'font-primary rtl:leading-15 rtl:sm:leading-20 rtl:lg:leading-25 text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl lg:text-6xl';
 export const sectionHeadingMd = 'font-primary text-2xl font-extrabold tracking-tight text-foreground sm:text-2xl lg:text-4xl';
 export const sectionSubtitle = 'mt-4 text-sm text-foreground/60';
 
