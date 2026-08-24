@@ -289,6 +289,8 @@
   --font-primary: var(--font-primary);
   --font-secondary: var(--font-secondary);
   --font-mono: var(--font-mono);
+  --font-cairo: var(--font-cairo);
+  --font-tajawal: var(--font-tajawal);
 
   /* Sizing & Max-Widths (8xl, 9xl, 10xl) */
   --width-8xl: 90rem;
@@ -325,21 +327,55 @@ body {
   font-family: var(--font-primary), "Lexend Deca", sans-serif;
 }
 
+/* Secondary font utility */
+.font-secondary {
+  font-family: var(--font-secondary), "Roboto", sans-serif;
+}
+
 /* Mono font utility */
 .font-mono {
   font-family: var(--font-mono), "Roboto Mono", monospace;
 }
 
-/* =============================================
-   RTL Support
-   ============================================= */
-
-[dir="rtl"] {
-  font-family: var(--font-secondary), "Roboto", "Segoe UI", Tahoma, sans-serif;
+/* Arabic font utilities */
+.font-cairo {
+  font-family: var(--font-cairo), "Cairo", sans-serif;
 }
 
-[dir="rtl"] .font-primary {
-  font-family: var(--font-primary), "Lexend Deca", "Segoe UI", Tahoma, sans-serif;
+.font-tajawal {
+  font-family: var(--font-tajawal), "Tajawal", sans-serif;
+}
+
+/* =============================================
+   RTL / Arabic Typography Support
+   ============================================= */
+
+[dir="rtl"],
+html[lang="ar"],
+body[dir="rtl"] {
+  font-family: var(--font-tajawal), "Tajawal", "Segoe UI", Tahoma, sans-serif;
+}
+
+[dir="rtl"] .font-primary,
+html[lang="ar"] .font-primary,
+[dir="rtl"] h1,
+[dir="rtl"] h2,
+[dir="rtl"] h3,
+[dir="rtl"] h4,
+[dir="rtl"] h5,
+[dir="rtl"] h6,
+html[lang="ar"] h1,
+html[lang="ar"] h2,
+html[lang="ar"] h3,
+html[lang="ar"] h4,
+html[lang="ar"] h5,
+html[lang="ar"] h6 {
+  font-family: var(--font-cairo), "Cairo", "Segoe UI", Tahoma, sans-serif;
+}
+
+[dir="rtl"] .font-secondary,
+html[lang="ar"] .font-secondary {
+  font-family: var(--font-tajawal), "Tajawal", "Segoe UI", Tahoma, sans-serif;
 }
 
 /* =============================================

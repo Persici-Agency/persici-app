@@ -27,16 +27,19 @@ export function GrowthServicesSection({ lang, dict }: GrowthServicesSectionProps
         : {};
 
     const isArabic = lang === 'ar';
+    const fallbackTag = isArabic
+      ? svc.arSubService || svc.enSubService || ''
+      : svc.enSubService || '';
     const fallbackTitle = isArabic
-      ? svc.arTitle || svc.enTitle || svc.title || ''
-      : svc.enTitle || svc.title || '';
+      ? svc.arTitle || svc.enTitle || ''
+      : svc.enTitle || '';
     const fallbackDescription = isArabic
-      ? svc.arDescription || svc.enDescription || svc.description || ''
-      : svc.enDescription || svc.description || '';
+      ? svc.arDescription || svc.enDescription || ''
+      : svc.enDescription || '';
 
     return {
       ...svc,
-      tag: localized.tag || svc.tag,
+      tag: localized.tag || fallbackTag,
       title: localized.title || fallbackTitle,
       description: localized.description || fallbackDescription,
     };

@@ -228,9 +228,8 @@ export interface GrowthServiceCardProps {
 
 export interface GrowthServiceItem extends BaseMongoDocument {
   key?: string;
-  tag: string;
-  title?: string;
-  description?: string;
+  enSubService?: string;
+  arSubService?: string;
   enTitle?: string;
   enDescription?: string;
   arTitle?: string;

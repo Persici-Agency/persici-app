@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { lexendDeca, roboto, robotoMono } from './_lib/fonts';
+import { lexendDeca, roboto, robotoMono, cairo, tajawal } from './_lib/fonts';
 import { localeDirection } from './_lib/i18n';
 import type { Locale } from './_lib/i18n';
 import { hasLocale } from './dictionaries';
@@ -36,7 +36,7 @@ export default async function RootLayout({
     <html
       lang={lang}
       dir={dir}
-      className={`${lexendDeca.variable} ${roboto.variable} ${robotoMono.variable} h-full antialiased`}
+      className={`${lexendDeca.variable} ${roboto.variable} ${robotoMono.variable} ${cairo.variable} ${tajawal.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>

@@ -681,7 +681,8 @@ export const growthServicesHome: GrowthServiceItem[] = [
   {
     id: 'business-growth-and-strategy',
     key: 'businessGrowthAndStrategy',
-    tag: 'Strategy & Consulting • E-Commerce • CRM & Customer Data',
+    enSubService: 'Strategy & Consulting • E-Commerce • CRM & Customer Data',
+    arSubService: 'الاستراتيجية والاستشارات • التجارة الإلكترونية • إدارة علاقات العملاء',
     enTitle: 'Business Growth & Strategy',
     enDescription: 'Focuses on optimizing revenue streams and business expansion through strategic consulting, comprehensive market analysis, and scalable growth engineering.',
     arTitle: 'نمو الأعمال والاستراتيجية',
@@ -695,7 +696,8 @@ export const growthServicesHome: GrowthServiceItem[] = [
   {
     id: 'branding-and-marketing-communications',
     key: 'brandingAndMarketingCommunications',
-    tag: 'Brand & Creative • Digital Marketing • PR & Communications',
+    enSubService: 'Brand & Creative • Digital Marketing • PR & Communications',
+    arSubService: 'العلامة التجارية والإبداع • التسويق الرقمي • العلاقات العامة والاتصال',
     enTitle: 'Branding & Marketing Communications',
     enDescription: 'Centers on building strong brand identity, driving audience acquisition, and managing public perception. This area handles visual storytelling, high-conversion multi-channel digital advertising, and strategic public relations to ensure the brand resonates with target markets and maintains a solid market reputation.',
     arTitle: 'الهوية التجارية والاتصالات التسويقية',
@@ -709,7 +711,8 @@ export const growthServicesHome: GrowthServiceItem[] = [
   {
     id: 'technology-and-digital-products',
     key: 'technologyAndDigitalProducts',
-    tag: 'Software Development • UX & Product Design • IT & Infrastructure • AI Integration',
+    enSubService: 'Software Development • UX & Product Design • IT & Infrastructure • AI Integration',
+    arSubService: 'تطوير البرمجيات • تصميم تجربة وواجهة المستخدم • تكنولوجيا المعلومات والبنية التحتية • تكامل الذكاء الاصطناعي',
     enTitle: 'Technology & Digital Products',
     enDescription: 'Focuses on engineering scalable, secure, and user-centric digital solutions from the ground up. This pillar covers custom web/mobile software engineering, intuitive UX/UI product design, stable cloud hosting/DevOps infrastructure, and intelligent AI automation to optimize enterprise operations and product lifecycles.',
     arTitle: 'التكنولوجيا والمنتجات الرقمية',
