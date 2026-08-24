@@ -1,6 +1,7 @@
 import React from 'react';
 import { cn } from '@shared/utils';
 import { FadeUp } from '../fade-up';
+import { platforms as platformsData } from '../../data';
 import type {
   GrowthServiceCardProps,
   PlatformBadgeKey,
@@ -41,10 +42,12 @@ function getPlatformIcon(platform: string, iconColor?: string, customClassName?:
 
   switch (platform) {
     case 'meta':
+    case 'meta-ads-manager':
       return <SiMeta className={cn(iconClasses, !iconColor && 'text-[#0866FF]')} aria-hidden="true" />;
     case 'tiktok':
       return <SiTiktok className={cn(iconClasses, !iconColor && 'text-black')} aria-hidden="true" />;
     case 'snapchat':
+    case 'snapchat-ads':
       return <SiSnapchat className={cn(iconClasses, !iconColor && 'text-black')} aria-hidden="true" />;
     case 'google-ads':
     case 'googleAds':
@@ -125,32 +128,63 @@ export function GrowthServiceCard({
   if (platforms && platforms.length > 0) {
     platforms.forEach((item, idx) => {
       if (typeof item === 'string') {
+        const platformObj = platformsData.find((p) => p.id === item);
         const config = PLATFORM_CONFIGS[item] || {
-          title: item,
-          defaultBg: 'bg-black/5',
-          defaultColor: '',
+          title: platformObj?.title || item,
+          defaultBg: platformObj?.bg || 'bg-black/5',
+          defaultColor: platformObj?.color || '',
         };
         const activeColor = cardIconColor || config.defaultColor;
-        const activeBg = cardIconBg || config.defaultBg;
+        const activeBg = cardIconBg || platformObj?.bg || config.defaultBg;
+
+        let iconNode: React.ReactNode = null;
+        if (platformObj?.icon && (platformObj.icon.startsWith('http') || platformObj.icon.startsWith('/'))) {
+          iconNode = (
+            <img
+              src={platformObj.icon}
+              alt={platformObj.title}
+              className={cn('h-5 w-5 object-contain', cardIconClassName, platformObj.iconClassName)}
+              loading="lazy"
+            />
+          );
+        } else {
+          iconNode = getPlatformIcon(item, activeColor, cardIconClassName);
+        }
 
         resolvedBadges.push({
           key: `${item}-${idx}`,
-          title: config.title,
+          title: platformObj?.title || config.title,
           bg: activeBg,
-          icon: getPlatformIcon(item, activeColor, cardIconClassName),
+          icon: iconNode,
+          className: platformObj?.className,
         });
       } else if (typeof item === 'object' && item !== null) {
         const platformKey = item.platform || '';
+        const platformObj = platformKey ? platformsData.find((p) => p.id === platformKey) : null;
         const config = platformKey ? PLATFORM_CONFIGS[platformKey] : null;
-        const activeColor = item.color || item.iconColor || cardIconColor || config?.defaultColor;
-        const activeBg = item.bg || cardIconBg || config?.defaultBg || 'bg-black/5';
+        const activeColor = item.color || item.iconColor || cardIconColor || platformObj?.color || config?.defaultColor;
+        const activeBg = item.bg || cardIconBg || platformObj?.bg || config?.defaultBg || 'bg-black/5';
+
+        let iconNode: React.ReactNode = item.icon || null;
+        if (!iconNode && platformObj?.icon && (platformObj.icon.startsWith('http') || platformObj.icon.startsWith('/'))) {
+          iconNode = (
+            <img
+              src={platformObj.icon}
+              alt={platformObj.title}
+              className={cn('h-5 w-5 object-contain', cardIconClassName, item.iconClassName || platformObj.iconClassName)}
+              loading="lazy"
+            />
+          );
+        } else if (!iconNode && platformKey) {
+          iconNode = getPlatformIcon(platformKey, activeColor, item.iconClassName || cardIconClassName);
+        }
 
         resolvedBadges.push({
           key: item.id || `${platformKey || 'badge'}-${idx}`,
-          title: item.title || config?.title || '',
+          title: item.title || platformObj?.title || config?.title || '',
           bg: activeBg,
-          icon: item.icon || (platformKey ? getPlatformIcon(platformKey, activeColor, item.iconClassName || cardIconClassName) : null),
-          className: item.className,
+          icon: iconNode,
+          className: item.className || platformObj?.className,
         });
       }
     });

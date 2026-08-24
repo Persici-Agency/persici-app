@@ -5,6 +5,7 @@ import {
   videoTestimonials,
   heritageCollageImages,
   growthServicesHome,
+  platforms,
   approachTeamAvatars,
   reviewsList,
   discoveryRevenueOptions,
@@ -16,6 +17,7 @@ import type {
   VideoTestimonialItem,
   HeritageCollageItem,
   GrowthServiceItem,
+  platformsType,
   GrowthTeamMember,
   ReviewItem,
   DiscoveryRevenueOption,
@@ -43,6 +45,10 @@ export function getHomeHeritageCollage(): HeritageCollageItem[] {
 
 export function getHomeGrowthServices(): GrowthServiceItem[] {
   return growthServicesHome;
+}
+
+export function getHomePlatforms(): platformsType[] {
+  return platforms;
 }
 
 export function getHomeApproachTeam(): GrowthTeamMember[] {

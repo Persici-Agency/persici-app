@@ -229,8 +229,12 @@ export interface GrowthServiceCardProps {
 export interface GrowthServiceItem extends BaseMongoDocument {
   key?: string;
   tag: string;
-  title: string;
-  description: string;
+  title?: string;
+  description?: string;
+  enTitle?: string;
+  enDescription?: string;
+  arTitle?: string;
+  arDescription?: string;
   tagColor?: string;
   dotColor?: string;
   platforms?: (PlatformBadgeKey | GrowthServiceBadge)[];
@@ -238,6 +242,17 @@ export interface GrowthServiceItem extends BaseMongoDocument {
   iconColor?: string;
   iconBg?: string;
   order?: number;
+}
+
+export interface platformsType extends BaseMongoDocument {
+  id: string;
+  title: string;
+  icon: string;
+  bg?: string;
+  color?: string;
+  iconColor?: string;
+  className?: string;
+  iconClassName?: string;
 }
 
 export interface ServiceItem extends BaseMongoDocument {
