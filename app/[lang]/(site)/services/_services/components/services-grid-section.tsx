@@ -1,9 +1,9 @@
 import Link from 'next/link';
-import { getServicesList } from '../services';
+import { fetchServicesList } from '../services';
 import { sectionContainer, sectionPaddingY, featureCard } from '@shared';
 
-export function ServicesGridSection({ lang }: { lang: string }) {
-  const services = getServicesList();
+export async function ServicesGridSection({ lang }: { lang: string }) {
+  const services = await fetchServicesList();
 
   return (
     <section className={`${sectionContainer} ${sectionPaddingY}`}>
