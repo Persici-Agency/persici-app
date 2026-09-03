@@ -1,7 +1,7 @@
 import type { Dictionary } from '@dictionaries';
 
 export interface BaseMongoDocument {
-  _id?: any;
+  _id?: string;
   id?: string | number;
   createdAt?: string | Date;
   updatedAt?: string | Date;

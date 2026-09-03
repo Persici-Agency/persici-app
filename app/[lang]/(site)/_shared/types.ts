@@ -4,7 +4,7 @@ import type { Dictionary } from "@dictionaries";
 // MongoDB Base Document & API Contracts
 // ============================================================================
 export interface BaseMongoDocument {
-  _id?: any;
+  _id?: string;
   id?: string | number;
   createdAt?: string | Date;
   updatedAt?: string | Date;

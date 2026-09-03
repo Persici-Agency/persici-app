@@ -36,9 +36,38 @@ export default async function RootLayout({
     <html
       lang={lang}
       dir={dir}
+      suppressHydrationWarning
       className={`${lexendDeca.variable} ${roboto.variable} ${robotoMono.variable} ${cairo.variable} ${tajawal.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var origSetAttr = Element.prototype.setAttribute;
+                  Element.prototype.setAttribute = function(name, val) {
+                    if (name === 'bis_skin_checked' || name === 'bis_register') return;
+                    return origSetAttr.apply(this, arguments);
+                  };
+                  if (typeof document !== 'undefined') {
+                    var clean = function() {
+                      var els = document.querySelectorAll('[bis_skin_checked],[bis_register]');
+                      for (var i = 0; i < els.length; i++) {
+                        els[i].removeAttribute('bis_skin_checked');
+                        els[i].removeAttribute('bis_register');
+                      }
+                    };
+                    clean();
+                    document.addEventListener('DOMContentLoaded', clean);
+                  }
+                } catch(e) {}
+              })();
+            `,
+          }}
+        />
+      </head>
+      <body className="min-h-full flex flex-col" suppressHydrationWarning>{children}</body>
     </html>
   );
 }

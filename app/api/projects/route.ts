@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
       updatedAt: new Date(),
     };
 
-    const res = await db.collection(COLLECTIONS.PROJECTS).insertOne(newProject);
+    const res = await db.collection(COLLECTIONS.PROJECTS).insertOne(newProject as unknown as import('mongodb').Document);
 
     return NextResponse.json(
       {

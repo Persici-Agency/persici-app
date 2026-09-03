@@ -25,10 +25,10 @@ export function Header({ lang, dict }: HeaderProps) {
   };
 
   return (
-    <header className="fixed top-0 z-50 w-full transition-all duration-200">
-      <div className={`${sectionContainer} max-w-9xl flex h-25 items-center justify-between`}>
+    <header className="fixed top-0 z-50 w-full transition-all duration-200" suppressHydrationWarning>
+      <div className={`${sectionContainer} max-w-9xl flex h-25 items-center justify-between`} suppressHydrationWarning>
         {/* Left: Brand Logo */}
-        <div className="flex items-center">
+        <div className="flex items-center" suppressHydrationWarning>
           <Logo lang={lang} variant="dark" />
         </div>
 

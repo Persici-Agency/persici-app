@@ -218,7 +218,7 @@ export async function saveContactSubmission(
       updatedAt: new Date(),
     };
 
-    const res = await db.collection(COLLECTIONS.CONTACT_SUBMISSIONS).insertOne(submission);
+    const res = await db.collection(COLLECTIONS.CONTACT_SUBMISSIONS).insertOne(submission as unknown as Document);
     return { success: true, id: res.insertedId.toString() };
   } catch (err) {
     console.error('[db.service] saveContactSubmission error:', err);
@@ -243,7 +243,7 @@ export async function saveDiscoverySubmission(
       updatedAt: new Date(),
     };
 
-    const res = await db.collection(COLLECTIONS.DISCOVERY_SUBMISSIONS).insertOne(submission);
+    const res = await db.collection(COLLECTIONS.DISCOVERY_SUBMISSIONS).insertOne(submission as unknown as Document);
     return { success: true, id: res.insertedId.toString() };
   } catch (err) {
     console.error('[db.service] saveDiscoverySubmission error:', err);

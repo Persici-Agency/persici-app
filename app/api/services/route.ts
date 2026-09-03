@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
       updatedAt: new Date(),
     };
 
-    const res = await db.collection(COLLECTIONS.SERVICES).insertOne(newService);
+    const res = await db.collection(COLLECTIONS.SERVICES).insertOne(newService as unknown as import('mongodb').Document);
 
     return NextResponse.json(
       {
