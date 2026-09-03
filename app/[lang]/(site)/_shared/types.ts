@@ -23,11 +23,21 @@ export type FooterProps = {
   dict: Dictionary;
 };
 
+export type NavSubItem = {
+  key: string;
+  href: string;
+  labelKey?: string;
+  icon?: string;
+  description?: string;
+};
+
 export type NavLink = {
   key: string;
   href: string;
   labelKey?: string;
   isExternal?: boolean;
+  hasDropdown?: boolean;
+  subItems?: NavSubItem[];
 };
 
 export type PartnerBadge = {

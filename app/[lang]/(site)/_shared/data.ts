@@ -28,12 +28,63 @@ import type {
 // 1. Navigation & Certified Partners
 // ============================================================================
 export const siteNavLinks: NavLink[] = [
-  { key: 'home', href: '/' },
-  { key: 'services', href: '/services' },
-  { key: 'work', href: '/work' },
-  { key: 'about', href: '/about' },
-  { key: 'insights', href: '/insights' },
-  { key: 'contact', href: '/contact' },
+  {
+    key: 'solutions',
+    href: '/solutions',
+    hasDropdown: true,
+    subItems: [
+      { key: 'applicationManagement', href: '/solutions/application-management' },
+      { key: 'marketingCommunications', href: '/solutions/marketing-communications' },
+      { key: 'ecommerceGrowth', href: '/solutions/ecommerce-growth' },
+      { key: 'aiIntegration', href: '/solutions/ai-integration' },
+      { key: 'uxProductDesign', href: '/solutions/ux-product-design' },
+      { key: 'customerEngagement', href: '/solutions/customer-engagement' },
+      { key: 'digitalEngineering', href: '/solutions/digital-engineering' },
+      { key: 'supplyChain', href: '/solutions/supply-chain' },
+      { key: 'crmManagement', href: '/solutions/crm-management' },
+    ],
+  },
+  {
+    key: 'industries',
+    href: '/industries',
+    hasDropdown: true,
+    subItems: [
+      { key: 'consumerProducts', href: '/industries/consumer-products' },
+      { key: 'telecomMediaTechnology', href: '/industries/telecom-media-technology' },
+      { key: 'publicSector', href: '/industries/public-sector' },
+      { key: 'retail', href: '/industries/retail' },
+      { key: 'health', href: '/industries/health' },
+      { key: 'energyCommodities', href: '/industries/energy-commodities' },
+    ],
+  },
+  {
+    key: 'howWeDoIt',
+    href: '/how-we-do-it',
+    hasDropdown: true,
+    subItems: [
+      { key: 'strategyConsulting', href: '/how-we-do-it/strategy-consulting' },
+      { key: 'digitalTransformationFramework', href: '/how-we-do-it/digital-transformation-framework' },
+      { key: 'productManagement', href: '/how-we-do-it/product-management' },
+      { key: 'engineeringTechnology', href: '/how-we-do-it/engineering-technology' },
+      { key: 'experienceTransformation', href: '/how-we-do-it/experience-transformation' },
+    ],
+  },
+  {
+    key: 'clientStories',
+    href: '/client-stories',
+    hasDropdown: false,
+  },
+  {
+    key: 'company',
+    href: '/about',
+    hasDropdown: true,
+    subItems: [
+      { key: 'aboutUs', href: '/about' },
+      { key: 'insights', href: '/insights' },
+      { key: 'careers', href: '/careers' },
+      { key: 'contactUs', href: '/contact' },
+    ],
+  },
 ];
 
 export const footerPartnerBadges: PartnerBadge[] = [
