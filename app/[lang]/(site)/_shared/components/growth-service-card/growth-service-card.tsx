@@ -247,7 +247,7 @@ export function GrowthServiceCard({
           {/* Platform / App Badges with dynamic icon & bg colors */}
           {resolvedBadges.length > 0 && (
             <div className="flex items-center gap-2.5">
-              {resolvedBadges.map((badge) => (
+              {resolvedBadges.slice(0, 8).map((badge) => (
                 <div
                   key={badge.key}
                   className={cn(
