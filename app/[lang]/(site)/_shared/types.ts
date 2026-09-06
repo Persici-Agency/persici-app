@@ -595,6 +595,32 @@ export interface SolutionFaqItem {
   answer: LocalizedString;
 }
 
+export interface StoryMetricItem {
+  id?: string;
+  value: string;
+  label?: string | LocalizedString;
+}
+
+export interface FeaturedClientStoryItem {
+  id?: string;
+  badge?: string | LocalizedString;
+  title: string | LocalizedString;
+  description?: string | LocalizedString;
+  metrics?: StoryMetricItem[];
+  metric1Val?: string;
+  metric1Label?: string | LocalizedString;
+  metric2Val?: string;
+  metric2Label?: string | LocalizedString;
+  metric3Val?: string;
+  metric3Label?: string | LocalizedString;
+  metric4Val?: string;
+  metric4Label?: string | LocalizedString;
+  image?: string;
+  ctaText?: string | LocalizedString;
+  ctaHref?: string;
+  [key: string]: unknown;
+}
+
 export interface SolutionsPageContent extends BaseMongoDocument {
   page: 'solutions';
   heroBadge: LocalizedString;
@@ -623,9 +649,13 @@ export interface SolutionsPageContent extends BaseMongoDocument {
   spotlightMetric1Label: LocalizedString;
   spotlightMetric2Val: string;
   spotlightMetric2Label: LocalizedString;
+  spotlightMetric3Val?: string;
+  spotlightMetric3Label?: LocalizedString;
+  spotlightMetrics?: Array<{ value: string; label?: LocalizedString | string; id?: string }>;
   spotlightImage: string;
   spotlightCtaText: LocalizedString;
   spotlightCtaHref: string;
+  spotlightStories?: FeaturedClientStoryItem[];
   quoteText: LocalizedString;
   quoteAuthor: string;
   quoteRole: LocalizedString;

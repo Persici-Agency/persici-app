@@ -6,7 +6,7 @@ import { HomeContactSection } from '../../../../_home/components/home-contact-se
 import {
   SolutionsHeroSection,
   SolutionsVectorDiagram,
-  SolutionsStorySpotlight,
+  StackedFeaturedClientStories,
   SolutionsClientReview,
   SolutionsFaqSection,
 } from '../../../_solutions/components';
@@ -109,7 +109,7 @@ export function SolutionDetailView({ solution, lang, dict }: SolutionDetailViewP
       </section>
 
       {/* 3. Reusable Featured Spotlight Story */}
-      <SolutionsStorySpotlight
+      <StackedFeaturedClientStories
         badge={isRtl ? 'نتائج مثبتة في الميدان' : 'Proven Track Record'}
         title={isRtl ? 'نمو قابل للقياس وأثر مباشر على الأرباح' : 'Measurable Growth With Direct Bottom-Line Impact'}
         description={

@@ -7,8 +7,9 @@ import { SolutionsOfferingsGrid } from './solutions-offerings-grid';
 import { SolutionsWhyItMatters } from './solutions-why-it-matters';
 import { SolutionsBenefitsStrip } from './solutions-benefits-strip';
 import { SolutionsDeliveryEngine } from './solutions-delivery-engine';
-import { SolutionsStorySpotlight } from './solutions-story-spotlight';
+import { StackedFeaturedClientStories } from './stacked-featured-client-stories';
 import { SolutionsClientReview } from './solutions-client-review';
+import { SolutionsInsightsSection } from './solutions-insights-section';
 import { SolutionsFaqSection } from './solutions-faq-section';
 
 export type SolutionsViewProps = {
@@ -57,8 +58,12 @@ export function SolutionsView({ content, lang, dict }: SolutionsViewProps) {
         lang={lang}
       />
 
-      {/* 5. Customer Stories / Spotlight Card */}
-      <SolutionsStorySpotlight content={content} lang={lang} />
+      {/* 5. Customer Stories / Stacked Spotlight Cards */}
+      <StackedFeaturedClientStories
+        content={content}
+        stories={content.spotlightStories}
+        lang={lang}
+      />
 
       {/* 6. "How We Deliver Differently" / Cut Dev Time Platform */}
       <SolutionsDeliveryEngine
@@ -69,10 +74,13 @@ export function SolutionsView({ content, lang, dict }: SolutionsViewProps) {
         lang={lang}
       />
 
-      {/* 7. Client Review Standalone Monospace Quote */}
+      {/* 7. Our Latest Thinking / Insights Section */}
+      <SolutionsInsightsSection lang={lang} />
+
+      {/* 8. Client Review Standalone Monospace Quote */}
       <SolutionsClientReview content={content} lang={lang} />
 
-      {/* 8. FAQs Accordion */}
+      {/* 9. FAQs Accordion */}
       <SolutionsFaqSection
         title={faqsTitle}
         subtitle={faqsSubtitle}

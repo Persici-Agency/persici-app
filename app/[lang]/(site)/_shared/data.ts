@@ -1842,12 +1842,151 @@ export const solutionsPageContent: SolutionsPageContent = {
     en: 'Blended ROAS',
     ar: 'العائد الإعلاني الإجمالي',
   },
+  spotlightMetric3Val: '99.8%',
+  spotlightMetric3Label: {
+    en: 'Fulfillment Accuracy',
+    ar: 'دقة تجهيز الطلبات',
+  },
   spotlightImage: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=800&q=80',
   spotlightCtaText: {
-    en: 'Read Client Story',
-    ar: 'اقرأ قصة النجاح',
+    en: 'Learn more',
+    ar: 'اعرف المزيد',
   },
   spotlightCtaHref: '/client-stories',
+  spotlightStories: [
+    {
+      id: 'nissan-mobility',
+      badge: {
+        en: 'Transportation & Mobility',
+        ar: 'قطاع السيارات والنقل الذكي',
+      },
+      title: {
+        en: 'Nissan Cuts IT Operational Costs 40% with AI-Powered Monitoring and Automation',
+        ar: 'نيسان تخفض تكاليف تشغيل تقنية المعلومات بنسبة 40% عبر الأتمتة والمراقبة الذكية',
+      },
+      description: {
+        en: 'Modernized enterprise observability across regional manufacturing clusters with automated incident remediation, zero-downtime microservices, and unified telemetry pipelines.',
+        ar: 'تحديث شامل لمنظومة المراقبة والتشغيل عبر المصانع الإقليمية مع حلول الاستجابة التنبؤية للأعطال والخدمات المصغرة دون أي انقطاع.',
+      },
+      metrics: [
+        {
+          value: '40%',
+          label: {
+            en: 'IT OpEx Reduction',
+            ar: 'خفض تكاليف التشغيل',
+          },
+        },
+        {
+          value: '62%',
+          label: {
+            en: 'Faster MTTR',
+            ar: 'تسريع حل الحوادث',
+          },
+        },
+        {
+          value: '99.9%',
+          label: {
+            en: 'System Uptime',
+            ar: 'جاهزية الأنظمة التشغيلية',
+          },
+        },
+      ],
+      image: 'https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=1200&q=80',
+      ctaText: {
+        en: 'Learn more',
+        ar: 'اعرف المزيد',
+      },
+      ctaHref: '/client-stories',
+    },
+    {
+      id: 'lahfaa-perfumes',
+      badge: {
+        en: 'Luxury Goods & E-Commerce',
+        ar: 'السلع الفاخرة والتجارة الإلكترونية',
+      },
+      title: {
+        en: 'Lahfaa Perfumes: Luxury E-Commerce Redesign & GCC Expansion',
+        ar: 'عطور لهفة: إعادة تصميم المتجر الفاخر والتوسع في أسواق الخليج',
+      },
+      description: {
+        en: 'Transformed an established luxury fragrance brand with headless Shopify Plus architecture, conversion engineering, and full-funnel performance marketing across UAE and Saudi Arabia.',
+        ar: 'إعادة تصميم متكاملة لدار عطور فاخرة عبر شوبيفاي بلس معمارية متطورة، وهندسة معدلات التحويل، وحملات أداء رقمية في الإمارات والسعودية.',
+      },
+      metrics: [
+        {
+          value: '+340%',
+          label: {
+            en: 'Revenue Growth',
+            ar: 'نمو الإيرادات',
+          },
+        },
+        {
+          value: '4.2x',
+          label: {
+            en: 'Blended ROAS',
+            ar: 'العائد الإعلاني الإجمالي',
+          },
+        },
+        {
+          value: '99.8%',
+          label: {
+            en: 'Fulfillment Accuracy',
+            ar: 'دقة تجهيز الطلبات',
+          },
+        },
+      ],
+      image: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1200&q=80',
+      ctaText: {
+        en: 'Learn more',
+        ar: 'اعرف المزيد',
+      },
+      ctaHref: '/client-stories',
+    },
+    {
+      id: 'veloce-fintech',
+      badge: {
+        en: 'Financial Services & FinTech',
+        ar: 'الخدمات المالية والتقنية المالية',
+      },
+      title: {
+        en: 'Veloce Global: Modernizing Cross-Border Enterprise Payment Rails',
+        ar: 'فيلوتشي العالمية: تحديث مسارات الدفع المالي العابر للحدود للمؤسسات',
+      },
+      description: {
+        en: 'Engineered next-generation settlement pipelines and automated fraud defense engines, processing millions in daily transactions with sub-second latency and bank-grade security.',
+        ar: 'بناء مسارات تسوية مالية فائقة السرعة وأنظمة حماية ذكية من الاحتيال لمعالجة ملايين المعاملات اليومية بأمان مصرفي متكامل.',
+      },
+      metrics: [
+        {
+          value: '<2.1s',
+          label: {
+            en: 'Settlement Time',
+            ar: 'وقت تسوية المعاملات',
+          },
+        },
+        {
+          value: '10M+',
+          label: {
+            en: 'Daily Volume',
+            ar: 'حجم المعاملات اليومية',
+          },
+        },
+        {
+          value: '99.99%',
+          label: {
+            en: 'Platform Availability',
+            ar: 'توافر المنصة المستمر',
+          },
+        },
+      ],
+      image: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=1200&q=80',
+      ctaText: {
+        en: 'Learn more',
+        ar: 'اعرف المزيد',
+      },
+      ctaHref: '/client-stories',
+    },
+  ],
   quoteText: {
     en: '"Working with Persici has been our best growth decision. Their team\'s strategy, conversion engineering, and execution gave us 3.4x growth in under 6 months. A true growth partner."',
     ar: '"العمل مع بيرسيسي كان أفضل قرار لنمو أعمالنا. استراتيجيتهم وهندسة التحويل والتنفيذ المتقن حققت لنا نمواً بنسبة 3.4 أضعاف في أقل من 6 أشهر."',
