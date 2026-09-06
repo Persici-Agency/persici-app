@@ -8,6 +8,7 @@ import { SolutionsWhyItMatters } from './solutions-why-it-matters';
 import { SolutionsBenefitsStrip } from './solutions-benefits-strip';
 import { SolutionsDeliveryEngine } from './solutions-delivery-engine';
 import { SolutionsStorySpotlight } from './solutions-story-spotlight';
+import { SolutionsClientReview } from './solutions-client-review';
 import { SolutionsFaqSection } from './solutions-faq-section';
 
 export type SolutionsViewProps = {
@@ -56,7 +57,10 @@ export function SolutionsView({ content, lang, dict }: SolutionsViewProps) {
         lang={lang}
       />
 
-      {/* 5. "How We Deliver Differently" / Cut Dev Time Platform */}
+      {/* 5. Customer Stories / Spotlight Card */}
+      <SolutionsStorySpotlight content={content} lang={lang} />
+
+      {/* 6. "How We Deliver Differently" / Cut Dev Time Platform */}
       <SolutionsDeliveryEngine
         title={deliveryTitle}
         subtitle={deliverySubtitle}
@@ -65,10 +69,10 @@ export function SolutionsView({ content, lang, dict }: SolutionsViewProps) {
         lang={lang}
       />
 
-      {/* 6. Customer Stories / Spotlight Card */}
-      <SolutionsStorySpotlight content={content} lang={lang} />
+      {/* 7. Client Review Standalone Monospace Quote */}
+      <SolutionsClientReview content={content} lang={lang} />
 
-      {/* 7. FAQs Accordion */}
+      {/* 8. FAQs Accordion */}
       <SolutionsFaqSection
         title={faqsTitle}
         subtitle={faqsSubtitle}
@@ -76,7 +80,7 @@ export function SolutionsView({ content, lang, dict }: SolutionsViewProps) {
         lang={lang}
       />
 
-      {/* 8. Static Home Contact Section (Required on all Solution Pages) */}
+      {/* 9. Static Home Contact Section (Required on all Solution Pages) */}
       <HomeContactSection lang={lang} dict={dict} />
     </div>
   );

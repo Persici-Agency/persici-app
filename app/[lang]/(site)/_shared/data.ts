@@ -1858,8 +1858,8 @@ export const solutionsPageContent: SolutionsPageContent = {
     ar: 'المدير التنفيذي، مجموعة نورديك ريتيل',
   },
   faqsTitle: {
-    en: 'Frequently Asked Questions',
-    ar: 'الأسئلة الشائعة حول حلولنا',
+    en: 'FAQ',
+    ar: 'الأسئلة الشائعة',
   },
   faqsSubtitle: {
     en: 'Clear answers on our delivery framework, integration timelines, and partnership model.',

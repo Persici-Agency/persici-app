@@ -1,10 +1,15 @@
 import React from 'react';
 import type { Dictionary } from '@dictionaries';
 import type { SolutionOfferingItem } from '@shared/types';
-import { sectionContainer, sectionPaddingY, badgePill } from '@shared/constants';
-import { HomeButton, ShapedImageContainer, FadeUp, CountUp } from '@shared';
+import { sectionContainer, sectionPaddingY } from '@shared/constants';
 import { HomeContactSection } from '../../../../_home/components/home-contact-section';
-import { SolutionsVectorDiagram } from '../../../_solutions/components/solutions-vector-diagram';
+import {
+  SolutionsHeroSection,
+  SolutionsVectorDiagram,
+  SolutionsStorySpotlight,
+  SolutionsClientReview,
+  SolutionsFaqSection,
+} from '../../../_solutions/components';
 
 export type SolutionDetailViewProps = {
   solution: SolutionOfferingItem;
@@ -20,59 +25,34 @@ export function SolutionDetailView({ solution, lang, dict }: SolutionDetailViewP
 
   return (
     <div className="flex flex-col min-h-screen">
-      {/* 1. Solution Hero Section */}
-      <section className="relative overflow-hidden pt-28 pb-16 sm:pt-36 sm:pb-24 lg:pt-40 lg:pb-32 bg-linear-to-b from-white via-persici-white to-slate-50/50">
-        <div className={sectionContainer}>
-          <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-16">
-            <div className="lg:col-span-7">
-              <div className="inline-flex items-center gap-2 mb-6">
-                <span className={badgePill}>
-                  {tag}
-                </span>
-                <span className="text-xs font-semibold text-slate-400">
-                  {isRtl ? 'حل مؤسسي متقدم' : 'Enterprise Solution'}
-                </span>
-              </div>
-
-              <h1 className="font-primary text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 leading-[1.15]">
-                {title}
-              </h1>
-
-              <p className="mt-6 text-base sm:text-lg leading-relaxed text-slate-600 max-w-2xl">
-                {desc}
-              </p>
-
-              <div className="mt-8 sm:mt-10 flex flex-wrap items-center gap-4">
-                <HomeButton
-                  href="#contactUs"
-                  title={isRtl ? 'احجز استشارة نمو' : 'Schedule Strategy Session'}
-                  className="bg-persici-crimson text-white hover:bg-persici-crimson/90"
-                  currentLang={lang}
-                  isLangEffectIcon={true}
-                />
-              </div>
+      {/* 1. Dynamic Solution Hero Section */}
+      <SolutionsHeroSection
+        tag={tag}
+        secondaryTag={isRtl ? 'حل مؤسسي متقدم' : 'Enterprise Solution'}
+        title={title}
+        subtitle={desc}
+        ctaHref="#contactUs"
+        ctaText={isRtl ? 'احجز استشارة نمو' : 'Schedule Strategy Session'}
+        visual={
+          <div className="relative overflow-hidden rounded-3xl border border-slate-200/90 bg-white p-8 sm:p-12 shadow-xl text-center">
+            <div className="mx-auto flex items-center justify-center mb-6">
+              <SolutionsVectorDiagram
+                type={solution.diagramType}
+                className="h-28 w-28 sm:h-36 sm:w-36 drop-shadow-md"
+              />
             </div>
-
-            {/* Visual Vector & Mockup Showcase */}
-            <div className="lg:col-span-5 relative">
-              <div className="relative overflow-hidden rounded-3xl border border-slate-200/90 bg-white p-8 sm:p-12 shadow-xl text-center">
-                <div className="mx-auto flex items-center justify-center mb-6">
-                  <SolutionsVectorDiagram
-                    type={solution.diagramType}
-                    className="h-28 w-28 sm:h-36 sm:w-36 drop-shadow-md"
-                  />
-                </div>
-                <h3 className="font-primary text-xl font-bold text-slate-900 mb-2">
-                  {title} Architecture
-                </h3>
-                <p className="text-xs sm:text-sm text-slate-500 max-w-xs mx-auto">
-                  {isRtl ? 'منهجية معيارية تضمن موثوقية التنفيذ والتوسع المستدام' : 'Modular architecture engineered for enterprise reliability and continuous scale'}
-                </p>
-              </div>
-            </div>
+            <h3 className="font-primary text-xl font-bold text-slate-900 mb-2">
+              {title} Architecture
+            </h3>
+            <p className="text-xs sm:text-sm text-slate-500 max-w-xs mx-auto">
+              {isRtl
+                ? 'منهجية معيارية تضمن موثوقية التنفيذ والتوسع المستدام'
+                : 'Modular architecture engineered for enterprise reliability and continuous scale'}
+            </p>
           </div>
-        </div>
-      </section>
+        }
+        lang={lang}
+      />
 
       {/* 2. Strategic Imperative Section */}
       <section className={`${sectionPaddingY} bg-white border-y border-slate-100`}>
@@ -128,66 +108,84 @@ export function SolutionDetailView({ solution, lang, dict }: SolutionDetailViewP
         </div>
       </section>
 
-      {/* 3. Featured Spotlight Story */}
-      <section className={`${sectionPaddingY} bg-slate-900 text-white relative`}>
-        <div className={sectionContainer}>
-          <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-14">
-            <div className="lg:col-span-7">
-              <span className="text-xs font-semibold uppercase tracking-widest text-persici-crimson mb-3 block">
-                {isRtl ? 'نتائج مثبتة في الميدان' : 'Proven Track Record'}
-              </span>
-              <h2 className="font-primary text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white leading-tight">
-                {isRtl ? 'نمو قابل للقياس وأثر مباشر على الأرباح' : 'Measurable Growth With Direct Bottom-Line Impact'}
-              </h2>
-              <p className="mt-4 text-base leading-relaxed text-slate-300">
-                {isRtl
-                  ? 'نحن لا نكتفي بتقديم التوصيات، بل نقود التنفيذ الهندسي والتسويقي المتكامل لضمان تفوق علامتك التجارية.'
-                  : 'We partner directly with founders and leadership teams to architect, deploy, and scale high-growth engines with uncompromising quality.'}
-              </p>
+      {/* 3. Reusable Featured Spotlight Story */}
+      <SolutionsStorySpotlight
+        badge={isRtl ? 'نتائج مثبتة في الميدان' : 'Proven Track Record'}
+        title={isRtl ? 'نمو قابل للقياس وأثر مباشر على الأرباح' : 'Measurable Growth With Direct Bottom-Line Impact'}
+        description={
+          isRtl
+            ? 'نحن لا نكتفي بتقديم التوصيات، بل نقود التنفيذ الهندسي والتسويقي المتكامل لضمان تفوق علامتك التجارية.'
+            : 'We partner directly with founders and leadership teams to architect, deploy, and scale high-growth engines with uncompromising quality.'
+        }
+        metric1Val="+340%"
+        metric1Label={isRtl ? 'متوسط نمو الإيرادات' : 'Average Revenue Growth'}
+        metric2Val="4.2x"
+        metric2Label={isRtl ? 'العائد على الإنفاق' : 'Average Return on Spend'}
+        image="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80"
+        ctaText={isRtl ? 'احجز استشارة استراتيجية' : 'Book Strategy Consultation'}
+        ctaHref="#contactUs"
+        lang={lang}
+      />
 
-              <div className="mt-8 grid grid-cols-2 gap-6 pt-6 border-t border-white/10">
-                <div>
-                  <div className="font-primary text-3xl font-extrabold text-persici-crimson">
-                    <CountUp value="+340%" />
-                  </div>
-                  <div className="text-xs text-slate-400 mt-1">
-                    {isRtl ? 'متوسط نمو الإيرادات' : 'Average Revenue Growth'}
-                  </div>
-                </div>
-                <div>
-                  <div className="font-primary text-3xl font-extrabold text-white">
-                    <CountUp value="4.2x" />
-                  </div>
-                  <div className="text-xs text-slate-400 mt-1">
-                    {isRtl ? 'العائد على الإنفاق' : 'Average Return on Spend'}
-                  </div>
-                </div>
-              </div>
-            </div>
+      {/* 4. Reusable Client Review */}
+      <SolutionsClientReview
+        badge={isRtl ? 'شهادة العميل' : 'Client Review'}
+        quoteText={{
+          en: `Partnering with Persici for our ${title} transformation allowed us to scale throughput while significantly cutting operational overhead. A truly transformative engagement.`,
+          ar: `شراكتنا مع بيرسيسي في تطبيق ${title} مكّنتنا من مضاعفة قدراتنا التشغيلية وخفض تكاليف التنفيذ بشكل ملموس. كانت تجربة فارقة بكل المقاييس.`,
+        }}
+        quoteAuthor="Elena Rostova"
+        quoteRole={{
+          en: `Chief Technology Officer, Veloce Global`,
+          ar: `الرئيس التنفيذي للتكنولوجيا، فيلوس جلوبال`,
+        }}
+        lang={lang}
+      />
 
-            <div className="lg:col-span-5 relative">
-              <FadeUp
-                direction={isRtl ? 'right' : 'left'}
-                delay={100}
-                distance={24}
-                duration={750}
-                className="relative"
-              >
-                <ShapedImageContainer
-                  shape="sapient-tab-tl"
-                  src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80"
-                  alt={title}
-                  aspectRatio="aspect-4/3"
-                  sizes="(max-width: 1024px) 100vw, 40vw"
-                  className="drop-shadow-2xl"
-                />
-              </FadeUp>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* 5. Reusable Solutions FAQ */}
+      <SolutionsFaqSection
+        title="FAQ"
+        subtitle={
+          isRtl
+            ? `إجابات واضحة حول آلية تكامل ${title}، وجداول التسليم، وفريق العمل المشرف.`
+            : `Clear answers regarding ${title} architecture, integration timelines, and delivery teams.`
+        }
+        faqs={[
+          {
+            question: {
+              en: `How quickly can ${title} be integrated into our stack?`,
+              ar: `كم يستغرق دمج ${title} في بنيتنا البرمجية الحالية؟`,
+            },
+            answer: {
+              en: `Our cross-functional pods typically complete discovery, architecture design, and initial sprint deployment within 2 to 4 weeks with zero disruption to your active operations.`,
+              ar: `تكمل فرقنا المتخصصة مرحلة التدقيق وتصميم المعمارية وإطلاق أولى مخرجات التطوير خلال 2 إلى 4 أسابيع دون أي انقطاع في سير أعمالك.`,
+            },
+          },
+          {
+            question: {
+              en: 'Do you manage full third-party tool and ERP integrations?',
+              ar: 'هل تتولون التكامل الكامل مع أدوات الطرف الثالث وأنظمة ERP؟',
+            },
+            answer: {
+              en: 'Yes. We engineer end-to-end API pipelines connecting your storefront, CRM, inventory databases, and analytics telemetry into one cohesive data layer.',
+              ar: 'نعم، نبني مسارات ربط برمجية متكاملة تربط واجهة متجرك، وإدارة علاقات العملاء، وقواعد بيانات المخزون، والتحليلات الفورية في طبقة بيانات موحدة.',
+            },
+          },
+          {
+            question: {
+              en: 'What metrics and KPIs determine the success of this solution?',
+              ar: 'ما هي مؤشرات الأداء الرئيسية (KPIs) التي تقيس نجاح هذا الحل؟',
+            },
+            answer: {
+              en: 'We benchmark clear bottom-line metrics before launch: conversion rates, page latency, blended customer acquisition cost (CAC), and customer lifetime value (LTV).',
+              ar: 'نحدد مؤشرات واضحة ومقاسة قبل الإطلاق: معدلات التحويل، سرعة التجاوب، خفض تكلفة الاستحواذ على العملاء، ومضاعفة القيمة الدائمة للعميل.',
+            },
+          },
+        ]}
+        lang={lang}
+      />
 
-      {/* 4. Static Home Contact Section (Required on all Solution Pages) */}
+      {/* 6. Static Home Contact Section (Required on all Solution Pages) */}
       <HomeContactSection lang={lang} dict={dict} />
     </div>
   );
