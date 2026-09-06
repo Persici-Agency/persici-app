@@ -1,10 +1,10 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { getProjectsList } from '../services';
+import { fetchProjectsList } from '../services';
 import { sectionContainer, sectionPaddingY } from '@shared';
 
-export function WorkGridSection({ lang }: { lang: string }) {
-  const projects = getProjectsList();
+export async function WorkGridSection({ lang }: { lang: string }) {
+  const projects = await fetchProjectsList();
 
   return (
     <section className={`${sectionContainer} ${sectionPaddingY}`}>

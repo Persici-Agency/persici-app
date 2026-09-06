@@ -18,18 +18,73 @@ import type {
   ProjectItem,
   ContactOffice,
   platformsType,
+  HomePageContent,
+  ServicesPageContent,
+  WorkPageContent,
+  ContactPageContent,
 } from './types';
 
 // ============================================================================
 // 1. Navigation & Certified Partners
 // ============================================================================
 export const siteNavLinks: NavLink[] = [
-  { key: 'home', href: '/' },
-  { key: 'services', href: '/services' },
-  { key: 'work', href: '/work' },
-  { key: 'about', href: '/about' },
-  { key: 'insights', href: '/insights' },
-  { key: 'contact', href: '/contact' },
+  {
+    key: 'solutions',
+    href: '/solutions',
+    hasDropdown: true,
+    subItems: [
+      { key: 'applicationManagement', href: '/solutions/application-management' },
+      { key: 'marketingCommunications', href: '/solutions/marketing-communications' },
+      { key: 'ecommerceGrowth', href: '/solutions/ecommerce-growth' },
+      { key: 'aiIntegration', href: '/solutions/ai-integration' },
+      { key: 'uxProductDesign', href: '/solutions/ux-product-design' },
+      { key: 'customerEngagement', href: '/solutions/customer-engagement' },
+      { key: 'digitalEngineering', href: '/solutions/digital-engineering' },
+      { key: 'supplyChain', href: '/solutions/supply-chain' },
+      { key: 'crmManagement', href: '/solutions/crm-management' },
+    ],
+  },
+  {
+    key: 'industries',
+    href: '/industries',
+    hasDropdown: true,
+    subItems: [
+      { key: 'consumerProducts', href: '/industries/consumer-products' },
+      { key: 'telecomMediaTechnology', href: '/industries/telecom-media-technology' },
+      { key: 'publicSector', href: '/industries/public-sector' },
+      { key: 'retail', href: '/industries/retail' },
+      { key: 'health', href: '/industries/health' },
+      { key: 'energyCommodities', href: '/industries/energy-commodities' },
+    ],
+  },
+  {
+    key: 'howWeDoIt',
+    href: '/how-we-do-it',
+    hasDropdown: true,
+    subItems: [
+      { key: 'strategyConsulting', href: '/how-we-do-it/strategy-consulting' },
+      { key: 'digitalTransformationFramework', href: '/how-we-do-it/digital-transformation-framework' },
+      { key: 'productManagement', href: '/how-we-do-it/product-management' },
+      { key: 'engineeringTechnology', href: '/how-we-do-it/engineering-technology' },
+      { key: 'experienceTransformation', href: '/how-we-do-it/experience-transformation' },
+    ],
+  },
+  {
+    key: 'clientStories',
+    href: '/client-stories',
+    hasDropdown: false,
+  },
+  {
+    key: 'company',
+    href: '/about',
+    hasDropdown: true,
+    subItems: [
+      { key: 'aboutUs', href: '/about' },
+      { key: 'insights', href: '/insights' },
+      { key: 'careers', href: '/careers' },
+      { key: 'contactUs', href: '/contact' },
+    ],
+  },
 ];
 
 export const footerPartnerBadges: PartnerBadge[] = [
@@ -362,6 +417,7 @@ export const platforms: platformsType[] = [
     bg: 'bg-[#EAF7EE]',
     color: 'text-[#95BF47]',
     iconColor: 'text-[#95BF47]',
+    isFeatured: false,
     className: 'border-emerald-200',
     iconClassName: 'text-[#95BF47]',
   },
@@ -371,6 +427,7 @@ export const platforms: platformsType[] = [
     icon: 'https://cdn.simpleicons.org/woocommerce/96588A',
     bg: 'bg-[#F3EBF5]',
     color: 'text-[#96588A]',
+    isFeatured: false,
     iconColor: 'text-[#96588A]',
     className: 'border-purple-200',
     iconClassName: 'text-[#96588A]',
@@ -382,6 +439,7 @@ export const platforms: platformsType[] = [
     bg: 'bg-[#FFF0EB]',
     color: 'text-[#FF7A59]',
     iconColor: 'text-[#FF7A59]',
+    isFeatured: false,
     className: 'border-orange-200',
     iconClassName: 'text-[#FF7A59]',
   },
@@ -392,6 +450,7 @@ export const platforms: platformsType[] = [
     bg: 'bg-[#E6F6FC]',
     color: 'text-[#00A1E0]',
     iconColor: 'text-[#00A1E0]',
+    isFeatured: false,
     className: 'border-sky-200',
     iconClassName: 'text-[#00A1E0]',
   },
@@ -402,6 +461,7 @@ export const platforms: platformsType[] = [
     bg: 'bg-[#FEF4E6]',
     color: 'text-[#E37400]',
     iconColor: 'text-[#E37400]',
+    isFeatured: false,
     className: 'border-amber-200',
     iconClassName: 'text-[#E37400]',
   },
@@ -412,6 +472,7 @@ export const platforms: platformsType[] = [
     bg: 'bg-stone-100',
     color: 'text-stone-900',
     iconColor: 'text-stone-900',
+    isFeatured: false,
     className: 'border-stone-200',
     iconClassName: 'text-stone-900',
   },
@@ -422,6 +483,7 @@ export const platforms: platformsType[] = [
     bg: 'bg-[#F3F0FE]',
     color: 'text-[#7B68EE]',
     iconColor: 'text-[#7B68EE]',
+    isFeatured: false,
     className: 'border-indigo-200',
     iconClassName: 'text-[#7B68EE]',
   },
@@ -432,6 +494,7 @@ export const platforms: platformsType[] = [
     bg: 'bg-[#EBF2FC]',
     color: 'text-[#0052CC]',
     iconColor: 'text-[#0052CC]',
+    isFeatured: false,
     className: 'border-blue-200',
     iconClassName: 'text-[#0052CC]',
   },
@@ -442,6 +505,7 @@ export const platforms: platformsType[] = [
     bg: 'bg-[#E7F5ED]',
     color: 'text-[#107C41]',
     iconColor: 'text-[#107C41]',
+    isFeatured: false,
     className: 'border-emerald-200',
     iconClassName: 'text-[#107C41]',
   },
@@ -452,6 +516,7 @@ export const platforms: platformsType[] = [
     bg: 'bg-[#FDF0F1]',
     color: 'text-[#DA1F26]',
     iconColor: 'text-[#DA1F26]',
+    isFeatured: false,
     className: 'border-red-200',
     iconClassName: 'text-[#DA1F26]',
   },
@@ -462,6 +527,7 @@ export const platforms: platformsType[] = [
     bg: 'bg-[#FEEFEA]',
     color: 'text-[#F24E1E]',
     iconColor: 'text-[#F24E1E]',
+    isFeatured: false,
     className: 'border-orange-200',
     iconClassName: 'text-[#F24E1E]',
   },
@@ -472,6 +538,7 @@ export const platforms: platformsType[] = [
     bg: 'bg-[#E6F9FA]',
     color: 'text-[#00C4CC]',
     iconColor: 'text-[#00C4CC]',
+    isFeatured: false,
     className: 'border-teal-200',
     iconClassName: 'text-[#00C4CC]',
   },
@@ -482,6 +549,7 @@ export const platforms: platformsType[] = [
     bg: 'bg-[#E8F0FE]',
     color: 'text-[#0866FF]',
     iconColor: 'text-[#0866FF]',
+    isFeatured: false,
     className: 'border-blue-200',
     iconClassName: 'text-[#0866FF]',
   },
@@ -492,6 +560,7 @@ export const platforms: platformsType[] = [
     bg: 'bg-[#E8F0FE]',
     color: 'text-[#4285F4]',
     iconColor: 'text-[#4285F4]',
+    isFeatured: false,
     className: 'border-blue-200',
     iconClassName: 'text-[#4285F4]',
   },
@@ -502,6 +571,7 @@ export const platforms: platformsType[] = [
     bg: 'bg-[#FFFDE6]',
     color: 'text-[#000000]',
     iconColor: 'text-[#fcb900]',
+    isFeatured: false,
     className: 'border-yellow-200',
     iconClassName: 'text-[#fcb900]',
   },
@@ -512,6 +582,7 @@ export const platforms: platformsType[] = [
     bg: 'bg-stone-100',
     color: 'text-stone-900',
     iconColor: 'text-stone-900',
+    isFeatured: false,
     className: 'border-stone-200',
     iconClassName: 'text-stone-900',
   },
@@ -522,6 +593,7 @@ export const platforms: platformsType[] = [
     bg: 'bg-[#EFFBFE]',
     color: 'text-[#087ea4]',
     iconColor: 'text-[#087ea4]',
+    isFeatured: false,
     className: 'border-cyan-200',
     iconClassName: 'text-[#087ea4]',
   },
@@ -532,6 +604,7 @@ export const platforms: platformsType[] = [
     bg: 'bg-[#FDF0F3]',
     color: 'text-[#DD0031]',
     iconColor: 'text-[#DD0031]',
+    isFeatured: false,
     className: 'border-rose-200',
     iconClassName: 'text-[#DD0031]',
   },
@@ -542,6 +615,7 @@ export const platforms: platformsType[] = [
     bg: 'bg-[#E7F0F7]',
     color: 'text-[#02569B]',
     iconColor: 'text-[#02569B]',
+    isFeatured: false,
     className: 'border-blue-200',
     iconClassName: 'text-[#02569B]',
   },
@@ -552,6 +626,7 @@ export const platforms: platformsType[] = [
     bg: 'bg-[#EFFBFE]',
     color: 'text-[#087ea4]',
     iconColor: 'text-[#087ea4]',
+    isFeatured: false,
     className: 'border-cyan-200',
     iconClassName: 'text-[#087ea4]',
   },
@@ -562,6 +637,7 @@ export const platforms: platformsType[] = [
     bg: 'bg-[#F0F8EE]',
     color: 'text-[#5FA04E]',
     iconColor: 'text-[#5FA04E]',
+    isFeatured: false,
     className: 'border-green-200',
     iconClassName: 'text-[#5FA04E]',
   },
@@ -572,6 +648,7 @@ export const platforms: platformsType[] = [
     bg: 'bg-[#FFF0EE]',
     color: 'text-[#FF2D20]',
     iconColor: 'text-[#FF2D20]',
+    isFeatured: false,
     className: 'border-red-200',
     iconClassName: 'text-[#FF2D20]',
   },
@@ -582,6 +659,7 @@ export const platforms: platformsType[] = [
     bg: 'bg-[#E9F3F7]',
     color: 'text-[#21759B]',
     iconColor: 'text-[#21759B]',
+    isFeatured: false,
     className: 'border-sky-200',
     iconClassName: 'text-[#21759B]',
   },
@@ -592,6 +670,7 @@ export const platforms: platformsType[] = [
     bg: 'bg-[#FFF7EB]',
     color: 'text-[#FF9900]',
     iconColor: 'text-[#232F3E]',
+    isFeatured: false,
     className: 'border-amber-200',
     iconClassName: 'text-[#232F3E]',
   },
@@ -602,6 +681,7 @@ export const platforms: platformsType[] = [
     bg: 'bg-[#E9F5FD]',
     color: 'text-[#2496ED]',
     iconColor: 'text-[#2496ED]',
+    isFeatured: false,
     className: 'border-blue-200',
     iconClassName: 'text-[#2496ED]',
   },
@@ -612,6 +692,7 @@ export const platforms: platformsType[] = [
     bg: 'bg-[#E8F0FE]',
     color: 'text-[#4285F4]',
     iconColor: 'text-[#4285F4]',
+    isFeatured: false,
     className: 'border-blue-200',
     iconClassName: 'text-[#4285F4]',
   },
@@ -622,6 +703,7 @@ export const platforms: platformsType[] = [
     bg: 'bg-[#EDF8EE]',
     color: 'text-[#47A248]',
     iconColor: 'text-[#47A248]',
+    isFeatured: false,
     className: 'border-emerald-200',
     iconClassName: 'text-[#47A248]',
   },
@@ -632,6 +714,7 @@ export const platforms: platformsType[] = [
     bg: 'bg-[#F1EEF9]',
     color: 'text-[#412991]',
     iconColor: 'text-[#10a37f]',
+    isFeatured: false,
     className: 'border-purple-200',
     iconClassName: 'text-[#10a37f]',
   },
@@ -642,6 +725,7 @@ export const platforms: platformsType[] = [
     bg: 'bg-[#E8F0FE]',
     color: 'text-[#0866FF]',
     iconColor: 'text-[#0866FF]',
+    isFeatured: false,
     className: 'border-blue-200',
     iconClassName: 'text-[#0866FF]',
   },
@@ -652,6 +736,7 @@ export const platforms: platformsType[] = [
     bg: 'bg-[#FEECEC]',
     color: 'text-black',
     iconColor: 'text-black',
+    isFeatured: false,
     className: 'border-red-200',
     iconClassName: 'text-black',
   },
@@ -662,6 +747,7 @@ export const platforms: platformsType[] = [
     bg: 'bg-[#FFFDE6]',
     color: 'text-[#000000]',
     iconColor: 'text-[#fcb900]',
+    isFeatured: false,
     className: 'border-yellow-200',
     iconClassName: 'text-[#fcb900]',
   },
@@ -672,6 +758,7 @@ export const platforms: platformsType[] = [
     bg: 'bg-[#EEF2FF]',
     color: 'text-[#2563EB]',
     iconColor: 'text-[#2563EB]',
+    isFeatured: false,
     className: 'border-blue-200',
     iconClassName: 'text-[#2563EB]',
   },
@@ -1158,3 +1245,276 @@ export const contactOffices: ContactOffice[] = [
     order: 3,
   },
 ];
+
+// ============================================================================
+// 15. Dynamic Page Content CMS Datasets (Fallback for MongoDB & Dashboard)
+// ============================================================================
+
+export const homePageContent: HomePageContent = {
+  page: 'home',
+  hero: {
+    title: {
+      en: 'Specialists in eCommerce growth',
+      ar: 'متخصصون في نمو التجارة الإلكترونية',
+    },
+    subtitle: {
+      en: 'We help ambitious brands scale with predictable and profitable growth. Driven by full-funnel digital marketing, data intelligence, and conversion engineering.',
+      ar: 'نساعد العلامات التجارية الطموحة على التوسع بنمو متوقع ومربح. مدفوعين بالتسويق الرقمي الشامل، وذكاء البيانات، وهندسة التحويل.',
+    },
+    ctaText: {
+      en: 'Collaborate with us',
+      ar: 'تعاون معنا',
+    },
+    ctaHref: '/contact',
+    ratingScore: '5.0',
+    ratingLabel: {
+      en: 'Rated 4.9/5 by 50+ leading brands',
+      ar: 'تقييم 4.9/5 من أكثر من 50 علامة تجارية رائدة',
+    },
+    trustedByTitle: {
+      en: 'Trusted by industry-leading fast-growing brands',
+      ar: 'موثوق به من قبل العلامات التجارية الرائدة والأسرع نمواً',
+    },
+  },
+  partnerShowcase: {
+    title: {
+      en: 'Your online growth partner',
+      ar: 'شريكك في النمو الرقمي',
+    },
+    videoSpeaker: {
+      en: 'Faris Al-Otaibi',
+      ar: 'فارس العتيبي',
+    },
+    videoRole: {
+      en: 'Founder & CEO',
+      ar: 'المؤسس والمدير التنفيذي',
+    },
+    videoCoverImage: '/images/hero/hero-video-cover.png',
+    videoUrl: '/videos/persici-showcase.mp4',
+    quote: {
+      en: 'Working with Persici has been our best growth decision. Their team\'s strategy and execution gave us 3.4x growth in under 6 months. A true growth partner.',
+      ar: 'العمل مع برسيسي كان أفضل قرار نمو اتخذناه. استراتيجية فريقهم وتنفيذهم حققا لنا نمواً بمقدار 3.4 أضعاف في أقل من 6 أشهر. شريك نمو حقيقي.',
+    },
+    author: 'Marcus Lindqvist',
+    role: {
+      en: 'Founder & Managing Director',
+      ar: 'المؤسس والمدير العام',
+    },
+    company: 'Nordic Retail Group',
+    testimonials: defaultTestimonials,
+  },
+  heritage: {
+    badge: {
+      en: 'Growth Architecture',
+      ar: 'بنية النمو',
+    },
+    title: {
+      en: 'Rooted in excellence. Built for growth.',
+      ar: 'متجذرون في التميز. مصممون للنمو.',
+    },
+    desc1: {
+      en: 'Persici is a specialized growth and digital agency founded on the principle that modern DTC & omnichannel brands need deep domain expertise, tailored high-performance teams, and absolute transparency in execution.',
+      ar: 'برسيسي هي وكالة نمو ورقمية متخصصة تأسست على مبدأ أن العلامات التجارية الحديثة تحتاج إلى خبرة عميقة وفرق عمل مخصصة وعالية الأداء مع شفافية مطلقة في التنفيذ.',
+    },
+    desc2: {
+      en: 'We act as your dedicated growth arm, taking full ownership of your customer acquisition, conversion optimization, retention loops, and data architecture to scale revenue sustainably.',
+      ar: 'نعمل كذراع النمو المخصص لك، ونتحمل المسؤولية الكاملة عن اكتساب العملاء وتحسين معدل التحويل وبنية البيانات لزيادة الإيرادات بشكل مستدام.',
+    },
+    ctaPrimaryText: {
+      en: 'Work with us',
+      ar: 'اعمل معنا',
+    },
+    ctaPrimaryHref: '/contact',
+    ctaSecondaryText: {
+      en: 'Meet the team',
+      ar: 'تعرف على الفريق',
+    },
+    ctaSecondaryHref: '/about',
+    collageImages: heritageCollageImages,
+  },
+  growthServices: {
+    title: {
+      en: 'Our growth services',
+      ar: 'خدمات النمو لدينا',
+    },
+    ratingText: {
+      en: 'Rated 4.9/5 on 50+ client reviews',
+      ar: 'تقييم 4.9/5 بناءً على أكثر من 50 تقييماً',
+    },
+    bannerText: {
+      en: 'Ready to scale your eCommerce brand?',
+      ar: 'جاهز لتوسيع علامتك التجارية في التجارة الإلكترونية؟',
+    },
+    bannerCtaText: {
+      en: 'Book call',
+      ar: 'احجز مكالمة',
+    },
+    bannerCtaHref: '/contact',
+    services: growthServicesHome,
+  },
+  clientVideos: {
+    title: {
+      en: 'Meet clients we scale',
+      ar: 'تعرف على العملاء الذين نساعدهم على التوسع',
+    },
+    videos: videoTestimonials,
+  },
+  approach: {
+    badgeLabel: {
+      en: 'Team Persici',
+      ar: 'فريق برسيسي',
+    },
+    badgeTitle: {
+      en: 'Your team of specialists',
+      ar: 'فريقك من المتخصصين',
+    },
+    title: {
+      en: 'Our approach to eCommerce growth',
+      ar: 'نهجنا في نمو التجارة الإلكترونية',
+    },
+    desc1: {
+      en: 'At Persici, we work as a dedicated growth partner, with a deep understanding of the regional market and a focus on ROI. We deliver tailored strategies - not templates. No freelancers, no shortcuts - just a small, senior team focused on long-term, scalable results.',
+      ar: 'في برسيسي، نعمل كشريك نمو مخصص، مع فهم عميق للسوق الإقليمي وتركيز على العائد على الاستثمار. نقدم استراتيجيات مخصصة - وليست قوالب جاهزة. فريق صغير وذو خبرة عالية يركز على نتائج قابلة للتوسع.',
+    },
+    desc2: {
+      en: 'We combine hands-on execution with clear communication: performance updates weekly, full WhatsApp access, and no surprises - only growth.',
+      ar: 'نجمع بين التنفيذ العملي والتواصل الواضح: تحديثات أداء أسبوعية، تواصل مباشر عبر واتساب، وبدون مفاجآت - فقط نمو.',
+    },
+    ctaPrimaryText: {
+      en: 'Book call',
+      ar: 'احجز مكالمة',
+    },
+    ctaPrimaryHref: '/contact',
+    ctaSecondaryText: {
+      en: 'More about us',
+      ar: 'المزيد عنا',
+    },
+    ctaSecondaryHref: '/about',
+    teamMembers: approachTeamAvatars,
+  },
+  reviews: {
+    score: '4.9',
+    scoreLabel: {
+      en: '4.9 score on 50+ client reviews',
+      ar: 'تقييم 4.9 من أكثر من 50 مراجعة عميل',
+    },
+    title: {
+      en: 'Words from those we scale',
+      ar: 'كلمات من أولئك الذين نساعدهم على التوسع',
+    },
+    bannerText: {
+      en: 'Ready to scale your eCommerce brand?',
+      ar: 'جاهز لتوسيع علامتك التجارية في التجارة الإلكترونية؟',
+    },
+    bannerCtaText: {
+      en: 'Book a discovery call',
+      ar: 'احجز مكالمة استكشافية',
+    },
+    bannerCtaHref: '/contact',
+    reviews: reviewsList,
+  },
+  homeContact: {
+    leftTitle: {
+      en: 'Ready to learn more?',
+      ar: 'جاهز لمعرفة المزيد؟',
+    },
+    points: [
+      {
+        en: 'Discuss your unique business challenges',
+        ar: 'ناقش تحديات عملك الفريدة',
+      },
+      {
+        en: 'Explore custom growth solutions built for your industry',
+        ar: 'استكشف حلول النمو المخصصة لصناعتك',
+      },
+      {
+        en: 'Get proven performance media & CRO guidance',
+        ar: 'احصل على إرشادات مثبتة لإعلانات الأداء وتحسين معدل التحويل',
+      },
+      {
+        en: 'Identify the next step that fits your revenue goals',
+        ar: 'حدد الخطوة التالية التي تناسب أهداف إيراداتك',
+      },
+    ],
+    trustedBy: {
+      en: 'Trusted by leading eCommerce brands in the region.',
+      ar: 'موثوق به من قِبل كبرى العلامات التجارية في المنطقة.',
+    },
+    title: {
+      en: 'Get in touch',
+      ar: 'تواصل معنا',
+    },
+    subtitle: {
+      en: 'Submit the form below and one of our experts will reach out.',
+      ar: 'أرسل النموذج أدناه وسيتواصل معك أحد خبرائنا.',
+    },
+  },
+  discovery: {
+    title: {
+      en: 'Schedule your free 30-minute discovery call',
+      ar: 'حدد موعد مكالمتك الاستكشافية المجانية لمدة 30 دقيقة',
+    },
+    desc: {
+      en: 'In this 30-minute growth strategy session, we\'ll analyze your current marketing bottlenecks, identify immediate conversion and revenue wins, and assess if our growth framework is a fit for your brand.',
+      ar: 'في جلسة استراتيجية النمو هذه لمدة 30 دقيقة، سنحلل معوقات التسويق الحالية ونحدد فرص زيادة المبيعات ونقيم مدى توافق إطار عملنا مع علامتك التجارية.',
+    },
+    quote: {
+      en: 'That 30-minute discovery call provided more actionable commercial clarity than months of standard agency reports.',
+      ar: 'قدمت تلك المكالمة الاستكشافية لمدة 30 دقيقة وضوحاً تجارياً قابلاً للتنفيذ أكثر من أشهر من تقارير الوكالات التقليدية.',
+    },
+    quoteAuthor: 'Christian Vestergaard',
+    quoteRole: {
+      en: 'Co-Founder & COO, Vester Goods',
+      ar: 'شريك مؤسس ومدير العمليات، فيستر جودز',
+    },
+    revenueOptions: discoveryRevenueOptions,
+  },
+};
+
+export const servicesPageContent: ServicesPageContent = {
+  page: 'services',
+  heroTitle: {
+    en: 'Our Growth Services',
+    ar: 'خدمات النمو لدينا',
+  },
+  heroSubtitle: {
+    en: 'Engineered for high-performing direct-to-consumer and omnichannel brands.',
+    ar: 'مصممة للعلامات التجارية عالية الأداء في التجارة الإلكترونية.',
+  },
+  bannerText: {
+    en: 'Ready to build your bespoke growth engine?',
+    ar: 'جاهز لبناء محرك النمو المخصص لك؟',
+  },
+  bannerCtaText: {
+    en: 'Schedule Discovery Call',
+    ar: 'جدولة مكالمة استكشافية',
+  },
+  servicesList: servicesList,
+};
+
+export const workPageContent: WorkPageContent = {
+  page: 'work',
+  heroTitle: {
+    en: 'Featured Case Studies',
+    ar: 'دراسات الحالة المميزة',
+  },
+  heroSubtitle: {
+    en: 'Real revenue growth, unit-economic turnarounds, and creative scaling in action.',
+    ar: 'نمو حقيقي في الإيرادات، وتحولات في الجدوى الاقتصادية، وتوسع إبداعي في الميدان.',
+  },
+  projectsList: projectsList,
+};
+
+export const contactPageContent: ContactPageContent = {
+  page: 'contact',
+  heroTitle: {
+    en: 'Let\'s Scale Together',
+    ar: 'دعنا نتوسع معاً',
+  },
+  heroSubtitle: {
+    en: 'Reach out to our leadership team or schedule a dedicated growth strategy session.',
+    ar: 'تواصل مع فريق القيادة لدينا أو احجز جلسة استراتيجية نمو مخصصة.',
+  },
+  offices: contactOffices,
+};
+

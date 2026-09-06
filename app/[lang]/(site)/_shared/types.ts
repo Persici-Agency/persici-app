@@ -23,11 +23,21 @@ export type FooterProps = {
   dict: Dictionary;
 };
 
+export type NavSubItem = {
+  key: string;
+  href: string;
+  labelKey?: string;
+  icon?: string;
+  description?: string;
+};
+
 export type NavLink = {
   key: string;
   href: string;
   labelKey?: string;
   isExternal?: boolean;
+  hasDropdown?: boolean;
+  subItems?: NavSubItem[];
 };
 
 export type PartnerBadge = {
@@ -250,6 +260,7 @@ export interface platformsType extends BaseMongoDocument {
   bg?: string;
   color?: string;
   iconColor?: string;
+  isFeatured: boolean;
   className?: string;
   iconClassName?: string;
 }
@@ -392,4 +403,152 @@ export interface ContactFormData {
 
 export interface ContactSubmission extends BaseMongoDocument, ContactFormData {
   status?: 'unread' | 'read' | 'replied';
+}
+
+// ============================================================================
+// 15. Page Content CMS Interfaces (for Dynamic MongoDB & Dashboard Editing)
+// ============================================================================
+
+export interface LocalizedString {
+  en: string;
+  ar: string;
+}
+
+export interface HeroSectionContent {
+  title: LocalizedString;
+  subtitle: LocalizedString;
+  ctaText: LocalizedString;
+  ctaHref: string;
+  ratingScore: string;
+  ratingLabel: LocalizedString;
+  trustedByTitle: LocalizedString;
+}
+
+export interface PartnerShowcaseSectionContent {
+  title: LocalizedString;
+  videoSpeaker: LocalizedString;
+  videoRole: LocalizedString;
+  speakerAvatar?: string;
+  videoCoverImage: string;
+  videoUrl?: string;
+  quote: LocalizedString;
+  author: string;
+  role: LocalizedString;
+  company: string;
+  testimonials?: TestimonialItem[];
+}
+
+export interface HeritageSectionContent {
+  badge: LocalizedString;
+  title: LocalizedString;
+  desc1: LocalizedString;
+  desc2: LocalizedString;
+  ctaPrimaryText: LocalizedString;
+  ctaPrimaryHref: string;
+  ctaSecondaryText: LocalizedString;
+  ctaSecondaryHref: string;
+  collageImages: HeritageCollageItem[];
+}
+
+export interface GrowthServicesSectionContent {
+  title: LocalizedString;
+  ratingText: LocalizedString;
+  bannerText: LocalizedString;
+  bannerCtaText: LocalizedString;
+  bannerCtaHref: string;
+  services: GrowthServiceItem[];
+}
+
+export interface ClientVideosSectionContent {
+  title: LocalizedString;
+  videos: VideoTestimonialItem[];
+}
+
+export interface ApproachSectionContent {
+  badgeLabel: LocalizedString;
+  badgeTitle: LocalizedString;
+  title: LocalizedString;
+  desc1: LocalizedString;
+  desc2: LocalizedString;
+  ctaPrimaryText: LocalizedString;
+  ctaPrimaryHref: string;
+  ctaSecondaryText: LocalizedString;
+  ctaSecondaryHref: string;
+  teamMembers: GrowthTeamMember[];
+}
+
+export interface ReviewsSectionContent {
+  score: string;
+  scoreLabel: LocalizedString;
+  title: LocalizedString;
+  bannerText: LocalizedString;
+  bannerCtaText: LocalizedString;
+  bannerCtaHref: string;
+  reviews: ReviewItem[];
+}
+
+export interface HomeContactSectionContent {
+  leftTitle: LocalizedString;
+  points: LocalizedString[];
+  trustedBy: LocalizedString;
+  title: LocalizedString;
+  subtitle: LocalizedString;
+}
+
+export interface DiscoverySectionContent {
+  title: LocalizedString;
+  desc: LocalizedString;
+  quote: LocalizedString;
+  quoteAuthor: string;
+  quoteRole: LocalizedString;
+  revenueOptions: DiscoveryRevenueOption[];
+}
+
+export interface HomePageContent extends BaseMongoDocument {
+  page: 'home';
+  hero: HeroSectionContent;
+  partnerShowcase: PartnerShowcaseSectionContent;
+  heritage: HeritageSectionContent;
+  growthServices: GrowthServicesSectionContent;
+  clientVideos: ClientVideosSectionContent;
+  approach: ApproachSectionContent;
+  reviews: ReviewsSectionContent;
+  homeContact: HomeContactSectionContent;
+  discovery: DiscoverySectionContent;
+}
+
+export interface ServicesPageContent extends BaseMongoDocument {
+  page: 'services';
+  heroTitle: LocalizedString;
+  heroSubtitle: LocalizedString;
+  bannerText: LocalizedString;
+  bannerCtaText: LocalizedString;
+  servicesList: ServiceItem[];
+}
+
+export interface WorkPageContent extends BaseMongoDocument {
+  page: 'work';
+  heroTitle: LocalizedString;
+  heroSubtitle: LocalizedString;
+  projectsList: ProjectItem[];
+}
+
+export interface ContactPageContent extends BaseMongoDocument {
+  page: 'contact';
+  heroTitle: LocalizedString;
+  heroSubtitle: LocalizedString;
+  offices: ContactOffice[];
+}
+
+export interface MediaItem extends BaseMongoDocument {
+  key: string;
+  url: string;
+  filename: string;
+  originalSize: number;
+  optimizedSize: number;
+  format: string;
+  width?: number;
+  height?: number;
+  folder?: string;
+  alt?: string;
 }
