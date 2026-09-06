@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import type { NavLink } from '@shared/types';
 import type { Dictionary } from '@dictionaries';
 import { HiArrowNarrowRight, HiArrowNarrowLeft } from 'react-icons/hi';
@@ -11,7 +12,6 @@ import {
   TbUsers,
   TbShoppingBag,
   TbAdjustmentsHorizontal,
-  TbBrandAdobe,
   TbBasket,
   TbAntenna,
   TbBuildingSkyscraper,
@@ -27,12 +27,6 @@ import {
   TbTruck,
   TbColorSwatch,
 } from 'react-icons/tb';
-import {
-  FaAws,
-  FaGoogle,
-  FaMicrosoft,
-  FaSalesforce,
-} from 'react-icons/fa6';
 
 export type NavDropdownCardProps = {
   activeLink: NavLink | null;
@@ -49,7 +43,27 @@ export function truncate(text: string, maxLength: number = 32): string {
   return `${text.slice(0, maxLength).trim()}...`;
 }
 
-// Semantic icons map
+/**
+ * Official high-resolution icon mapping for all solutions offerings
+ */
+export const solutionIconMap: Record<string, string> = {
+  applicationManagement: '/icons/solutions/Application%20%26%20Management%404x.png',
+  marketingCommunications: '/icons/solutions/Marketing%20%26%20Communicating%404x.png',
+  ecommerceGrowth: '/icons/solutions/E-Commerce%20Growth%404x.png',
+  aiIntegration: '/icons/solutions/AI%404x.png',
+  experienceTransformation: '/icons/solutions/Experience%20Transformation%404x.png',
+  customerEngagement: '/icons/solutions/Customer%20Engagement%404x.png',
+  digitalEngineering: '/icons/solutions/Digital%20Engineering%404x.png',
+  supplyChain: '/icons/solutions/Supply%20Chain%404x.png',
+  crmManagement: '/icons/solutions/CRM%20Management%404x.png',
+  // Aliases for compatibility
+  legacyModernization: '/icons/solutions/Application%20%26%20Management%404x.png',
+  digitalCommerce: '/icons/solutions/E-Commerce%20Growth%404x.png',
+  contentSupplyChain: '/icons/solutions/Supply%20Chain%404x.png',
+  uxProductDesign: '/icons/solutions/Experience%20Transformation%404x.png',
+};
+
+// Fallback semantic icons map
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   // Solutions
   applicationManagement: TbDeviceLaptop,
@@ -86,15 +100,6 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   careers: TbDeviceLaptop,
   contactUs: TbSpeakerphone,
 };
-
-// Certified partner list matching reference image
-const partnersList = [
-  { name: 'Adobe', href: '/about#partners', icon: TbBrandAdobe },
-  { name: 'AWS', href: '/about#partners', icon: FaAws },
-  { name: 'Google Cloud', href: '/about#partners', icon: FaGoogle },
-  { name: 'Microsoft', href: '/about#partners', icon: FaMicrosoft },
-  { name: 'Salesforce', href: '/about#partners', icon: FaSalesforce },
-];
 
 export function NavDropdownCard({
   activeLink,
@@ -144,28 +149,21 @@ export function NavDropdownCard({
     : `/${lang}${activeLink.href.startsWith('/') ? activeLink.href : `/${activeLink.href}`}`;
   const subItems = activeLink.subItems;
 
-  const isSolutions = parentKey === 'solutions';
-  const partnersTitle = isRtl ? 'الشركاء' : 'Partners';
-  const andMoreText = isRtl ? '...والمزيد' : '...and more.';
-
-  // Top 5 solutions on left column when solutions category is active
-  const solutionsCol1 = isSolutions ? subItems.slice(0, 5) : [];
-
-  // For other categories, split items into two balanced columns
+  // Split all items across two balanced columns
   const midPoint = Math.ceil(subItems.length / 2);
-  const generalCol1 = subItems.slice(0, midPoint);
-  const generalCol2 = subItems.slice(midPoint);
+  const col1Items = subItems.slice(0, midPoint);
+  const col2Items = subItems.slice(midPoint);
 
   return (
     <>
-      {/* 1. Backdrop Overlay Wash (Publicis Sapient Style) */}
+      {/* 1. Backdrop Overlay Wash */}
       <div
         className="fixed inset-0 top-25 z-40 bg-white/80 backdrop-blur-[2px] transition-opacity duration-300 ease-out"
         onClick={onClose}
         aria-hidden="true"
       />
 
-      {/* 2. Floating Secondary Nav Card (Exact Match to Publicis Sapient Screenshot) */}
+      {/* 2. Floating Secondary Nav Card */}
       <div
         ref={cardRef}
         role="dialog"
@@ -196,14 +194,15 @@ export function NavDropdownCard({
               />
             </Link>
 
-            {/* Sub-Items: Arrow is right beside text, with truncate fallback */}
+            {/* Sub-Items: Column 1 */}
             <div className="space-y-3.5">
-              {(isSolutions ? solutionsCol1 : generalCol1).map((item) => {
+              {col1Items.map((item) => {
                 const rawLabel = dict.nav[item.key as keyof typeof dict.nav] || item.key;
                 const label = truncate(rawLabel, 30);
                 const href = item.href.startsWith(`/${lang}`)
                   ? item.href
                   : `/${lang}${item.href.startsWith('/') ? item.href : `/${item.href}`}`;
+                const solutionIcon = solutionIconMap[item.key];
                 const ItemIcon = iconMap[item.key] || TbCirclesRelation;
 
                 return (
@@ -211,10 +210,22 @@ export function NavDropdownCard({
                     key={item.key}
                     href={href}
                     onClick={onClose}
-                    className="group flex items-center gap-2 text-[14px] font-medium text-slate-800 transition-colors hover:text-black w-fit max-w-full"
+                    className="group flex items-center gap-2.5 text-[14px] font-medium text-slate-800 transition-colors hover:text-black w-fit max-w-full"
                     title={rawLabel}
                   >
-                    <ItemIcon className="h-4 w-4 text-slate-700 transition-colors group-hover:text-black shrink-0" />
+                    {solutionIcon ? (
+                      <Image
+                        src={solutionIcon}
+                        alt=""
+                        width={16}
+                        height={16}
+                        className="h-4 w-4 shrink-0 object-contain brightness-0 opacity-75 transition-opacity group-hover:opacity-100"
+                        style={{ filter: 'brightness(0)' }}
+                        aria-hidden="true"
+                      />
+                    ) : (
+                      <ItemIcon className="h-4 w-4 text-slate-700 transition-colors group-hover:text-black shrink-0" />
+                    )}
                     <span
                       className={`relative py-0.5 truncate max-w-[210px] sm:max-w-[230px] after:absolute after:bottom-0 after:h-[1.5px] after:w-full after:scale-x-0 after:bg-current after:transition-transform after:duration-300 after:ease-in-out group-hover:after:scale-x-100 ${
                         isRtl ? 'after:right-0 after:origin-bottom-right' : 'after:left-0 after:origin-bottom-left'
@@ -233,106 +244,58 @@ export function NavDropdownCard({
             </div>
           </div>
 
-          {/* ================= COLUMN 2 ================= */}
+          {/* ================= COLUMN 2 (Remaining Sub-Items) ================= */}
           <div>
-            {isSolutions ? (
-              /* Solutions -> Column 2: Partners (Matching Publicis Sapient Image) */
-              <div>
-                <Link
-                  href={`/${lang}/about#partners`}
-                  onClick={onClose}
-                  className="group/head inline-flex items-center gap-2 text-base font-bold text-slate-900 transition-colors hover:text-black mb-5 cursor-pointer"
-                >
-                  <span
-                    className={`relative py-0.5 after:absolute after:bottom-0 after:h-[1.5px] after:w-full after:scale-x-0 after:bg-current after:transition-transform after:duration-300 after:ease-in-out group-hover/head:after:scale-x-100 ${
-                      isRtl ? 'after:right-0 after:origin-bottom-right' : 'after:left-0 after:origin-bottom-left'
-                    }`}
+            {/* Align Column 2 baseline with Column 1 on desktop */}
+            <div className="h-7 mb-5 hidden sm:block" aria-hidden="true" />
+
+            <div className="space-y-3.5">
+              {col2Items.map((item) => {
+                const rawLabel = dict.nav[item.key as keyof typeof dict.nav] || item.key;
+                const label = truncate(rawLabel, 30);
+                const href = item.href.startsWith(`/${lang}`)
+                  ? item.href
+                  : `/${lang}${item.href.startsWith('/') ? item.href : `/${item.href}`}`;
+                const solutionIcon = solutionIconMap[item.key];
+                const ItemIcon = iconMap[item.key] || TbCirclesRelation;
+
+                return (
+                  <Link
+                    key={item.key}
+                    href={href}
+                    onClick={onClose}
+                    className="group flex items-center gap-2.5 text-[14px] font-medium text-slate-800 transition-colors hover:text-black w-fit max-w-full"
+                    title={rawLabel}
                   >
-                    {partnersTitle}
-                  </span>
-                  <ArrowIcon
-                    className={`h-4 w-4 shrink-0 transition-transform duration-300 ease-in-out ${
-                      isRtl ? 'group-hover/head:-translate-x-1.5' : 'group-hover/head:translate-x-1.5'
-                    }`}
-                  />
-                </Link>
-
-                <div className="space-y-3.5">
-                  {partnersList.map((partner) => {
-                    const PartnerIcon = partner.icon;
-                    return (
-                      <Link
-                        key={partner.name}
-                        href={`/${lang}${partner.href}`}
-                        onClick={onClose}
-                        className="group flex items-center gap-2 text-[14px] font-medium text-slate-800 transition-colors hover:text-black w-fit max-w-full"
-                        title={partner.name}
-                      >
-                        <PartnerIcon className="h-4 w-4 text-slate-800 transition-colors group-hover:text-black shrink-0" />
-                        <span
-                          className={`relative py-0.5 truncate max-w-[210px] sm:max-w-[230px] after:absolute after:bottom-0 after:h-[1.5px] after:w-full after:scale-x-0 after:bg-current after:transition-transform after:duration-300 after:ease-in-out group-hover:after:scale-x-100 ${
-                            isRtl ? 'after:right-0 after:origin-bottom-right' : 'after:left-0 after:origin-bottom-left'
-                          }`}
-                        >
-                          {partner.name}
-                        </span>
-                        <ArrowIcon
-                          className={`h-3.5 w-3.5 text-slate-700 transition-transform duration-300 ease-in-out group-hover:text-black shrink-0 ${
-                            isRtl ? 'group-hover:-translate-x-1.5' : 'group-hover:translate-x-1.5'
-                          }`}
-                        />
-                      </Link>
-                    );
-                  })}
-                </div>
-
-                <div className="mt-4 text-end">
-                  <span className="text-xs text-slate-400 font-normal italic">
-                    {andMoreText}
-                  </span>
-                </div>
-              </div>
-            ) : (
-              /* Other Categories -> Column 2 Sub-Items */
-              <div>
-                <div className="h-7 mb-5" aria-hidden="true" />
-
-                <div className="space-y-3.5">
-                  {generalCol2.map((item) => {
-                    const rawLabel = dict.nav[item.key as keyof typeof dict.nav] || item.key;
-                    const label = truncate(rawLabel, 30);
-                    const href = item.href.startsWith(`/${lang}`)
-                      ? item.href
-                      : `/${lang}${item.href.startsWith('/') ? item.href : `/${item.href}`}`;
-                    const ItemIcon = iconMap[item.key] || TbCirclesRelation;
-
-                    return (
-                      <Link
-                        key={item.key}
-                        href={href}
-                        onClick={onClose}
-                        className="group flex items-center gap-2 text-[14px] font-medium text-slate-800 transition-colors hover:text-black w-fit max-w-full"
-                        title={rawLabel}
-                      >
-                        <ItemIcon className="h-4 w-4 text-slate-700 transition-colors group-hover:text-black shrink-0" />
-                        <span
-                          className={`relative py-0.5 truncate max-w-[210px] sm:max-w-[230px] after:absolute after:bottom-0 after:h-[1.5px] after:w-full after:scale-x-0 after:bg-current after:transition-transform after:duration-300 after:ease-in-out group-hover:after:scale-x-100 ${
-                            isRtl ? 'after:right-0 after:origin-bottom-right' : 'after:left-0 after:origin-bottom-left'
-                          }`}
-                        >
-                          {label}
-                        </span>
-                        <ArrowIcon
-                          className={`h-3.5 w-3.5 text-slate-700 transition-transform duration-300 ease-in-out group-hover:text-black shrink-0 ${
-                            isRtl ? 'group-hover:-translate-x-1.5' : 'group-hover:translate-x-1.5'
-                          }`}
-                        />
-                      </Link>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
+                    {solutionIcon ? (
+                      <Image
+                        src={solutionIcon}
+                        alt=""
+                        width={16}
+                        height={16}
+                        className="h-4 w-4 shrink-0 object-contain brightness-0 opacity-75 transition-opacity group-hover:opacity-100"
+                        style={{ filter: 'brightness(0)' }}
+                        aria-hidden="true"
+                      />
+                    ) : (
+                      <ItemIcon className="h-4 w-4 text-slate-700 transition-colors group-hover:text-black shrink-0" />
+                    )}
+                    <span
+                      className={`relative py-0.5 truncate max-w-[210px] sm:max-w-[230px] after:absolute after:bottom-0 after:h-[1.5px] after:w-full after:scale-x-0 after:bg-current after:transition-transform after:duration-300 after:ease-in-out group-hover:after:scale-x-100 ${
+                        isRtl ? 'after:right-0 after:origin-bottom-right' : 'after:left-0 after:origin-bottom-left'
+                      }`}
+                    >
+                      {label}
+                    </span>
+                    <ArrowIcon
+                      className={`h-3.5 w-3.5 text-slate-700 transition-transform duration-300 ease-in-out group-hover:text-black shrink-0 ${
+                        isRtl ? 'group-hover:-translate-x-1.5' : 'group-hover:translate-x-1.5'
+                      }`}
+                    />
+                  </Link>
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>
