@@ -139,7 +139,9 @@ export function NavDropdownCard({
 
   const parentKey = activeLink.key;
   const parentTitle = dict.nav[parentKey as keyof typeof dict.nav] || activeLink.key;
-  const parentHref = `/${lang}${activeLink.href}`;
+  const parentHref = activeLink.href.startsWith(`/${lang}`)
+    ? activeLink.href
+    : `/${lang}${activeLink.href.startsWith('/') ? activeLink.href : `/${activeLink.href}`}`;
   const subItems = activeLink.subItems;
 
   const isSolutions = parentKey === 'solutions';
@@ -199,7 +201,9 @@ export function NavDropdownCard({
               {(isSolutions ? solutionsCol1 : generalCol1).map((item) => {
                 const rawLabel = dict.nav[item.key as keyof typeof dict.nav] || item.key;
                 const label = truncate(rawLabel, 30);
-                const href = `/${lang}${item.href}`;
+                const href = item.href.startsWith(`/${lang}`)
+                  ? item.href
+                  : `/${lang}${item.href.startsWith('/') ? item.href : `/${item.href}`}`;
                 const ItemIcon = iconMap[item.key] || TbCirclesRelation;
 
                 return (
@@ -297,7 +301,9 @@ export function NavDropdownCard({
                   {generalCol2.map((item) => {
                     const rawLabel = dict.nav[item.key as keyof typeof dict.nav] || item.key;
                     const label = truncate(rawLabel, 30);
-                    const href = `/${lang}${item.href}`;
+                    const href = item.href.startsWith(`/${lang}`)
+                      ? item.href
+                      : `/${lang}${item.href.startsWith('/') ? item.href : `/${item.href}`}`;
                     const ItemIcon = iconMap[item.key] || TbCirclesRelation;
 
                     return (

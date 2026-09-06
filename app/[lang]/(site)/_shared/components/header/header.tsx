@@ -13,12 +13,16 @@ import { NavDropdownCard } from './nav-dropdown-card';
  * Checks whether a single DOM element represents a visually dark background.
  * Returns { isDark, solidFound } so callers can continue walking down if transparent.
  */
+interface PersiciImageElement extends HTMLImageElement {
+  _persiciLum?: number;
+}
+
 function getElementLuminance(el: HTMLElement): { isDark: boolean; solidFound: boolean } {
   // 1. If it's an <img> tag, sample its pixel brightness via canvas
   if (el.tagName === 'IMG') {
-    const img = el as HTMLImageElement;
-    if ((img as any)._persiciLum !== undefined) {
-      return { isDark: (img as any)._persiciLum < 0.45, solidFound: true };
+    const img = el as PersiciImageElement;
+    if (img._persiciLum !== undefined) {
+      return { isDark: img._persiciLum < 0.45, solidFound: true };
     }
     if (img.complete && img.naturalWidth > 0) {
       try {
@@ -31,7 +35,7 @@ function getElementLuminance(el: HTMLElement): { isDark: boolean; solidFound: bo
           const data = ctx.getImageData(0, 0, 1, 1).data;
           if (data[3] > 30) {
             const lum = (0.2126 * data[0] + 0.7152 * data[1] + 0.0722 * data[2]) / 255;
-            (img as any)._persiciLum = lum;
+            img._persiciLum = lum;
             return { isDark: lum < 0.45, solidFound: true };
           }
         }
@@ -41,6 +45,7 @@ function getElementLuminance(el: HTMLElement): { isDark: boolean; solidFound: bo
       }
     }
   }
+
 
   // 2. Videos are visually dark
   if (el.tagName === 'VIDEO') {
@@ -129,6 +134,13 @@ export function Header({ lang, dict }: HeaderProps) {
   const [isCtaDark, setIsCtaDark] = useState(false);
 
   const pathname = usePathname();
+  const [prevPathname, setPrevPathname] = useState(pathname);
+  if (prevPathname !== pathname) {
+    setPrevPathname(pathname);
+    setOpenDropdownKey(null);
+    setMobileMenuOpen(false);
+  }
+
   const isRtl = lang === 'ar';
   
   const headerRef = useRef<HTMLElement>(null);
@@ -136,11 +148,6 @@ export function Header({ lang, dict }: HeaderProps) {
   const navRef = useRef<HTMLElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
 
-  // Close dropdown on route change
-  useEffect(() => {
-    setOpenDropdownKey(null);
-    setMobileMenuOpen(false);
-  }, [pathname]);
 
   // Handle click outside navbar
   useEffect(() => {

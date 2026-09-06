@@ -552,3 +552,120 @@ export interface MediaItem extends BaseMongoDocument {
   folder?: string;
   alt?: string;
 }
+
+// ==========================================
+// Solutions & Detail Pages
+// ==========================================
+export type SolutionDiagramType =
+  | 'grid-dots'
+  | 'concentric-nodes'
+  | 'circuit-flow'
+  | 'matrix-intersect'
+  | 'nested-squares'
+  | 'orbital-radar'
+  | 'triad-mesh'
+  | 'lattice-loop'
+  | 'flow-funnel';
+
+export interface SolutionOfferingItem extends BaseMongoDocument {
+  slug: string;
+  title: LocalizedString;
+  description: LocalizedString;
+  diagramType: SolutionDiagramType;
+  tag: LocalizedString;
+  icon?: string;
+  order: number;
+  features?: LocalizedString[];
+  href: string;
+}
+
+export interface SolutionBenefitItem {
+  title: LocalizedString;
+  description: LocalizedString;
+  accentColor?: string;
+}
+
+export interface SolutionExecutionPillar {
+  title: LocalizedString;
+  description: LocalizedString;
+}
+
+export interface SolutionFaqItem {
+  question: LocalizedString;
+  answer: LocalizedString;
+}
+
+export interface SolutionsPageContent extends BaseMongoDocument {
+  page: 'solutions';
+  heroBadge: LocalizedString;
+  heroTitle: LocalizedString;
+  heroSubtitle: LocalizedString;
+  heroCtaPrimary: LocalizedString;
+  heroCtaSecondary: LocalizedString;
+  heroImage: string;
+  offeringsTitle: LocalizedString;
+  offeringsSubtitle: LocalizedString;
+  offeringsList: SolutionOfferingItem[];
+  whyItMattersTitle: LocalizedString;
+  whyItMattersText: LocalizedString;
+  whyItMattersImage: string;
+  benefitsTitle: LocalizedString;
+  benefitsImage: string;
+  benefits: SolutionBenefitItem[];
+  deliveryTitle: LocalizedString;
+  deliverySubtitle: LocalizedString;
+  deliveryImage: string;
+  deliveryPillars: SolutionExecutionPillar[];
+  spotlightBadge: LocalizedString;
+  spotlightTitle: LocalizedString;
+  spotlightDescription: LocalizedString;
+  spotlightMetric1Val: string;
+  spotlightMetric1Label: LocalizedString;
+  spotlightMetric2Val: string;
+  spotlightMetric2Label: LocalizedString;
+  spotlightImage: string;
+  spotlightCtaText: LocalizedString;
+  spotlightCtaHref: string;
+  quoteText: LocalizedString;
+  quoteAuthor: string;
+  quoteRole: LocalizedString;
+  faqsTitle: LocalizedString;
+  faqsSubtitle: LocalizedString;
+  faqs: SolutionFaqItem[];
+}
+
+export interface SolutionDetailContent extends BaseMongoDocument {
+  slug: string;
+  title: LocalizedString;
+  subtitle: LocalizedString;
+  badge: LocalizedString;
+  heroImage: string;
+  offeringsTitle: LocalizedString;
+  offerings: {
+    title: LocalizedString;
+    description: LocalizedString;
+    diagramType?: SolutionDiagramType;
+  }[];
+  whyItMattersTitle: LocalizedString;
+  whyItMattersText: LocalizedString;
+  whyItMattersImage: string;
+  benefitsTitle: LocalizedString;
+  benefitsImage: string;
+  benefits: SolutionBenefitItem[];
+  deliveryTitle: LocalizedString;
+  deliverySubtitle: LocalizedString;
+  deliveryImage: string;
+  deliveryPillars: SolutionExecutionPillar[];
+  spotlightTitle: LocalizedString;
+  spotlightDescription: LocalizedString;
+  spotlightMetric1Val: string;
+  spotlightMetric1Label: LocalizedString;
+  spotlightMetric2Val: string;
+  spotlightMetric2Label: LocalizedString;
+  spotlightImage: string;
+  quoteText: LocalizedString;
+  quoteAuthor: string;
+  quoteRole: LocalizedString;
+  faqs: SolutionFaqItem[];
+}
+

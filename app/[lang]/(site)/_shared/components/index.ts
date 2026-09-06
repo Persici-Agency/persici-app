@@ -8,5 +8,5 @@ export * from './avatar-social-proof';
 export * from './growth-service-card';
 export * from './swiper-wrapper';
 export * from './floating-appointment-widget';
-
-
+export * from './shaped-image-container';
+export * from './count-up';

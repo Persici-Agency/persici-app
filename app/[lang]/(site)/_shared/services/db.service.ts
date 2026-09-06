@@ -5,6 +5,8 @@ import {
   servicesPageContent,
   workPageContent,
   contactPageContent,
+  solutionsPageContent,
+  solutionsOfferingsList,
   projectsList,
   servicesList,
   insightsArticles,
@@ -16,6 +18,8 @@ import type {
   ServicesPageContent,
   WorkPageContent,
   ContactPageContent,
+  SolutionsPageContent,
+  SolutionOfferingItem,
   ProjectItem,
   ServiceItem,
   InsightArticle,
@@ -94,6 +98,42 @@ export async function getWorkPageData(): Promise<WorkPageContent> {
 
 export async function getContactPageData(): Promise<ContactPageContent> {
   return getPageContent<ContactPageContent>('contact', contactPageContent);
+}
+
+export async function getSolutionsPageData(): Promise<SolutionsPageContent> {
+  return getPageContent<SolutionsPageContent>('solutions', solutionsPageContent);
+}
+
+export async function getDbSolutions(): Promise<SolutionOfferingItem[]> {
+  try {
+    const db = await getDb();
+    if (!db) return solutionsOfferingsList;
+
+    const items = await db
+      .collection(COLLECTIONS.SOLUTIONS)
+      .find({})
+      .sort({ order: 1 })
+      .toArray();
+
+    if (items.length === 0) return solutionsOfferingsList;
+    return items.map((doc) => {
+      const { _id, ...rest } = doc;
+      return { ...rest, id: _id?.toString() } as unknown as SolutionOfferingItem;
+    });
+  } catch {
+    return solutionsOfferingsList;
+  }
+}
+
+export async function getDbSolutionBySlug(slug: string): Promise<SolutionOfferingItem | null> {
+  try {
+    const all = await getDbSolutions();
+    const found = all.find((s) => s.slug === slug);
+    return found || null;
+  } catch {
+    const fallback = solutionsOfferingsList.find((s) => s.slug === slug);
+    return fallback || null;
+  }
 }
 
 export async function getDbProjects(): Promise<ProjectItem[]> {
