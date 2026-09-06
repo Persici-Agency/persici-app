@@ -260,6 +260,7 @@ export interface platformsType extends BaseMongoDocument {
   bg?: string;
   color?: string;
   iconColor?: string;
+  isFeatured: boolean;
   className?: string;
   iconClassName?: string;
 }
@@ -550,4 +551,4 @@ export interface MediaItem extends BaseMongoDocument {
   height?: number;
   folder?: string;
   alt?: string;
-}
+}
