@@ -611,6 +611,142 @@ export const sharedFeaturedClientStories: Record<string, FeaturedClientStoryItem
     ctaHref: '/client-stories/land-of-exotics',
     tags: ['B2B Portal', 'Pedigree Registry', 'Tiered Pricing', 'Supply Chain Telemetry'],
   },
+
+  // 10. Gulf Capital Group: Autonomous Sovereign AI Copilot & Knowledge Engine
+  'gulf-enterprise-copilot': {
+    id: 'gulf-enterprise-copilot',
+    slug: 'gulf-enterprise-copilot',
+    badge: {
+      en: 'Sovereign Enterprise AI & RAG',
+      ar: 'الذكاء الاصطناعي المؤسسي السيادي واسترجاع المعرفة',
+    },
+    category: {
+      en: 'Enterprise AI & Autonomous Agents',
+      ar: 'الذكاء الاصطناعي المؤسسي والوكلاء الأذكياء',
+    },
+    title: {
+      en: 'Gulf Capital: Autonomous Sovereign AI Copilot & Knowledge Engine',
+      ar: 'جلف كابيتال: محرك بحث دلالي ووكيل ذكاء اصطناعي سيادي للمؤسسات',
+    },
+    subtitle: {
+      en: 'Engineering a deterministic, air-gapped RAG intelligence platform synthesizing millions of regulatory, financial, and legal filings with zero hallucination.',
+      ar: 'تطوير منصة ذكاء اصطناعي سيادية ومعزولة تدمج تقنيات RAG لتحليل ملايين الوثائق المالية والتنظيمية بدقة مطلقة وخالية من الهلوسة.',
+    },
+    description: {
+      en: 'Persici architected an on-premise private LLM deployment for a major regional investment group. By connecting hybrid dense vector retrieval with fine-tuned local models, we automated 82% of statutory compliance audits, accelerated investment due diligence from weeks to minutes, and guaranteed total data sovereignty under Saudi NDMO and UAE compliance frameworks.',
+      ar: 'صممت بيرسيكي منظومة ذكاء اصطناعي محلية خاصة لمجموعة استثمارية إقليمية كبرى. ومن خلال ربط البحث المتجهي بالنماذج المحلية المدربة، قمنا بأتمتة 82% من عمليات التدقيق النظامي وتسريع دراسات الجدوى من أسابيع إلى دقائق، مع ضمان السيادة التامة للبيانات وفق لوائح الهيئة السعودية للبيانات والذكاء الاصطناعي (سدايا).',
+    },
+    summary: {
+      en: 'Persici architected an on-premise private LLM deployment for a major regional investment group. By connecting hybrid dense vector retrieval with fine-tuned local models, we automated 82% of statutory compliance audits, accelerated investment due diligence from weeks to minutes, and guaranteed total data sovereignty under Saudi NDMO and UAE compliance frameworks.',
+      ar: 'صممت بيرسيكي منظومة ذكاء اصطناعي محلية خاصة لمجموعة استثمارية إقليمية كبرى. ومن خلال ربط البحث المتجهي بالنماذج المحلية المدربة، قمنا بأتمتة 82% من عمليات التدقيق النظامي وتسريع دراسات الجدوى من أسابيع إلى دقائق، مع ضمان السيادة التامة للبيانات وفق لوائح الهيئة السعودية للبيانات والذكاء الاصطناعي (سدايا).',
+    },
+    client: 'Gulf Capital Group & Regional Sovereign Entities',
+    metrics: [
+      {
+        value: '82%',
+        label: {
+          en: 'Audit Workflow Automation',
+          ar: 'أتمتة عمليات التدقيق',
+        },
+      },
+      {
+        value: '<0.4s',
+        label: {
+          en: 'Hybrid RAG Query Latency',
+          ar: 'زمن استرجاع الإجابات',
+        },
+      },
+      {
+        value: '99.4%',
+        label: {
+          en: 'Factual Citation Accuracy',
+          ar: 'دقة الاستشهاد بالمصادر',
+        },
+      },
+      {
+        value: '14k+',
+        label: {
+          en: 'Daily Automated Inferences',
+          ar: 'استدلال ذكي مؤتمت يومياً',
+        },
+      },
+    ],
+    image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=85',
+    ctaText: {
+      en: 'Explore Case Study',
+      ar: 'استكشف قصة النجاح',
+    },
+    ctaHref: '/client-stories/gulf-enterprise-copilot',
+    tags: ['Private LLM', 'Hybrid RAG', 'Vector Search', 'NDMO Sovereign Compliance'],
+  },
+
+  // 10. Lahfaa Luxury Experience (Immersive Digital Customizer & Mobile App UX)
+  'lahfaa-luxury-experience': {
+    id: 'lahfaa-luxury-experience',
+    slug: 'lahfaa-luxury-experience',
+    badge: {
+      en: 'UI/UX & Product Design',
+      ar: 'تصميم التجربة الرقمية والمنتج',
+    },
+    category: {
+      en: 'UX Architecture & Living Design Systems',
+      ar: 'معمارية تجربة المستخدم والأنظمة البصرية',
+    },
+    title: {
+      en: 'Lahfaa Luxury: Immersive Digital Customizer & Mobile App UX',
+      ar: 'لهفة الفاخرة: معمارية التجربة الرقمية وتخصيص العطور التفاعلي',
+    },
+    subtitle: {
+      en: 'Designing an intuitive 3D fragrance builder and high-converting iOS & Android mobile shopping experience.',
+      ar: 'تصميم منصة ثلاثية الأبعاد لتخصيص العطور وتجربة تسوق متطورة عبر تطبيقات الهواتف الذكية.',
+    },
+    description: {
+      en: 'Persici reimagined the end-to-end digital product experience for Lahfaa, combining high-fidelity user research, interactive fragrance customizer workflows, and a design-system-first mobile interface that boosted mobile checkout completion by 340%.',
+      ar: 'أعادت بيرسيكي ابتكار التجربة الرقمية الشاملة لعلامة لهفة، من خلال أبحاث متعمقة لسلوك المستخدمين، ومسارات تخصيص عطور تفاعلية، وواجهة جوال مبنية على نظام تصميم متطور رفعت معدل إتمام الشراء بنسبة 340%.',
+    },
+    summary: {
+      en: 'Persici reimagined the end-to-end digital product experience for Lahfaa, combining high-fidelity user research, interactive fragrance customizer workflows, and a design-system-first mobile interface that boosted mobile checkout completion by 340%.',
+      ar: 'أعادت بيرسيكي ابتكار التجربة الرقمية الشاملة لعلامة لهفة، من خلال أبحاث متعمقة لسلوك المستخدمين، ومسارات تخصيص عطور تفاعلية، وواجهة جوال مبنية على نظام تصميم متطور رفعت معدل إتمام الشراء بنسبة 340%.',
+    },
+    client: 'Lahfaa Luxury Group GCC',
+    metrics: [
+      {
+        value: '+340%',
+        label: {
+          en: 'Mobile Checkout Completion',
+          ar: 'ارتفاع إتمام الشراء عبر الجوال',
+        },
+      },
+      {
+        value: '<1.2s',
+        label: {
+          en: 'Perceived Interaction Latency',
+          ar: 'زمن الاستجابة التفاعلية الفورية',
+        },
+      },
+      {
+        value: '4.9/5',
+        label: {
+          en: 'App Store UX Satisfaction',
+          ar: 'تقييم تجربة المستخدم في المتاجر',
+        },
+      },
+      {
+        value: '+78%',
+        label: {
+          en: 'Repeat Fragrance Re-Orders',
+          ar: 'زيادة تكرار طلبات الشراء',
+        },
+      },
+    ],
+    image: 'https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?auto=format&fit=crop&w=1200&q=85',
+    ctaText: {
+      en: 'Explore Case Study',
+      ar: 'استكشف قصة النجاح',
+    },
+    ctaHref: '/client-stories/lahfaa-luxury-experience',
+    tags: ['UX Architecture', 'Interactive 3D Customizer', 'Design Tokens', 'Design System'],
+  },
 };
 
 /**
@@ -690,3 +826,80 @@ export function getEcommerceGrowthFeaturedClientStories(): FeaturedClientStoryIt
     'land-of-exotics',
   ]);
 }
+
+/**
+ * Specific curated stories for AI Integration:
+ * Features Gulf Capital Sovereign AI Copilot, FinVibe Algorithmic Equities, and Nissan Mobility Connected Telematics.
+ */
+export function getAiIntegrationFeaturedClientStories(): FeaturedClientStoryItem[] {
+  return getFeaturedStories([
+    'gulf-enterprise-copilot',
+    'finvibe-trading',
+    'nissan-mobility',
+  ]);
+}
+
+/**
+ * Specific curated stories for UX and Product Design:
+ * Features Lahfaa Luxury Experience, Gulf Capital Sovereign Copilot, and Nissan Mobility.
+ */
+export function getUxProductDesignFeaturedClientStories(): FeaturedClientStoryItem[] {
+  return getFeaturedStories([
+    'lahfaa-luxury-experience',
+    'gulf-enterprise-copilot',
+    'nissan-mobility',
+  ]);
+}
+
+/**
+ * Specific curated stories for Customer Engagement:
+ * Features Lahfaa Luxury Experience, Gulf Capital Sovereign Copilot, and Nissan Mobility.
+ */
+export function getCustomerEngagementFeaturedClientStories(): FeaturedClientStoryItem[] {
+  return getFeaturedStories([
+    'lahfaa-luxury-experience',
+    'gulf-enterprise-copilot',
+    'nissan-mobility',
+  ]);
+}
+
+/**
+ * Specific curated stories for Digital Engineering:
+ * Features Gulf Capital Sovereign Copilot, Nissan Mobility, and FinVibe Algorithmic Equities.
+ */
+export function getDigitalEngineeringFeaturedClientStories(): FeaturedClientStoryItem[] {
+  return getFeaturedStories([
+    'gulf-enterprise-copilot',
+    'nissan-mobility',
+    'finvibe-trading',
+  ]);
+}
+
+/**
+ * Specific curated stories for Supply Chain & Logistics:
+ * Features Nissan Connected Fleet Mobility, Hala Food On-Demand Cold-Chain, and Land of Exotics Omnichannel Fulfillment.
+ */
+export function getSupplyChainFeaturedClientStories(): FeaturedClientStoryItem[] {
+  return getFeaturedStories([
+    'nissan-mobility',
+    'hala-food',
+    'land-of-exotics',
+  ]);
+}
+
+/**
+ * Specific curated stories for CRM Management (Braze & Salesforce):
+ * Features Hala Food Lifecycle Retention, Lahfaa Luxury Loyalty, and ChopOn Omnichannel Re-engagement.
+ */
+export function getCrmManagementFeaturedClientStories(): FeaturedClientStoryItem[] {
+  return getFeaturedStories([
+    'hala-food',
+    'lahfaa-perfumes',
+    'chopon-luxury',
+  ]);
+}
+
+
+
+
+

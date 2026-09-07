@@ -40,7 +40,7 @@ export const siteNavLinks: NavLink[] = [
       { key: 'marketingCommunications', href: '/solutions/marketing-communications' },
       { key: 'ecommerceGrowth', href: '/solutions/ecommerce-growth' },
       { key: 'aiIntegration', href: '/solutions/ai-integration' },
-      { key: 'experienceTransformation', href: '/solutions/experience-transformation' },
+      { key: 'uxProductDesign', href: '/solutions/ux-and-product-design' },
       { key: 'customerEngagement', href: '/solutions/customer-engagement' },
       { key: 'digitalEngineering', href: '/solutions/digital-engineering' },
       { key: 'supplyChain', href: '/solutions/supply-chain' },
@@ -69,7 +69,6 @@ export const siteNavLinks: NavLink[] = [
       { key: 'digitalTransformationFramework', href: '/how-we-do-it/digital-transformation-framework' },
       { key: 'productManagement', href: '/how-we-do-it/product-management' },
       { key: 'engineeringTechnology', href: '/how-we-do-it/engineering-technology' },
-      { key: 'experienceTransformation', href: '/how-we-do-it/experience-transformation' },
     ],
   },
   {
@@ -1564,23 +1563,23 @@ export const solutionsOfferingsList: SolutionOfferingItem[] = [
     href: '/solutions/marketing-communications',
   },
   {
-    slug: 'experience-transformation',
+    slug: 'ux-and-product-design',
     title: {
-      en: 'Experience Transformation',
-      ar: 'تحول التجربة الرقمية',
+      en: 'UX and Product Design',
+      ar: 'تصميم تجربة وواجهة المستخدم',
     },
     description: {
-      en: 'Human-centered digital product design, intuitive purchasing paths, and frictionless customer experiences that build compounding loyalty.',
-      ar: 'تصميم منتجات رقمية يركز على تجربة المستخدم، ومسارات شراء بديهية تعزز ثقة العميل والولاء المستمر.',
+      en: 'Human-centered digital product architecture, intuitive user journeys, high-fidelity design systems, and rapid prototyping that drive conversion and adoption.',
+      ar: 'معمارية رقمية تركز على الإنسان، ومسارات مستخدم بديهية، وأنظمة تصميم تفاعلية ونماذج أولية سريعة تعزز التحويل والتبني.',
     },
-    diagramType: 'concentric-nodes',
+    diagramType: 'ux-strategy-compass',
     tag: {
       en: 'UI/UX & Product Design',
       ar: 'تجربة وواجهة المستخدم',
     },
-    icon: '/icons/solutions/Experience%20Transformation%404x.png',
+    icon: '/icons/solutions/UX%20and%20Product%20Design%404x.png',
     order: 3,
-    href: '/solutions/experience-transformation',
+    href: '/solutions/ux-and-product-design',
   },
   {
     slug: 'ecommerce-growth',

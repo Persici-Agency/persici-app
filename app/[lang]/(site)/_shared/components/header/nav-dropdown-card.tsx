@@ -60,7 +60,7 @@ export const solutionIconMap: Record<string, string> = {
   legacyModernization: '/icons/solutions/Application%20%26%20Management%404x.png',
   digitalCommerce: '/icons/solutions/E-Commerce%20Growth%404x.png',
   contentSupplyChain: '/icons/solutions/Supply%20Chain%404x.png',
-  uxProductDesign: '/icons/solutions/Experience%20Transformation%404x.png',
+  uxProductDesign: '/icons/solutions/UX%20and%20Product%20Design%404x.png',
 };
 
 // Fallback semantic icons map

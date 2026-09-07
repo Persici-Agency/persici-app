@@ -595,7 +595,51 @@ export type SolutionDiagramType =
   | 'ad-targeting-matrix'
   | 'cart-checkout-funnel'
   | 'omnichannel-inventory-sync'
-  | 'retention-loop-orbit';
+  | 'retention-loop-orbit'
+  // AI Integration Specialized Shapes
+  | 'ai-conversational-agent'
+  | 'autonomous-workflow-engine'
+  | 'recommendation-cluster-matrix'
+  | 'predictive-forecast-beam'
+  | 'llm-rag-pipeline'
+  | 'generative-copilot-interface'
+  // UX and Product Design Specialized Shapes
+  | 'ux-strategy-compass'
+  | 'ux-journey-flowchart'
+  | 'ux-wireframe-blueprint'
+  | 'ux-design-token-matrix'
+  | 'ux-prototype-interaction'
+  | 'ux-handoff-spec-engine'
+  // Customer Engagement Specialized Shapes
+  | 'ce-loyalty-tier-prism'
+  | 'ce-personalization-nexus'
+  | 'ce-martech-stack-router'
+  | 'ce-durable-identity-vault'
+  | 'ce-omnichannel-orbit-matrix'
+  | 'ce-predictive-ltv-engine'
+  // Digital Engineering Specialized Shapes
+  | 'de-microservices-mesh'
+  | 'de-cloud-cluster-orbit'
+  | 'de-cicd-pipeline-flow'
+  | 'de-event-streaming-bus'
+  | 'de-api-gateway-router'
+  | 'de-resilience-failover'
+  // Supply Chain & Logistics Specialized Shapes
+  | 'sc-global-network-flow'
+  | 'sc-demand-forecast-waveform'
+  | 'sc-omnichannel-fulfillment-hub'
+  | 'sc-warehouse-robotics-grid'
+  | 'sc-fleet-transit-radar'
+  | 'sc-control-tower-nexus'
+  // CRM Management & Lifecycle Specialized Shapes
+  | 'crm-lifecycle-funnel-loop'
+  | 'crm-braze-salesforce-mesh'
+  | 'crm-rfm-cohort-matrix'
+  | 'crm-omnichannel-trigger-flow'
+  | 'crm-ab-testing-switch'
+  | 'crm-identity-hygiene-vault';
+
+
 
 export interface SolutionOfferingItem extends BaseMongoDocument {
   slug: string;

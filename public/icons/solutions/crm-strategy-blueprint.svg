@@ -1,0 +1,21 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  {/* Customer Lifecycle Progression Path */}
+  <path d="M8 38C14 38 18 28 24 28C30 28 34 14 40 14" stroke="#121212" stroke-width="2.2" stroke-linecap="round" />
+  <path d="M8 38C14 38 18 28 24 28C30 28 34 14 40 14" stroke="#D83427" stroke-width="2.5" stroke-dasharray="4 3" stroke-linecap="round" />
+  
+  {/* Stage 1: Acquisition / Onboarding Node */}
+  <circle cx="8" cy="38" r="4.5" fill="#FFF5F4" stroke="#121212" stroke-width="2" />
+  <circle cx="8" cy="38" r="1.5" fill="#D83427" />
+  
+  {/* Stage 2: Conversion / Habituation Node */}
+  <circle cx="24" cy="28" r="4.5" fill="#FFF5F4" stroke="#D83427" stroke-width="2" />
+  <circle cx="24" cy="28" r="1.5" fill="#D83427" />
+  
+  {/* Stage 3: VIP Loyalty / Advocacy Node */}
+  <circle cx="40" cy="14" r="5" fill="#FFF5F4" stroke="#D83427" stroke-width="2.5" />
+  <circle cx="40" cy="14" r="2" fill="#D83427" />
+  
+  {/* Strategic Target Radar Arc */}
+  <path d="M36 8C39 6 42 6 44 8" stroke="#D83427" stroke-width="2" stroke-linecap="round" />
+  <path d="M33 5C38 2 43 2 47 5" stroke="#D83427" stroke-width="1.8" stroke-linecap="round" stroke-dasharray="2 2" />
+</svg>

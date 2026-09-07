@@ -9,6 +9,15 @@ import { SolutionDetailView } from './_solution-detail';
 import { ApplicationManagementView } from './_application-management';
 import { MarketingCommunicationsView } from './_marketing-communications';
 import { EcommerceGrowthView } from './_ecommerce-growth';
+import { AiIntegrationView } from './_ai-integration';
+import { UxProductDesignView } from './_ux-product-design';
+import { CustomerEngagementView } from './_customer-engagement';
+import { DigitalEngineeringView } from './_digital-engineering';
+import { SupplyChainView } from './_supply-chain';
+import { CrmManagementView } from './_crm-management';
+
+
+
 
 export async function generateStaticParams() {
   const params: { lang: string; slug: string }[] = [];
@@ -68,6 +77,93 @@ export async function generateMetadata({
     });
   }
 
+  if (slug === 'ai-integration') {
+    const isAr = lang === 'ar';
+    const title = isAr ? 'دمج الذكاء الاصطناعي والأتمتة' : 'AI Integration & Automation';
+    const description = isAr
+      ? 'حلول الذكاء الاصطناعي المؤسسية، والوكلاء الأذكياء المستقلون، ومحركات استرجاع المعرفة السيادية (RAG) بواسطة بيرسيكي.'
+      : 'Enterprise generative AI integration, autonomous agentic workflows, sovereign RAG architectures, and predictive intelligence by Persici.';
+    return createMetadata({
+      title: `${title} — Persici Solutions`,
+      description,
+      locale: lang as Locale,
+      path: `/solutions/${slug}`,
+    });
+  }
+
+  if (slug === 'ux-and-product-design') {
+    const isAr = lang === 'ar';
+    const title = isAr ? 'تصميم تجربة وواجهة المستخدم' : 'UX and Product Design';
+    const description = isAr
+      ? 'معمارية تجربة المستخدم، والأنظمة البصرية الحية، وتصميم الواجهات التفاعلية والنماذج الأولية بواسطة بيرسيكي.'
+      : 'Human-centered digital product architecture, intuitive user journeys, living design systems, and rapid prototyping by Persici.';
+    return createMetadata({
+      title: `${title} — Persici Solutions`,
+      description,
+      locale: lang as Locale,
+      path: `/solutions/${slug}`,
+    });
+  }
+
+  if (slug === 'customer-engagement') {
+    const isAr = lang === 'ar';
+    const title = isAr ? 'إشراك العملاء وهندسة الولاء' : 'Customer Engagement & Loyalty';
+    const description = isAr
+      ? 'هندسة تفاعل العملاء، ومنظومات الولاء المؤسسية، والتخصيص اللحظي، وأحدث منصات التقنيات التسويقية بواسطة بيرسيكي.'
+      : 'Enterprise customer engagement, loyalty ecosystems, real-time hyper-personalization, and durable MarTech architectures by Persici.';
+    return createMetadata({
+      title: `${title} — Persici Solutions`,
+      description,
+      locale: lang as Locale,
+      path: `/solutions/${slug}`,
+    });
+  }
+
+  if (slug === 'digital-engineering') {
+    const isAr = lang === 'ar';
+    const title = isAr ? 'الهندسة الرقمية والبرمجيات' : 'Digital Engineering & Cloud-Native Systems';
+    const description = isAr
+      ? 'هندسة برمجية رقمية متطورة، وأنظمة موزعة سحابية أصلية، ومسارات تدفق بيانات فورية وأتمتة DevOps بواسطة بيرسيكي.'
+      : 'Mission-critical digital engineering, cloud-native distributed microservices, real-time event streaming, and automated DevOps by Persici.';
+    return createMetadata({
+      title: `${title} — Persici Solutions`,
+      description,
+      locale: lang as Locale,
+      path: `/solutions/${slug}`,
+    });
+  }
+
+  if (slug === 'supply-chain') {
+    const isAr = lang === 'ar';
+    const title = isAr ? 'سلاسل الإمداد والخدمات اللوجستية' : 'Supply Chain & Logistics Intelligence';
+    const description = isAr
+      ? 'سلاسل إمداد ذكية، واستشعار تنبؤي للطلب، وإدارة الطلبات الموزعة، وأتمتة المستودعات بالروبوتات وتتبع الأساطيل اللحظي بواسطة بيرسيكي.'
+      : 'Intelligent supply chain, AI demand sensing, distributed order management (DOM), warehouse robotics, and real-time fleet telematics by Persici.';
+    return createMetadata({
+      title: `${title} — Persici Solutions`,
+      description,
+      locale: lang as Locale,
+      path: `/solutions/${slug}`,
+    });
+  }
+
+  if (slug === 'crm-management') {
+    const isAr = lang === 'ar';
+    const title = isAr ? 'إدارة علاقات العملاء (CRM)' : 'CRM Management (Braze & Salesforce)';
+    const description = isAr
+      ? 'إدارة متطورة لعلاقات العملاء، وأتمتة دورة الحياة عبر Braze وSalesforce، ومحفزات سلوكية فورية وواتساب للأعمال بواسطة بيرسيكي.'
+      : 'Enterprise CRM management, lifecycle journey orchestration across Braze and Salesforce, real-time behavioral automation, and WhatsApp API by Persici.';
+    return createMetadata({
+      title: `${title} — Persici Solutions`,
+      description,
+      locale: lang as Locale,
+      path: `/solutions/${slug}`,
+    });
+  }
+
+
+
+
   const solution = await fetchSolutionBySlug(slug);
   if (!solution) return {};
 
@@ -101,6 +197,33 @@ export default async function SolutionDetailPage({
   if (slug === 'ecommerce-growth') {
     return <EcommerceGrowthView lang={lang} dict={dict} />;
   }
+
+  if (slug === 'ai-integration') {
+    return <AiIntegrationView lang={lang} dict={dict} />;
+  }
+
+  if (slug === 'ux-and-product-design') {
+    return <UxProductDesignView lang={lang} dict={dict} />;
+  }
+
+  if (slug === 'customer-engagement') {
+    return <CustomerEngagementView lang={lang} dict={dict} />;
+  }
+
+  if (slug === 'digital-engineering') {
+    return <DigitalEngineeringView lang={lang} dict={dict} />;
+  }
+
+  if (slug === 'supply-chain') {
+    return <SupplyChainView lang={lang} dict={dict} />;
+  }
+
+  if (slug === 'crm-management') {
+    return <CrmManagementView lang={lang} dict={dict} />;
+  }
+
+
+
 
   const solution = await fetchSolutionBySlug(slug);
   if (!solution) notFound();

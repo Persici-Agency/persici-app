@@ -1,0 +1,21 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  {/* Central Platform Engine Hub */}
+  <rect x="16" y="16" width="16" height="16" rx="4" fill="#FFF5F4" stroke="#D83427" stroke-width="2.5" />
+  <circle cx="24" cy="24" r="3.5" fill="#D83427" />
+  
+  {/* Top Inbound Data Stream (Cloud Data Warehouse / Reverse ETL) */}
+  <path d="M24 6V16" stroke="#121212" stroke-width="2.2" stroke-linecap="round" />
+  <circle cx="24" cy="6" r="2.5" fill="#121212" />
+  
+  {/* Bottom Outbound SDK & Event Bus */}
+  <path d="M24 32V42" stroke="#121212" stroke-width="2.2" stroke-linecap="round" />
+  <circle cx="24" cy="42" r="2.5" fill="#121212" />
+  
+  {/* Left Web / Mobile Ingestion Spokes */}
+  <path d="M6 24H16" stroke="#D83427" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="3 2" />
+  <rect x="4" y="21" width="6" height="6" rx="1.5" fill="#FFF5F4" stroke="#D83427" stroke-width="1.8" />
+  
+  {/* Right Omnichannel Dispatch Spokes */}
+  <path d="M32 24H42" stroke="#D83427" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="3 2" />
+  <rect x="38" y="21" width="6" height="6" rx="1.5" fill="#FFF5F4" stroke="#D83427" stroke-width="1.8" />
+</svg>

@@ -242,7 +242,7 @@ All offerings and core capability cards must follow these strict rules:
 
 ### 24-Shape Complete Catalog & Assignments
 
-The library in `solutions-vector-diagram.tsx` contains 34 distinct shapes:
+The library in `solutions-vector-diagram.tsx` contains 70 distinct shapes:
 
 #### Group A: Core Solutions Page Shapes (9 Shapes)
 1. `grid-dots`: 4x4 matrix of dots with pulsing crimson nodes.
@@ -287,6 +287,57 @@ The library in `solutions-vector-diagram.tsx` contains 34 distinct shapes:
 32. `cart-checkout-funnel`: Shopping cart with moving items into cart, instant conversion flow line, and sub-second checkout pulse beacon (*Assigned to: Conversion Rate Optimization*).
 33. `omnichannel-inventory-sync`: Central commerce hub with 4-way inventory sync spokes to web, POS, marketplaces, and warehouse ERP (*Assigned to: Omnichannel & Marketplace Strategy*).
 34. `retention-loop-orbit`: Continuous customer lifecycle retention oval orbit with revolving VIP loyalty diamond nodes (*Assigned to: Retention, Lifecycle Data & Growth*).
+
+#### Group F: AI Integration & Autonomous Systems Specialized Shapes (6 Shapes)
+35. `ai-conversational-agent`: Multimodal conversational speech bubble with synchronized acoustic audio waveform, AI voice frequency response, and active listening status beacon (*Assigned to: Conversational AI & Autonomous Agents*).
+36. `autonomous-workflow-engine`: Autonomous multi-agent pipeline with sequential execution nodes, bi-directional verification bridges, and streaming step indicators (*Assigned to: Workflow Automation & Process Intelligence*).
+37. `recommendation-cluster-matrix`: Concentric user preference cluster matrix with centroid beacon and dynamic algorithmic personalization matching rays (*Assigned to: Recommendation Systems & Personalization*).
+38. `predictive-forecast-beam`: Time-series forecasting projection vector beam with empirical data points, exponential probability bounds, and target horizon nodes (*Assigned to: Predictive Analytics & Demand Sensing*).
+39. `llm-rag-pipeline`: Air-gapped hybrid RAG retrieval pipeline with document chunk indexing, semantic dense vector search lens, and verbatim grounding citations (*Assigned to: Enterprise RAG & Hybrid Vector Retrieval*).
+40. `generative-copilot-interface`: Generative developer & executive copilot interface with dual prompt input bars, generative spark icon, and real-time token stream synthesis lines (*Assigned to: Generative AI & Enterprise Copilots*).
+
+#### Group G: UX and Product Design Specialized Shapes (6 Shapes)
+41. `ux-strategy-compass`: Rotating 4-quadrant strategic compass dial with alignment beacons and active discovery pulse (*Assigned to: Product Strategy & Discovery Roadmapping*).
+42. `ux-journey-flowchart`: Multi-stage user persona journey timeline with traveling sentiment wave and milestone beacons (*Assigned to: UX Research & Behavioral Journey Architecture*).
+43. `ux-wireframe-blueprint`: Modular responsive layout blocks assembling on an architectural drafting blueprint with vertical laser scan (*Assigned to: Information Architecture & Wireframe Scaffolding*).
+44. `ux-design-token-matrix`: Atomic orbital design token rings surrounding a central branded core with counter-rotating satellite swatches (*Assigned to: UI Design & Scalable Living Design Systems*).
+45. `ux-prototype-interaction`: Interactive mobile prototype canvas with micro-gesture touch click ripples and dynamic feedback states (*Assigned to: Interactive Prototyping & Usability Validation*).
+46. `ux-handoff-spec-engine`: Precision measurement calipers dimensioning component boundaries with token specs and WCAG validation (*Assigned to: Developer Handoff & Accessibility WCAG 2.2 AA*).
+
+#### Group H: Customer Engagement Specialized Shapes (6 Shapes)
+47. `ce-loyalty-tier-prism`: Concentric rotating tier hexagons with radiating advancement rays and central reward jewel pulse (*Assigned to: Enterprise Customer Loyalty Ecosystems*).
+48. `ce-personalization-nexus`: Multi-dimensional affinity cluster with dynamic token matching and adaptive beam routing (*Assigned to: Hyper-Personalization & Dynamic Content Engines*).
+49. `ce-martech-stack-router`: Multi-tier real-time CDP event bus with API packet flow and bi-directional synchronizer (*Assigned to: MarTech Architecture & Real-Time CDP Integration*).
+50. `ce-durable-identity-vault`: Secure identity cryptographic shield with first-party hash resolution and cookieless token ring (*Assigned to: Durable First-Party Data & Identity Governance*).
+51. `ce-omnichannel-orbit-matrix`: Centralized 360-degree customer centroid with rotating omnichannel touchpoints (*Assigned to: Omnichannel Lifecycle Journey Orchestration*).
+52. `ce-predictive-ltv-engine`: Predictive lifetime value exponential curve with retention inflection beacon and margin trajectory (*Assigned to: Predictive Churn Defense & LTV Optimization*).
+
+#### Group I: Digital Engineering Specialized Shapes (6 Shapes)
+53. `de-microservices-mesh`: Distributed decoupled microservice nodes connected by bi-directional data flow lines and central Envoy proxy orchestrator (*Assigned to: Product & Software Engineering*).
+54. `de-api-gateway-router`: Enterprise API gateway hex router orchestrating inbound multi-channel traffic to downstream domains with security perimeter ring (*Assigned to: Tech & Enterprise Architecture Strategy*).
+55. `de-cloud-cluster-orbit`: Nested Kubernetes control plane core with orbiting multi-cloud container nodes across AWS, GCP, and Azure (*Assigned to: Multi-Cloud Infrastructure & Kubernetes*).
+56. `de-event-streaming-bus`: High-throughput partitioned event log highway with in-flight message envelopes and producer/consumer nodes (*Assigned to: Distributed Data & Real-Time Event Streaming*).
+57. `de-cicd-pipeline-flow`: Infinite DevOps delivery conveyor loop connecting commit, automated test, container package, and canary rollout (*Assigned to: DevOps, IaC & CI/CD Pipelines*).
+58. `de-resilience-failover`: Strangler Fig migration vector deconstructing a legacy monolith into autonomous modern microservices with circuit-breaker health link (*Assigned to: Legacy Modernization & Microservices Deconstruction*).
+
+#### Group J: Supply Chain & Logistics Specialized Shapes (6 Shapes)
+59. `sc-global-network-flow`: Global supply chain network topology with multi-country supply nodes, flowing maritime & air route vectors, and central port hub beacon (*Assigned to: Supply Chain Strategy & Network Design*).
+60. `sc-demand-forecast-waveform`: Dynamic AI demand sensing waveform with fluctuating seasonal waves, historical load bars, probability bounds, and future inventory inflection node (*Assigned to: AI Demand Sensing & Predictive Supply Planning*).
+61. `sc-omnichannel-fulfillment-hub`: Centralized order fulfillment core routing parcels to distributed destinations (retail store, micro-hub, doorstep locker) via synchronized delivery rays (*Assigned to: Distributed Order Management (DOM) & Fulfillment*).
+62. `sc-warehouse-robotics-grid`: Automated multi-aisle warehouse racking matrix with autonomous mobile robot (AMR) traversing aisles, lifting a cargo unit with a laser scan beam (*Assigned to: Smart Warehouse Operations & AMR Robotics (WMS/WCS)*).
+63. `sc-fleet-transit-radar`: Heavy logistics transit truck navigating circular GPS telematics radar sweep with active waypoint path beacons and moving telemetry pings (*Assigned to: Intelligent Transportation & Dynamic Fleet Dispatch (TMS)*).
+64. `sc-control-tower-nexus`: Supply chain control tower with 360-degree rotating radar arm, concentric situational awareness rings, and disruption alert beacons (*Assigned to: Supply Chain Control Tower & Risk Intelligence*).
+
+#### Group K: CRM Management & Lifecycle Specialized Shapes (6 Shapes)
+65. `crm-lifecycle-funnel-loop`: Multi-stage customer lifecycle progression loop (Onboard -> Convert -> Retain -> Winback) with traveling customer tokens (*Assigned to: CRM Strategy & Lifecycle Planning*).
+66. `crm-braze-salesforce-mesh`: Central enterprise engagement platform hub with multi-directional data sync extensions and real-time cloud data warehouse ingestion pulses (*Assigned to: CRM Platform Implementation & Integration (Braze & Salesforce)*).
+67. `crm-rfm-cohort-matrix`: Multi-dimensional Recency, Frequency, Monetary (RFM) cohort grid with active VIP tier cluster beacons and predictive retention expansion rays (*Assigned to: Customer Segmentation & Predictive RFM Modeling*).
+68. `crm-omnichannel-trigger-flow`: Event-driven behavioral trigger switch distributing real-time messages across email, SMS, WhatsApp Business, and mobile push notification channels (*Assigned to: Omnichannel Journey Automation (Email, WhatsApp, Push & SMS)*).
+69. `crm-ab-testing-switch`: Multivariate experiment split switch distributing traffic across Variant A and Variant B with automated winning branch selector and confidence interval meter (*Assigned to: Campaign Operations, A/B Testing & Production QA*).
+70. `crm-identity-hygiene-vault`: Secure customer profile identity vault resolving multi-channel identifiers with cryptographic privacy shield and dedicated IP deliverability check (*Assigned to: Zero-Downtime CRM Migration & First-Party Data Hygiene*).
+
+
+
 
 ---
 
