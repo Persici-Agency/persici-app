@@ -223,6 +223,8 @@ export function StackedFeaturedClientStories({
 }: StackedFeaturedClientStoriesProps) {
   const isRtl = lang === 'ar';
   const codeContainerRef = useRef<HTMLDivElement>(null);
+  const cardWrapperRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const cardInnerRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   // Determine active background mode
   const resolvedBgType =
@@ -314,6 +316,91 @@ export function StackedFeaturedClientStories({
         ];
 
   const isStacked = resolvedStories.length > 1;
+
+  // Scroll-driven dynamic 3D scale-down & depth stack animation
+  useEffect(() => {
+    if (!isStacked) return;
+
+    let rafId: number | null = null;
+
+    const updateTransforms = () => {
+      const wrappers = cardWrapperRefs.current;
+      const inners = cardInnerRefs.current;
+      const totalCards = resolvedStories.length;
+      if (!wrappers || totalCards <= 1) return;
+
+      const rem =
+        parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+      const baseTopPx = 5.5 * rem;
+      const offsetPx = 1.5 * rem;
+
+      for (let i = 0; i < totalCards; i++) {
+        const inner = inners[i];
+        if (!inner) continue;
+
+        // Front-most card always stays at scale 1.0 and full brightness
+        if (i === totalCards - 1) {
+          inner.style.transform = 'scale(1)';
+          inner.style.filter = 'none';
+          continue;
+        }
+
+        let totalScaleDrop = 0;
+        let totalDimming = 0;
+
+        for (let k = i + 1; k < totalCards; k++) {
+          const nextWrapper = wrappers[k];
+          if (!nextWrapper) continue;
+
+          const nextRect = nextWrapper.getBoundingClientRect();
+          const nextTargetTop = baseTopPx + k * offsetPx;
+
+          const buffer = Math.max(nextRect.height * 0.85, 320);
+          const distanceToSticky = nextRect.top - nextTargetTop;
+
+          // Progress from 0 (next card far below) to 1 (next card reached sticky top)
+          const progress = Math.min(
+            Math.max((buffer - distanceToSticky) / buffer, 0),
+            1
+          );
+
+          // Immediate next card creates primary scale drop (0.055), subsequent cards add incremental depth (0.035)
+          const maxScaleDrop = k === i + 1 ? 0.055 : 0.035;
+          totalScaleDrop += progress * maxScaleDrop;
+          totalDimming += progress * 0.08;
+        }
+
+        const scale = Math.max(1 - totalScaleDrop, 0.88);
+        const brightness = Math.max(1 - totalDimming, 0.85);
+
+        inner.style.transform = `scale(${scale.toFixed(4)})`;
+        inner.style.filter =
+          brightness < 0.99 ? `brightness(${brightness.toFixed(3)})` : 'none';
+      }
+    };
+
+    const onScrollOrResize = () => {
+      if (rafId !== null) return;
+      rafId = requestAnimationFrame(() => {
+        updateTransforms();
+        rafId = null;
+      });
+    };
+
+    // Run initial update once mounted
+    updateTransforms();
+
+    window.addEventListener('scroll', onScrollOrResize, { passive: true });
+    window.addEventListener('resize', onScrollOrResize, { passive: true });
+
+    return () => {
+      if (rafId !== null) {
+        cancelAnimationFrame(rafId);
+      }
+      window.removeEventListener('scroll', onScrollOrResize);
+      window.removeEventListener('resize', onScrollOrResize);
+    };
+  }, [isStacked, resolvedStories.length]);
 
   // Optional Section Header Strings
   const secBadge =
@@ -450,7 +537,7 @@ export function StackedFeaturedClientStories({
         <div
           className={
             isStacked
-              ? 'space-y-12 sm:space-y-16 lg:space-y-24 relative pb-12'
+              ? 'space-y-16 sm:space-y-24 lg:space-y-32 relative pb-20 sm:pb-28 lg:pb-36'
               : 'relative'
           }
         >
@@ -485,6 +572,9 @@ export function StackedFeaturedClientStories({
             return (
               <div
                 key={story.id || idx}
+                ref={(el) => {
+                  cardWrapperRefs.current[idx] = el;
+                }}
                 style={
                   isStacked
                     ? {
@@ -493,116 +583,124 @@ export function StackedFeaturedClientStories({
                       }
                     : undefined
                 }
-                className={`relative overflow-hidden rounded-2xl sm:rounded-3xl border border-slate-200/80 bg-white p-8 sm:p-10 lg:p-12 xl:p-14 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.07)] ${
-                  isStacked ? 'sticky transition-all duration-300' : ''
-                }`}
+                className={isStacked ? 'sticky' : 'relative'}
               >
-                {/* Right-aligned featured image with seamless gradient feather into white card */}
-                {storyImage && (
-                  <div className="absolute inset-y-0 right-0 w-full sm:w-[58%] lg:w-[60%] xl:w-[64%] pointer-events-none select-none overflow-hidden rtl:right-auto rtl:left-0">
-                    <Image
-                      src={storyImage}
-                      alt={typeof itemTitle === 'string' ? itemTitle : ''}
-                      fill
-                      sizes="(max-width: 1024px) 100vw, 65vw"
-                      className="object-cover object-center lg:object-right"
-                    />
-                    {/* Seamless gradient mask / overlay fading into white on the left (or right in RTL) */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-white via-white/80 via-30% to-transparent rtl:bg-gradient-to-l rtl:from-white rtl:via-white/80 rtl:via-30% rtl:to-transparent z-1" />
-                    {/* Mobile vertical fade to ensure text readability */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-white via-white/85 to-transparent lg:hidden z-1" />
-                  </div>
-                )}
+                <div
+                  ref={(el) => {
+                    cardInnerRefs.current[idx] = el;
+                  }}
+                  style={{
+                    transformOrigin: 'top center',
+                  }}
+                  className="relative overflow-hidden rounded-2xl sm:rounded-3xl border border-slate-200/80 bg-white p-8 sm:p-10 lg:p-12 xl:p-14 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.08)] will-change-transform transition-[transform,filter] duration-100 ease-out"
+                >
+                  {/* Right-aligned featured image with seamless gradient feather into white card */}
+                  {storyImage && (
+                    <div className="absolute inset-y-0 right-0 w-full sm:w-[58%] lg:w-[60%] xl:w-[64%] pointer-events-none select-none overflow-hidden rtl:right-auto rtl:left-0">
+                      <Image
+                        src={storyImage}
+                        alt={typeof itemTitle === 'string' ? itemTitle : ''}
+                        fill
+                        sizes="(max-width: 1024px) 100vw, 65vw"
+                        className="object-cover object-center lg:object-right"
+                      />
+                      {/* Seamless gradient mask / overlay fading into white on the left (or right in RTL) */}
+                      <div className="absolute inset-0 bg-gradient-to-r from-white via-white/80 via-30% to-transparent rtl:bg-gradient-to-l rtl:from-white rtl:via-white/80 rtl:via-30% rtl:to-transparent z-1" />
+                      {/* Mobile vertical fade to ensure text readability */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-white via-white/85 to-transparent lg:hidden z-1" />
+                    </div>
+                  )}
 
-                {/* Left Content Column */}
-                <div className="relative z-10 max-w-xl lg:max-w-2xl flex flex-col justify-between">
-                  <FadeUp
-                    direction={isRtl ? 'left' : 'right'}
-                    distance={20}
-                    duration={700}
-                  >
-                    {/* Eyebrow badge capsule */}
-                    {itemBadge && (
-                      <span className="inline-flex items-center px-3.5 py-1 rounded-full text-xs font-mono font-medium text-slate-700 bg-slate-100/90 border border-slate-200/60 shadow-2xs mb-6 sm:mb-8 w-fit">
-                        {itemBadge}
-                      </span>
-                    )}
+                  {/* Left Content Column */}
+                  <div className="relative z-10 max-w-xl lg:max-w-2xl flex flex-col justify-between">
+                    <FadeUp
+                      direction={isRtl ? 'left' : 'right'}
+                      distance={20}
+                      duration={700}
+                    >
+                      {/* Eyebrow badge capsule */}
+                      {itemBadge && (
+                        <span className="inline-flex items-center px-3.5 py-1 rounded-full text-xs font-mono font-medium text-slate-700 bg-slate-100/90 border border-slate-200/60 shadow-2xs mb-6 sm:mb-8 w-fit">
+                          {itemBadge}
+                        </span>
+                      )}
 
-                    {/* Main Story Headline */}
-                    <h2 className="font-primary text-2xl sm:text-3xl lg:text-[2.2rem] font-normal sm:font-medium text-slate-950 leading-[1.25] tracking-tight mb-4">
-                      {itemTitle}
-                    </h2>
+                      {/* Main Story Headline */}
+                      <h2 className="font-primary text-2xl sm:text-3xl lg:text-[2.2rem] font-normal sm:font-medium text-slate-950 leading-[1.25] tracking-tight mb-4">
+                        {itemTitle}
+                      </h2>
 
-                    {/* Story Description */}
-                    {itemDesc && (
-                      <p className="text-sm sm:text-base text-slate-600 leading-relaxed font-normal max-w-lg mb-8 sm:mb-10">
-                        {itemDesc}
-                      </p>
-                    )}
+                      {/* Story Description */}
+                      {itemDesc && (
+                        <p className="text-sm sm:text-base text-slate-600 leading-relaxed font-normal max-w-lg mb-8 sm:mb-10">
+                          {itemDesc}
+                        </p>
+                      )}
 
-                    {/* Dynamic Metrics Section with Divider */}
-                    {metricCount > 0 && (
-                      <div className="w-full mb-8 sm:mb-10">
-                        {/* Clean thin horizontal line right above metrics */}
-                        <hr className="border-t border-slate-200/90 w-full mb-6 sm:mb-8" />
+                      {/* Dynamic Metrics Section with Divider */}
+                      {metricCount > 0 && (
+                        <div className="w-full mb-8 sm:mb-10">
+                          {/* Clean thin horizontal line right above metrics */}
+                          <hr className="border-t border-slate-200/90 w-full mb-6 sm:mb-8" />
 
-                        {/* Dynamic grid automatically sizing based on metric count */}
-                        <div
-                          className={`grid gap-6 sm:gap-8 ${
-                            metricCount === 1
-                              ? 'grid-cols-1 max-w-xs'
-                              : metricCount === 2
-                              ? 'grid-cols-2 max-w-md'
-                              : metricCount === 3
-                              ? 'grid-cols-2 sm:grid-cols-3'
-                              : 'grid-cols-2 sm:grid-cols-4'
-                          }`}
-                        >
-                          {storyMetrics.map((m, mIdx) => {
-                            const labelText =
-                              typeof m.label === 'string'
-                                ? m.label
-                                : m.label?.[lang as 'en' | 'ar'] || m.label?.en || '';
-                            return (
-                              <div key={m.id || mIdx} className="flex flex-col">
-                                <div className="font-primary text-3xl sm:text-4xl lg:text-[2.5rem] font-normal sm:font-medium text-slate-950 tracking-tight leading-none">
-                                  <CountUp value={m.value} />
-                                </div>
-                                {labelText && (
-                                  <div className="mt-2 text-xs sm:text-sm font-normal text-slate-500 lowercase leading-snug max-w-[150px]">
-                                    {labelText}
-                                  </div>
-                                )}
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Action Link with Arrow matching screenshot */}
-                    {itemCta && (
-                      <div className="pt-2">
-                        <Link
-                          href={finalHref}
-                          className="inline-flex items-center gap-2 text-sm sm:text-base font-semibold text-slate-950 group select-none w-fit"
-                        >
-                          <span
-                            className={`relative py-0.5 after:absolute after:bottom-0 after:h-[1.5px] after:w-full after:scale-x-0 after:bg-current after:transition-transform after:duration-300 after:ease-in-out group-hover:after:scale-x-100 ${
-                              isRtl
-                                ? 'after:right-0 after:origin-bottom-right'
-                                : 'after:left-0 after:origin-bottom-left'
+                          {/* Dynamic grid automatically sizing based on metric count */}
+                          <div
+                            className={`grid gap-6 sm:gap-8 ${
+                              metricCount === 1
+                                ? 'grid-cols-1 max-w-xs'
+                                : metricCount === 2
+                                ? 'grid-cols-2 max-w-md'
+                                : metricCount === 3
+                                ? 'grid-cols-2 sm:grid-cols-3'
+                                : 'grid-cols-2 sm:grid-cols-4'
                             }`}
                           >
-                            {itemCta}
-                          </span>
-                          <span className="text-base font-bold transition-transform duration-300 ease-in-out group-hover:translate-x-1.5 rtl:group-hover:-translate-x-1.5 rtl:rotate-180 shrink-0">
-                            →
-                          </span>
-                        </Link>
-                      </div>
-                    )}
-                  </FadeUp>
+                            {storyMetrics.map((m, mIdx) => {
+                              const labelText =
+                                typeof m.label === 'string'
+                                  ? m.label
+                                  : m.label?.[lang as 'en' | 'ar'] || m.label?.en || '';
+                              return (
+                                <div key={m.id || mIdx} className="flex flex-col">
+                                  <div className="font-primary text-3xl sm:text-4xl lg:text-[2.5rem] font-normal sm:font-medium text-slate-950 tracking-tight leading-none">
+                                    <CountUp value={m.value} />
+                                  </div>
+                                  {labelText && (
+                                    <div className="mt-2 text-xs sm:text-sm font-normal text-slate-500 lowercase leading-snug max-w-[150px]">
+                                      {labelText}
+                                    </div>
+                                  )}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Action Link with Arrow matching screenshot */}
+                      {itemCta && (
+                        <div className="pt-2">
+                          <Link
+                            href={finalHref}
+                            className="inline-flex items-center gap-2 text-sm sm:text-base font-semibold text-slate-950 group select-none w-fit"
+                          >
+                            <span
+                              className={`relative py-0.5 after:absolute after:bottom-0 after:h-[1.5px] after:w-full after:scale-x-0 after:bg-current after:transition-transform after:duration-300 after:ease-in-out group-hover:after:scale-x-100 ${
+                                isRtl
+                                  ? 'after:right-0 after:origin-bottom-right'
+                                  : 'after:left-0 after:origin-bottom-left'
+                              }`}
+                            >
+                              {itemCta}
+                            </span>
+                            <span className="text-base font-bold transition-transform duration-300 ease-in-out group-hover:translate-x-1.5 rtl:group-hover:-translate-x-1.5 rtl:rotate-180 shrink-0">
+                              →
+                            </span>
+                          </Link>
+                        </div>
+                      )}
+                    </FadeUp>
+                  </div>
                 </div>
               </div>
             );
