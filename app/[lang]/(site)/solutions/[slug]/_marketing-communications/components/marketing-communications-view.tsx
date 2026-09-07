@@ -1,0 +1,164 @@
+'use client';
+
+import React from 'react';
+import type { Dictionary } from '@dictionaries';
+import { HomeContactSection } from '../../../../_home/components/home-contact-section';
+import { SolutionsHeroSection } from '../../../_solutions/components/solutions-hero-section';
+import { SolutionsWhyItMatters } from '../../../_solutions/components/solutions-why-it-matters';
+import { SolutionsBenefitsStrip } from '../../../_solutions/components/solutions-benefits-strip';
+import { StackedFeaturedClientStories } from '../../../_solutions/components/stacked-featured-client-stories';
+import { SolutionsDeliveryEngine } from '../../../_solutions/components/solutions-delivery-engine';
+import { SolutionsInsightsSection } from '../../../_solutions/components/solutions-insights-section';
+import { SolutionsClientReview } from '../../../_solutions/components/solutions-client-review';
+import { SolutionsFaqSection } from '../../../_solutions/components/solutions-faq-section';
+
+import { marketingCommunicationsData } from '../data/marketing-communications.data';
+import { MarketingOfferingsGrid } from './marketing-offerings-grid';
+import { MarketingVerticalsSection } from './marketing-verticals-section';
+import { MarketingTechStackSection } from './marketing-tech-stack-section';
+
+export interface MarketingCommunicationsViewProps {
+  lang: string;
+  dict: Dictionary;
+}
+
+export function MarketingCommunicationsView({ lang, dict }: MarketingCommunicationsViewProps) {
+  const isRtl = lang === 'ar';
+  const data = marketingCommunicationsData;
+
+  const offeringsTitle = data.offeringsTitle[lang as 'en' | 'ar'] || data.offeringsTitle.en;
+  const offeringsSubtitle = data.offeringsSubtitle[lang as 'en' | 'ar'] || data.offeringsSubtitle.en;
+
+  const whyTitle = data.whyItMatters.title[lang as 'en' | 'ar'] || data.whyItMatters.title.en;
+  const whyText = data.whyItMatters.text[lang as 'en' | 'ar'] || data.whyItMatters.text.en;
+
+  const benefitsTitle = data.benefitsStrip.title[lang as 'en' | 'ar'] || data.benefitsStrip.title.en;
+
+  const verticalsTitle = data.verticalsTitle[lang as 'en' | 'ar'] || data.verticalsTitle.en;
+  const verticalsSubtitle = data.verticalsSubtitle[lang as 'en' | 'ar'] || data.verticalsSubtitle.en;
+
+  const techTitle = data.techStackTitle[lang as 'en' | 'ar'] || data.techStackTitle.en;
+  const techSubtitle = data.techStackSubtitle[lang as 'en' | 'ar'] || data.techStackSubtitle.en;
+
+  const deliveryTitle = data.delivery.title[lang as 'en' | 'ar'] || data.delivery.title.en;
+  const deliverySubtitle = data.delivery.subtitle[lang as 'en' | 'ar'] || data.delivery.subtitle.en;
+
+  const faqsTitle = data.faqsTitle[lang as 'en' | 'ar'] || data.faqsTitle.en;
+  const faqsSubtitle = data.faqsSubtitle[lang as 'en' | 'ar'] || data.faqsSubtitle.en;
+
+  return (
+    <div className="flex flex-col min-h-screen">
+      {/* 1. Dynamic Hero Section */}
+      <SolutionsHeroSection
+        title={data.hero.title}
+        subtitle={data.hero.subtitle}
+        tag={data.hero.tag}
+        secondaryTag={data.hero.secondaryTag}
+        image={data.hero.image}
+        ctaText={data.hero.ctaText}
+        ctaHref={data.hero.ctaHref}
+        lang={lang}
+      />
+
+      {/* 2. 6 Core Marketing Capabilities */}
+      <MarketingOfferingsGrid
+        offerings={data.offerings}
+        title={offeringsTitle}
+        subtitle={offeringsSubtitle}
+        lang={lang}
+      />
+
+      {/* 3. Why It Matters Context */}
+      <SolutionsWhyItMatters
+        title={whyTitle}
+        text={whyText}
+        image={data.whyItMatters.image}
+        lang={lang}
+      />
+
+      {/* 4. Strategic Benefits Strip */}
+      <SolutionsBenefitsStrip
+        title={benefitsTitle}
+        image={data.benefitsStrip.image}
+        benefits={data.benefitsStrip.benefits}
+        lang={lang}
+      />
+
+      {/* 5. 5 Industry Verticals */}
+      <MarketingVerticalsSection
+        verticals={data.verticals}
+        title={verticalsTitle}
+        subtitle={verticalsSubtitle}
+        lang={lang}
+      />
+
+      {/* 6. Modern Marketing Stack Matrix */}
+      <MarketingTechStackSection
+        pods={data.techStackPods}
+        title={techTitle}
+        subtitle={techSubtitle}
+        lang={lang}
+      />
+
+      {/* 7. Featured Client Stories (Lahfaa Perfumes, Meraas The Beach, Meraas La Mer, Hala Food) */}
+      <StackedFeaturedClientStories
+        stories={data.clientStories}
+        sectionBadge={isRtl ? 'قصص النجاح المميزة' : 'Featured Client Stories'}
+        sectionTitle={
+          isRtl
+            ? 'حملات صنعت فارقاً حقيقياً وأثراً تجارياً ملموساً'
+            : 'Impactful work that resonates and drives measurable growth'
+        }
+        sectionSubtitle={
+          isRtl
+            ? 'اكتشف كيف ساهمت استراتيجيات بيرسيكي التسويقية في ترسيخ مكانة عملائنا ومضاعفة عوائدهم في السوق الخليجي.'
+            : 'Discover how we help ambitious brands cut through the market noise, build cultural resonance, and capture market share.'
+        }
+        lang={lang}
+      />
+
+      {/* 8. How We Deliver Differently */}
+      <SolutionsDeliveryEngine
+        title={deliveryTitle}
+        subtitle={deliverySubtitle}
+        image={data.delivery.image}
+        pillars={data.delivery.pillars}
+        lang={lang}
+      />
+
+      {/* 9. Standalone Insights Section */}
+      <SolutionsInsightsSection
+        items={data.insights}
+        title={isRtl ? 'أحدث الرؤى والأفكار' : 'Our Latest Thinking'}
+        subtitle={
+          isRtl
+            ? 'استكشف أحدث المقالات والتحليلات المعمارية في استراتيجيات التسويق والنمو الرقمي.'
+            : 'Explore our latest perspectives on cultural localization, omnichannel attribution, and creative growth.'
+        }
+        lang={lang}
+      />
+
+      {/* 10. Client Review Standalone Quote */}
+      <SolutionsClientReview
+        quoteText={data.clientReview.quote}
+        quoteAuthor={data.clientReview.author}
+        quoteRole={data.clientReview.role}
+        badge={data.clientReview.badge}
+        lang={lang}
+      />
+
+      {/* 11. FAQs Accordion */}
+      <SolutionsFaqSection
+        title={faqsTitle}
+        subtitle={faqsSubtitle}
+        faqs={data.faqs}
+        lang={lang}
+      />
+
+      {/* 12. Global Contact Section */}
+      <div id="contact">
+        <HomeContactSection lang={lang} dict={dict} />
+      </div>
+    </div>
+  );
+}

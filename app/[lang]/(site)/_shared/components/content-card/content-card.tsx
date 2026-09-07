@@ -149,7 +149,7 @@ export function ContentCard({
   const cardContent = (
     <div
       dir={isRtl ? 'rtl' : 'ltr'}
-      className={`relative flex flex-col justify-between h-full min-h-[260px] sm:min-h-[280px] rounded-2xl sm:rounded-3xl border border-slate-200/80 bg-white p-7 sm:p-8 shadow-[0_10px_30px_-15px_rgba(0,0,0,0.05)] hover:-translate-y-1 hover:shadow-xl transition-all duration-300 group select-none ${className}`}
+      className={`relative flex flex-col justify-between h-full min-h-[260px] sm:min-h-[280px] rounded-2xl sm:rounded-3xl border border-slate-200/80 bg-white p-7 sm:p-8 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] hover:-translate-y-2.5 hover:shadow-[0_22px_45px_-12px_rgba(0,0,0,0.14),0_8px_18px_-6px_rgba(216,52,39,0.08)] hover:border-slate-300 hover:z-20 transition-all duration-300 ease-out will-change-transform group select-none ${className}`}
     >
       {/* Top: Icon + Category */}
       <div className="flex items-center gap-2 text-slate-700 mb-4 sm:mb-5">
@@ -182,7 +182,7 @@ export function ContentCard({
 
   if (finalHref) {
     return (
-      <Link href={finalHref} className="block h-full">
+      <Link href={finalHref} className="block h-full relative hover:z-20">
         {cardContent}
       </Link>
     );

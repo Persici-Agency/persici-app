@@ -3,7 +3,8 @@
 import React, { useRef, useEffect } from 'react';
 import { sectionContainer, sectionPaddingY } from '@shared/constants';
 import { FadeUp, HomeButton } from '@shared';
-import { ContentCard, type ContentCardItem } from '@shared/components/content-card';
+import { type ContentCardItem } from '@shared/components/content-card';
+import { ContentCarousel, type ContentCarouselOrderBy } from '@shared/components/content-carousel';
 
 export interface SolutionsInsightsSectionProps {
   /**
@@ -27,6 +28,38 @@ export interface SolutionsInsightsSectionProps {
    */
   items?: (ContentCardItem | Record<string, unknown>)[];
   /**
+   * Number of cards visible simultaneously on desktop (defaults to 2)
+   */
+  visibleItems?: number;
+  /**
+   * Ordering attribute: 'default' | 'random' | 'name' | 'title' | 'category' | 'date'
+   */
+  orderBy?: ContentCarouselOrderBy;
+  /**
+   * Filter category string
+   */
+  category?: string;
+  /**
+   * Transition speed in ms
+   */
+  speed?: number;
+  /**
+   * Autoplay slides automatically
+   */
+  autoplay?: boolean;
+  /**
+   * Autoplay cycle interval in ms
+   */
+  autoplayInterval?: number;
+  /**
+   * Pause autoplay on hover
+   */
+  pauseOnHover?: boolean;
+  /**
+   * Enable loop navigation
+   */
+  loop?: boolean;
+  /**
    * Background options (matching StackedFeaturedClientStories)
    */
   backgroundType?: 'default' | 'image' | 'code';
@@ -49,6 +82,14 @@ export function SolutionsInsightsSection({
   ctaText,
   ctaHref,
   items,
+  visibleItems = 2,
+  orderBy = 'default',
+  category,
+  speed = 450,
+  autoplay = false,
+  autoplayInterval = 4500,
+  pauseOnHover = true,
+  loop = true,
   backgroundType,
   backgroundImage,
   isCodeBackground,
@@ -256,29 +297,22 @@ export function SolutionsInsightsSection({
             </FadeUp>
           </div>
 
-          {/* Right Column: Grid of Dynamic Standalone Content Cards */}
+          {/* Right Column: Dynamic Content Carousel (2 visible cards, interactive sliding) */}
           <div className="lg:col-span-8">
-            <div
-              className={`grid grid-cols-1 ${
-                resolvedItems.length === 1
-                  ? 'max-w-md mx-auto'
-                  : resolvedItems.length === 2
-                  ? 'md:grid-cols-2'
-                  : 'md:grid-cols-2 lg:grid-cols-3'
-              } gap-6 sm:gap-8`}
-            >
-              {resolvedItems.map((item, idx) => (
-                <FadeUp
-                  key={(item as Record<string, unknown>).id as string || idx}
-                  delay={idx * 100}
-                  distance={20}
-                  duration={700}
-                  className="h-full"
-                >
-                  <ContentCard item={item} lang={lang} />
-                </FadeUp>
-              ))}
-            </div>
+            <FadeUp direction={isRtl ? 'right' : 'left'} distance={20} duration={700}>
+              <ContentCarousel
+                items={resolvedItems}
+                visibleItems={visibleItems}
+                orderBy={orderBy}
+                category={category}
+                speed={speed}
+                autoplay={autoplay}
+                autoplayInterval={autoplayInterval}
+                pauseOnHover={pauseOnHover}
+                loop={loop}
+                lang={lang}
+              />
+            </FadeUp>
           </div>
         </div>
       </div>

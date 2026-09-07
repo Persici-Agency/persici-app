@@ -557,6 +557,7 @@ export interface MediaItem extends BaseMongoDocument {
 // Solutions & Detail Pages
 // ==========================================
 export type SolutionDiagramType =
+  // Original 9 Core Shapes
   | 'grid-dots'
   | 'concentric-nodes'
   | 'circuit-flow'
@@ -565,7 +566,36 @@ export type SolutionDiagramType =
   | 'orbital-radar'
   | 'triad-mesh'
   | 'lattice-loop'
-  | 'flow-funnel';
+  | 'flow-funnel'
+  // Application & Management Specialized Shapes
+  | 'app-dual-stack'
+  | 'bezier-curv-engine'
+  | 'api-cluster-gateway'
+  | 'automated-test-grid'
+  | 'store-launch-trajectory'
+  // Extended Solution & Ecosystem Shapes
+  | 'helix-data-strand'
+  | 'quantum-core-cube'
+  | 'cyber-shield-lock'
+  | 'neural-synapse-web'
+  | 'wave-frequency-stream'
+  | 'hexagonal-honeycomb-hive'
+  | 'prism-refraction-beam'
+  | 'compass-spatial-reticle'
+  | 'infinity-pulse-exchange'
+  | 'bar-spectrum-analyzer'
+  // Marketing & Communications Specialized Shapes
+  | 'creative-story-lens'
+  | 'omnichannel-radial-mesh'
+  | 'social-resonance-echo'
+  | 'media-production-timeline'
+  // E-Commerce Growth Specialized Shapes
+  | 'growth-trajectory-engine'
+  | 'storefront-render-matrix'
+  | 'ad-targeting-matrix'
+  | 'cart-checkout-funnel'
+  | 'omnichannel-inventory-sync'
+  | 'retention-loop-orbit';
 
 export interface SolutionOfferingItem extends BaseMongoDocument {
   slug: string;
@@ -618,6 +648,11 @@ export interface FeaturedClientStoryItem {
   image?: string;
   ctaText?: string | LocalizedString;
   ctaHref?: string;
+  tags?: string[];
+  client?: string;
+  category?: string | LocalizedString;
+  subtitle?: string | LocalizedString;
+  summary?: string | LocalizedString;
   [key: string]: unknown;
 }
 

@@ -2048,4 +2048,7 @@ export const solutionsPageContent: SolutionsPageContent = {
   ],
 };
 
+export * from './data/featured-client-stories.data';
+
+
 

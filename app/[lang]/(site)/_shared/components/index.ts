@@ -11,4 +11,5 @@ export * from './floating-appointment-widget';
 export * from './shaped-image-container';
 export * from './count-up';
 export * from './content-card';
+export * from './content-carousel';
 

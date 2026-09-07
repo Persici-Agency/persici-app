@@ -262,6 +262,7 @@ export function Header({ lang, dict }: HeaderProps) {
         {/* Center: Floating Pill Navigation (Independently adapts to background under Pill) */}
         <nav
           ref={navRef}
+          suppressHydrationWarning
           className={`hidden md:flex items-center gap-2 rounded-full px-4 py-2 backdrop-blur-md transition-all duration-300 ${
             isNavDark
               ? 'bg-black/75 text-white border border-white/20 shadow-xl'
@@ -313,7 +314,8 @@ export function Header({ lang, dict }: HeaderProps) {
             return (
               <Link
                 key={link.key}
-                href={link.href}
+                href={link.href.startsWith('/') ? `/${lang}${link.href}` : `/${lang}/${link.href}`}
+                data-nav-item="true"
                 className={`group relative inline-flex flex-col items-center px-3.5 py-1.5 text-sm font-medium transition-colors cursor-pointer select-none outline-none ${
                   isNavDark
                     ? 'text-white/85 hover:text-white'
@@ -341,7 +343,7 @@ export function Header({ lang, dict }: HeaderProps) {
         </nav>
 
         {/* Right: Book a Call CTA & Mobile Toggle (Independently adapts to background under Button) */}
-        <div ref={ctaRef} className="flex items-center gap-3">
+        <div ref={ctaRef} className="flex items-center gap-3" suppressHydrationWarning>
           <HomeButton
             href={`/${lang}/contact`}
             title={dict.nav.bookCall}

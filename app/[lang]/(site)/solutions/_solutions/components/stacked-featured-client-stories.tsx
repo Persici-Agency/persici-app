@@ -542,18 +542,27 @@ export function StackedFeaturedClientStories({
           }
         >
           {resolvedStories.map((story, idx) => {
+            const resolveStringOrLoc = (val: unknown): string | undefined => {
+              if (typeof val === 'string') return val;
+              if (typeof val === 'object' && val !== null) {
+                const loc = val as { en?: string; ar?: string };
+                return (lang === 'ar' ? loc.ar : loc.en) || loc.en || loc.ar;
+              }
+              return undefined;
+            };
+
             const itemBadge =
-              typeof story.badge === 'string'
-                ? story.badge
-                : story.badge?.[lang as 'en' | 'ar'] || story.badge?.en;
+              resolveStringOrLoc(story.badge) ||
+              resolveStringOrLoc(story.category) ||
+              resolveStringOrLoc(story.subtitle);
+
             const itemTitle =
-              typeof story.title === 'string'
-                ? story.title
-                : story.title?.[lang as 'en' | 'ar'] || story.title?.en || '';
+              resolveStringOrLoc(story.title) || '';
+
             const itemDesc =
-              typeof story.description === 'string'
-                ? story.description
-                : story.description?.[lang as 'en' | 'ar'] || story.description?.en;
+              resolveStringOrLoc(story.description) ||
+              resolveStringOrLoc(story.summary) ||
+              resolveStringOrLoc(story.overview);
             const itemCta =
               typeof story.ctaText === 'string'
                 ? story.ctaText
