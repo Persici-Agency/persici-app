@@ -2,7 +2,7 @@
 
 import React from 'react';
 import type { ApplicationVerticalItem } from '../data/application-management.data';
-import { SolutionsVerticalCard } from '../../../_solutions/components';
+import { IndustryCard } from '@shared';
 import { sectionContainer } from '@shared/constants';
 import { FadeUp } from '@shared';
 
@@ -53,7 +53,7 @@ export function ApplicationVerticalsSection({
                 distance={24}
                 className={idx === 4 ? 'md:col-span-2 lg:col-span-1 flex' : 'flex'}
               >
-                <SolutionsVerticalCard
+                <IndustryCard
                   number={item.number}
                   tag={itemTag}
                   title={itemTitle}

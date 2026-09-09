@@ -2,7 +2,7 @@
 
 import React from 'react';
 import type { AiVerticalItem } from '../data/ai-integration.data';
-import { SolutionsVerticalCard } from '../../../_solutions/components';
+import { IndustryCard } from '@shared';
 import { sectionContainer } from '@shared/constants';
 import { FadeUp } from '@shared';
 import {
@@ -70,7 +70,7 @@ export function AiVerticalsSection({
                 distance={24}
                 className="flex"
               >
-                <SolutionsVerticalCard
+                <IndustryCard
                   number={vert.number}
                   tag={vertTag}
                   title={vertTitle}

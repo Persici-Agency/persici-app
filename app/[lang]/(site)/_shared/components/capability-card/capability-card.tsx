@@ -2,22 +2,22 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { SolutionsVectorDiagram } from './solutions-vector-diagram';
+import { SolutionsVectorDiagram } from '@/app/[lang]/(site)/solutions/_solutions/components/solutions-vector-diagram';
 import type { SolutionDiagramType } from '@shared/types';
 
-export interface SolutionsCapabilityCardProps {
+export interface CapabilityCardProps {
   title: string;
   tag: string;
   description: string;
   icon?: string;
-  diagramType: SolutionDiagramType;
+  diagramType?: SolutionDiagramType;
   highlights?: string[];
   highlightsVariant?: 'bullets' | 'pills';
   isPaused?: boolean;
   className?: string;
 }
 
-export function SolutionsCapabilityCard({
+export function CapabilityCard({
   title,
   tag,
   description,
@@ -27,7 +27,7 @@ export function SolutionsCapabilityCard({
   highlightsVariant = 'bullets',
   isPaused = false,
   className = '',
-}: SolutionsCapabilityCardProps) {
+}: CapabilityCardProps) {
   const isImageIcon =
     icon && (icon.startsWith('/') || icon.startsWith('http'));
 
@@ -35,7 +35,7 @@ export function SolutionsCapabilityCard({
     <div
       className={`group relative flex flex-col justify-between rounded-2xl bg-[#F8F7F4] border border-black/[0.04] p-6 sm:p-7 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-lg hover:border-black/[0.08] w-full ${className}`}
     >
-      {/* Top: Tag + Custom SVG Icon */}
+      {/* Top: Tag + Dedicated SVG/Image Icon */}
       <div>
         <div className="flex items-center justify-between gap-2 mb-4">
           <span className="text-[11px] font-bold tracking-wider uppercase text-persici-crimson bg-persici-crimson/5 px-2.5 py-1 rounded-md">
@@ -66,16 +66,18 @@ export function SolutionsCapabilityCard({
         </h3>
       </div>
 
-      {/* Center: Animated Vector Diagram */}
-      <div className="my-6 flex items-center justify-center py-3 bg-white/70 rounded-xl border border-black/[0.03] group-hover:bg-white transition-colors">
-        <div className="transition-transform duration-300 group-hover:scale-110">
-          <SolutionsVectorDiagram
-            type={diagramType}
-            isPaused={isPaused}
-            className="h-16 w-16 drop-shadow-xs"
-          />
+      {/* Center: Animated Vector Diagram (optional) */}
+      {diagramType && (
+        <div className="my-6 flex items-center justify-center py-3 bg-white/70 rounded-xl border border-black/[0.03] group-hover:bg-white transition-colors">
+          <div className="transition-transform duration-300 group-hover:scale-110">
+            <SolutionsVectorDiagram
+              type={diagramType}
+              isPaused={isPaused}
+              className="h-16 w-16 drop-shadow-xs"
+            />
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Bottom: Description + Capability Highlights */}
       <div>

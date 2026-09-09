@@ -8,7 +8,7 @@ export interface TechStackItem {
   category?: string;
 }
 
-export interface SolutionsTechStackCardProps {
+export interface TechInfrastructureCardProps {
   badge: string;
   title: string;
   description: string;
@@ -19,7 +19,7 @@ export interface SolutionsTechStackCardProps {
   className?: string;
 }
 
-export function SolutionsTechStackCard({
+export function TechInfrastructureCard({
   badge,
   title,
   description,
@@ -28,7 +28,7 @@ export function SolutionsTechStackCard({
   variant = 'pills',
   headerLayout = 'stacked',
   className = '',
-}: SolutionsTechStackCardProps) {
+}: TechInfrastructureCardProps) {
   return (
     <div
       className={`group relative w-full h-full flex flex-col justify-between rounded-2xl sm:rounded-3xl bg-white/[0.03] border border-white/10 hover:border-white/25 hover:bg-white/[0.05] p-6 sm:p-8 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-black/50 ${className}`}
@@ -124,3 +124,7 @@ export function SolutionsTechStackCard({
     </div>
   );
 }
+
+// Aliases for alternate naming conventions
+export const TechStackCard = TechInfrastructureCard;
+export type TechStackCardProps = TechInfrastructureCardProps;

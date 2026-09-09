@@ -2,7 +2,7 @@
 
 import React from 'react';
 import type { CrmManagementVerticalItem } from '../data/crm-management.data';
-import { SolutionsVerticalCard } from '../../../_solutions/components';
+import { IndustryCard } from '@shared';
 import { sectionContainer, sectionPaddingY } from '@shared/constants';
 import { FadeUp } from '@shared';
 import {
@@ -69,7 +69,7 @@ export function CrmVerticalsSection({
                 distance={24}
                 className="flex"
               >
-                <SolutionsVerticalCard
+                <IndustryCard
                   number={vert.number}
                   tag={vertTag}
                   title={vertTitle}

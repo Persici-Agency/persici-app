@@ -2,7 +2,7 @@
 
 import React from 'react';
 import type { TechStackPod } from '../data/ai-integration.data';
-import { SolutionsTechStackCard } from '../../../_solutions/components';
+import { TechInfrastructureCard } from '@shared';
 import { sectionContainer } from '@shared/constants';
 import { FadeUp } from '@shared';
 
@@ -55,7 +55,7 @@ export function AiTechStackSection({
                 distance={24}
                 className="flex"
               >
-                <SolutionsTechStackCard
+                <TechInfrastructureCard
                   badge={podBadge}
                   title={podTitle}
                   description={podDesc}

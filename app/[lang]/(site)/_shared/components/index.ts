@@ -12,4 +12,7 @@ export * from './shaped-image-container';
 export * from './count-up';
 export * from './content-card';
 export * from './content-carousel';
+export * from './capability-card';
+export * from './industry-card';
+export * from './tech-infrastructure-card';
 

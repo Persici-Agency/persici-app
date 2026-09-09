@@ -2,7 +2,7 @@
 
 import React from 'react';
 import type { TechStackPod } from '../data/digital-engineering.data';
-import { SolutionsTechStackCard } from '../../../_solutions/components';
+import { TechInfrastructureCard } from '@shared';
 import { sectionContainer, sectionPaddingY } from '@shared/constants';
 import { FadeUp } from '@shared';
 import { TbLayersLinked, TbBrandDocker, TbBolt, TbShieldLock } from 'react-icons/tb';
@@ -65,7 +65,7 @@ export function DigitalEngineeringTechStackSection({
                 distance={24}
                 className="flex"
               >
-                <SolutionsTechStackCard
+                <TechInfrastructureCard
                   badge={podBadge}
                   title={podTitle}
                   description={podDesc}

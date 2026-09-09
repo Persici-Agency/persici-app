@@ -2,7 +2,7 @@
 
 import React from 'react';
 import type { EcommerceVerticalItem } from '../data/ecommerce-growth.data';
-import { SolutionsVerticalCard } from '../../../_solutions/components';
+import { IndustryCard } from '@shared';
 import { sectionContainer } from '@shared/constants';
 import { FadeUp } from '@shared';
 import {
@@ -69,7 +69,7 @@ export function EcommerceVerticalsSection({
                 distance={24}
                 className="flex"
               >
-                <SolutionsVerticalCard
+                <IndustryCard
                   number={vert.number}
                   tag={vertTag}
                   title={vertTitle}

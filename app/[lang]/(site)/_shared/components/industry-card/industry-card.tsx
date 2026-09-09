@@ -3,7 +3,7 @@
 import React from 'react';
 import { TbCircleCheck } from 'react-icons/tb';
 
-export interface SolutionsVerticalCardProps {
+export interface IndustryCardProps {
   number: string;
   tag: string;
   title: string;
@@ -14,7 +14,7 @@ export interface SolutionsVerticalCardProps {
   className?: string;
 }
 
-export function SolutionsVerticalCard({
+export function IndustryCard({
   number,
   tag,
   title,
@@ -23,7 +23,7 @@ export function SolutionsVerticalCard({
   icon: Icon,
   iconStyle = 'badge',
   className = '',
-}: SolutionsVerticalCardProps) {
+}: IndustryCardProps) {
   return (
     <div
       className={`group relative w-full h-full flex flex-col justify-between rounded-2xl bg-white border border-slate-200/80 p-6 sm:p-8 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 ${className}`}
@@ -84,3 +84,9 @@ export function SolutionsVerticalCard({
     </div>
   );
 }
+
+// Aliases for alternate naming conventions
+export const SectorCard = IndustryCard;
+export type SectorCardProps = IndustryCardProps;
+export const VerticalCard = IndustryCard;
+export type VerticalCardProps = IndustryCardProps;

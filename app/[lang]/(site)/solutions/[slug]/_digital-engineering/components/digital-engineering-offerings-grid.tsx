@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import type { DigitalEngineeringOfferingItem } from '../data/digital-engineering.data';
-import { SolutionsCapabilityCard } from '../../../_solutions/components';
+import { CapabilityCard } from '@shared';
 import { sectionContainer } from '@shared/constants';
 import { FadeUp } from '@shared';
 
@@ -58,7 +58,7 @@ export function DigitalEngineeringOfferingsGrid({
                   blur={true}
                   className="w-full flex"
                 >
-                  <SolutionsCapabilityCard
+                  <CapabilityCard
                     title={itemTitle}
                     tag={itemTag}
                     description={itemDesc}

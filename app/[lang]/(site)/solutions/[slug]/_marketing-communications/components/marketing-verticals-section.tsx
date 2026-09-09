@@ -2,7 +2,7 @@
 
 import React from 'react';
 import type { MarketingVerticalItem } from '../data/marketing-communications.data';
-import { SolutionsVerticalCard } from '../../../_solutions/components';
+import { IndustryCard } from '@shared';
 import { sectionContainer } from '@shared/constants';
 import { FadeUp } from '@shared';
 import {
@@ -70,7 +70,7 @@ export function MarketingVerticalsSection({
                 blur={true}
                 className={idx === 4 ? 'md:col-span-2 lg:col-span-1 flex' : 'flex'}
               >
-                <SolutionsVerticalCard
+                <IndustryCard
                   number={vert.number}
                   tag={vertTag}
                   title={vertTitle}
