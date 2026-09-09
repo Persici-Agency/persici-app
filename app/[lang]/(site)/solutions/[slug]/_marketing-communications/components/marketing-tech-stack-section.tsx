@@ -61,7 +61,7 @@ export function MarketingTechStackSection({
                 distance={24}
                 blur={true}
               >
-                <div className="group relative flex flex-col justify-between h-full rounded-2xl bg-white/[0.03] border border-white/10 p-7 sm:p-8 transition-all duration-300 hover:border-white/20 hover:bg-white/[0.05]">
+                <div className="group relative w-full h-full flex flex-col justify-between rounded-2xl bg-white/[0.03] border border-white/10 hover:border-white/25 hover:bg-white/[0.05] p-7 sm:p-8 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-black/50">
                   <div>
                     <div className="flex items-center justify-between mb-4">
                       <span className="text-[11px] font-bold uppercase tracking-wider text-persici-crimson bg-persici-crimson/10 px-2.5 py-1 rounded-md">

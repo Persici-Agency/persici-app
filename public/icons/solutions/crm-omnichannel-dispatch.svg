@@ -1,24 +1,20 @@
 <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-  {/* Central Omnichannel Dispatch Bell Hub */}
+  
   <rect x="18" y="18" width="12" height="12" rx="3" fill="#FFF5F4" stroke="#121212" stroke-width="2.2" />
   <circle cx="24" cy="24" r="2.5" fill="#D83427" />
-  
-  {/* Top Left: Email Envelope */}
+
   <path d="M18 18L10 10" stroke="#D83427" stroke-width="2" stroke-linecap="round" />
   <rect x="5" y="5" width="10" height="7" rx="1.5" fill="#FFF5F4" stroke="#D83427" stroke-width="1.8" />
   <path d="M5 6L10 9L15 6" stroke="#D83427" stroke-width="1.4" stroke-linecap="round" />
-  
-  {/* Top Right: Mobile Push Notification */}
+
   <path d="M30 18L38 10" stroke="#121212" stroke-width="2" stroke-linecap="round" />
   <rect x="34" y="5" width="8" height="11" rx="2" fill="#FFF5F4" stroke="#121212" stroke-width="1.8" />
   <circle cx="38" cy="13" r="1" fill="#D83427" />
-  
-  {/* Bottom Right: WhatsApp / Chat Bubble */}
+
   <path d="M30 30L38 38" stroke="#D83427" stroke-width="2" stroke-linecap="round" />
   <circle cx="38" cy="38" r="5.5" fill="#FFF5F4" stroke="#D83427" stroke-width="1.8" />
   <circle cx="38" cy="38" r="2" fill="#D83427" />
-  
-  {/* Bottom Left: SMS / Direct Message */}
+
   <path d="M18 30L10 38" stroke="#121212" stroke-width="2" stroke-linecap="round" />
   <rect x="5" y="34" width="9" height="8" rx="2" fill="#FFF5F4" stroke="#121212" stroke-width="1.8" />
 </svg>

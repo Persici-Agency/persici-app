@@ -68,14 +68,14 @@ export function DigitalEngineeringOfferingsGrid({
                           {itemTag}
                         </span>
                         {item.icon && (
-                          <div className="relative h-7 w-7 shrink-0 overflow-hidden opacity-90 group-hover:opacity-100 transition-opacity">
+                          <div className="h-7 w-7 shrink-0 flex items-center justify-center opacity-90 group-hover:opacity-100 transition-opacity">
                             {isImageIcon ? (
                               <Image
                                 src={item.icon}
                                 alt={itemTitle}
-                                fill
-                                sizes="28px"
-                                className="object-contain"
+                                width={28}
+                                height={28}
+                                className="w-7 h-7 object-contain"
                                 unoptimized={item.icon.endsWith('.svg')}
                               />
                             ) : (

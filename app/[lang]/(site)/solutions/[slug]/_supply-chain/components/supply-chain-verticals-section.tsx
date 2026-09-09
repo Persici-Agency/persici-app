@@ -68,14 +68,14 @@ export function SupplyChainVerticalsSection({
                 distance={24}
                 className="flex"
               >
-                <div className="group relative flex flex-col justify-between rounded-2xl bg-white border border-slate-200/80 p-6 sm:p-8 transition-all duration-300 hover:border-persici-crimson/30 hover:shadow-lg w-full">
+                <div className="group relative w-full h-full flex flex-col justify-between rounded-2xl bg-white border border-slate-200/80 p-6 sm:p-8 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
                   <div>
                     {/* Top Row: Monospace Numeral Badge + Sector Icon */}
                     <div className="flex items-center justify-between gap-4 mb-6">
                       <span className="font-mono text-2xl sm:text-3xl font-extrabold text-persici-crimson/80 group-hover:text-persici-crimson transition-colors">
                         {vert.number}
                       </span>
-                      <div className="h-10 w-10 rounded-xl bg-persici-crimson/5 flex items-center justify-center text-persici-crimson group-hover:bg-persici-crimson group-hover:text-white transition-all duration-300">
+                      <div className="h-10 w-10 rounded-xl bg-persici-crimson/5 flex items-center justify-center text-persici-crimson transition-transform duration-300 group-hover:scale-110">
                         <IconComponent className="h-5 w-5" />
                       </div>
                     </div>

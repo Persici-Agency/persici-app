@@ -64,7 +64,7 @@ export function CustomerEngagementTechStackSection({
                 distance={24}
                 className="flex"
               >
-                <div className="group relative flex flex-col justify-between rounded-2xl bg-[#151B28] border border-white/10 p-6 sm:p-8 transition-all duration-300 hover:border-persici-crimson/40 hover:bg-[#181F2E] w-full">
+                <div className="group relative w-full h-full flex flex-col justify-between rounded-2xl bg-white/[0.03] border border-white/10 hover:border-white/25 hover:bg-white/[0.05] p-6 sm:p-8 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-black/50">
                   <div>
                     {/* Header: Icon + Badge */}
                     <div className="flex items-center justify-between gap-4 mb-5">
@@ -76,7 +76,7 @@ export function CustomerEngagementTechStackSection({
                       </span>
                     </div>
 
-                    <h3 className="font-primary text-xl font-bold text-white group-hover:text-persici-crimson transition-colors mb-3">
+                    <h3 className="font-primary text-xl font-bold text-white mb-3">
                       {podTitle}
                     </h3>
 
@@ -91,7 +91,7 @@ export function CustomerEngagementTechStackSection({
                       {pod.technologies.map((tech, tIdx) => (
                         <span
                           key={tIdx}
-                          className="text-xs font-medium text-slate-200 bg-white/5 border border-white/10 px-3 py-1.5 rounded-lg hover:border-persici-crimson/50 transition-colors"
+                          className="text-xs font-medium text-slate-200 bg-white/[0.04] border border-white/[0.08] hover:bg-white/[0.08] hover:border-white/20 px-3 py-1.5 rounded-lg transition-colors"
                         >
                           {tech.name}
                           {tech.badge && (

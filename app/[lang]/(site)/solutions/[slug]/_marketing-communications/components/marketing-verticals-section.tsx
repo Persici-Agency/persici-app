@@ -70,12 +70,12 @@ export function MarketingVerticalsSection({
                 blur={true}
                 className={idx === 4 ? 'md:col-span-2 lg:col-span-1' : ''}
               >
-                <div className="group relative flex flex-col justify-between h-full rounded-2xl bg-white border border-black/[0.06] p-7 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-black/[0.12]">
+                <div className="group relative w-full h-full flex flex-col justify-between rounded-2xl bg-white border border-slate-200/80 p-7 sm:p-8 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
                   {/* Top: Monospace Number + Tag + Icon */}
                   <div>
                     <div className="flex items-center justify-between mb-5">
                       <div className="flex items-center gap-3">
-                        <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-black/[0.04] text-slate-800">
+                        <span className="font-mono text-xs font-bold text-slate-400 group-hover:text-persici-crimson transition-colors tracking-widest">
                           {vert.number}
                         </span>
                         <span className="text-[11px] font-semibold text-persici-crimson uppercase tracking-wider">
@@ -87,7 +87,7 @@ export function MarketingVerticalsSection({
                       </div>
                     </div>
 
-                    <h3 className="font-primary text-xl font-bold text-slate-900 mb-3 leading-snug">
+                    <h3 className="font-primary text-xl font-bold text-slate-900 leading-snug mb-3 group-hover:text-persici-crimson transition-colors">
                       {vertTitle}
                     </h3>
                     <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mb-6">

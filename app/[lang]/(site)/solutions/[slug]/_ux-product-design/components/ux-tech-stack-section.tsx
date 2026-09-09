@@ -54,7 +54,7 @@ export function UxTechStackSection({
                 distance={24}
                 className="flex"
               >
-                <div className="rounded-2xl sm:rounded-3xl bg-white/[0.03] border border-white/10 p-7 sm:p-9 backdrop-blur-sm flex flex-col justify-between hover:border-white/20 transition-all duration-300 hover:-translate-y-1 w-full">
+                <div className="w-full h-full flex flex-col justify-between rounded-2xl sm:rounded-3xl bg-white/[0.03] border border-white/10 hover:border-white/25 hover:bg-white/[0.05] p-7 sm:p-9 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-black/50">
                   <div>
                     <div className="flex items-center justify-between gap-3 mb-4">
                       <h3 className="font-primary text-xl font-bold text-white">

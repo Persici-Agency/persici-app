@@ -55,7 +55,7 @@ export function ApplicationTechStackSection({
                 distance={24}
                 className="flex"
               >
-                <div className="w-full flex flex-col justify-between rounded-2xl bg-white/[0.03] border border-white/[0.08] hover:border-white/[0.18] p-6 sm:p-8 backdrop-blur-xs transition-all duration-300 hover:-translate-y-1">
+                <div className="w-full h-full flex flex-col justify-between rounded-2xl bg-white/[0.03] border border-white/10 hover:border-white/25 hover:bg-white/[0.05] p-6 sm:p-8 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-black/50">
                   <div>
                     <div className="flex items-center justify-between gap-3 mb-4">
                       <span className="text-xs font-semibold uppercase tracking-wider text-persici-blush bg-persici-blush/10 px-2.5 py-1 rounded-md">

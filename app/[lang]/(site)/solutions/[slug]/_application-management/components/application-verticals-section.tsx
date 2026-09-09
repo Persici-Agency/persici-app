@@ -52,7 +52,7 @@ export function ApplicationVerticalsSection({
                 distance={24}
                 className={idx === 4 ? 'md:col-span-2 lg:col-span-1' : ''}
               >
-                <div className="group h-full flex flex-col justify-between rounded-2xl bg-[#FAFAF8] border border-black/[0.05] p-6 sm:p-8 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-black/[0.1] relative">
+                <div className="group relative w-full h-full flex flex-col justify-between rounded-2xl bg-white border border-slate-200/80 p-6 sm:p-8 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
                   <div>
                     {/* Monospace Index + Tag */}
                     <div className="flex items-center justify-between gap-3 mb-6 pb-4 border-b border-black/[0.05]">
