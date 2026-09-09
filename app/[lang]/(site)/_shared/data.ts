@@ -17,12 +17,15 @@ import type {
   InsightArticle,
   ProjectItem,
   ContactOffice,
-  platformsType,
   HomePageContent,
   ServicesPageContent,
   WorkPageContent,
   ContactPageContent,
+  SolutionOfferingItem,
+  SolutionsPageContent,
+  platformsType,
 } from './types';
+
 
 // ============================================================================
 // 1. Navigation & Certified Partners
@@ -37,7 +40,7 @@ export const siteNavLinks: NavLink[] = [
       { key: 'marketingCommunications', href: '/solutions/marketing-communications' },
       { key: 'ecommerceGrowth', href: '/solutions/ecommerce-growth' },
       { key: 'aiIntegration', href: '/solutions/ai-integration' },
-      { key: 'uxProductDesign', href: '/solutions/ux-product-design' },
+      { key: 'uxProductDesign', href: '/solutions/ux-and-product-design' },
       { key: 'customerEngagement', href: '/solutions/customer-engagement' },
       { key: 'digitalEngineering', href: '/solutions/digital-engineering' },
       { key: 'supplyChain', href: '/solutions/supply-chain' },
@@ -66,7 +69,6 @@ export const siteNavLinks: NavLink[] = [
       { key: 'digitalTransformationFramework', href: '/how-we-do-it/digital-transformation-framework' },
       { key: 'productManagement', href: '/how-we-do-it/product-management' },
       { key: 'engineeringTechnology', href: '/how-we-do-it/engineering-technology' },
-      { key: 'experienceTransformation', href: '/how-we-do-it/experience-transformation' },
     ],
   },
   {
@@ -1517,4 +1519,535 @@ export const contactPageContent: ContactPageContent = {
   },
   offices: contactOffices,
 };
+
+// ============================================================================
+// 12. Solutions Offerings (Home Challenges & Solutions Hub)
+// ============================================================================
+export const solutionsOfferingsList: SolutionOfferingItem[] = [
+  {
+    slug: 'supply-chain',
+    title: {
+      en: 'Supply Chain',
+      ar: 'سلسلة الإمداد',
+    },
+    description: {
+      en: 'Data-driven inventory visibility, automated order routing, and localized fulfillment solutions reducing delivery delays and operational costs.',
+      ar: 'رؤية للمخزون مدفوعة بالبيانات، وتوجيه آلي للطلبات، وحلول شحن محلي تقلل التأخير وتكاليف التشغيل.',
+    },
+    diagramType: 'matrix-intersect',
+    tag: {
+      en: 'Operations & Fulfillment',
+      ar: 'العمليات واللوجستيات',
+    },
+    icon: '/icons/solutions/Supply%20Chain%404x.png',
+    order: 1,
+    href: '/solutions/supply-chain',
+  },
+  {
+    slug: 'marketing-communications',
+    title: {
+      en: 'Marketing & Communications',
+      ar: 'التسويق والتواصل',
+    },
+    description: {
+      en: 'Full-funnel digital marketing, data-backed acquisition across Meta and TikTok, and compelling creative storytelling that drives sustainable ROAS.',
+      ar: 'تسويق رقمي متكامل، واستحواذ مدعوم بالبيانات عبر ميتا وتيك توك، وسرد إبداعي يجذب العملاء ويحقق عائداً مستداماً.',
+    },
+    diagramType: 'orbital-radar',
+    tag: {
+      en: 'Performance Acquisition',
+      ar: 'إعلانات الأداء والاستحواذ',
+    },
+    icon: '/icons/solutions/Marketing%20%26%20Communicating%404x.png',
+    order: 2,
+    href: '/solutions/marketing-communications',
+  },
+  {
+    slug: 'ux-and-product-design',
+    title: {
+      en: 'UX and Product Design',
+      ar: 'تصميم تجربة وواجهة المستخدم',
+    },
+    description: {
+      en: 'Human-centered digital product architecture, intuitive user journeys, high-fidelity design systems, and rapid prototyping that drive conversion and adoption.',
+      ar: 'معمارية رقمية تركز على الإنسان، ومسارات مستخدم بديهية، وأنظمة تصميم تفاعلية ونماذج أولية سريعة تعزز التحويل والتبني.',
+    },
+    diagramType: 'ux-strategy-compass',
+    tag: {
+      en: 'UI/UX & Product Design',
+      ar: 'تجربة وواجهة المستخدم',
+    },
+    icon: '/icons/solutions/UX%20and%20Product%20Design%404x.png',
+    order: 3,
+    href: '/solutions/ux-and-product-design',
+  },
+  {
+    slug: 'ecommerce-growth',
+    title: {
+      en: 'E-Commerce Growth',
+      ar: 'نمو التجارة الإلكترونية',
+    },
+    description: {
+      en: 'End-to-end Shopify Plus scaling, continuous conversion rate optimization (CRO), and margin-engineered unit economics for high-velocity DTC brands.',
+      ar: 'توسيع متاجر شوبيفاي بلس، وتحسين مستمر لمعدل التحويل (CRO)، وهندسة الجدوى الاقتصادية للعلامات سريعة النمو.',
+    },
+    diagramType: 'grid-dots',
+    tag: {
+      en: 'Storefront & CRO',
+      ar: 'المتاجر والتحويل',
+    },
+    icon: '/icons/solutions/E-Commerce%20Growth%404x.png',
+    order: 4,
+    href: '/solutions/ecommerce-growth',
+  },
+  {
+    slug: 'digital-engineering',
+    title: {
+      en: 'Digital Engineering',
+      ar: 'الهندسة الرقمية',
+    },
+    description: {
+      en: 'Modern cloud infrastructure, headless architecture, resilient API microservices, and continuous release pipelines that move ideas to production in days.',
+      ar: 'بنية تحتية سحابية حديثة، ومعمارية بدون واجهة تقليدية (Headless)، وخدمات دقيقة تنقل الأفكار إلى الإنتاج بسرعة فائقة.',
+    },
+    diagramType: 'nested-squares',
+    tag: {
+      en: 'Cloud & Architecture',
+      ar: 'السحابة والمعمارية',
+    },
+    icon: '/icons/solutions/Digital%20Engineering%404x.png',
+    order: 5,
+    href: '/solutions/digital-engineering',
+  },
+  {
+    slug: 'customer-engagement',
+    title: {
+      en: 'Customer Engagement',
+      ar: 'إشراك العملاء والتفاعل',
+    },
+    description: {
+      en: 'Data-driven engagement that fosters genuine connection, delivering personalized omnichannel journeys across web, app, email, and mobile messaging.',
+      ar: 'تفاعل قائم على البيانات يعزز الروابط الوثيقة، ويقدم رحلات مخصصة عبر الموقع والتطبيقات والرسائل البريدية والهاتفية.',
+    },
+    diagramType: 'lattice-loop',
+    tag: {
+      en: 'Retention & Lifecycle',
+      ar: 'الاحتفاظ ودورة العميل',
+    },
+    icon: '/icons/solutions/Customer%20Engagement%404x.png',
+    order: 6,
+    href: '/solutions/customer-engagement',
+  },
+  {
+    slug: 'crm-management',
+    title: {
+      en: 'CRM Management (Braze)',
+      ar: 'إدارة علاقات العملاء (Braze)',
+    },
+    description: {
+      en: 'Advanced customer lifecycle orchestration powered by Braze and Klaviyo. Centralized data and targeted campaign automation delivering up to 480% ROI.',
+      ar: 'إدارة متقدمة لدورة حياة العميل عبر Braze وKlaviyo، مع مركزية البيانات وأتمتة الحملات الموجهة لتحقيق عائد يصل إلى 480%.',
+    },
+    diagramType: 'circuit-flow',
+    tag: {
+      en: 'Lifecycle Automation',
+      ar: 'الأتمتة والتخصيص',
+    },
+    icon: '/icons/solutions/CRM%20Management%404x.png',
+    order: 7,
+    href: '/solutions/crm-management',
+  },
+  {
+    slug: 'application-management',
+    title: {
+      en: 'Application & Management',
+      ar: 'إدارة وتحديث التطبيقات',
+    },
+    description: {
+      en: 'Mission-critical application maintenance, 24/7 uptime monitoring, SLA support, and legacy modernization keeping your enterprise reliable.',
+      ar: 'صيانة البرمجيات الحيوية، والمراقبة المستمرة على مدار الساعة، ودعم مستوى الخدمة وتحديث الأنظمة القديمة لضمان الموثوقية.',
+    },
+    diagramType: 'triad-mesh',
+    tag: {
+      en: 'DevOps & SLA Support',
+      ar: 'الدعم والموثوقية',
+    },
+    icon: '/icons/solutions/Application%20%26%20Management%404x.png',
+    order: 8,
+    href: '/solutions/application-management',
+  },
+  {
+    slug: 'ai-integration',
+    title: {
+      en: 'AI Integration',
+      ar: 'دمج الذكاء الاصطناعي',
+    },
+    description: {
+      en: 'Cutting development timelines from months to days with intelligent automated agents, generative workflows, and proprietary predictive growth models.',
+      ar: 'اختصار وقت التطوير من أشهر إلى أيام عبر وكلاء آليين أذكياء، وسير عمل توليدي ونماذج نمو تنبؤية مخصصة.',
+    },
+    diagramType: 'flow-funnel',
+    tag: {
+      en: 'GenAI & Automation',
+      ar: 'الذكاء الاصطناعي والأتمتة',
+    },
+    icon: '/icons/solutions/AI%404x.png',
+    order: 9,
+    href: '/solutions/ai-integration',
+  },
+];
+
+export const solutionsPageContent: SolutionsPageContent = {
+  page: 'solutions',
+  heroBadge: {
+    en: 'Persici Growth Architecture',
+    ar: 'بنية النمو المؤسسي في بيرسيسي',
+  },
+  heroTitle: {
+    en: 'Navigating the Hurdles of Modern Business Growth',
+    ar: 'تجاوز عقبات وتحديات نمو الأعمال الحديثة',
+  },
+  heroSubtitle: {
+    en: 'Every industry faces unique friction points on its way to scaling. We help ambitious direct-to-consumer and enterprise brands conquer the core digital and operational complexities holding them back.',
+    ar: 'تواجه كل صناعة نقاط احتكاك فريدة في طريقها نحو التوسع. نحن نساعد العلامات التجارية الطموحة على التغلب على التعقيدات الرقمية والتشغيلية التي تعيق تقدمها.',
+  },
+  heroCtaPrimary: {
+    en: 'Explore Offerings',
+    ar: 'استكشف حلولنا',
+  },
+  heroCtaSecondary: {
+    en: 'Book a Growth Call',
+    ar: 'احجز مكالمة نمو',
+  },
+  heroImage: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=1200&q=80',
+  offeringsTitle: {
+    en: 'Our Offerings',
+    ar: 'حلولنا المتكاملة',
+  },
+  offeringsSubtitle: {
+    en: 'With our specialized solutions, you can boost retention, enhance every customer touchpoint, and eliminate operational friction. Select a category below to explore our capabilities.',
+    ar: 'مع حلولنا المتخصصة، يمكنك زيادة ولاء العملاء وتحسين كل مرحلة من رحلة الشراء والتخلص من العوائق التشغيلية. اختر فئة لاستكشاف القدرات بالتفصيل.',
+  },
+  offeringsList: solutionsOfferingsList,
+  whyItMattersTitle: {
+    en: 'Why It Matters',
+    ar: 'لماذا يُعد هذا محورياً للنمو؟',
+  },
+  whyItMattersText: {
+    en: 'Modern eCommerce brands and digital enterprises cannot scale with disconnected vendor tools and generic marketing retainers. Achieving sustainable, profitable scale requires full-stack alignment—where unit economics, storefront conversion engineering, predictive inventory, and real-time customer data operate as one synchronized engine.',
+    ar: 'لم تعد العلامات التجارية الحديثة قادرة على التوسع المستدام عبر أدوات متناثرة وحلول تسويقية عامة. يتطلب تحقيق نمو مربح مواءمة شاملة — حيث تعمل اقتصاديات الوحدة، وهندسة تحويل المتاجر، والتنبؤ بالمخزون، وبيانات العملاء الفورية كمحرك موحد متكامل.',
+  },
+  whyItMattersImage: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1000&q=80',
+  benefitsTitle: {
+    en: 'Benefits of Enterprise Growth Architecture',
+    ar: 'مزايا بنية النمو المؤسسي',
+  },
+  benefitsImage: 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=1200&q=80',
+  benefits: [
+    {
+      title: {
+        en: 'Data-Driven Agility',
+        ar: 'مرونة مبنية على البيانات الفورية',
+      },
+      description: {
+        en: 'Replace guesswork with unified telemetry. Accelerate sprint delivery and deployment release cycles from months to days.',
+        ar: 'استبدل التخمين بالرؤية الموحدة والبيانات الدقيقة، واختصر دورات إطلاق الميزات والبرمجيات من أشهر إلى أيام.',
+      },
+      accentColor: '#D83427',
+    },
+    {
+      title: {
+        en: 'Frictionless Customer Journey',
+        ar: 'رحلة شراء سلسة وممتعة',
+      },
+      description: {
+        en: 'Deliver hyper-personalized storefront experiences and instant checkouts that maximize session conversion rates across all screens.',
+        ar: 'قدم تجارب تسوق فائقة التخصيص وإنهاء سريع للشراء يرفع معدلات التحويل عبر جميع الأجهزة.',
+      },
+      accentColor: '#EF8C7D',
+    },
+    {
+      title: {
+        en: 'Scalable Margin Growth',
+        ar: 'توسع مستدام في هوامش الربح',
+      },
+      description: {
+        en: 'Lower customer acquisition costs (CAC) while compounding lifetime value (LTV) through automated lifecycle retention loops.',
+        ar: 'خفض تكلفة اكتساب العملاء الجدد (CAC) مع مضاعفة القيمة الدائمة للعميل (LTV) عبر مسارات إعادة التفاعل الآلية.',
+      },
+      accentColor: '#121212',
+    },
+  ],
+  deliveryTitle: {
+    en: 'How We Deliver Differently',
+    ar: 'كيف نحقق نتائج ملموسة ومختلفة',
+  },
+  deliverySubtitle: {
+    en: 'Cut dev time from months to days with Persici AI development platform and modern digital engineering.',
+    ar: 'اختصر وقت التطوير والتنفيذ من أشهر إلى أيام عبر منصة بيرسيسي للذكاء الاصطناعي والهندسة الرقمية المتقدمة.',
+  },
+  deliveryImage: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1000&q=80',
+  deliveryPillars: [
+    {
+      title: {
+        en: 'Modern Architecture & Rapid Prototyping',
+        ar: 'معمارية حديثة ونماذج أولية سريعة',
+      },
+      description: {
+        en: 'We build modular, headless systems and reusable component architectures that launch high-performance digital products in record time.',
+        ar: 'نبني أنظمة قابلة للتوسع بدون قيود تقليدية ومكونات قابلة لإعادة الاستخدام لإطلاق منتجات رقمية فائقة السرعة.',
+      },
+    },
+    {
+      title: {
+        en: 'Cross-Functional Execution Pods',
+        ar: 'فرق عمل متكاملة ومتخصصة',
+      },
+      description: {
+        en: 'No handoff lag between strategy, engineering, UI/UX, and performance media. You work directly with senior growth practitioners.',
+        ar: 'لا انقطاع بين الاستراتيجية والهندسة والتصميم وإعلانات الأداء. أنت تعمل مباشرة مع خبراء نمو متمرسين.',
+      },
+    },
+    {
+      title: {
+        en: 'Continuous CRO & Algorithmic Optimization',
+        ar: 'تحسين مستمر لمعدلات التحويل والأداء',
+      },
+      description: {
+        en: 'Every sprint tests hypotheses, optimizes checkout bottlenecks, and tunes acquisition algorithms against your bottom-line margin.',
+        ar: 'كل مرحلة تختبر فرضيات جديدة، وتعالج معوقات الشراء وتضبط خوارزميات الاستحواذ لتعظيم صافي الأرباح.',
+      },
+    },
+  ],
+  spotlightBadge: {
+    en: 'Featured Client Story',
+    ar: 'قصة نجاح مميزة',
+  },
+  spotlightTitle: {
+    en: 'Lahfaa Perfumes: Luxury E-Commerce Redesign & GCC Expansion',
+    ar: 'عطور لهفة: إعادة تصميم المتجر الفاخر والتوسع في أسواق الخليج',
+  },
+  spotlightDescription: {
+    en: 'Transformed an established luxury fragrance brand with headless Shopify Plus architecture, conversion engineering, and full-funnel performance marketing across UAE and Saudi Arabia.',
+    ar: 'إعادة تصميم متكاملة لدار عطور فاخرة عبر شوبيفاي بلس معمارية متطورة، وهندسة معدلات التحويل، وحملات أداء رقمية في الإمارات والسعودية.',
+  },
+  spotlightMetric1Val: '+340%',
+  spotlightMetric1Label: {
+    en: 'Revenue Growth',
+    ar: 'نمو الإيرادات',
+  },
+  spotlightMetric2Val: '4.2x',
+  spotlightMetric2Label: {
+    en: 'Blended ROAS',
+    ar: 'العائد الإعلاني الإجمالي',
+  },
+  spotlightMetric3Val: '99.8%',
+  spotlightMetric3Label: {
+    en: 'Fulfillment Accuracy',
+    ar: 'دقة تجهيز الطلبات',
+  },
+  spotlightImage: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=800&q=80',
+  spotlightCtaText: {
+    en: 'Learn more',
+    ar: 'اعرف المزيد',
+  },
+  spotlightCtaHref: '/client-stories',
+  spotlightStories: [
+    {
+      id: 'nissan-mobility',
+      badge: {
+        en: 'Transportation & Mobility',
+        ar: 'قطاع السيارات والنقل الذكي',
+      },
+      title: {
+        en: 'Nissan Cuts IT Operational Costs 40% with AI-Powered Monitoring and Automation',
+        ar: 'نيسان تخفض تكاليف تشغيل تقنية المعلومات بنسبة 40% عبر الأتمتة والمراقبة الذكية',
+      },
+      description: {
+        en: 'Modernized enterprise observability across regional manufacturing clusters with automated incident remediation, zero-downtime microservices, and unified telemetry pipelines.',
+        ar: 'تحديث شامل لمنظومة المراقبة والتشغيل عبر المصانع الإقليمية مع حلول الاستجابة التنبؤية للأعطال والخدمات المصغرة دون أي انقطاع.',
+      },
+      metrics: [
+        {
+          value: '40%',
+          label: {
+            en: 'IT OpEx Reduction',
+            ar: 'خفض تكاليف التشغيل',
+          },
+        },
+        {
+          value: '62%',
+          label: {
+            en: 'Faster MTTR',
+            ar: 'تسريع حل الحوادث',
+          },
+        },
+        {
+          value: '99.9%',
+          label: {
+            en: 'System Uptime',
+            ar: 'جاهزية الأنظمة التشغيلية',
+          },
+        },
+      ],
+      image: 'https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=1200&q=80',
+      ctaText: {
+        en: 'Learn more',
+        ar: 'اعرف المزيد',
+      },
+      ctaHref: '/client-stories',
+    },
+    {
+      id: 'lahfaa-perfumes',
+      badge: {
+        en: 'Luxury Goods & E-Commerce',
+        ar: 'السلع الفاخرة والتجارة الإلكترونية',
+      },
+      title: {
+        en: 'Lahfaa Perfumes: Luxury E-Commerce Redesign & GCC Expansion',
+        ar: 'عطور لهفة: إعادة تصميم المتجر الفاخر والتوسع في أسواق الخليج',
+      },
+      description: {
+        en: 'Transformed an established luxury fragrance brand with headless Shopify Plus architecture, conversion engineering, and full-funnel performance marketing across UAE and Saudi Arabia.',
+        ar: 'إعادة تصميم متكاملة لدار عطور فاخرة عبر شوبيفاي بلس معمارية متطورة، وهندسة معدلات التحويل، وحملات أداء رقمية في الإمارات والسعودية.',
+      },
+      metrics: [
+        {
+          value: '+340%',
+          label: {
+            en: 'Revenue Growth',
+            ar: 'نمو الإيرادات',
+          },
+        },
+        {
+          value: '4.2x',
+          label: {
+            en: 'Blended ROAS',
+            ar: 'العائد الإعلاني الإجمالي',
+          },
+        },
+        {
+          value: '99.8%',
+          label: {
+            en: 'Fulfillment Accuracy',
+            ar: 'دقة تجهيز الطلبات',
+          },
+        },
+      ],
+      image: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1200&q=80',
+      ctaText: {
+        en: 'Learn more',
+        ar: 'اعرف المزيد',
+      },
+      ctaHref: '/client-stories',
+    },
+    {
+      id: 'veloce-fintech',
+      badge: {
+        en: 'Financial Services & FinTech',
+        ar: 'الخدمات المالية والتقنية المالية',
+      },
+      title: {
+        en: 'Veloce Global: Modernizing Cross-Border Enterprise Payment Rails',
+        ar: 'فيلوتشي العالمية: تحديث مسارات الدفع المالي العابر للحدود للمؤسسات',
+      },
+      description: {
+        en: 'Engineered next-generation settlement pipelines and automated fraud defense engines, processing millions in daily transactions with sub-second latency and bank-grade security.',
+        ar: 'بناء مسارات تسوية مالية فائقة السرعة وأنظمة حماية ذكية من الاحتيال لمعالجة ملايين المعاملات اليومية بأمان مصرفي متكامل.',
+      },
+      metrics: [
+        {
+          value: '<2.1s',
+          label: {
+            en: 'Settlement Time',
+            ar: 'وقت تسوية المعاملات',
+          },
+        },
+        {
+          value: '10M+',
+          label: {
+            en: 'Daily Volume',
+            ar: 'حجم المعاملات اليومية',
+          },
+        },
+        {
+          value: '99.99%',
+          label: {
+            en: 'Platform Availability',
+            ar: 'توافر المنصة المستمر',
+          },
+        },
+      ],
+      image: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=1200&q=80',
+      ctaText: {
+        en: 'Learn more',
+        ar: 'اعرف المزيد',
+      },
+      ctaHref: '/client-stories',
+    },
+  ],
+  quoteText: {
+    en: '"Working with Persici has been our best growth decision. Their team\'s strategy, conversion engineering, and execution gave us 3.4x growth in under 6 months. A true growth partner."',
+    ar: '"العمل مع بيرسيسي كان أفضل قرار لنمو أعمالنا. استراتيجيتهم وهندسة التحويل والتنفيذ المتقن حققت لنا نمواً بنسبة 3.4 أضعاف في أقل من 6 أشهر."',
+  },
+  quoteAuthor: 'Marcus Lindqvist',
+  quoteRole: {
+    en: 'Managing Director, Nordic Retail Group',
+    ar: 'المدير التنفيذي، مجموعة نورديك ريتيل',
+  },
+  faqsTitle: {
+    en: 'FAQ',
+    ar: 'الأسئلة الشائعة',
+  },
+  faqsSubtitle: {
+    en: 'Clear answers on our delivery framework, integration timelines, and partnership model.',
+    ar: 'إجابات واضحة حول منهجية العمل، والجداول الزمنية للتنفيذ، ونموذج الشراكة.',
+  },
+  faqs: [
+    {
+      question: {
+        en: 'How do you determine the right solution for our business?',
+        ar: 'كيف تحددون الحل الأنسب لاحتياجات أعمالنا؟',
+      },
+      answer: {
+        en: 'We begin with a thorough audit of your current digital stack, analytics telemetry, conversion funnel, and unit economics during our initial discovery phase to identify the highest-ROI growth levers before writing a single line of code.',
+        ar: 'نبدأ بفحص شامل لبنيتكم الرقمية الحالية ومسار التحويل والجدوى الاقتصادية خلال مرحلة الاستكشاف الأولى لتحديد أكثر فرص النمو عائداً قبل البدء بأي تطوير برمجي.',
+      },
+    },
+    {
+      question: {
+        en: 'Can we engage Persici for a specific solution, or must it be full-funnel?',
+        ar: 'هل يمكننا التعاقد مع بيرسيسي لحل محدد أم يلزم التعاقد على كافة الخدمات؟',
+      },
+      answer: {
+        en: 'Our engagement model is modular. You can start with a targeted solution such as Shopify Plus CRO engineering, CRM lifecycle setup, or AI integration, and expand into full-funnel growth as you see validated ROI.',
+        ar: 'نموذج عملنا مرن وموديولي. يمكنك البدء بحل محدد مثل هندسة تحويل المتاجر، أو تهيئة CRM وأتمتة دورة حياة العميل، أو دمج الذكاء الاصطناعي، ثم التوسع تدريجياً.',
+      },
+    },
+    {
+      question: {
+        en: 'How quickly can we see measurable business results?',
+        ar: 'ما هي المدة المتوقعة لملاحظة نتائج ملموسة؟',
+      },
+      answer: {
+        en: 'Performance acquisition and conversion optimizations typically yield noticeable revenue improvements within the first 30 to 45 days, while structural digital engineering and platform transformations deliver compounding margin gains across 90-day sprints.',
+        ar: 'حملات الأداء وتحسينات التحويل تُظهر عادةً نتائج واضحة خلال 30 إلى 45 يوماً الأولى، بينما تمنح التحولات الهندسية والمؤسسية مكاسب تراكمية مستدامة عبر دورات 90 يوماً.',
+      },
+    },
+    {
+      question: {
+        en: 'Do your solutions integrate with our existing enterprise tools?',
+        ar: 'هل تتكامل حلولكم مع أدواتنا وبرمجياتنا الحالية؟',
+      },
+      answer: {
+        en: 'Yes. We build on open API standards and certified integrations with major enterprise platforms including Braze, Shopify Plus, Klaviyo, Adobe, AWS, Google Cloud, and Salesforce.',
+        ar: 'نعم بكل تأكيد. نبني على معايير API المفتوحة وتكاملات معتمدة مع كبرى المنصات المؤسسية بما في ذلك Braze وShopify Plus وKlaviyo وAdobe وAWS وGoogle Cloud وSalesforce.',
+      },
+    },
+  ],
+};
+
+export * from './data/featured-client-stories.data';
+
+
 

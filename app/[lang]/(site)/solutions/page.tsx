@@ -2,15 +2,18 @@ import { getDictionary, hasLocale } from '@dictionaries';
 import { notFound } from 'next/navigation';
 import { createMetadata } from '@lib/metadata';
 import type { Locale } from '@lib/i18n';
-import { ServicesView } from '../services/_services';
+import { SolutionsView, fetchSolutionsPageData } from './_solutions';
 
 export async function generateMetadata({ params }: PageProps<'/[lang]/solutions'>) {
   const { lang } = await params;
   if (!hasLocale(lang)) return {};
-  const dict = await getDictionary(lang);
+  const content = await fetchSolutionsPageData();
+  const title = content.heroTitle[lang as 'en' | 'ar'] || content.heroTitle.en;
+  const description = content.heroSubtitle[lang as 'en' | 'ar'] || content.heroSubtitle.en;
+
   return createMetadata({
-    title: dict.nav.solutions || dict.services.title,
-    description: dict.services.description,
+    title,
+    description,
     locale: lang as Locale,
     path: '/solutions',
   });
@@ -20,6 +23,7 @@ export default async function SolutionsPage({ params }: PageProps<'/[lang]/solut
   const { lang } = await params;
   if (!hasLocale(lang)) notFound();
   const dict = await getDictionary(lang);
+  const content = await fetchSolutionsPageData();
 
-  return <ServicesView lang={lang} dict={dict} />;
+  return <SolutionsView content={content} lang={lang} dict={dict} />;
 }

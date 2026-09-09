@@ -2,23 +2,28 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { Logo } from '@shared/components/logo';
 import type { HeaderProps, NavLink } from '@shared/types';
 import { HomeButton, sectionContainer } from '@shared';
 import { siteNavLinks } from '@shared/data';
-import { NavDropdownCard } from './nav-dropdown-card';
+import { NavDropdownCard, solutionIconMap } from './nav-dropdown-card';
 
 /**
  * Checks whether a single DOM element represents a visually dark background.
  * Returns { isDark, solidFound } so callers can continue walking down if transparent.
  */
+interface PersiciImageElement extends HTMLImageElement {
+  _persiciLum?: number;
+}
+
 function getElementLuminance(el: HTMLElement): { isDark: boolean; solidFound: boolean } {
   // 1. If it's an <img> tag, sample its pixel brightness via canvas
   if (el.tagName === 'IMG') {
-    const img = el as HTMLImageElement;
-    if ((img as any)._persiciLum !== undefined) {
-      return { isDark: (img as any)._persiciLum < 0.45, solidFound: true };
+    const img = el as PersiciImageElement;
+    if (img._persiciLum !== undefined) {
+      return { isDark: img._persiciLum < 0.45, solidFound: true };
     }
     if (img.complete && img.naturalWidth > 0) {
       try {
@@ -31,7 +36,7 @@ function getElementLuminance(el: HTMLElement): { isDark: boolean; solidFound: bo
           const data = ctx.getImageData(0, 0, 1, 1).data;
           if (data[3] > 30) {
             const lum = (0.2126 * data[0] + 0.7152 * data[1] + 0.0722 * data[2]) / 255;
-            (img as any)._persiciLum = lum;
+            img._persiciLum = lum;
             return { isDark: lum < 0.45, solidFound: true };
           }
         }
@@ -41,6 +46,7 @@ function getElementLuminance(el: HTMLElement): { isDark: boolean; solidFound: bo
       }
     }
   }
+
 
   // 2. Videos are visually dark
   if (el.tagName === 'VIDEO') {
@@ -129,6 +135,13 @@ export function Header({ lang, dict }: HeaderProps) {
   const [isCtaDark, setIsCtaDark] = useState(false);
 
   const pathname = usePathname();
+  const [prevPathname, setPrevPathname] = useState(pathname);
+  if (prevPathname !== pathname) {
+    setPrevPathname(pathname);
+    setOpenDropdownKey(null);
+    setMobileMenuOpen(false);
+  }
+
   const isRtl = lang === 'ar';
   
   const headerRef = useRef<HTMLElement>(null);
@@ -136,11 +149,6 @@ export function Header({ lang, dict }: HeaderProps) {
   const navRef = useRef<HTMLElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
 
-  // Close dropdown on route change
-  useEffect(() => {
-    setOpenDropdownKey(null);
-    setMobileMenuOpen(false);
-  }, [pathname]);
 
   // Handle click outside navbar
   useEffect(() => {
@@ -254,6 +262,7 @@ export function Header({ lang, dict }: HeaderProps) {
         {/* Center: Floating Pill Navigation (Independently adapts to background under Pill) */}
         <nav
           ref={navRef}
+          suppressHydrationWarning
           className={`hidden md:flex items-center gap-2 rounded-full px-4 py-2 backdrop-blur-md transition-all duration-300 ${
             isNavDark
               ? 'bg-black/75 text-white border border-white/20 shadow-xl'
@@ -305,7 +314,8 @@ export function Header({ lang, dict }: HeaderProps) {
             return (
               <Link
                 key={link.key}
-                href={link.href}
+                href={link.href.startsWith('/') ? `/${lang}${link.href}` : `/${lang}/${link.href}`}
+                data-nav-item="true"
                 className={`group relative inline-flex flex-col items-center px-3.5 py-1.5 text-sm font-medium transition-colors cursor-pointer select-none outline-none ${
                   isNavDark
                     ? 'text-white/85 hover:text-white'
@@ -333,7 +343,7 @@ export function Header({ lang, dict }: HeaderProps) {
         </nav>
 
         {/* Right: Book a Call CTA & Mobile Toggle (Independently adapts to background under Button) */}
-        <div ref={ctaRef} className="flex items-center gap-3">
+        <div ref={ctaRef} className="flex items-center gap-3" suppressHydrationWarning>
           <HomeButton
             href={`/${lang}/contact`}
             title={dict.nav.bookCall}
@@ -426,6 +436,7 @@ export function Header({ lang, dict }: HeaderProps) {
                         {link.subItems.map((sub) => {
                           const subLabel = dict.nav[sub.key as keyof typeof dict.nav] || sub.key;
                           const subHref = `/${lang}${sub.href}`;
+                          const solutionIcon = solutionIconMap[sub.key];
                           return (
                             <Link
                               key={sub.key}
@@ -433,7 +444,20 @@ export function Header({ lang, dict }: HeaderProps) {
                               onClick={() => setMobileMenuOpen(false)}
                               className="flex items-center justify-between rounded-md px-3 py-1.5 text-xs font-medium text-foreground/75 hover:bg-black/5 hover:text-black"
                             >
-                              <span>{subLabel}</span>
+                              <span className="flex items-center gap-2">
+                                {solutionIcon && (
+                                  <Image
+                                    src={solutionIcon}
+                                    alt=""
+                                    width={14}
+                                    height={14}
+                                    className="h-3.5 w-3.5 shrink-0 object-contain brightness-0 opacity-75"
+                                    style={{ filter: 'brightness(0)' }}
+                                    aria-hidden="true"
+                                  />
+                                )}
+                                <span>{subLabel}</span>
+                              </span>
                               <span className="text-foreground/40">{isRtl ? '←' : '→'}</span>
                             </Link>
                           );

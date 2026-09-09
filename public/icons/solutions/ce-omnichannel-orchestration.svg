@@ -1,0 +1,16 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Omnichannel Pathway Ring -->
+  <circle cx="24" cy="24" r="16" stroke="#CBD5E1" stroke-width="1.8" stroke-dasharray="4 3"/>
+  <circle cx="24" cy="24" r="16" stroke="#D83427" stroke-width="2" stroke-dasharray="14 36" stroke-linecap="round"/>
+  <!-- Central Customer Pulse -->
+  <circle cx="24" cy="24" r="6" fill="#FFF5F4" stroke="#D83427" stroke-width="2"/>
+  <circle cx="24" cy="24" r="2.5" fill="#D83427"/>
+  <!-- Web Screen Node -->
+  <rect x="20" y="4" width="8" height="6" rx="1.5" fill="#121212"/>
+  <!-- Mobile Node -->
+  <rect x="37" y="21" width="5" height="8" rx="1.5" fill="#D83427"/>
+  <!-- Messaging / Email Node -->
+  <rect x="20" y="38" width="8" height="5" rx="1" fill="#121212"/>
+  <!-- Physical Store / Push Node -->
+  <circle cx="8" cy="24" r="3.5" fill="#D83427"/>
+</svg>

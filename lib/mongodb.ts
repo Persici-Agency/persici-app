@@ -17,6 +17,7 @@ export const COLLECTIONS = {
   PAGES: 'page_contents',
   PROJECTS: 'projects',
   SERVICES: 'services',
+  SOLUTIONS: 'solutions',
   INSIGHTS: 'insights',
   CLIENT_LOGOS: 'client_logos',
   REVIEWS: 'reviews',

@@ -1,0 +1,13 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- CI/CD Infinity Loop -->
+  <path d="M16 30C12.6863 30 10 27.3137 10 24C10 20.6863 12.6863 18 16 18C20 18 22.5 24 24 24C25.5 24 28 18 32 18C35.3137 18 38 20.6863 38 24C38 27.3137 35.3137 30 32 30C28 30 25.5 24 24 24C22.5 24 20 30 16 30Z" fill="#FFF5F4" stroke="#121212" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Active Release Arrow / Dash Section -->
+  <path d="M28 18C32 18 35.3137 20.6863 35.3137 24" stroke="#D83427" stroke-width="2.4" stroke-linecap="round"/>
+  <!-- Build Node Jewels -->
+  <circle cx="16" cy="24" r="3" fill="#121212"/>
+  <circle cx="32" cy="24" r="3" fill="#D83427"/>
+  <circle cx="24" cy="24" r="2" fill="#D83427"/>
+  <!-- Automation Speed Ticks -->
+  <line x1="38" y1="13" x2="41" y2="10" stroke="#D83427" stroke-width="2" stroke-linecap="round"/>
+  <line x1="41" y1="16" x2="43" y2="16" stroke="#D83427" stroke-width="2" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,16 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Loyalty Tier Crown and Reward Gemstone -->
+  <path d="M8 36L12 18L20 28L24 14L28 28L36 18L40 36H8Z" fill="#FFF5F4" stroke="#121212" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Crown Base Band -->
+  <rect x="8" y="36" width="32" height="6" rx="2" fill="#121212" stroke="#121212" stroke-width="1.5"/>
+  <!-- Facet Reward Diamonds -->
+  <circle cx="12" cy="18" r="2.5" fill="#D83427"/>
+  <circle cx="24" cy="14" r="3" fill="#D83427"/>
+  <circle cx="36" cy="18" r="2.5" fill="#D83427"/>
+  <!-- Central Loyalty Jewel -->
+  <polygon points="24,24 28,30 24,34 20,30" fill="#D83427" stroke="#D83427" stroke-width="1.2"/>
+  <!-- Base Gem Ticks -->
+  <line x1="16" y1="39" x2="18" y2="39" stroke="#FFF5F4" stroke-width="1.8" stroke-linecap="round"/>
+  <line x1="23" y1="39" x2="25" y2="39" stroke="#D83427" stroke-width="1.8" stroke-linecap="round"/>
+  <line x1="30" y1="39" x2="32" y2="39" stroke="#FFF5F4" stroke-width="1.8" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,16 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Architectural Blueprint Hexagon -->
+  <polygon points="24,6 39,15 39,33 24,42 9,33 9,15" fill="#FFF5F4" stroke="#121212" stroke-width="2.2" stroke-linejoin="round"/>
+  <!-- Strategic Core Crosshairs and Compass Diamond -->
+  <line x1="24" y1="10" x2="24" y2="38" stroke="#CBD5E1" stroke-width="1.5" stroke-dasharray="2 2"/>
+  <line x1="12" y1="24" x2="36" y2="24" stroke="#CBD5E1" stroke-width="1.5" stroke-dasharray="2 2"/>
+  <polygon points="24,14 31,24 24,34 17,24" stroke="#D83427" stroke-width="2" fill="none"/>
+  <circle cx="24" cy="24" r="3" fill="#D83427"/>
+  <!-- Vertex Milestone Beacons -->
+  <circle cx="24" cy="6" r="2" fill="#D83427"/>
+  <circle cx="39" cy="15" r="2" fill="#121212"/>
+  <circle cx="39" cy="33" r="2" fill="#D83427"/>
+  <circle cx="24" cy="42" r="2" fill="#121212"/>
+  <circle cx="9" cy="33" r="2" fill="#D83427"/>
+  <circle cx="9" cy="15" r="2" fill="#121212"/>
+</svg>

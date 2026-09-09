@@ -1,0 +1,20 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Central CDP Data Hub -->
+  <rect x="18" y="18" width="12" height="12" rx="3" fill="#FFF5F4" stroke="#D83427" stroke-width="2.2"/>
+  <circle cx="24" cy="24" r="2.5" fill="#D83427"/>
+  <!-- Orbiting Tool Nodes -->
+  <circle cx="10" cy="12" r="5" fill="#121212"/>
+  <circle cx="38" cy="12" r="5" fill="#121212"/>
+  <circle cx="10" cy="36" r="5" fill="#121212"/>
+  <circle cx="38" cy="36" r="5" fill="#121212"/>
+  <!-- Data Bus Connectors -->
+  <path d="M14 15L19 19" stroke="#D83427" stroke-width="2" stroke-linecap="round"/>
+  <path d="M34 15L29 19" stroke="#D83427" stroke-width="2" stroke-linecap="round"/>
+  <path d="M14 33L19 29" stroke="#D83427" stroke-width="2" stroke-linecap="round"/>
+  <path d="M34 33L29 29" stroke="#D83427" stroke-width="2" stroke-linecap="round"/>
+  <!-- Inner Node Jewels -->
+  <circle cx="10" cy="12" r="1.8" fill="#FFF5F4"/>
+  <circle cx="38" cy="12" r="1.8" fill="#D83427"/>
+  <circle cx="10" cy="36" r="1.8" fill="#D83427"/>
+  <circle cx="38" cy="36" r="1.8" fill="#FFF5F4"/>
+</svg>

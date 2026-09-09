@@ -47,19 +47,41 @@ export default async function RootLayout({
                 try {
                   var origSetAttr = Element.prototype.setAttribute;
                   Element.prototype.setAttribute = function(name, val) {
-                    if (name === 'bis_skin_checked' || name === 'bis_register') return;
+                    if (name === 'bis_skin_checked' || name === 'bis_register' || name === 'bis_frame_id') return;
                     return origSetAttr.apply(this, arguments);
                   };
-                  if (typeof document !== 'undefined') {
-                    var clean = function() {
-                      var els = document.querySelectorAll('[bis_skin_checked],[bis_register]');
-                      for (var i = 0; i < els.length; i++) {
-                        els[i].removeAttribute('bis_skin_checked');
-                        els[i].removeAttribute('bis_register');
-                      }
+                  if (typeof MutationObserver !== 'undefined' && typeof document !== 'undefined' && document.documentElement) {
+                    var cleanAttr = function(el) {
+                      if (!el || !el.removeAttribute) return;
+                      el.removeAttribute('bis_skin_checked');
+                      el.removeAttribute('bis_register');
+                      el.removeAttribute('bis_frame_id');
                     };
-                    clean();
-                    document.addEventListener('DOMContentLoaded', clean);
+                    var observer = new MutationObserver(function(mutations) {
+                      for (var i = 0; i < mutations.length; i++) {
+                        var m = mutations[i];
+                        if (m.type === 'attributes') {
+                          cleanAttr(m.target);
+                        } else if (m.type === 'childList') {
+                          for (var j = 0; j < m.addedNodes.length; j++) {
+                            var node = m.addedNodes[j];
+                            if (node.nodeType === 1) {
+                              cleanAttr(node);
+                              var descendants = node.querySelectorAll ? node.querySelectorAll('[bis_skin_checked],[bis_register],[bis_frame_id]') : [];
+                              for (var k = 0; k < descendants.length; k++) {
+                                cleanAttr(descendants[k]);
+                              }
+                            }
+                          }
+                        }
+                      }
+                    });
+                    observer.observe(document.documentElement, {
+                      attributes: true,
+                      subtree: true,
+                      childList: true,
+                      attributeFilter: ['bis_skin_checked', 'bis_register', 'bis_frame_id']
+                    });
                   }
                 } catch(e) {}
               })();
