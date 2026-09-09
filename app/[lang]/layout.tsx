@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { lexendDeca, roboto, robotoMono } from './_lib/fonts';
+import { lexendDeca, roboto, robotoMono, cairo, tajawal } from './_lib/fonts';
 import { localeDirection } from './_lib/i18n';
 import type { Locale } from './_lib/i18n';
 import { hasLocale } from './dictionaries';
@@ -36,9 +36,60 @@ export default async function RootLayout({
     <html
       lang={lang}
       dir={dir}
-      className={`${lexendDeca.variable} ${roboto.variable} ${robotoMono.variable} h-full antialiased`}
+      suppressHydrationWarning
+      className={`${lexendDeca.variable} ${roboto.variable} ${robotoMono.variable} ${cairo.variable} ${tajawal.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var origSetAttr = Element.prototype.setAttribute;
+                  Element.prototype.setAttribute = function(name, val) {
+                    if (name === 'bis_skin_checked' || name === 'bis_register' || name === 'bis_frame_id') return;
+                    return origSetAttr.apply(this, arguments);
+                  };
+                  if (typeof MutationObserver !== 'undefined' && typeof document !== 'undefined' && document.documentElement) {
+                    var cleanAttr = function(el) {
+                      if (!el || !el.removeAttribute) return;
+                      el.removeAttribute('bis_skin_checked');
+                      el.removeAttribute('bis_register');
+                      el.removeAttribute('bis_frame_id');
+                    };
+                    var observer = new MutationObserver(function(mutations) {
+                      for (var i = 0; i < mutations.length; i++) {
+                        var m = mutations[i];
+                        if (m.type === 'attributes') {
+                          cleanAttr(m.target);
+                        } else if (m.type === 'childList') {
+                          for (var j = 0; j < m.addedNodes.length; j++) {
+                            var node = m.addedNodes[j];
+                            if (node.nodeType === 1) {
+                              cleanAttr(node);
+                              var descendants = node.querySelectorAll ? node.querySelectorAll('[bis_skin_checked],[bis_register],[bis_frame_id]') : [];
+                              for (var k = 0; k < descendants.length; k++) {
+                                cleanAttr(descendants[k]);
+                              }
+                            }
+                          }
+                        }
+                      }
+                    });
+                    observer.observe(document.documentElement, {
+                      attributes: true,
+                      subtree: true,
+                      childList: true,
+                      attributeFilter: ['bis_skin_checked', 'bis_register', 'bis_frame_id']
+                    });
+                  }
+                } catch(e) {}
+              })();
+            `,
+          }}
+        />
+      </head>
+      <body className="min-h-full flex flex-col" suppressHydrationWarning>{children}</body>
     </html>
   );
 }

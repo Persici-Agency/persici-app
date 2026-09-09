@@ -17,18 +17,76 @@ import type {
   InsightArticle,
   ProjectItem,
   ContactOffice,
+  HomePageContent,
+  ServicesPageContent,
+  WorkPageContent,
+  ContactPageContent,
+  SolutionOfferingItem,
+  SolutionsPageContent,
+  platformsType,
 } from './types';
+
 
 // ============================================================================
 // 1. Navigation & Certified Partners
 // ============================================================================
 export const siteNavLinks: NavLink[] = [
-  { key: 'home', href: '/' },
-  { key: 'services', href: '/services' },
-  { key: 'work', href: '/work' },
-  { key: 'about', href: '/about' },
-  { key: 'insights', href: '/insights' },
-  { key: 'contact', href: '/contact' },
+  {
+    key: 'solutions',
+    href: '/solutions',
+    hasDropdown: true,
+    subItems: [
+      { key: 'applicationManagement', href: '/solutions/application-management' },
+      { key: 'marketingCommunications', href: '/solutions/marketing-communications' },
+      { key: 'ecommerceGrowth', href: '/solutions/ecommerce-growth' },
+      { key: 'aiIntegration', href: '/solutions/ai-integration' },
+      { key: 'uxProductDesign', href: '/solutions/ux-and-product-design' },
+      { key: 'customerEngagement', href: '/solutions/customer-engagement' },
+      { key: 'digitalEngineering', href: '/solutions/digital-engineering' },
+      { key: 'supplyChain', href: '/solutions/supply-chain' },
+      { key: 'crmManagement', href: '/solutions/crm-management' },
+    ],
+  },
+  {
+    key: 'industries',
+    href: '/industries',
+    hasDropdown: true,
+    subItems: [
+      { key: 'consumerProducts', href: '/industries/consumer-products' },
+      { key: 'telecomMediaTechnology', href: '/industries/telecom-media-technology' },
+      { key: 'publicSector', href: '/industries/public-sector' },
+      { key: 'retail', href: '/industries/retail' },
+      { key: 'health', href: '/industries/health' },
+      { key: 'energyCommodities', href: '/industries/energy-commodities' },
+    ],
+  },
+  {
+    key: 'howWeDoIt',
+    href: '/how-we-do-it',
+    hasDropdown: true,
+    subItems: [
+      { key: 'strategyConsulting', href: '/how-we-do-it/strategy-consulting' },
+      { key: 'digitalTransformationFramework', href: '/how-we-do-it/digital-transformation-framework' },
+      { key: 'productManagement', href: '/how-we-do-it/product-management' },
+      { key: 'engineeringTechnology', href: '/how-we-do-it/engineering-technology' },
+    ],
+  },
+  {
+    key: 'clientStories',
+    href: '/client-stories',
+    hasDropdown: false,
+  },
+  {
+    key: 'company',
+    href: '/about',
+    hasDropdown: true,
+    subItems: [
+      { key: 'aboutUs', href: '/about' },
+      { key: 'insights', href: '/insights' },
+      { key: 'careers', href: '/careers' },
+      { key: 'contactUs', href: '/contact' },
+    ],
+  },
 ];
 
 export const footerPartnerBadges: PartnerBadge[] = [
@@ -353,40 +411,404 @@ export const heritageCollageImages: HeritageCollageItem[] = [
 // ============================================================================
 // 7. Growth Services (Home & Catalog)
 // ============================================================================
+export const platforms: platformsType[] = [
+  {
+    id: 'shopify',
+    title: 'Shopify',
+    icon: 'https://cdn.simpleicons.org/shopify/95BF47',
+    bg: 'bg-[#EAF7EE]',
+    color: 'text-[#95BF47]',
+    iconColor: 'text-[#95BF47]',
+    isFeatured: false,
+    className: 'border-emerald-200',
+    iconClassName: 'text-[#95BF47]',
+  },
+  {
+    id: 'woocommerce',
+    title: 'WooCommerce',
+    icon: 'https://cdn.simpleicons.org/woocommerce/96588A',
+    bg: 'bg-[#F3EBF5]',
+    color: 'text-[#96588A]',
+    isFeatured: false,
+    iconColor: 'text-[#96588A]',
+    className: 'border-purple-200',
+    iconClassName: 'text-[#96588A]',
+  },
+  {
+    id: 'hubspot',
+    title: 'HubSpot',
+    icon: 'https://cdn.simpleicons.org/hubspot/FF7A59',
+    bg: 'bg-[#FFF0EB]',
+    color: 'text-[#FF7A59]',
+    iconColor: 'text-[#FF7A59]',
+    isFeatured: false,
+    className: 'border-orange-200',
+    iconClassName: 'text-[#FF7A59]',
+  },
+  {
+    id: 'salesforce',
+    title: 'Salesforce',
+    icon: 'https://cdn.simpleicons.org/salesforce/00A1E0',
+    bg: 'bg-[#E6F6FC]',
+    color: 'text-[#00A1E0]',
+    iconColor: 'text-[#00A1E0]',
+    isFeatured: false,
+    className: 'border-sky-200',
+    iconClassName: 'text-[#00A1E0]',
+  },
+  {
+    id: 'google-analytics',
+    title: 'Google Analytics (GA4)',
+    icon: 'https://cdn.simpleicons.org/googleanalytics/E37400',
+    bg: 'bg-[#FEF4E6]',
+    color: 'text-[#E37400]',
+    iconColor: 'text-[#E37400]',
+    isFeatured: false,
+    className: 'border-amber-200',
+    iconClassName: 'text-[#E37400]',
+  },
+  {
+    id: 'notion',
+    title: 'Notion',
+    icon: 'https://cdn.simpleicons.org/notion/000000',
+    bg: 'bg-stone-100',
+    color: 'text-stone-900',
+    iconColor: 'text-stone-900',
+    isFeatured: false,
+    className: 'border-stone-200',
+    iconClassName: 'text-stone-900',
+  },
+  {
+    id: 'clickup',
+    title: 'ClickUp',
+    icon: 'https://cdn.simpleicons.org/clickup/7B68EE',
+    bg: 'bg-[#F3F0FE]',
+    color: 'text-[#7B68EE]',
+    iconColor: 'text-[#7B68EE]',
+    isFeatured: false,
+    className: 'border-indigo-200',
+    iconClassName: 'text-[#7B68EE]',
+  },
+  {
+    id: 'jira',
+    title: 'Jira',
+    icon: 'https://cdn.simpleicons.org/jira/0052CC',
+    bg: 'bg-[#EBF2FC]',
+    color: 'text-[#0052CC]',
+    iconColor: 'text-[#0052CC]',
+    isFeatured: false,
+    className: 'border-blue-200',
+    iconClassName: 'text-[#0052CC]',
+  },
+  {
+    id: 'excel',
+    title: 'Excel',
+    icon: 'https://cdn.simpleicons.org/microsoftexcel/107C41',
+    bg: 'bg-[#E7F5ED]',
+    color: 'text-[#107C41]',
+    iconColor: 'text-[#107C41]',
+    isFeatured: false,
+    className: 'border-emerald-200',
+    iconClassName: 'text-[#107C41]',
+  },
+  {
+    id: 'adobe-creative-cloud',
+    title: 'Adobe Creative Cloud',
+    icon: 'https://cdn.simpleicons.org/adobecreativecloud/DA1F26',
+    bg: 'bg-[#FDF0F1]',
+    color: 'text-[#DA1F26]',
+    iconColor: 'text-[#DA1F26]',
+    isFeatured: false,
+    className: 'border-red-200',
+    iconClassName: 'text-[#DA1F26]',
+  },
+  {
+    id: 'figma',
+    title: 'Figma',
+    icon: 'https://cdn.simpleicons.org/figma/F24E1E',
+    bg: 'bg-[#FEEFEA]',
+    color: 'text-[#F24E1E]',
+    iconColor: 'text-[#F24E1E]',
+    isFeatured: false,
+    className: 'border-orange-200',
+    iconClassName: 'text-[#F24E1E]',
+  },
+  {
+    id: 'canva',
+    title: 'Canva',
+    icon: 'https://cdn.simpleicons.org/canva/00C4CC',
+    bg: 'bg-[#E6F9FA]',
+    color: 'text-[#00C4CC]',
+    iconColor: 'text-[#00C4CC]',
+    isFeatured: false,
+    className: 'border-teal-200',
+    iconClassName: 'text-[#00C4CC]',
+  },
+  {
+    id: 'meta-ads-manager',
+    title: 'Meta Ads Manager',
+    icon: 'https://cdn.simpleicons.org/meta/0866FF',
+    bg: 'bg-[#E8F0FE]',
+    color: 'text-[#0866FF]',
+    iconColor: 'text-[#0866FF]',
+    isFeatured: false,
+    className: 'border-blue-200',
+    iconClassName: 'text-[#0866FF]',
+  },
+  {
+    id: 'google-ads',
+    title: 'Google Ads',
+    icon: 'https://cdn.simpleicons.org/googleads/4285F4',
+    bg: 'bg-[#E8F0FE]',
+    color: 'text-[#4285F4]',
+    iconColor: 'text-[#4285F4]',
+    isFeatured: false,
+    className: 'border-blue-200',
+    iconClassName: 'text-[#4285F4]',
+  },
+  {
+    id: 'snapchat-ads',
+    title: 'Snapchat Ads',
+    icon: 'https://cdn.simpleicons.org/snapchat/000000',
+    bg: 'bg-[#FFFDE6]',
+    color: 'text-[#000000]',
+    iconColor: 'text-[#fcb900]',
+    isFeatured: false,
+    className: 'border-yellow-200',
+    iconClassName: 'text-[#fcb900]',
+  },
+  {
+    id: 'nextjs',
+    title: 'Next.js',
+    icon: 'https://cdn.simpleicons.org/nextdotjs/000000',
+    bg: 'bg-stone-100',
+    color: 'text-stone-900',
+    iconColor: 'text-stone-900',
+    isFeatured: false,
+    className: 'border-stone-200',
+    iconClassName: 'text-stone-900',
+  },
+  {
+    id: 'react',
+    title: 'React',
+    icon: 'https://cdn.simpleicons.org/react/61DAFB',
+    bg: 'bg-[#EFFBFE]',
+    color: 'text-[#087ea4]',
+    iconColor: 'text-[#087ea4]',
+    isFeatured: false,
+    className: 'border-cyan-200',
+    iconClassName: 'text-[#087ea4]',
+  },
+  {
+    id: 'angular',
+    title: 'Angular',
+    icon: 'https://cdn.simpleicons.org/angular/DD0031',
+    bg: 'bg-[#FDF0F3]',
+    color: 'text-[#DD0031]',
+    iconColor: 'text-[#DD0031]',
+    isFeatured: false,
+    className: 'border-rose-200',
+    iconClassName: 'text-[#DD0031]',
+  },
+  {
+    id: 'flutter',
+    title: 'Flutter',
+    icon: 'https://cdn.simpleicons.org/flutter/02569B',
+    bg: 'bg-[#E7F0F7]',
+    color: 'text-[#02569B]',
+    iconColor: 'text-[#02569B]',
+    isFeatured: false,
+    className: 'border-blue-200',
+    iconClassName: 'text-[#02569B]',
+  },
+  {
+    id: 'react-native',
+    title: 'React Native',
+    icon: 'https://cdn.simpleicons.org/react/61DAFB',
+    bg: 'bg-[#EFFBFE]',
+    color: 'text-[#087ea4]',
+    iconColor: 'text-[#087ea4]',
+    isFeatured: false,
+    className: 'border-cyan-200',
+    iconClassName: 'text-[#087ea4]',
+  },
+  {
+    id: 'nodejs',
+    title: 'Node.js',
+    icon: 'https://cdn.simpleicons.org/nodedotjs/5FA04E',
+    bg: 'bg-[#F0F8EE]',
+    color: 'text-[#5FA04E]',
+    iconColor: 'text-[#5FA04E]',
+    isFeatured: false,
+    className: 'border-green-200',
+    iconClassName: 'text-[#5FA04E]',
+  },
+  {
+    id: 'php-laravel',
+    title: 'PHP (Laravel)',
+    icon: 'https://cdn.simpleicons.org/laravel/FF2D20',
+    bg: 'bg-[#FFF0EE]',
+    color: 'text-[#FF2D20]',
+    iconColor: 'text-[#FF2D20]',
+    isFeatured: false,
+    className: 'border-red-200',
+    iconClassName: 'text-[#FF2D20]',
+  },
+  {
+    id: 'wordpress',
+    title: 'Wordpress',
+    icon: 'https://cdn.simpleicons.org/wordpress/21759B',
+    bg: 'bg-[#E9F3F7]',
+    color: 'text-[#21759B]',
+    iconColor: 'text-[#21759B]',
+    isFeatured: false,
+    className: 'border-sky-200',
+    iconClassName: 'text-[#21759B]',
+  },
+  {
+    id: 'aws',
+    title: 'AWS',
+    icon: 'https://cdn.simpleicons.org/amazonwebservices/FF9900',
+    bg: 'bg-[#FFF7EB]',
+    color: 'text-[#FF9900]',
+    iconColor: 'text-[#232F3E]',
+    isFeatured: false,
+    className: 'border-amber-200',
+    iconClassName: 'text-[#232F3E]',
+  },
+  {
+    id: 'docker',
+    title: 'Docker',
+    icon: 'https://cdn.simpleicons.org/docker/2496ED',
+    bg: 'bg-[#E9F5FD]',
+    color: 'text-[#2496ED]',
+    iconColor: 'text-[#2496ED]',
+    isFeatured: false,
+    className: 'border-blue-200',
+    iconClassName: 'text-[#2496ED]',
+  },
+  {
+    id: 'gcp',
+    title: 'GCP',
+    icon: 'https://cdn.simpleicons.org/googlecloud/4285F4',
+    bg: 'bg-[#E8F0FE]',
+    color: 'text-[#4285F4]',
+    iconColor: 'text-[#4285F4]',
+    isFeatured: false,
+    className: 'border-blue-200',
+    iconClassName: 'text-[#4285F4]',
+  },
+  {
+    id: 'mongodb',
+    title: 'MongoDB',
+    icon: 'https://cdn.simpleicons.org/mongodb/47A248',
+    bg: 'bg-[#EDF8EE]',
+    color: 'text-[#47A248]',
+    iconColor: 'text-[#47A248]',
+    isFeatured: false,
+    className: 'border-emerald-200',
+    iconClassName: 'text-[#47A248]',
+  },
+  {
+    id: 'openai-api',
+    title: 'OpenAI API',
+    icon: 'https://cdn.simpleicons.org/openai/412991',
+    bg: 'bg-[#F1EEF9]',
+    color: 'text-[#412991]',
+    iconColor: 'text-[#10a37f]',
+    isFeatured: false,
+    className: 'border-purple-200',
+    iconClassName: 'text-[#10a37f]',
+  },
+  {
+    id: 'meta',
+    title: 'Meta',
+    icon: 'https://cdn.simpleicons.org/meta/0866FF',
+    bg: 'bg-[#E8F0FE]',
+    color: 'text-[#0866FF]',
+    iconColor: 'text-[#0866FF]',
+    isFeatured: false,
+    className: 'border-blue-200',
+    iconClassName: 'text-[#0866FF]',
+  },
+  {
+    id: 'tiktok',
+    title: 'TikTok',
+    icon: 'https://cdn.simpleicons.org/tiktok/000000',
+    bg: 'bg-[#FEECEC]',
+    color: 'text-black',
+    iconColor: 'text-black',
+    isFeatured: false,
+    className: 'border-red-200',
+    iconClassName: 'text-black',
+  },
+  {
+    id: 'snapchat',
+    title: 'Snapchat',
+    icon: 'https://cdn.simpleicons.org/snapchat/000000',
+    bg: 'bg-[#FFFDE6]',
+    color: 'text-[#000000]',
+    iconColor: 'text-[#fcb900]',
+    isFeatured: false,
+    className: 'border-yellow-200',
+    iconClassName: 'text-[#fcb900]',
+  },
+  {
+    id: 'klaviyo',
+    title: 'Klaviyo',
+    icon: 'https://cdn.simpleicons.org/klaviyo/2563EB',
+    bg: 'bg-[#EEF2FF]',
+    color: 'text-[#2563EB]',
+    iconColor: 'text-[#2563EB]',
+    isFeatured: false,
+    className: 'border-blue-200',
+    iconClassName: 'text-[#2563EB]',
+  },
+];
+
 export const growthServicesHome: GrowthServiceItem[] = [
   {
-    id: 'paid-social',
-    key: 'paidSocial',
-    tag: 'Meta • TikTok • Snapchat',
-    title: 'Paid Social',
-    description: 'We grow brands through performance-driven campaigns across Meta, TikTok, and Snapchat. From creative strategy to targeting and scaling, we help you win on paid social - wherever your audience is.',
-    tagColor: 'text-persici-crimson',
-    dotColor: 'bg-persici-crimson',
-    platforms: ['meta', 'tiktok', 'snapchat'],
+    id: 'business-growth-and-strategy',
+    key: 'businessGrowthAndStrategy',
+    enSubService: 'Strategy & Consulting • E-Commerce • CRM & Customer Data',
+    arSubService: 'الاستراتيجية والاستشارات • التجارة الإلكترونية • إدارة علاقات العملاء',
+    enTitle: 'Business Growth & Strategy',
+    enDescription: 'Focuses on optimizing revenue streams and business expansion through strategic consulting, comprehensive market analysis, and scalable growth engineering.',
+    arTitle: 'نمو الأعمال والاستراتيجية',
+    arDescription: 'التركيز على تحسين مصادر الإيرادات وتوسيع نطاق الأعمال من خلال الاستشارات الاستراتيجية، والتحليل الشامل للسوق، وهندسة النمو القابلة للتوسع.',
+    tagColor: 'text-emerald-600',
+    dotColor: 'bg-emerald-500',
+    platforms: ['shopify', 'woocommerce', 'hubspot', 'salesforce', 'google-analytics', 'notion', 'clickup', 'jira', 'excel'],
     width: '1/2',
     order: 1,
   },
   {
-    id: 'google-ads',
-    key: 'googleAds',
-    tag: 'Google Ads & YouTube',
-    title: 'Google Ads',
-    description: 'We drive high-intent traffic with smart bidding and sharp targeting. Our campaigns turn clicks into loyal customers.',
+    id: 'branding-and-marketing-communications',
+    key: 'brandingAndMarketingCommunications',
+    enSubService: 'Brand & Creative • Digital Marketing • PR & Communications',
+    arSubService: 'العلامة التجارية والإبداع • التسويق الرقمي • العلاقات العامة والاتصال',
+    enTitle: 'Branding & Marketing Communications',
+    enDescription: 'Centers on building strong brand identity, driving audience acquisition, and managing public perception. This area handles visual storytelling, high-conversion multi-channel digital advertising, and strategic public relations to ensure the brand resonates with target markets and maintains a solid market reputation.',
+    arTitle: 'الهوية التجارية والاتصالات التسويقية',
+    arDescription: 'التركيز على بناء هوية تجارية قوية، وجذب الجمهور المستهدف، وإدارة الصورة الذهنية للعلامة. يشمل السرد البصري، والإعلانات الرقمية متعددة القنوات عالية التحويل، والعلاقات العامة الاستراتيجية لضمان تفاعل العلامة مع الأسواق المستهدفة وترسيخ مكانتها.',
     tagColor: 'text-amber-600',
     dotColor: 'bg-amber-500',
-    platforms: ['google-ads'],
+    platforms: ['adobe-creative-cloud', 'figma', 'canva', 'meta-ads-manager', 'google-ads', 'snapchat-ads'],
     width: '1/2',
     order: 2,
   },
   {
-    id: 'shopify-cro',
-    key: 'shopify',
-    tag: 'Shopify Plus & CRO',
-    title: 'Shopify',
-    description: 'With an in-house development team, we build and optimise Shopify stores for maximum conversions - combining sharp design with data-driven improvements that drive real growth.',
-    tagColor: 'text-emerald-600',
-    dotColor: 'bg-emerald-500',
-    platforms: ['shopify'],
+    id: 'technology-and-digital-products',
+    key: 'technologyAndDigitalProducts',
+    enSubService: 'Software Development • UX & Product Design • IT & Infrastructure • AI Integration',
+    arSubService: 'تطوير البرمجيات • تصميم تجربة وواجهة المستخدم • تكنولوجيا المعلومات والبنية التحتية • تكامل الذكاء الاصطناعي',
+    enTitle: 'Technology & Digital Products',
+    enDescription: 'Focuses on engineering scalable, secure, and user-centric digital solutions from the ground up. This pillar covers custom web/mobile software engineering, intuitive UX/UI product design, stable cloud hosting/DevOps infrastructure, and intelligent AI automation to optimize enterprise operations and product lifecycles.',
+    arTitle: 'التكنولوجيا والمنتجات الرقمية',
+    arDescription: 'التركيز على هندسة حلول رقمية قابلة للتوسع وآمنة ومتمحورة حول المستخدم من البداية. يشمل تطوير البرمجيات المخصصة للويب وتطبيقات الجوال، وتصميم تجربة وواجهة المستخدم، والبنية التحتية السحابية، وأتمتة الذكاء الاصطناعي لتحسين العمليات التشغيلية ودورات حياة المنتجات.',
+    tagColor: 'text-persici-crimson',
+    dotColor: 'bg-persici-crimson',
+    platforms: ['nextjs', 'react', 'angular', 'flutter', 'react-native', 'nodejs', 'php-laravel', 'wordpress', 'aws', 'docker', 'gcp', 'mongodb', 'figma', 'openai-api'],
     width: 'full',
     order: 3,
   },
@@ -825,3 +1247,807 @@ export const contactOffices: ContactOffice[] = [
     order: 3,
   },
 ];
+
+// ============================================================================
+// 15. Dynamic Page Content CMS Datasets (Fallback for MongoDB & Dashboard)
+// ============================================================================
+
+export const homePageContent: HomePageContent = {
+  page: 'home',
+  hero: {
+    title: {
+      en: 'Specialists in eCommerce growth',
+      ar: 'متخصصون في نمو التجارة الإلكترونية',
+    },
+    subtitle: {
+      en: 'We help ambitious brands scale with predictable and profitable growth. Driven by full-funnel digital marketing, data intelligence, and conversion engineering.',
+      ar: 'نساعد العلامات التجارية الطموحة على التوسع بنمو متوقع ومربح. مدفوعين بالتسويق الرقمي الشامل، وذكاء البيانات، وهندسة التحويل.',
+    },
+    ctaText: {
+      en: 'Collaborate with us',
+      ar: 'تعاون معنا',
+    },
+    ctaHref: '/contact',
+    ratingScore: '5.0',
+    ratingLabel: {
+      en: 'Rated 4.9/5 by 50+ leading brands',
+      ar: 'تقييم 4.9/5 من أكثر من 50 علامة تجارية رائدة',
+    },
+    trustedByTitle: {
+      en: 'Trusted by industry-leading fast-growing brands',
+      ar: 'موثوق به من قبل العلامات التجارية الرائدة والأسرع نمواً',
+    },
+  },
+  partnerShowcase: {
+    title: {
+      en: 'Your online growth partner',
+      ar: 'شريكك في النمو الرقمي',
+    },
+    videoSpeaker: {
+      en: 'Faris Al-Otaibi',
+      ar: 'فارس العتيبي',
+    },
+    videoRole: {
+      en: 'Founder & CEO',
+      ar: 'المؤسس والمدير التنفيذي',
+    },
+    videoCoverImage: '/images/hero/hero-video-cover.png',
+    videoUrl: '/videos/persici-showcase.mp4',
+    quote: {
+      en: 'Working with Persici has been our best growth decision. Their team\'s strategy and execution gave us 3.4x growth in under 6 months. A true growth partner.',
+      ar: 'العمل مع برسيسي كان أفضل قرار نمو اتخذناه. استراتيجية فريقهم وتنفيذهم حققا لنا نمواً بمقدار 3.4 أضعاف في أقل من 6 أشهر. شريك نمو حقيقي.',
+    },
+    author: 'Marcus Lindqvist',
+    role: {
+      en: 'Founder & Managing Director',
+      ar: 'المؤسس والمدير العام',
+    },
+    company: 'Nordic Retail Group',
+    testimonials: defaultTestimonials,
+  },
+  heritage: {
+    badge: {
+      en: 'Growth Architecture',
+      ar: 'بنية النمو',
+    },
+    title: {
+      en: 'Rooted in excellence. Built for growth.',
+      ar: 'متجذرون في التميز. مصممون للنمو.',
+    },
+    desc1: {
+      en: 'Persici is a specialized growth and digital agency founded on the principle that modern DTC & omnichannel brands need deep domain expertise, tailored high-performance teams, and absolute transparency in execution.',
+      ar: 'برسيسي هي وكالة نمو ورقمية متخصصة تأسست على مبدأ أن العلامات التجارية الحديثة تحتاج إلى خبرة عميقة وفرق عمل مخصصة وعالية الأداء مع شفافية مطلقة في التنفيذ.',
+    },
+    desc2: {
+      en: 'We act as your dedicated growth arm, taking full ownership of your customer acquisition, conversion optimization, retention loops, and data architecture to scale revenue sustainably.',
+      ar: 'نعمل كذراع النمو المخصص لك، ونتحمل المسؤولية الكاملة عن اكتساب العملاء وتحسين معدل التحويل وبنية البيانات لزيادة الإيرادات بشكل مستدام.',
+    },
+    ctaPrimaryText: {
+      en: 'Work with us',
+      ar: 'اعمل معنا',
+    },
+    ctaPrimaryHref: '/contact',
+    ctaSecondaryText: {
+      en: 'Meet the team',
+      ar: 'تعرف على الفريق',
+    },
+    ctaSecondaryHref: '/about',
+    collageImages: heritageCollageImages,
+  },
+  growthServices: {
+    title: {
+      en: 'Our growth services',
+      ar: 'خدمات النمو لدينا',
+    },
+    ratingText: {
+      en: 'Rated 4.9/5 on 50+ client reviews',
+      ar: 'تقييم 4.9/5 بناءً على أكثر من 50 تقييماً',
+    },
+    bannerText: {
+      en: 'Ready to scale your eCommerce brand?',
+      ar: 'جاهز لتوسيع علامتك التجارية في التجارة الإلكترونية؟',
+    },
+    bannerCtaText: {
+      en: 'Book call',
+      ar: 'احجز مكالمة',
+    },
+    bannerCtaHref: '/contact',
+    services: growthServicesHome,
+  },
+  clientVideos: {
+    title: {
+      en: 'Meet clients we scale',
+      ar: 'تعرف على العملاء الذين نساعدهم على التوسع',
+    },
+    videos: videoTestimonials,
+  },
+  approach: {
+    badgeLabel: {
+      en: 'Team Persici',
+      ar: 'فريق برسيسي',
+    },
+    badgeTitle: {
+      en: 'Your team of specialists',
+      ar: 'فريقك من المتخصصين',
+    },
+    title: {
+      en: 'Our approach to eCommerce growth',
+      ar: 'نهجنا في نمو التجارة الإلكترونية',
+    },
+    desc1: {
+      en: 'At Persici, we work as a dedicated growth partner, with a deep understanding of the regional market and a focus on ROI. We deliver tailored strategies - not templates. No freelancers, no shortcuts - just a small, senior team focused on long-term, scalable results.',
+      ar: 'في برسيسي، نعمل كشريك نمو مخصص، مع فهم عميق للسوق الإقليمي وتركيز على العائد على الاستثمار. نقدم استراتيجيات مخصصة - وليست قوالب جاهزة. فريق صغير وذو خبرة عالية يركز على نتائج قابلة للتوسع.',
+    },
+    desc2: {
+      en: 'We combine hands-on execution with clear communication: performance updates weekly, full WhatsApp access, and no surprises - only growth.',
+      ar: 'نجمع بين التنفيذ العملي والتواصل الواضح: تحديثات أداء أسبوعية، تواصل مباشر عبر واتساب، وبدون مفاجآت - فقط نمو.',
+    },
+    ctaPrimaryText: {
+      en: 'Book call',
+      ar: 'احجز مكالمة',
+    },
+    ctaPrimaryHref: '/contact',
+    ctaSecondaryText: {
+      en: 'More about us',
+      ar: 'المزيد عنا',
+    },
+    ctaSecondaryHref: '/about',
+    teamMembers: approachTeamAvatars,
+  },
+  reviews: {
+    score: '4.9',
+    scoreLabel: {
+      en: '4.9 score on 50+ client reviews',
+      ar: 'تقييم 4.9 من أكثر من 50 مراجعة عميل',
+    },
+    title: {
+      en: 'Words from those we scale',
+      ar: 'كلمات من أولئك الذين نساعدهم على التوسع',
+    },
+    bannerText: {
+      en: 'Ready to scale your eCommerce brand?',
+      ar: 'جاهز لتوسيع علامتك التجارية في التجارة الإلكترونية؟',
+    },
+    bannerCtaText: {
+      en: 'Book a discovery call',
+      ar: 'احجز مكالمة استكشافية',
+    },
+    bannerCtaHref: '/contact',
+    reviews: reviewsList,
+  },
+  homeContact: {
+    leftTitle: {
+      en: 'Ready to learn more?',
+      ar: 'جاهز لمعرفة المزيد؟',
+    },
+    points: [
+      {
+        en: 'Discuss your unique business challenges',
+        ar: 'ناقش تحديات عملك الفريدة',
+      },
+      {
+        en: 'Explore custom growth solutions built for your industry',
+        ar: 'استكشف حلول النمو المخصصة لصناعتك',
+      },
+      {
+        en: 'Get proven performance media & CRO guidance',
+        ar: 'احصل على إرشادات مثبتة لإعلانات الأداء وتحسين معدل التحويل',
+      },
+      {
+        en: 'Identify the next step that fits your revenue goals',
+        ar: 'حدد الخطوة التالية التي تناسب أهداف إيراداتك',
+      },
+    ],
+    trustedBy: {
+      en: 'Trusted by leading eCommerce brands in the region.',
+      ar: 'موثوق به من قِبل كبرى العلامات التجارية في المنطقة.',
+    },
+    title: {
+      en: 'Get in touch',
+      ar: 'تواصل معنا',
+    },
+    subtitle: {
+      en: 'Submit the form below and one of our experts will reach out.',
+      ar: 'أرسل النموذج أدناه وسيتواصل معك أحد خبرائنا.',
+    },
+  },
+  discovery: {
+    title: {
+      en: 'Schedule your free 30-minute discovery call',
+      ar: 'حدد موعد مكالمتك الاستكشافية المجانية لمدة 30 دقيقة',
+    },
+    desc: {
+      en: 'In this 30-minute growth strategy session, we\'ll analyze your current marketing bottlenecks, identify immediate conversion and revenue wins, and assess if our growth framework is a fit for your brand.',
+      ar: 'في جلسة استراتيجية النمو هذه لمدة 30 دقيقة، سنحلل معوقات التسويق الحالية ونحدد فرص زيادة المبيعات ونقيم مدى توافق إطار عملنا مع علامتك التجارية.',
+    },
+    quote: {
+      en: 'That 30-minute discovery call provided more actionable commercial clarity than months of standard agency reports.',
+      ar: 'قدمت تلك المكالمة الاستكشافية لمدة 30 دقيقة وضوحاً تجارياً قابلاً للتنفيذ أكثر من أشهر من تقارير الوكالات التقليدية.',
+    },
+    quoteAuthor: 'Christian Vestergaard',
+    quoteRole: {
+      en: 'Co-Founder & COO, Vester Goods',
+      ar: 'شريك مؤسس ومدير العمليات، فيستر جودز',
+    },
+    revenueOptions: discoveryRevenueOptions,
+  },
+};
+
+export const servicesPageContent: ServicesPageContent = {
+  page: 'services',
+  heroTitle: {
+    en: 'Our Growth Services',
+    ar: 'خدمات النمو لدينا',
+  },
+  heroSubtitle: {
+    en: 'Engineered for high-performing direct-to-consumer and omnichannel brands.',
+    ar: 'مصممة للعلامات التجارية عالية الأداء في التجارة الإلكترونية.',
+  },
+  bannerText: {
+    en: 'Ready to build your bespoke growth engine?',
+    ar: 'جاهز لبناء محرك النمو المخصص لك؟',
+  },
+  bannerCtaText: {
+    en: 'Schedule Discovery Call',
+    ar: 'جدولة مكالمة استكشافية',
+  },
+  servicesList: servicesList,
+};
+
+export const workPageContent: WorkPageContent = {
+  page: 'work',
+  heroTitle: {
+    en: 'Featured Case Studies',
+    ar: 'دراسات الحالة المميزة',
+  },
+  heroSubtitle: {
+    en: 'Real revenue growth, unit-economic turnarounds, and creative scaling in action.',
+    ar: 'نمو حقيقي في الإيرادات، وتحولات في الجدوى الاقتصادية، وتوسع إبداعي في الميدان.',
+  },
+  projectsList: projectsList,
+};
+
+export const contactPageContent: ContactPageContent = {
+  page: 'contact',
+  heroTitle: {
+    en: 'Let\'s Scale Together',
+    ar: 'دعنا نتوسع معاً',
+  },
+  heroSubtitle: {
+    en: 'Reach out to our leadership team or schedule a dedicated growth strategy session.',
+    ar: 'تواصل مع فريق القيادة لدينا أو احجز جلسة استراتيجية نمو مخصصة.',
+  },
+  offices: contactOffices,
+};
+
+// ============================================================================
+// 12. Solutions Offerings (Home Challenges & Solutions Hub)
+// ============================================================================
+export const solutionsOfferingsList: SolutionOfferingItem[] = [
+  {
+    slug: 'supply-chain',
+    title: {
+      en: 'Supply Chain',
+      ar: 'سلسلة الإمداد',
+    },
+    description: {
+      en: 'Data-driven inventory visibility, automated order routing, and localized fulfillment solutions reducing delivery delays and operational costs.',
+      ar: 'رؤية للمخزون مدفوعة بالبيانات، وتوجيه آلي للطلبات، وحلول شحن محلي تقلل التأخير وتكاليف التشغيل.',
+    },
+    diagramType: 'matrix-intersect',
+    tag: {
+      en: 'Operations & Fulfillment',
+      ar: 'العمليات واللوجستيات',
+    },
+    icon: '/icons/solutions/Supply%20Chain%404x.png',
+    order: 1,
+    href: '/solutions/supply-chain',
+  },
+  {
+    slug: 'marketing-communications',
+    title: {
+      en: 'Marketing & Communications',
+      ar: 'التسويق والتواصل',
+    },
+    description: {
+      en: 'Full-funnel digital marketing, data-backed acquisition across Meta and TikTok, and compelling creative storytelling that drives sustainable ROAS.',
+      ar: 'تسويق رقمي متكامل، واستحواذ مدعوم بالبيانات عبر ميتا وتيك توك، وسرد إبداعي يجذب العملاء ويحقق عائداً مستداماً.',
+    },
+    diagramType: 'orbital-radar',
+    tag: {
+      en: 'Performance Acquisition',
+      ar: 'إعلانات الأداء والاستحواذ',
+    },
+    icon: '/icons/solutions/Marketing%20%26%20Communicating%404x.png',
+    order: 2,
+    href: '/solutions/marketing-communications',
+  },
+  {
+    slug: 'ux-and-product-design',
+    title: {
+      en: 'UX and Product Design',
+      ar: 'تصميم تجربة وواجهة المستخدم',
+    },
+    description: {
+      en: 'Human-centered digital product architecture, intuitive user journeys, high-fidelity design systems, and rapid prototyping that drive conversion and adoption.',
+      ar: 'معمارية رقمية تركز على الإنسان، ومسارات مستخدم بديهية، وأنظمة تصميم تفاعلية ونماذج أولية سريعة تعزز التحويل والتبني.',
+    },
+    diagramType: 'ux-strategy-compass',
+    tag: {
+      en: 'UI/UX & Product Design',
+      ar: 'تجربة وواجهة المستخدم',
+    },
+    icon: '/icons/solutions/UX%20and%20Product%20Design%404x.png',
+    order: 3,
+    href: '/solutions/ux-and-product-design',
+  },
+  {
+    slug: 'ecommerce-growth',
+    title: {
+      en: 'E-Commerce Growth',
+      ar: 'نمو التجارة الإلكترونية',
+    },
+    description: {
+      en: 'End-to-end Shopify Plus scaling, continuous conversion rate optimization (CRO), and margin-engineered unit economics for high-velocity DTC brands.',
+      ar: 'توسيع متاجر شوبيفاي بلس، وتحسين مستمر لمعدل التحويل (CRO)، وهندسة الجدوى الاقتصادية للعلامات سريعة النمو.',
+    },
+    diagramType: 'grid-dots',
+    tag: {
+      en: 'Storefront & CRO',
+      ar: 'المتاجر والتحويل',
+    },
+    icon: '/icons/solutions/E-Commerce%20Growth%404x.png',
+    order: 4,
+    href: '/solutions/ecommerce-growth',
+  },
+  {
+    slug: 'digital-engineering',
+    title: {
+      en: 'Digital Engineering',
+      ar: 'الهندسة الرقمية',
+    },
+    description: {
+      en: 'Modern cloud infrastructure, headless architecture, resilient API microservices, and continuous release pipelines that move ideas to production in days.',
+      ar: 'بنية تحتية سحابية حديثة، ومعمارية بدون واجهة تقليدية (Headless)، وخدمات دقيقة تنقل الأفكار إلى الإنتاج بسرعة فائقة.',
+    },
+    diagramType: 'nested-squares',
+    tag: {
+      en: 'Cloud & Architecture',
+      ar: 'السحابة والمعمارية',
+    },
+    icon: '/icons/solutions/Digital%20Engineering%404x.png',
+    order: 5,
+    href: '/solutions/digital-engineering',
+  },
+  {
+    slug: 'customer-engagement',
+    title: {
+      en: 'Customer Engagement',
+      ar: 'إشراك العملاء والتفاعل',
+    },
+    description: {
+      en: 'Data-driven engagement that fosters genuine connection, delivering personalized omnichannel journeys across web, app, email, and mobile messaging.',
+      ar: 'تفاعل قائم على البيانات يعزز الروابط الوثيقة، ويقدم رحلات مخصصة عبر الموقع والتطبيقات والرسائل البريدية والهاتفية.',
+    },
+    diagramType: 'lattice-loop',
+    tag: {
+      en: 'Retention & Lifecycle',
+      ar: 'الاحتفاظ ودورة العميل',
+    },
+    icon: '/icons/solutions/Customer%20Engagement%404x.png',
+    order: 6,
+    href: '/solutions/customer-engagement',
+  },
+  {
+    slug: 'crm-management',
+    title: {
+      en: 'CRM Management (Braze)',
+      ar: 'إدارة علاقات العملاء (Braze)',
+    },
+    description: {
+      en: 'Advanced customer lifecycle orchestration powered by Braze and Klaviyo. Centralized data and targeted campaign automation delivering up to 480% ROI.',
+      ar: 'إدارة متقدمة لدورة حياة العميل عبر Braze وKlaviyo، مع مركزية البيانات وأتمتة الحملات الموجهة لتحقيق عائد يصل إلى 480%.',
+    },
+    diagramType: 'circuit-flow',
+    tag: {
+      en: 'Lifecycle Automation',
+      ar: 'الأتمتة والتخصيص',
+    },
+    icon: '/icons/solutions/CRM%20Management%404x.png',
+    order: 7,
+    href: '/solutions/crm-management',
+  },
+  {
+    slug: 'application-management',
+    title: {
+      en: 'Application & Management',
+      ar: 'إدارة وتحديث التطبيقات',
+    },
+    description: {
+      en: 'Mission-critical application maintenance, 24/7 uptime monitoring, SLA support, and legacy modernization keeping your enterprise reliable.',
+      ar: 'صيانة البرمجيات الحيوية، والمراقبة المستمرة على مدار الساعة، ودعم مستوى الخدمة وتحديث الأنظمة القديمة لضمان الموثوقية.',
+    },
+    diagramType: 'triad-mesh',
+    tag: {
+      en: 'DevOps & SLA Support',
+      ar: 'الدعم والموثوقية',
+    },
+    icon: '/icons/solutions/Application%20%26%20Management%404x.png',
+    order: 8,
+    href: '/solutions/application-management',
+  },
+  {
+    slug: 'ai-integration',
+    title: {
+      en: 'AI Integration',
+      ar: 'دمج الذكاء الاصطناعي',
+    },
+    description: {
+      en: 'Cutting development timelines from months to days with intelligent automated agents, generative workflows, and proprietary predictive growth models.',
+      ar: 'اختصار وقت التطوير من أشهر إلى أيام عبر وكلاء آليين أذكياء، وسير عمل توليدي ونماذج نمو تنبؤية مخصصة.',
+    },
+    diagramType: 'flow-funnel',
+    tag: {
+      en: 'GenAI & Automation',
+      ar: 'الذكاء الاصطناعي والأتمتة',
+    },
+    icon: '/icons/solutions/AI%404x.png',
+    order: 9,
+    href: '/solutions/ai-integration',
+  },
+];
+
+export const solutionsPageContent: SolutionsPageContent = {
+  page: 'solutions',
+  heroBadge: {
+    en: 'Persici Growth Architecture',
+    ar: 'بنية النمو المؤسسي في بيرسيسي',
+  },
+  heroTitle: {
+    en: 'Navigating the Hurdles of Modern Business Growth',
+    ar: 'تجاوز عقبات وتحديات نمو الأعمال الحديثة',
+  },
+  heroSubtitle: {
+    en: 'Every industry faces unique friction points on its way to scaling. We help ambitious direct-to-consumer and enterprise brands conquer the core digital and operational complexities holding them back.',
+    ar: 'تواجه كل صناعة نقاط احتكاك فريدة في طريقها نحو التوسع. نحن نساعد العلامات التجارية الطموحة على التغلب على التعقيدات الرقمية والتشغيلية التي تعيق تقدمها.',
+  },
+  heroCtaPrimary: {
+    en: 'Explore Offerings',
+    ar: 'استكشف حلولنا',
+  },
+  heroCtaSecondary: {
+    en: 'Book a Growth Call',
+    ar: 'احجز مكالمة نمو',
+  },
+  heroImage: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=1200&q=80',
+  offeringsTitle: {
+    en: 'Our Offerings',
+    ar: 'حلولنا المتكاملة',
+  },
+  offeringsSubtitle: {
+    en: 'With our specialized solutions, you can boost retention, enhance every customer touchpoint, and eliminate operational friction. Select a category below to explore our capabilities.',
+    ar: 'مع حلولنا المتخصصة، يمكنك زيادة ولاء العملاء وتحسين كل مرحلة من رحلة الشراء والتخلص من العوائق التشغيلية. اختر فئة لاستكشاف القدرات بالتفصيل.',
+  },
+  offeringsList: solutionsOfferingsList,
+  whyItMattersTitle: {
+    en: 'Why It Matters',
+    ar: 'لماذا يُعد هذا محورياً للنمو؟',
+  },
+  whyItMattersText: {
+    en: 'Modern eCommerce brands and digital enterprises cannot scale with disconnected vendor tools and generic marketing retainers. Achieving sustainable, profitable scale requires full-stack alignment—where unit economics, storefront conversion engineering, predictive inventory, and real-time customer data operate as one synchronized engine.',
+    ar: 'لم تعد العلامات التجارية الحديثة قادرة على التوسع المستدام عبر أدوات متناثرة وحلول تسويقية عامة. يتطلب تحقيق نمو مربح مواءمة شاملة — حيث تعمل اقتصاديات الوحدة، وهندسة تحويل المتاجر، والتنبؤ بالمخزون، وبيانات العملاء الفورية كمحرك موحد متكامل.',
+  },
+  whyItMattersImage: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1000&q=80',
+  benefitsTitle: {
+    en: 'Benefits of Enterprise Growth Architecture',
+    ar: 'مزايا بنية النمو المؤسسي',
+  },
+  benefitsImage: 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=1200&q=80',
+  benefits: [
+    {
+      title: {
+        en: 'Data-Driven Agility',
+        ar: 'مرونة مبنية على البيانات الفورية',
+      },
+      description: {
+        en: 'Replace guesswork with unified telemetry. Accelerate sprint delivery and deployment release cycles from months to days.',
+        ar: 'استبدل التخمين بالرؤية الموحدة والبيانات الدقيقة، واختصر دورات إطلاق الميزات والبرمجيات من أشهر إلى أيام.',
+      },
+      accentColor: '#D83427',
+    },
+    {
+      title: {
+        en: 'Frictionless Customer Journey',
+        ar: 'رحلة شراء سلسة وممتعة',
+      },
+      description: {
+        en: 'Deliver hyper-personalized storefront experiences and instant checkouts that maximize session conversion rates across all screens.',
+        ar: 'قدم تجارب تسوق فائقة التخصيص وإنهاء سريع للشراء يرفع معدلات التحويل عبر جميع الأجهزة.',
+      },
+      accentColor: '#EF8C7D',
+    },
+    {
+      title: {
+        en: 'Scalable Margin Growth',
+        ar: 'توسع مستدام في هوامش الربح',
+      },
+      description: {
+        en: 'Lower customer acquisition costs (CAC) while compounding lifetime value (LTV) through automated lifecycle retention loops.',
+        ar: 'خفض تكلفة اكتساب العملاء الجدد (CAC) مع مضاعفة القيمة الدائمة للعميل (LTV) عبر مسارات إعادة التفاعل الآلية.',
+      },
+      accentColor: '#121212',
+    },
+  ],
+  deliveryTitle: {
+    en: 'How We Deliver Differently',
+    ar: 'كيف نحقق نتائج ملموسة ومختلفة',
+  },
+  deliverySubtitle: {
+    en: 'Cut dev time from months to days with Persici AI development platform and modern digital engineering.',
+    ar: 'اختصر وقت التطوير والتنفيذ من أشهر إلى أيام عبر منصة بيرسيسي للذكاء الاصطناعي والهندسة الرقمية المتقدمة.',
+  },
+  deliveryImage: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1000&q=80',
+  deliveryPillars: [
+    {
+      title: {
+        en: 'Modern Architecture & Rapid Prototyping',
+        ar: 'معمارية حديثة ونماذج أولية سريعة',
+      },
+      description: {
+        en: 'We build modular, headless systems and reusable component architectures that launch high-performance digital products in record time.',
+        ar: 'نبني أنظمة قابلة للتوسع بدون قيود تقليدية ومكونات قابلة لإعادة الاستخدام لإطلاق منتجات رقمية فائقة السرعة.',
+      },
+    },
+    {
+      title: {
+        en: 'Cross-Functional Execution Pods',
+        ar: 'فرق عمل متكاملة ومتخصصة',
+      },
+      description: {
+        en: 'No handoff lag between strategy, engineering, UI/UX, and performance media. You work directly with senior growth practitioners.',
+        ar: 'لا انقطاع بين الاستراتيجية والهندسة والتصميم وإعلانات الأداء. أنت تعمل مباشرة مع خبراء نمو متمرسين.',
+      },
+    },
+    {
+      title: {
+        en: 'Continuous CRO & Algorithmic Optimization',
+        ar: 'تحسين مستمر لمعدلات التحويل والأداء',
+      },
+      description: {
+        en: 'Every sprint tests hypotheses, optimizes checkout bottlenecks, and tunes acquisition algorithms against your bottom-line margin.',
+        ar: 'كل مرحلة تختبر فرضيات جديدة، وتعالج معوقات الشراء وتضبط خوارزميات الاستحواذ لتعظيم صافي الأرباح.',
+      },
+    },
+  ],
+  spotlightBadge: {
+    en: 'Featured Client Story',
+    ar: 'قصة نجاح مميزة',
+  },
+  spotlightTitle: {
+    en: 'Lahfaa Perfumes: Luxury E-Commerce Redesign & GCC Expansion',
+    ar: 'عطور لهفة: إعادة تصميم المتجر الفاخر والتوسع في أسواق الخليج',
+  },
+  spotlightDescription: {
+    en: 'Transformed an established luxury fragrance brand with headless Shopify Plus architecture, conversion engineering, and full-funnel performance marketing across UAE and Saudi Arabia.',
+    ar: 'إعادة تصميم متكاملة لدار عطور فاخرة عبر شوبيفاي بلس معمارية متطورة، وهندسة معدلات التحويل، وحملات أداء رقمية في الإمارات والسعودية.',
+  },
+  spotlightMetric1Val: '+340%',
+  spotlightMetric1Label: {
+    en: 'Revenue Growth',
+    ar: 'نمو الإيرادات',
+  },
+  spotlightMetric2Val: '4.2x',
+  spotlightMetric2Label: {
+    en: 'Blended ROAS',
+    ar: 'العائد الإعلاني الإجمالي',
+  },
+  spotlightMetric3Val: '99.8%',
+  spotlightMetric3Label: {
+    en: 'Fulfillment Accuracy',
+    ar: 'دقة تجهيز الطلبات',
+  },
+  spotlightImage: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=800&q=80',
+  spotlightCtaText: {
+    en: 'Learn more',
+    ar: 'اعرف المزيد',
+  },
+  spotlightCtaHref: '/client-stories',
+  spotlightStories: [
+    {
+      id: 'nissan-mobility',
+      badge: {
+        en: 'Transportation & Mobility',
+        ar: 'قطاع السيارات والنقل الذكي',
+      },
+      title: {
+        en: 'Nissan Cuts IT Operational Costs 40% with AI-Powered Monitoring and Automation',
+        ar: 'نيسان تخفض تكاليف تشغيل تقنية المعلومات بنسبة 40% عبر الأتمتة والمراقبة الذكية',
+      },
+      description: {
+        en: 'Modernized enterprise observability across regional manufacturing clusters with automated incident remediation, zero-downtime microservices, and unified telemetry pipelines.',
+        ar: 'تحديث شامل لمنظومة المراقبة والتشغيل عبر المصانع الإقليمية مع حلول الاستجابة التنبؤية للأعطال والخدمات المصغرة دون أي انقطاع.',
+      },
+      metrics: [
+        {
+          value: '40%',
+          label: {
+            en: 'IT OpEx Reduction',
+            ar: 'خفض تكاليف التشغيل',
+          },
+        },
+        {
+          value: '62%',
+          label: {
+            en: 'Faster MTTR',
+            ar: 'تسريع حل الحوادث',
+          },
+        },
+        {
+          value: '99.9%',
+          label: {
+            en: 'System Uptime',
+            ar: 'جاهزية الأنظمة التشغيلية',
+          },
+        },
+      ],
+      image: 'https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=1200&q=80',
+      ctaText: {
+        en: 'Learn more',
+        ar: 'اعرف المزيد',
+      },
+      ctaHref: '/client-stories',
+    },
+    {
+      id: 'lahfaa-perfumes',
+      badge: {
+        en: 'Luxury Goods & E-Commerce',
+        ar: 'السلع الفاخرة والتجارة الإلكترونية',
+      },
+      title: {
+        en: 'Lahfaa Perfumes: Luxury E-Commerce Redesign & GCC Expansion',
+        ar: 'عطور لهفة: إعادة تصميم المتجر الفاخر والتوسع في أسواق الخليج',
+      },
+      description: {
+        en: 'Transformed an established luxury fragrance brand with headless Shopify Plus architecture, conversion engineering, and full-funnel performance marketing across UAE and Saudi Arabia.',
+        ar: 'إعادة تصميم متكاملة لدار عطور فاخرة عبر شوبيفاي بلس معمارية متطورة، وهندسة معدلات التحويل، وحملات أداء رقمية في الإمارات والسعودية.',
+      },
+      metrics: [
+        {
+          value: '+340%',
+          label: {
+            en: 'Revenue Growth',
+            ar: 'نمو الإيرادات',
+          },
+        },
+        {
+          value: '4.2x',
+          label: {
+            en: 'Blended ROAS',
+            ar: 'العائد الإعلاني الإجمالي',
+          },
+        },
+        {
+          value: '99.8%',
+          label: {
+            en: 'Fulfillment Accuracy',
+            ar: 'دقة تجهيز الطلبات',
+          },
+        },
+      ],
+      image: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1200&q=80',
+      ctaText: {
+        en: 'Learn more',
+        ar: 'اعرف المزيد',
+      },
+      ctaHref: '/client-stories',
+    },
+    {
+      id: 'veloce-fintech',
+      badge: {
+        en: 'Financial Services & FinTech',
+        ar: 'الخدمات المالية والتقنية المالية',
+      },
+      title: {
+        en: 'Veloce Global: Modernizing Cross-Border Enterprise Payment Rails',
+        ar: 'فيلوتشي العالمية: تحديث مسارات الدفع المالي العابر للحدود للمؤسسات',
+      },
+      description: {
+        en: 'Engineered next-generation settlement pipelines and automated fraud defense engines, processing millions in daily transactions with sub-second latency and bank-grade security.',
+        ar: 'بناء مسارات تسوية مالية فائقة السرعة وأنظمة حماية ذكية من الاحتيال لمعالجة ملايين المعاملات اليومية بأمان مصرفي متكامل.',
+      },
+      metrics: [
+        {
+          value: '<2.1s',
+          label: {
+            en: 'Settlement Time',
+            ar: 'وقت تسوية المعاملات',
+          },
+        },
+        {
+          value: '10M+',
+          label: {
+            en: 'Daily Volume',
+            ar: 'حجم المعاملات اليومية',
+          },
+        },
+        {
+          value: '99.99%',
+          label: {
+            en: 'Platform Availability',
+            ar: 'توافر المنصة المستمر',
+          },
+        },
+      ],
+      image: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=1200&q=80',
+      ctaText: {
+        en: 'Learn more',
+        ar: 'اعرف المزيد',
+      },
+      ctaHref: '/client-stories',
+    },
+  ],
+  quoteText: {
+    en: '"Working with Persici has been our best growth decision. Their team\'s strategy, conversion engineering, and execution gave us 3.4x growth in under 6 months. A true growth partner."',
+    ar: '"العمل مع بيرسيسي كان أفضل قرار لنمو أعمالنا. استراتيجيتهم وهندسة التحويل والتنفيذ المتقن حققت لنا نمواً بنسبة 3.4 أضعاف في أقل من 6 أشهر."',
+  },
+  quoteAuthor: 'Marcus Lindqvist',
+  quoteRole: {
+    en: 'Managing Director, Nordic Retail Group',
+    ar: 'المدير التنفيذي، مجموعة نورديك ريتيل',
+  },
+  faqsTitle: {
+    en: 'FAQ',
+    ar: 'الأسئلة الشائعة',
+  },
+  faqsSubtitle: {
+    en: 'Clear answers on our delivery framework, integration timelines, and partnership model.',
+    ar: 'إجابات واضحة حول منهجية العمل، والجداول الزمنية للتنفيذ، ونموذج الشراكة.',
+  },
+  faqs: [
+    {
+      question: {
+        en: 'How do you determine the right solution for our business?',
+        ar: 'كيف تحددون الحل الأنسب لاحتياجات أعمالنا؟',
+      },
+      answer: {
+        en: 'We begin with a thorough audit of your current digital stack, analytics telemetry, conversion funnel, and unit economics during our initial discovery phase to identify the highest-ROI growth levers before writing a single line of code.',
+        ar: 'نبدأ بفحص شامل لبنيتكم الرقمية الحالية ومسار التحويل والجدوى الاقتصادية خلال مرحلة الاستكشاف الأولى لتحديد أكثر فرص النمو عائداً قبل البدء بأي تطوير برمجي.',
+      },
+    },
+    {
+      question: {
+        en: 'Can we engage Persici for a specific solution, or must it be full-funnel?',
+        ar: 'هل يمكننا التعاقد مع بيرسيسي لحل محدد أم يلزم التعاقد على كافة الخدمات؟',
+      },
+      answer: {
+        en: 'Our engagement model is modular. You can start with a targeted solution such as Shopify Plus CRO engineering, CRM lifecycle setup, or AI integration, and expand into full-funnel growth as you see validated ROI.',
+        ar: 'نموذج عملنا مرن وموديولي. يمكنك البدء بحل محدد مثل هندسة تحويل المتاجر، أو تهيئة CRM وأتمتة دورة حياة العميل، أو دمج الذكاء الاصطناعي، ثم التوسع تدريجياً.',
+      },
+    },
+    {
+      question: {
+        en: 'How quickly can we see measurable business results?',
+        ar: 'ما هي المدة المتوقعة لملاحظة نتائج ملموسة؟',
+      },
+      answer: {
+        en: 'Performance acquisition and conversion optimizations typically yield noticeable revenue improvements within the first 30 to 45 days, while structural digital engineering and platform transformations deliver compounding margin gains across 90-day sprints.',
+        ar: 'حملات الأداء وتحسينات التحويل تُظهر عادةً نتائج واضحة خلال 30 إلى 45 يوماً الأولى، بينما تمنح التحولات الهندسية والمؤسسية مكاسب تراكمية مستدامة عبر دورات 90 يوماً.',
+      },
+    },
+    {
+      question: {
+        en: 'Do your solutions integrate with our existing enterprise tools?',
+        ar: 'هل تتكامل حلولكم مع أدواتنا وبرمجياتنا الحالية؟',
+      },
+      answer: {
+        en: 'Yes. We build on open API standards and certified integrations with major enterprise platforms including Braze, Shopify Plus, Klaviyo, Adobe, AWS, Google Cloud, and Salesforce.',
+        ar: 'نعم بكل تأكيد. نبني على معايير API المفتوحة وتكاملات معتمدة مع كبرى المنصات المؤسسية بما في ذلك Braze وShopify Plus وKlaviyo وAdobe وAWS وGoogle Cloud وSalesforce.',
+      },
+    },
+  ],
+};
+
+export * from './data/featured-client-stories.data';
+
+
+

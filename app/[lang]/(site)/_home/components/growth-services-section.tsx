@@ -25,11 +25,23 @@ export function GrowthServicesSection({ lang, dict }: GrowthServicesSectionProps
       typeof dictData === 'object' && dictData !== null
         ? (dictData as { tag?: string; title?: string; description?: string })
         : {};
+
+    const isArabic = lang === 'ar';
+    const fallbackTag = isArabic
+      ? svc.arSubService || svc.enSubService || ''
+      : svc.enSubService || '';
+    const fallbackTitle = isArabic
+      ? svc.arTitle || svc.enTitle || ''
+      : svc.enTitle || '';
+    const fallbackDescription = isArabic
+      ? svc.arDescription || svc.enDescription || ''
+      : svc.enDescription || '';
+
     return {
       ...svc,
-      tag: localized.tag || svc.tag,
-      title: localized.title || svc.title,
-      description: localized.description || svc.description,
+      tag: localized.tag || fallbackTag,
+      title: localized.title || fallbackTitle,
+      description: localized.description || fallbackDescription,
     };
   });
 

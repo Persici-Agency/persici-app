@@ -3,6 +3,7 @@ import { Logo } from '@shared/components/logo';
 import { HomeButton } from '@shared/components/home-button';
 import type { Dictionary } from '@dictionaries';
 import { siteNavLinks } from '@shared/data';
+import { LanguageSwitcher } from '@shared/components/language-switcher';
 import type { FooterProps } from '@shared/types';
 
 export type { FooterProps };
@@ -151,11 +152,12 @@ export function Footer({ lang, dict }: FooterProps) {
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-12 flex flex-col items-center justify-between border-t border-white/10 pt-8 sm:flex-row">
+        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-8 sm:flex-row">
           <p className="text-xs text-white/40">
             © {currentYear} Persici. {dict.footer.rights}
           </p>
-          <div className="mt-4 flex items-center gap-6 sm:mt-0">
+          <div className="flex flex-wrap items-center justify-center gap-6">
+            <LanguageSwitcher currentLang={lang} variant="footer" />
             <span className="text-xs text-white/40">Dubai • Riyadh • Stockholm</span>
           </div>
         </div>
