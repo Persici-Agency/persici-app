@@ -1,9 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import Image from 'next/image';
 import type { ApplicationOfferingItem } from '../data/application-management.data';
-import { SolutionsVectorDiagram } from '../../../_solutions/components/solutions-vector-diagram';
+import { SolutionsCapabilityCard } from '../../../_solutions/components';
 import { sectionContainer } from '@shared/constants';
 import { FadeUp } from '@shared';
 
@@ -46,7 +45,6 @@ export function ApplicationOfferingsGrid({
             const itemDesc = item.description[lang as 'en' | 'ar'] || item.description.en;
             const itemTag = item.tag[lang as 'en' | 'ar'] || item.tag.en;
             const highlights = item.highlights[lang as 'en' | 'ar'] || item.highlights.en;
-            const isImageIcon = item.icon && (item.icon.startsWith('/') || item.icon.startsWith('http'));
 
             return (
               <div
@@ -60,69 +58,16 @@ export function ApplicationOfferingsGrid({
                   blur={true}
                   className="w-full flex"
                 >
-                  <div className="group relative flex flex-col justify-between rounded-2xl bg-[#F8F7F4] border border-black/[0.04] p-6 sm:p-7 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-lg hover:border-black/[0.08] w-full">
-                    {/* Top: Tag + Custom Icon */}
-                    <div>
-                      <div className="flex items-center justify-between gap-2 mb-4">
-                        <span className="text-[11px] font-bold tracking-wider uppercase text-persici-crimson bg-persici-crimson/5 px-2.5 py-1 rounded-md">
-                          {itemTag}
-                        </span>
-                        {item.icon && (
-                          <div className="h-7 w-7 shrink-0 flex items-center justify-center opacity-90 group-hover:opacity-100 transition-opacity">
-                            {isImageIcon ? (
-                              <Image
-                                src={item.icon}
-                                alt={itemTitle}
-                                width={28}
-                                height={28}
-                                className="w-7 h-7 object-contain"
-                                unoptimized={item.icon.endsWith('.svg')}
-                              />
-                            ) : (
-                              <span className="text-base" aria-hidden="true">
-                                {item.icon}
-                              </span>
-                            )}
-                          </div>
-                        )}
-                      </div>
-
-                      <h3 className="font-primary text-lg sm:text-xl font-bold text-slate-900 transition-colors group-hover:text-persici-crimson leading-snug">
-                        {itemTitle}
-                      </h3>
-                    </div>
-
-                    {/* Center: Animated Vector Diagram */}
-                    <div className="my-6 flex items-center justify-center py-3 bg-white/70 rounded-xl border border-black/[0.03] group-hover:bg-white transition-colors">
-                      <div className="transition-transform duration-300 group-hover:scale-110">
-                        <SolutionsVectorDiagram
-                          type={item.diagramType}
-                          isPaused={isPaused}
-                          className="h-16 w-16 drop-shadow-xs"
-                        />
-                      </div>
-                    </div>
-
-                    {/* Bottom: Narrative + Capability Pills */}
-                    <div>
-                      <p className="text-xs sm:text-[13px] leading-relaxed text-slate-600 mb-5">
-                        {itemDesc}
-                      </p>
-
-                      <div className="pt-4 border-t border-black/[0.05]">
-                        <div className="flex flex-wrap gap-1.5">
-                          {highlights.map((h, hIdx) => (
-                            <span
-                              key={hIdx}
-                              className="text-[11px] font-medium text-slate-600 bg-white/90 border border-black/[0.04] px-2 py-0.5 rounded-md"
-                            >
-                              {h}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                  <SolutionsCapabilityCard
+                    title={itemTitle}
+                    tag={itemTag}
+                    description={itemDesc}
+                    icon={item.icon}
+                    diagramType={item.diagramType}
+                    highlights={highlights}
+                    highlightsVariant="pills"
+                    isPaused={isPaused}
+                  />
                 </FadeUp>
               </div>
             );

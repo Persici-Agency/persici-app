@@ -2,6 +2,7 @@
 
 import React from 'react';
 import type { TechStackPod } from '../data/supply-chain.data';
+import { SolutionsTechStackCard } from '../../../_solutions/components';
 import { sectionContainer, sectionPaddingY } from '@shared/constants';
 import { FadeUp } from '@shared';
 import { TbBrain, TbLayersLinked, TbRobot, TbRadar2 } from 'react-icons/tb';
@@ -64,46 +65,15 @@ export function SupplyChainTechStackSection({
                 distance={24}
                 className="flex"
               >
-                <div className="group relative w-full h-full flex flex-col justify-between rounded-2xl bg-white/[0.03] border border-white/10 hover:border-white/25 hover:bg-white/[0.05] p-6 sm:p-8 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-black/50">
-                  <div>
-                    {/* Header: Icon + Badge */}
-                    <div className="flex items-center justify-between gap-4 mb-5">
-                      <div className="h-11 w-11 rounded-xl bg-persici-crimson/15 text-persici-crimson flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <Icon className="h-6 w-6" />
-                      </div>
-                      <span className="text-[11px] font-mono font-semibold uppercase tracking-wider text-slate-300 bg-white/5 border border-white/10 px-3 py-1 rounded-full">
-                        {podBadge}
-                      </span>
-                    </div>
-
-                    <h3 className="font-primary text-xl font-bold text-white mb-3">
-                      {podTitle}
-                    </h3>
-
-                    <p className="text-sm text-slate-400 leading-relaxed font-normal mb-6">
-                      {podDesc}
-                    </p>
-                  </div>
-
-                  {/* Technologies Pills */}
-                  <div className="pt-5 border-t border-white/10 mt-auto">
-                    <div className="flex flex-wrap gap-2">
-                      {pod.technologies.map((tech, tIdx) => (
-                        <span
-                          key={tIdx}
-                          className="text-xs font-medium text-slate-200 bg-white/[0.04] border border-white/[0.08] hover:bg-white/[0.08] hover:border-white/20 px-3 py-1.5 rounded-lg transition-colors"
-                        >
-                          {tech.name}
-                          {tech.badge && (
-                            <span className="ml-1.5 text-[9px] text-persici-crimson font-bold uppercase">
-                              • {tech.badge}
-                            </span>
-                          )}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
+                <SolutionsTechStackCard
+                  badge={podBadge}
+                  title={podTitle}
+                  description={podDesc}
+                  technologies={pod.technologies}
+                  icon={Icon}
+                  headerLayout="stacked"
+                  variant="pills"
+                />
               </FadeUp>
             );
           })}

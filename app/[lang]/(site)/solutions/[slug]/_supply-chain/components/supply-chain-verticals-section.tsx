@@ -2,6 +2,7 @@
 
 import React from 'react';
 import type { SupplyChainVerticalItem } from '../data/supply-chain.data';
+import { SolutionsVerticalCard } from '../../../_solutions/components';
 import { sectionContainer, sectionPaddingY } from '@shared/constants';
 import { FadeUp } from '@shared';
 import {
@@ -68,43 +69,15 @@ export function SupplyChainVerticalsSection({
                 distance={24}
                 className="flex"
               >
-                <div className="group relative w-full h-full flex flex-col justify-between rounded-2xl bg-white border border-slate-200/80 p-6 sm:p-8 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-                  <div>
-                    {/* Top Row: Monospace Numeral Badge + Sector Icon */}
-                    <div className="flex items-center justify-between gap-4 mb-6">
-                      <span className="font-mono text-2xl sm:text-3xl font-extrabold text-persici-crimson/80 group-hover:text-persici-crimson transition-colors">
-                        {vert.number}
-                      </span>
-                      <div className="h-10 w-10 rounded-xl bg-persici-crimson/5 flex items-center justify-center text-persici-crimson transition-transform duration-300 group-hover:scale-110">
-                        <IconComponent className="h-5 w-5" />
-                      </div>
-                    </div>
-
-                    <span className="text-[11px] font-bold tracking-wider uppercase text-slate-500 block mb-2">
-                      {vertTag}
-                    </span>
-
-                    <h3 className="font-primary text-xl font-bold text-slate-900 group-hover:text-persici-crimson transition-colors mb-3">
-                      {vertTitle}
-                    </h3>
-
-                    <p className="text-sm text-slate-600 leading-relaxed font-normal mb-6">
-                      {vertDesc}
-                    </p>
-                  </div>
-
-                  {/* Capability Checklist */}
-                  <div className="pt-4 border-t border-slate-100 mt-auto">
-                    <ul className="space-y-2">
-                      {capabilities.map((cap, cIdx) => (
-                        <li key={cIdx} className="text-xs text-slate-600 flex items-start gap-2 leading-relaxed">
-                          <span className="inline-block h-1.5 w-1.5 rounded-full bg-persici-crimson shrink-0 mt-1.5" />
-                          <span>{cap}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
+                <SolutionsVerticalCard
+                  number={vert.number}
+                  tag={vertTag}
+                  title={vertTitle}
+                  description={vertDesc}
+                  capabilities={capabilities}
+                  icon={IconComponent}
+                  iconStyle="box"
+                />
               </FadeUp>
             );
           })}

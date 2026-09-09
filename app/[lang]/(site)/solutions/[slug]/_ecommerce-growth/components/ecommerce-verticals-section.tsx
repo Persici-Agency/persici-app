@@ -2,6 +2,7 @@
 
 import React from 'react';
 import type { EcommerceVerticalItem } from '../data/ecommerce-growth.data';
+import { SolutionsVerticalCard } from '../../../_solutions/components';
 import { sectionContainer } from '@shared/constants';
 import { FadeUp } from '@shared';
 import {
@@ -10,7 +11,6 @@ import {
   TbShieldCheck,
   TbTruck,
   TbBolt,
-  TbCircleCheck,
 } from 'react-icons/tb';
 
 interface EcommerceVerticalsSectionProps {
@@ -69,40 +69,15 @@ export function EcommerceVerticalsSection({
                 distance={24}
                 className="flex"
               >
-                <div className="group relative flex flex-col justify-between rounded-2xl bg-white border border-slate-200/80 p-7 sm:p-8 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 w-full">
-                  <div>
-                    {/* Monospace Number & Tag */}
-                    <div className="flex items-center justify-between gap-3 mb-5">
-                      <span className="font-mono text-xs font-bold text-slate-400 group-hover:text-persici-crimson transition-colors tracking-widest">
-                        {vert.number}
-                      </span>
-                      <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-persici-crimson bg-persici-crimson/5 px-2.5 py-0.5 rounded-full">
-                        <IconComponent className="text-xs" />
-                        {vertTag}
-                      </span>
-                    </div>
-
-                    <h3 className="font-primary text-xl font-bold text-slate-900 leading-snug mb-3 group-hover:text-persici-crimson transition-colors">
-                      {vertTitle}
-                    </h3>
-
-                    <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal mb-6">
-                      {vertDesc}
-                    </p>
-                  </div>
-
-                  {/* Capabilities Checklist */}
-                  <div className="border-t border-slate-100 pt-5 mt-auto">
-                    <ul className="space-y-2.5">
-                      {capabilities.map((cap, cIdx) => (
-                        <li key={cIdx} className="text-xs text-slate-600 flex items-start gap-2 leading-snug">
-                          <TbCircleCheck className="text-persici-crimson shrink-0 text-sm mt-0.5" />
-                          <span>{cap}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
+                <SolutionsVerticalCard
+                  number={vert.number}
+                  tag={vertTag}
+                  title={vertTitle}
+                  description={vertDesc}
+                  capabilities={capabilities}
+                  icon={IconComponent}
+                  iconStyle="badge"
+                />
               </FadeUp>
             );
           })}

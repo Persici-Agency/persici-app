@@ -1,9 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import Image from 'next/image';
 import type { UxOfferingItem } from '../data/ux-product-design.data';
-import { SolutionsVectorDiagram } from '../../../_solutions/components/solutions-vector-diagram';
+import { SolutionsCapabilityCard } from '../../../_solutions/components';
 import { sectionContainer } from '@shared/constants';
 import { FadeUp } from '@shared';
 
@@ -39,14 +38,13 @@ export function UxOfferingsGrid({
           </p>
         </FadeUp>
 
-        {/* 6 Cards: Responsive 3-Column Grid with Centered Alignment */}
+        {/* 6 Cards */}
         <div className="flex flex-wrap justify-center gap-6 max-w-7xl mx-auto">
           {offerings.map((item, idx) => {
             const itemTitle = item.title[lang as 'en' | 'ar'] || item.title.en;
             const itemDesc = item.description[lang as 'en' | 'ar'] || item.description.en;
             const itemTag = item.tag[lang as 'en' | 'ar'] || item.tag.en;
             const highlights = item.highlights[lang as 'en' | 'ar'] || item.highlights.en;
-            const isImageIcon = item.icon && (item.icon.startsWith('/') || item.icon.startsWith('http'));
 
             return (
               <div
@@ -60,66 +58,16 @@ export function UxOfferingsGrid({
                   blur={true}
                   className="w-full flex"
                 >
-                  <div className="group relative flex flex-col justify-between rounded-2xl bg-persici-black-20 border-0 p-6 sm:p-7 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-lg w-full">
-                    {/* Top: Tag + Dedicated SVG Icon */}
-                    <div>
-                      <div className="flex items-center justify-between gap-2 mb-4">
-                        <span className="text-[11px] font-bold tracking-wider uppercase text-persici-crimson bg-persici-crimson/5 px-2.5 py-1 rounded-md">
-                          {itemTag}
-                        </span>
-                        {item.icon && (
-                          <div className="h-7 w-7 shrink-0 flex items-center justify-center opacity-90 group-hover:opacity-100 transition-opacity">
-                            {isImageIcon ? (
-                              <Image
-                                src={item.icon}
-                                alt={itemTitle}
-                                width={28}
-                                height={28}
-                                className="w-7 h-7 object-contain"
-                                unoptimized={item.icon.endsWith('.svg')}
-                              />
-                            ) : (
-                              <span className="text-base" aria-hidden="true">
-                                {item.icon}
-                              </span>
-                            )}
-                          </div>
-                        )}
-                      </div>
-
-                      <h3 className="font-primary text-lg sm:text-xl font-bold text-slate-900 transition-colors group-hover:text-persici-crimson leading-snug">
-                        {itemTitle}
-                      </h3>
-                    </div>
-
-                    {/* Center: Unique Animated Vector Diagram with Freeze State */}
-                    <div className="my-6 flex items-center justify-center py-3 bg-white/70 rounded-xl border border-black/[0.03] group-hover:bg-white transition-colors">
-                      <div className="transition-transform duration-300 group-hover:scale-110">
-                        <SolutionsVectorDiagram
-                          type={item.diagramType}
-                          className="h-16 w-16 text-slate-700 transition-colors"
-                          isPaused={isPaused}
-                        />
-                      </div>
-                    </div>
-
-                    {/* Description */}
-                    <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal mb-5">
-                      {itemDesc}
-                    </p>
-
-                    {/* Bullet Highlights */}
-                    <div className="border-t border-persici-black/5 pt-4 mt-auto">
-                      <ul className="space-y-2">
-                        {highlights.map((bullet, bIdx) => (
-                          <li key={bIdx} className="text-xs text-slate-600 flex items-start gap-2 leading-tight">
-                            <span className="inline-block h-1.5 w-1.5 rounded-full bg-persici-crimson shrink-0 mt-1" />
-                            <span>{bullet}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
+                  <SolutionsCapabilityCard
+                    title={itemTitle}
+                    tag={itemTag}
+                    description={itemDesc}
+                    icon={item.icon}
+                    diagramType={item.diagramType}
+                    highlights={highlights}
+                    highlightsVariant="bullets"
+                    isPaused={isPaused}
+                  />
                 </FadeUp>
               </div>
             );
@@ -131,7 +79,7 @@ export function UxOfferingsGrid({
           <button
             type="button"
             onClick={() => setIsPaused(!isPaused)}
-            className="group relative flex items-center justify-center w-8 h-8 rounded-full border border-slate-200 bg-white shadow-2xs hover:bg-slate-50 hover:border-slate-300 transition-all duration-200"
+            className="group relative flex items-center justify-center w-8 h-8 rounded-full border border-slate-200 bg-white shadow-2xs hover:bg-slate-50 hover:border-slate-300 transition-all duration-200 cursor-pointer"
             title={isPaused ? (isRtl ? 'تشغيل الرسوم المتحركة' : 'Resume animations') : (isRtl ? 'إيقاف الرسوم المتحركة مؤقتاً' : 'Pause animations')}
             aria-label={isPaused ? 'Resume animations' : 'Pause animations'}
           >

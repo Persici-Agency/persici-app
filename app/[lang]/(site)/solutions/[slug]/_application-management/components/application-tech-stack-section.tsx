@@ -2,7 +2,8 @@
 
 import React from 'react';
 import type { TechStackPod } from '../data/application-management.data';
-import { sectionContainer, sectionPaddingY } from '@shared/constants';
+import { SolutionsTechStackCard } from '../../../_solutions/components';
+import { sectionContainer } from '@shared/constants';
 import { FadeUp } from '@shared';
 
 interface ApplicationTechStackSectionProps {
@@ -55,47 +56,13 @@ export function ApplicationTechStackSection({
                 distance={24}
                 className="flex"
               >
-                <div className="w-full h-full flex flex-col justify-between rounded-2xl bg-white/[0.03] border border-white/10 hover:border-white/25 hover:bg-white/[0.05] p-6 sm:p-8 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-black/50">
-                  <div>
-                    <div className="flex items-center justify-between gap-3 mb-4">
-                      <span className="text-xs font-semibold uppercase tracking-wider text-persici-blush bg-persici-blush/10 px-2.5 py-1 rounded-md">
-                        {podBadge}
-                      </span>
-                    </div>
-
-                    <h3 className="font-primary text-xl sm:text-2xl font-bold text-white mb-2">
-                      {podTitle}
-                    </h3>
-
-                    <p className="text-sm text-slate-400 leading-relaxed mb-6 font-normal">
-                      {podDesc}
-                    </p>
-                  </div>
-
-                  {/* Tech Badges Grid */}
-                  <div className="pt-4 border-t border-white/[0.06] grid grid-cols-2 gap-3">
-                    {pod.technologies.map((tech, tIdx) => (
-                      <div
-                        key={tIdx}
-                        className="flex flex-col p-3 rounded-xl bg-white/[0.02] border border-white/[0.04] hover:bg-white/[0.05] hover:border-white/[0.1] transition-all"
-                      >
-                        <div className="flex items-center justify-between gap-2">
-                          <span className="text-sm font-semibold text-white">
-                            {tech.name}
-                          </span>
-                          {tech.badge && (
-                            <span className="text-[10px] font-mono text-slate-400 bg-white/[0.06] px-1.5 py-0.5 rounded">
-                              {tech.badge}
-                            </span>
-                          )}
-                        </div>
-                        <span className="text-[11px] text-slate-500 mt-1">
-                          {tech.category}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+                <SolutionsTechStackCard
+                  badge={podBadge}
+                  title={podTitle}
+                  description={podDesc}
+                  technologies={pod.technologies}
+                  variant="grid"
+                />
               </FadeUp>
             );
           })}

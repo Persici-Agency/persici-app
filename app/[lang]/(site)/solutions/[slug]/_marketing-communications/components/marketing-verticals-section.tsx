@@ -2,6 +2,7 @@
 
 import React from 'react';
 import type { MarketingVerticalItem } from '../data/marketing-communications.data';
+import { SolutionsVerticalCard } from '../../../_solutions/components';
 import { sectionContainer } from '@shared/constants';
 import { FadeUp } from '@shared';
 import {
@@ -10,7 +11,6 @@ import {
   TbShoppingBag,
   TbCoffee,
   TbBuildingBank,
-  TbCircleCheck,
 } from 'react-icons/tb';
 
 interface MarketingVerticalsSectionProps {
@@ -68,45 +68,17 @@ export function MarketingVerticalsSection({
                 duration={650}
                 distance={24}
                 blur={true}
-                className={idx === 4 ? 'md:col-span-2 lg:col-span-1' : ''}
+                className={idx === 4 ? 'md:col-span-2 lg:col-span-1 flex' : 'flex'}
               >
-                <div className="group relative w-full h-full flex flex-col justify-between rounded-2xl bg-white border border-slate-200/80 p-7 sm:p-8 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-                  {/* Top: Monospace Number + Tag + Icon */}
-                  <div>
-                    <div className="flex items-center justify-between mb-5">
-                      <div className="flex items-center gap-3">
-                        <span className="font-mono text-xs font-bold text-slate-400 group-hover:text-persici-crimson transition-colors tracking-widest">
-                          {vert.number}
-                        </span>
-                        <span className="text-[11px] font-semibold text-persici-crimson uppercase tracking-wider">
-                          {vertTag}
-                        </span>
-                      </div>
-                      <div className="h-9 w-9 rounded-xl bg-persici-crimson/5 flex items-center justify-center text-persici-crimson transition-transform duration-300 group-hover:scale-110">
-                        <IconComponent className="h-5 w-5" />
-                      </div>
-                    </div>
-
-                    <h3 className="font-primary text-xl font-bold text-slate-900 leading-snug mb-3 group-hover:text-persici-crimson transition-colors">
-                      {vertTitle}
-                    </h3>
-                    <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mb-6">
-                      {vertDesc}
-                    </p>
-                  </div>
-
-                  {/* Bottom: Capability Checklist */}
-                  <div className="pt-5 border-t border-black/[0.05]">
-                    <ul className="space-y-2.5">
-                      {caps.map((cap, cIdx) => (
-                        <li key={cIdx} className="flex items-center gap-2.5 text-xs text-slate-700">
-                          <TbCircleCheck className="h-4 w-4 text-persici-crimson shrink-0" />
-                          <span>{cap}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
+                <SolutionsVerticalCard
+                  number={vert.number}
+                  tag={vertTag}
+                  title={vertTitle}
+                  description={vertDesc}
+                  capabilities={caps}
+                  icon={IconComponent}
+                  iconStyle="box"
+                />
               </FadeUp>
             );
           })}

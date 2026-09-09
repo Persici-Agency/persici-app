@@ -2,7 +2,8 @@
 
 import React from 'react';
 import type { ApplicationVerticalItem } from '../data/application-management.data';
-import { sectionContainer, sectionPaddingY } from '@shared/constants';
+import { SolutionsVerticalCard } from '../../../_solutions/components';
+import { sectionContainer } from '@shared/constants';
 import { FadeUp } from '@shared';
 
 interface ApplicationVerticalsSectionProps {
@@ -50,46 +51,15 @@ export function ApplicationVerticalsSection({
                 delay={idx * 80}
                 duration={700}
                 distance={24}
-                className={idx === 4 ? 'md:col-span-2 lg:col-span-1' : ''}
+                className={idx === 4 ? 'md:col-span-2 lg:col-span-1 flex' : 'flex'}
               >
-                <div className="group relative w-full h-full flex flex-col justify-between rounded-2xl bg-white border border-slate-200/80 p-6 sm:p-8 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-                  <div>
-                    {/* Monospace Index + Tag */}
-                    <div className="flex items-center justify-between gap-3 mb-6 pb-4 border-b border-black/[0.05]">
-                      <span className="font-mono text-xl sm:text-2xl font-bold text-slate-400 group-hover:text-persici-crimson transition-colors">
-                        {item.number}
-                      </span>
-                      <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 bg-black/[0.03] px-2.5 py-1 rounded-md">
-                        {itemTag}
-                      </span>
-                    </div>
-
-                    {/* Title */}
-                    <h3 className="font-primary text-xl sm:text-2xl font-bold text-slate-900 mb-3 group-hover:text-persici-crimson transition-colors">
-                      {itemTitle}
-                    </h3>
-
-                    {/* Description */}
-                    <p className="text-sm leading-relaxed text-slate-600 mb-6 font-normal">
-                      {itemDesc}
-                    </p>
-                  </div>
-
-                  {/* Key Capabilities Checklist */}
-                  <div className="pt-4 border-t border-black/[0.05]">
-                    <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-3">
-                      {isRtl ? 'أبرز الإمكانيات المدمجة' : 'Core Capabilities'}
-                    </span>
-                    <ul className="space-y-2">
-                      {capabilities.map((cap, cIdx) => (
-                        <li key={cIdx} className="flex items-center gap-2 text-xs font-medium text-slate-700">
-                          <span className="h-1.5 w-1.5 rounded-full bg-persici-crimson shrink-0" />
-                          <span>{cap}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
+                <SolutionsVerticalCard
+                  number={item.number}
+                  tag={itemTag}
+                  title={itemTitle}
+                  description={itemDesc}
+                  capabilities={capabilities}
+                />
               </FadeUp>
             );
           })}
