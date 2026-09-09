@@ -133,6 +133,7 @@ export function Header({ lang, dict }: HeaderProps) {
   const [isLogoDark, setIsLogoDark] = useState(false);
   const [isNavDark, setIsNavDark] = useState(false);
   const [isCtaDark, setIsCtaDark] = useState(false);
+  const [isHeaderHidden, setIsHeaderHidden] = useState(false);
 
   const pathname = usePathname();
   const [prevPathname, setPrevPathname] = useState(pathname);
@@ -140,7 +141,23 @@ export function Header({ lang, dict }: HeaderProps) {
     setPrevPathname(pathname);
     setOpenDropdownKey(null);
     setMobileMenuOpen(false);
+    setIsHeaderHidden(false);
   }
+
+  // Listen for custom hide event from page-specific sub-navbars
+  useEffect(() => {
+    function handleToggleMainHeader(e: Event) {
+      const customEvent = e as CustomEvent<{ hide: boolean }>;
+      if (customEvent.detail !== undefined) {
+        setIsHeaderHidden(Boolean(customEvent.detail.hide));
+      }
+    }
+
+    window.addEventListener('persici:hide-main-header', handleToggleMainHeader);
+    return () => {
+      window.removeEventListener('persici:hide-main-header', handleToggleMainHeader);
+    };
+  }, []);
 
   const isRtl = lang === 'ar';
   
@@ -249,7 +266,13 @@ export function Header({ lang, dict }: HeaderProps) {
   };
 
   return (
-    <header ref={headerRef} className="fixed top-0 z-50 w-full transition-all duration-300" suppressHydrationWarning>
+    <header
+      ref={headerRef}
+      className={`fixed top-0 z-50 w-full transition-all duration-300 ${
+        isHeaderHidden ? '-translate-y-full opacity-0 pointer-events-none' : 'translate-y-0 opacity-100'
+      }`}
+      suppressHydrationWarning
+    >
       <div
         className={`${sectionContainer} max-w-9xl flex h-25 items-center justify-between relative`}
         suppressHydrationWarning

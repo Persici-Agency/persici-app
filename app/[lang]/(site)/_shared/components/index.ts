@@ -23,3 +23,8 @@ export * from './faq-item';
 export * from './insights-section';
 export * from './insight-card';
 export * from './client-review-section';
+export * from './industry-future-strip';
+export * from './industry-agile-foundation';
+export * from './panoramic-card';
+export * from './panoramic-carousel';
+

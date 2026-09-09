@@ -778,3 +778,63 @@ export interface SolutionDetailContent extends BaseMongoDocument {
   faqs: SolutionFaqItem[];
 }
 
+export interface IndustryOfferingItem {
+  slug: string;
+  title: LocalizedString;
+  description: LocalizedString;
+  diagramType: SolutionDiagramType;
+  tag: LocalizedString;
+  icon?: string;
+  order: number;
+  href: string;
+}
+
+export interface IndustryFutureTrendItem {
+  title: LocalizedString;
+  description: LocalizedString;
+  badge: LocalizedString;
+  image: string;
+  href?: string;
+}
+
+export interface IndustryAgileFoundation {
+  title: LocalizedString;
+  subtitle: LocalizedString;
+  diagramBadge: LocalizedString;
+  pillars: {
+    number: string;
+    title: LocalizedString;
+    description: LocalizedString;
+  }[];
+}
+
+export interface IndustriesPageContent extends BaseMongoDocument {
+  page: 'industries';
+  heroBadge: LocalizedString;
+  heroTitle: LocalizedString;
+  heroSubtitle: LocalizedString;
+  heroCtaPrimary: LocalizedString;
+  heroCtaSecondary: LocalizedString;
+  heroImage: string;
+  offeringsTitle: LocalizedString;
+  offeringsSubtitle: LocalizedString;
+  offeringsList: IndustryOfferingItem[];
+  whyItMattersTitle: LocalizedString;
+  whyItMattersText: LocalizedString;
+  whyItMattersImage: string;
+  benefitsTitle: LocalizedString;
+  benefitsImage: string;
+  benefits: SolutionBenefitItem[];
+  deliveryTitle: LocalizedString;
+  deliverySubtitle: LocalizedString;
+  deliveryImage: string;
+  deliveryPillars: SolutionExecutionPillar[];
+  quoteText: LocalizedString;
+  quoteAuthor: string;
+  quoteRole: LocalizedString;
+  faqsTitle: LocalizedString;
+  faqsSubtitle: LocalizedString;
+  faqs: SolutionFaqItem[];
+}
+
+

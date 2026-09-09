@@ -23,6 +23,8 @@ import type {
   ContactPageContent,
   SolutionOfferingItem,
   SolutionsPageContent,
+  IndustryOfferingItem,
+  IndustriesPageContent,
   platformsType,
 } from './types';
 
@@ -2047,7 +2049,321 @@ export const solutionsPageContent: SolutionsPageContent = {
   ],
 };
 
+// ============================================================================
+// 14. Industries Offerings List & Hub Page Content
+// ============================================================================
+export const industriesOfferingsList: IndustryOfferingItem[] = [
+  {
+    slug: 'consumer-products',
+    title: {
+      en: 'Consumer Products',
+      ar: 'المنتجات الاستهلاكية',
+    },
+    description: {
+      en: 'Exceed evolving consumer expectations with direct-to-consumer agility, unified inventory intelligence, and ethical consumption at scale.',
+      ar: 'تجاوز توقعات المستهلكين المتطورة عبر سرعة الوصول المباشر للمستهلك (D2C)، وذكاء المخزون الموحد، وتوسيع الاستهلاك الأخلاقي.',
+    },
+    diagramType: 'lattice-loop',
+    tag: {
+      en: 'CPG & Fast-Moving Goods',
+      ar: 'السلع الاستهلاكية سريعة التداول',
+    },
+    icon: '/icons/solutions/mkt-brand-strategy.svg',
+    order: 1,
+    href: '/industries/consumer-products',
+  },
+  {
+    slug: 'telecom-media-technology',
+    title: {
+      en: 'Telecommunications, Media & Technology',
+      ar: 'الاتصالات والإعلام والتكنولوجيا',
+    },
+    description: {
+      en: 'Build trust and break barriers with seamless digital experiences. Modernize 5G networks, streaming content engines, and enterprise AI workflows.',
+      ar: 'بناء الثقة وكسر الحواجز بتجارب رقمية استثنائية. تحديث شبكات الجيل الخامس، ومحركات بث المحتوى، ومسارات الذكاء الاصطناعي المؤسسية.',
+    },
+    diagramType: 'wave-frequency-stream',
+    tag: {
+      en: '5G, Streaming & Tech',
+      ar: 'الجيل الخامس والبث الرقمي',
+    },
+    icon: '/icons/solutions/de-cloud-architecture.svg',
+    order: 2,
+    href: '/industries/telecom-media-technology',
+  },
+  {
+    slug: 'public-sector',
+    title: {
+      en: 'Public Sector',
+      ar: 'القطاع العام',
+    },
+    description: {
+      en: 'Transform the way communities experience public services with citizen-centric digital portals, sovereign data security, and automated workflows.',
+      ar: 'إحداث نقلة نوعية في تجربة المجتمعات مع الخدمات الحكومية عبر بوابات رقمية موجهة للمواطن، وأمان البيانات السيادية، وأتمتة الإجراءات.',
+    },
+    diagramType: 'cyber-shield-lock',
+    tag: {
+      en: 'GovTech & Citizen Services',
+      ar: 'الحكومة الرقمية وخدمات المواطنين',
+    },
+    icon: '/icons/solutions/ux-user-research.svg',
+    order: 3,
+    href: '/industries/public-sector',
+  },
+  {
+    slug: 'retail',
+    title: {
+      en: 'Retail',
+      ar: 'تجارة التجزئة',
+    },
+    description: {
+      en: 'Remain indispensable by adapting continuously to customer needs through IT modernization, headless commerce architecture, and omnichannel fulfillment.',
+      ar: 'حافظ على صدارتك وتكيف باستمرار مع تطلعات المستهلكين من خلال تحديث البنية التقنية، ومعمارية التجارة المستقلة، والتنفيذ الشامل متعدد القنوات.',
+    },
+    diagramType: 'cart-checkout-funnel',
+    tag: {
+      en: 'Unified Omnichannel Commerce',
+      ar: 'التجارة الموحدة متعددة القنوات',
+    },
+    icon: '/icons/solutions/ecom-cro-optimization.svg',
+    order: 4,
+    href: '/industries/retail',
+  },
+  {
+    slug: 'health',
+    title: {
+      en: 'Health',
+      ar: 'الرعاية الصحية',
+    },
+    description: {
+      en: 'Drive smarter clinical decisions, broader access, and stronger patient outcomes with secure telemedicine platforms and compliant healthcare technologies.',
+      ar: 'دعم القرارات الطبية الذكية وتوسيع نطاق الرعاية وتحقيق نتائج علاجية أفضل عبر منصات التطبيب عن بعد والتقنيات الصحية المتوافقة تنظيمياً.',
+    },
+    diagramType: 'helix-data-strand',
+    tag: {
+      en: 'Connected Care & HealthTech',
+      ar: 'الرعاية المتصلة والتقنية الصحية',
+    },
+    icon: '/icons/solutions/ai-rag-retrieval.svg',
+    order: 5,
+    href: '/industries/health',
+  },
+  {
+    slug: 'energy-commodities',
+    title: {
+      en: 'Energy & Commodities',
+      ar: 'الطاقة والسلع',
+    },
+    description: {
+      en: 'Push the boundaries of digital transformation to create sustainable value from market volatility, smart grid IoT, and automated trade risk dispatch.',
+      ar: 'توسيع آفاق التحول الرقمي لتوليد قيمة مستدامة من تقلبات الأسواق، وشبكات الطاقة الذكية، وأتمتة إدارة مخاطر تداول السلع.',
+    },
+    diagramType: 'matrix-intersect',
+    tag: {
+      en: 'CleanTech & Trading Operations',
+      ar: 'الطاقة النظيفة وعمليات التداول',
+    },
+    icon: '/icons/solutions/sc-control-tower.svg',
+    order: 6,
+    href: '/industries/energy-commodities',
+  },
+];
+
+export const industriesPageContent: IndustriesPageContent = {
+  page: 'industries',
+  heroBadge: {
+    en: 'Industry-Specific Architectures',
+    ar: 'هندسة رقمية متخصصة لكل صناعة',
+  },
+  heroTitle: {
+    en: 'Specialized Industry Expertise for Complex Enterprise Sectors',
+    ar: 'خبرة قطاعية متخصصة لتحقيق التحول في كبرى الصناعات',
+  },
+  heroSubtitle: {
+    en: 'Whoever your audience may be, digital transformation is no longer optional. We engineer purpose-built digital platforms tailored to the regulatory, operational, and customer demands of your sector.',
+    ar: 'أياً كانت شريحة عملائك، لم يعد التحول الرقمي خياراً بل ضرورة ملحة. نصمم حلولاً رقمية مخصصة تواكب المتطلبات التنظيمية والتشغيلية والتجارية لقطاعك بدقة وكفاءة.',
+  },
+  heroCtaPrimary: {
+    en: 'Explore Industries',
+    ar: 'استكشف القطاعات',
+  },
+  heroCtaSecondary: {
+    en: 'Book Strategy Call',
+    ar: 'احجز استشارة استراتيجية',
+  },
+  heroImage: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1400&q=85',
+  offeringsTitle: {
+    en: 'Industries We Transform',
+    ar: 'القطاعات التي نقود تحولها الرقمي',
+  },
+  offeringsSubtitle: {
+    en: 'Deep domain knowledge combined with enterprise software engineering velocity across six core industries.',
+    ar: 'فهم عميق لخصوصية كل صناعة مدمج بسرعة هندسية لتسريع وتيرة النمو ومضاعفة الأثر المؤسسي.',
+  },
+  offeringsList: industriesOfferingsList,
+  whyItMattersTitle: {
+    en: 'Why Industry-Specific Engineering Matters',
+    ar: 'لماذا يُعد التخصص القطاعي محورياً للنجاح؟',
+  },
+  whyItMattersText: {
+    en: 'Generic software and standard agencies fail when faced with domain-specific regulations, complex legacy infrastructures, and distinct customer journeys. From patient privacy in health to trading latency in commodities, our domain-focused engineering pods deliver compliant, high-performance systems from day one.',
+    ar: 'تفشل الحلول البرمجية الجاهزة والوكالات العامة أمام اللوائح المعقدة والبنى القديمة الخاصة بكل قطاع. من معايير حماية بيانات المرضى في الصحة إلى خفض زمن استجابة التداول في السلع، تقدم فرقنا المتخصصة أنظمة متوافقة وفائقة الأداء من اليوم الأول.',
+  },
+  whyItMattersImage: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=1200&q=80',
+  benefitsTitle: {
+    en: 'The Strategic Advantage of Domain Alignment',
+    ar: 'المزايا الاستراتيجية للتوافق القطاعي المتخصص',
+  },
+  benefitsImage: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1400&q=80',
+  benefits: [
+    {
+      title: {
+        en: 'Regulatory Compliance by Design',
+        ar: 'جاهزية الامتثال واللوائح التنظيمية',
+      },
+      description: {
+        en: 'Built-in adherence to industry governance, privacy mandates, and sovereign cloud frameworks across GCC and global jurisdictions.',
+        ar: 'امتثال مدمج منذ التأسيس لمعايير الحوكمة وخصوصية البيانات والأطر السحابية السيادية في منطقة الخليج والأسواق العالمية.',
+      },
+      accentColor: '#D83427',
+    },
+    {
+      title: {
+        en: 'Rapid Domain Time-to-Value',
+        ar: 'سرعة استثنائية في الوصول للقيمة',
+      },
+      description: {
+        en: 'Pre-validated sector components and battle-tested architectures accelerate deployment and shorten release cycles from months to days.',
+        ar: 'مكونات معمارية قطاعية مجربة ومختبرة مسبقاً تختصر فترات الإطلاق والتطوير من أشهر طويلة إلى بضعة أيام.',
+      },
+      accentColor: '#EF8C7D',
+    },
+    {
+      title: {
+        en: 'Defensible Competitive Moats',
+        ar: 'بناء مزايا تنافسية مستدامة ومحمية',
+      },
+      description: {
+        en: 'Custom customer touchpoints and proprietary workflow automation that generic vendor tools cannot duplicate.',
+        ar: 'تجارب تفاعلية فريدة وأتمتة تشغيلية مصممة خصيصاً لمؤسستك يستحيل على الأدوات الجاهزة محاكاتها.',
+      },
+      accentColor: '#121212',
+    },
+  ],
+  deliveryTitle: {
+    en: 'Cut Development Time from Months to Days',
+    ar: 'اختصر زمن التطوير والابتكار من أشهر إلى أيام',
+  },
+  deliverySubtitle: {
+    en: 'Our reusable platform components and cloud-native architectures eliminate repetitive scaffolding, letting you focus on high-impact domain differentiation.',
+    ar: 'مكوناتنا المعمارية القابلة لإعادة الاستخدام والبنى السحابية الأصلية تلغي العمل المكرر، لتركز مؤسستك على الميزات الأكثر تأثيراً في قطاعها.',
+  },
+  deliveryImage: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1400&q=85',
+  deliveryPillars: [
+    {
+      title: {
+        en: 'Domain Discovery & Blueprinting',
+        ar: 'الاستكشاف وتخطيط المعمارية القطاعية',
+      },
+      description: {
+        en: 'We dissect your industry constraints, legacy infrastructure, and market opportunities to architect high-yield roadmaps.',
+        ar: 'نحلل التحديات الخاصة بقطاعك والبنية التحتية القائمة والفرص المتاحة لبناء خارطة طريق استراتيجية عالية العائد.',
+      },
+    },
+    {
+      title: {
+        en: 'Modular Platform Assembly',
+        ar: 'البناء الهندسي الموديولي السريع',
+      },
+      description: {
+        en: 'Deploy cloud-native microservices, secure APIs, and data pipelines on modern composable foundations.',
+        ar: 'إطلاق خدمات مصغرة سحابية أصلية، وواجهات برمجة آمنة، ومسارات تدفق بيانات على أسس قابلة للتوسع.',
+      },
+    },
+    {
+      title: {
+        en: 'Autonomous Process Automation',
+        ar: 'أتمتة العمليات بالذكاء الاصطناعي',
+      },
+      description: {
+        en: 'Integrate intelligent workflows that reduce operational friction and automate cross-departmental operations.',
+        ar: 'دمج وكلاء الذكاء الاصطناعي ومسارات الأتمتة التي تلغي الاحتكاك التشغيلي وترفع الكفاءة بين مختلف الإدارات.',
+      },
+    },
+    {
+      title: {
+        en: 'Continuous Enterprise Scaling',
+        ar: 'التوسع والتحسين المستمر',
+      },
+      description: {
+        en: 'Real-time telemetry, automated CI/CD pipelines, and SLA-backed monitoring ensure 99.99% operational uptime.',
+        ar: 'قياس الأداء اللحظي ومسارات النشر الآلي مع مراقبة مدعومة باتفاقية مستوى الخدمة لضمان استمرارية بنسبة 99.99%.',
+      },
+    },
+  ],
+  quoteText: {
+    en: "Persici's deep domain expertise allowed us to deploy sovereign, high-throughput digital platforms in a fraction of the time required by traditional consultancies.",
+    ar: 'مكنتنا خبرة بيرسيكي القطاعية العميقة من إطلاق منصات رقمية سيادية فائقة السرعة في وقت قياسي مقارنة بالاستشارات التقليدية.',
+  },
+  quoteAuthor: 'Faris Al-Otaibi',
+  quoteRole: {
+    en: 'Chief Information & Technology Officer',
+    ar: 'الرئيس التنفيذي للمعلومات والتقنية',
+  },
+  faqsTitle: {
+    en: 'Frequently Asked Questions',
+    ar: 'الأسئلة الأكثر شيوعاً',
+  },
+  faqsSubtitle: {
+    en: 'Answers to common questions regarding our industry engagement models, architecture, and regulatory compliance.',
+    ar: 'إجابات وافية حول نماذج عملنا، والامتثال التنظيمي، والبنى التحتية لكل قطاع.',
+  },
+  faqs: [
+    {
+      question: {
+        en: 'How does Persici approach regulatory compliance in heavily regulated sectors?',
+        ar: 'كيف تتعامل بيرسيكي مع متطلبات الامتثال في القطاعات شديدة التنظيم؟',
+      },
+      answer: {
+        en: 'Our engineering blueprints embed compliance by design. We build with air-gapped data pipelines, local sovereign cloud infrastructure (AWS/Azure/GCP UAE and KSA data centers), and strict ISO/IEC and local regulatory adherence from sprint zero.',
+        ar: 'تتضمن مخططاتنا الهندسية معايير الامتثال منذ مرحلة التصميم، حيث نعتمد مسارات بيانات معزولة، ومراكز بيانات سحابية سيادية محلية في السعودية والإمارات، مع الالتزام التام بمعايير ISO واللوائح الوطنية.',
+      },
+    },
+    {
+      question: {
+        en: 'Can we modernize our legacy sector systems without operational disruption?',
+        ar: 'هل يمكننا تحديث أنظمتنا القديمة دون التسبب في انقطاع للعمليات اليومية؟',
+      },
+      answer: {
+        en: 'Yes. We employ Strangler Fig patterns and decoupled microservice architectures that incrementally carve out functionality from monolithic legacy stacks with zero system downtime.',
+        ar: 'نعم بكل تأكيد. نطبق أنماط التفكيك التدريجي (Strangler Fig) وبنى الخدمات المصغرة المنفصلة لتحديث المنظومات القديمة خطوة بخطوة دون أي توقف في الخدمات التشغيلية.',
+      },
+    },
+    {
+      question: {
+        en: 'How do you incorporate AI into enterprise industry workflows?',
+        ar: 'كيف تقومون بدمج الذكاء الاصطناعي في العمليات المؤسسية؟',
+      },
+      answer: {
+        en: 'We implement sovereign enterprise RAG pipelines, autonomous agentic workflow dispatchers, and domain-tuned predictive models that connect securely to your existing enterprise data lakes.',
+        ar: 'نقوم بتطوير محركات استرجاع معرفي سيادية (Enterprise RAG)، ووكلاء أذكياء لأتمتة المهام، ونماذج تنبؤية مدربة على بيانات قطاعك تتصل بأمان مع مستودعات البيانات الحالية.',
+      },
+    },
+    {
+      question: {
+        en: 'What is the typical timeline for an enterprise industry deployment?',
+        ar: 'ما هو الجدول الزمني المعتاد لتنفيذ المشاريع المؤسسية؟',
+      },
+      answer: {
+        en: 'Initial proof-of-value deliverables and architectural blueprints are completed within 3 to 4 weeks, with production pilot rollouts launching in 60 to 90 days.',
+        ar: 'يتم تسليم النماذج الأولية والمخططات المعمارية خلال 3 إلى 4 أسابيع، مع إطلاق النسخ التشغيلية الأولى في غضون 60 إلى 90 يوماً.',
+      },
+    },
+  ],
+};
+
 export * from './data/featured-client-stories.data';
+
 
 
 
