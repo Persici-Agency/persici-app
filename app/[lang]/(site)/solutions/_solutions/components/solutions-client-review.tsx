@@ -48,21 +48,21 @@ export function SolutionsClientReview({
     (typeof badge === 'string'
       ? badge
       : badge?.[lang as 'en' | 'ar'] || badge?.en) ||
-    (isRtl ? 'آراء العملاء' : 'Client Review');
+    (isRtl ? 'آراء العملاء' : 'What our clients say');
 
   if (!cleanQuoteText) return null;
 
   return (
     <section className={`${className || 'py-14 sm:py-16 lg:py-20'} bg-white relative overflow-hidden`}>
       <div className={sectionContainer}>
-        <FadeUp delay={0} duration={800} distance={24} className="max-w-4xl mx-auto">
+        <FadeUp delay={0} duration={800} distance={24} className="max-w-5xl mx-auto">
           {/* Subtitle / Eyebrow (No background, brand primary color distinct from heading) */}
-          <span className="text-xs sm:text-sm font-bold uppercase tracking-widest text-persici-crimson block mb-6">
+          <span className="text-xs font-bold uppercase tracking-widest text-persici-crimson block mb-6">
             {badgeText}
           </span>
 
           {/* Monospaced Typographic Client Quotation */}
-          <blockquote className="font-mono text-xl sm:text-2xl lg:text-3xl font-normal sm:font-medium tracking-tight text-slate-900 leading-relaxed text-left rtl:text-right">
+          <blockquote className="font-mono ltr:border-l-4 rtl:border-r-4 border-persici-crimson ltr:pl-4 rtl:pr-4 text-xl sm:text-2xl lg:text-2xl font-normal sm:font-medium tracking-tight text-slate-900 leading-relaxed text-left rtl:text-right">
             &ldquo;{cleanQuoteText}&rdquo;
           </blockquote>
 
@@ -70,12 +70,12 @@ export function SolutionsClientReview({
           {(author || role) && (
             <div className="mt-8 pt-4 text-left rtl:text-right">
               {author && (
-                <div className="font-semibold text-slate-900 text-base sm:text-lg">
+                <div className="font-semibold text-slate-900 text-sm">
                   {author}
                 </div>
               )}
               {role && (
-                <div className="text-xs sm:text-sm text-slate-500 mt-1">
+                <div className="text-xs text-slate-500 mt-1">
                   {role}
                 </div>
               )}
