@@ -1,16 +1,16 @@
 'use client';
 
 import React from 'react';
+import { FeaturedClientStories, InsightsSection, FaqSection, ClientReviewSection } from '@shared';
 import type { Dictionary } from '@dictionaries';
 import { HomeContactSection } from '../../../../_home/components/home-contact-section';
 import { SolutionsHeroSection } from '../../../_solutions/components/solutions-hero-section';
 import { SolutionsWhyItMatters } from '../../../_solutions/components/solutions-why-it-matters';
 import { SolutionsBenefitsStrip } from '../../../_solutions/components/solutions-benefits-strip';
-import { StackedFeaturedClientStories } from '../../../_solutions/components/stacked-featured-client-stories';
+
 import { SolutionsDeliveryEngine } from '../../../_solutions/components/solutions-delivery-engine';
-import { SolutionsInsightsSection } from '../../../_solutions/components/solutions-insights-section';
-import { SolutionsClientReview } from '../../../_solutions/components/solutions-client-review';
-import { SolutionsFaqSection } from '../../../_solutions/components/solutions-faq-section';
+
+
 
 import { marketingCommunicationsData } from '../data/marketing-communications.data';
 import { MarketingOfferingsGrid } from './marketing-offerings-grid';
@@ -101,7 +101,7 @@ export function MarketingCommunicationsView({ lang, dict }: MarketingCommunicati
       />
 
       {/* 7. Featured Client Stories (Lahfaa Perfumes, Meraas The Beach, Meraas La Mer, Hala Food) */}
-      <StackedFeaturedClientStories
+      <FeaturedClientStories
         stories={data.clientStories}
         sectionBadge={isRtl ? 'قصص النجاح المميزة' : 'Featured Client Stories'}
         sectionTitle={
@@ -127,7 +127,7 @@ export function MarketingCommunicationsView({ lang, dict }: MarketingCommunicati
       />
 
       {/* 9. Standalone Insights Section */}
-      <SolutionsInsightsSection
+      <InsightsSection
         items={data.insights}
         title={isRtl ? 'أحدث الرؤى والأفكار' : 'Our Latest Thinking'}
         subtitle={
@@ -139,7 +139,7 @@ export function MarketingCommunicationsView({ lang, dict }: MarketingCommunicati
       />
 
       {/* 10. Client Review Standalone Quote */}
-      <SolutionsClientReview
+      <ClientReviewSection
         quoteText={data.clientReview.quote}
         quoteAuthor={data.clientReview.author}
         quoteRole={data.clientReview.role}
@@ -148,7 +148,7 @@ export function MarketingCommunicationsView({ lang, dict }: MarketingCommunicati
       />
 
       {/* 11. FAQs Accordion */}
-      <SolutionsFaqSection
+      <FaqSection
         title={faqsTitle}
         subtitle={faqsSubtitle}
         faqs={data.faqs}

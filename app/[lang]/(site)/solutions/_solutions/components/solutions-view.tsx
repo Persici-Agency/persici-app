@@ -1,4 +1,5 @@
 import React from 'react';
+import { FeaturedClientStories, InsightsSection, FaqSection, ClientReviewSection } from '@shared';
 import type { Dictionary } from '@dictionaries';
 import type { SolutionsPageContent } from '@shared/types';
 import { HomeContactSection } from '../../../_home/components/home-contact-section';
@@ -7,10 +8,9 @@ import { SolutionsOfferingsGrid } from './solutions-offerings-grid';
 import { SolutionsWhyItMatters } from './solutions-why-it-matters';
 import { SolutionsBenefitsStrip } from './solutions-benefits-strip';
 import { SolutionsDeliveryEngine } from './solutions-delivery-engine';
-import { StackedFeaturedClientStories } from './stacked-featured-client-stories';
-import { SolutionsClientReview } from './solutions-client-review';
-import { SolutionsInsightsSection } from './solutions-insights-section';
-import { SolutionsFaqSection } from './solutions-faq-section';
+
+
+
 
 export type SolutionsViewProps = {
   content: SolutionsPageContent;
@@ -59,7 +59,7 @@ export function SolutionsView({ content, lang, dict }: SolutionsViewProps) {
       />
 
       {/* 5. Customer Stories / Stacked Spotlight Cards */}
-      <StackedFeaturedClientStories
+      <FeaturedClientStories
         content={content}
         stories={content.spotlightStories}
         lang={lang}
@@ -75,13 +75,13 @@ export function SolutionsView({ content, lang, dict }: SolutionsViewProps) {
       />
 
       {/* 7. Our Latest Thinking / Insights Section */}
-      <SolutionsInsightsSection lang={lang} />
+      <InsightsSection lang={lang} />
 
       {/* 8. Client Review Standalone Monospace Quote */}
-      <SolutionsClientReview content={content} lang={lang} />
+      <ClientReviewSection content={content} lang={lang} />
 
       {/* 9. FAQs Accordion */}
-      <SolutionsFaqSection
+      <FaqSection
         title={faqsTitle}
         subtitle={faqsSubtitle}
         faqs={content.faqs}

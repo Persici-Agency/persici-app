@@ -135,9 +135,10 @@ export function ContentCarousel({
     const list = [...filteredItems];
 
     if (orderBy === 'random') {
-      // Fisher-Yates deterministic shuffle
+      // Deterministic shuffle
       for (let i = list.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
+        const seed = ((i + 1) * 9301 + 49297) % 233280;
+        const j = Math.floor((seed / 233280) * (i + 1));
         [list[i], list[j]] = [list[j], list[i]];
       }
       return list;
