@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { FeaturedClientStories, InsightsSection, FaqSection, ClientReviewSection } from '@shared';
 import type { Dictionary } from '@dictionaries';
 import { crmManagementData } from '../data/crm-management.data';
 
@@ -10,11 +11,7 @@ import { SolutionsWhyItMatters } from '../../../_solutions/components/solutions-
 import { SolutionsBenefitsStrip } from '../../../_solutions/components/solutions-benefits-strip';
 import { CrmVerticalsSection } from './crm-verticals-section';
 import { CrmTechStackSection } from './crm-tech-stack-section';
-import { StackedFeaturedClientStories } from '../../../_solutions/components/stacked-featured-client-stories';
 import { SolutionsDeliveryEngine } from '../../../_solutions/components/solutions-delivery-engine';
-import { SolutionsInsightsSection } from '../../../_solutions/components/solutions-insights-section';
-import { SolutionsClientReview } from '../../../_solutions/components/solutions-client-review';
-import { SolutionsFaqSection } from '../../../_solutions/components/solutions-faq-section';
 import { HomeContactSection } from '../../../../_home/components/home-contact-section';
 
 interface CrmManagementViewProps {
@@ -28,17 +25,6 @@ export function CrmManagementView({
 }: CrmManagementViewProps) {
   const isRtl = lang === 'ar';
   const data = crmManagementData;
-
-  // Localized strings
-  const heroContent = {
-    heroBadge: data.hero.tag,
-    heroTitle: data.hero.title,
-    heroSubtitle: data.hero.subtitle,
-    heroImage: data.hero.image,
-    heroCtaText: data.hero.ctaText,
-    heroCtaHref: data.hero.ctaHref,
-    heroHighlights: data.hero.highlights,
-  };
 
   const offeringsTitle = data.offeringsTitle[lang as 'en' | 'ar'] || data.offeringsTitle.en;
   const offeringsSubtitle = data.offeringsSubtitle[lang as 'en' | 'ar'] || data.offeringsSubtitle.en;
@@ -62,7 +48,16 @@ export function CrmManagementView({
   return (
     <div className="flex flex-col min-h-screen">
       {/* 1. Hero Section */}
-      <SolutionsHeroSection content={heroContent as any} lang={lang} />
+      <SolutionsHeroSection
+        title={data.hero.title}
+        subtitle={data.hero.subtitle}
+        tag={data.hero.tag}
+        secondaryTag={data.hero.secondaryTag}
+        image={data.hero.image}
+        ctaText={data.hero.ctaText}
+        ctaHref={data.hero.ctaHref}
+        lang={lang}
+      />
 
       {/* 2. Core Capabilities: 6 Cards with No Learn More Button */}
       <CrmOfferingsGrid
@@ -105,7 +100,7 @@ export function CrmManagementView({
       />
 
       {/* 7. Featured Client Stories: Stacked Sticky Cards */}
-      <StackedFeaturedClientStories
+      <FeaturedClientStories
         stories={data.clientStories}
         sectionBadge={isRtl ? 'قصص النجاح التسويقية المميزة' : 'Featured CRM Client Stories'}
         sectionTitle={isRtl ? 'عائد استثماري فائق وتجارب عملاء تضاعف ولاء العلامة' : 'Proven Marketing ROI & Compounding Customer Lifetime Value'}
@@ -123,7 +118,7 @@ export function CrmManagementView({
       />
 
       {/* 9. Solutions Insights: 2-Card Dynamic Carousel */}
-      <SolutionsInsightsSection
+      <InsightsSection
         items={data.insights}
         title={isRtl ? 'رؤى واستراتيجيات إدارة علاقات العملاء' : 'Insights & CRM Architecture'}
         subtitle={isRtl ? 'أحدث الأبحاث العملية لأتمتة دورة حياة العميل، وواتساب للأعمال، وتوقيت الإرسال الأمثل بالذكاء الاصطناعي.' : 'Actionable playbooks on Braze Canvas architecture, WhatsApp Cloud API, and AI send-time optimization.'}
@@ -131,7 +126,7 @@ export function CrmManagementView({
       />
 
       {/* 10. Executive Client Review */}
-      <SolutionsClientReview
+      <ClientReviewSection
         quoteText={data.clientReview.quote}
         quoteAuthor={data.clientReview.author}
         quoteRole={data.clientReview.role}
@@ -140,7 +135,7 @@ export function CrmManagementView({
       />
 
       {/* 11. Solutions FAQs */}
-      <SolutionsFaqSection
+      <FaqSection
         faqs={data.faqs}
         title={faqsTitle}
         subtitle={faqsSubtitle}

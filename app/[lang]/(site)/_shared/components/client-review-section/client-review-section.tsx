@@ -1,9 +1,11 @@
+'use client';
+
 import React from 'react';
 import type { SolutionsPageContent } from '@shared/types';
 import { sectionContainer } from '@shared/constants';
 import { FadeUp } from '@shared';
 
-export interface SolutionsClientReviewProps {
+export interface ClientReviewSectionProps {
   content?: SolutionsPageContent;
   quoteText?: string | { en: string; ar: string };
   quoteAuthor?: string;
@@ -13,7 +15,13 @@ export interface SolutionsClientReviewProps {
   className?: string;
 }
 
-export function SolutionsClientReview({
+/**
+ * ClientReviewSection
+ * Standalone client testimonial quotation section featuring an eyebrow badge,
+ * monospaced typographic quote with brand crimson border accent, and author attribution.
+ * Usable across any page on the site (solutions, services, about, client stories, work).
+ */
+export function ClientReviewSection({
   content,
   quoteText,
   quoteAuthor,
@@ -21,7 +29,7 @@ export function SolutionsClientReview({
   badge,
   lang,
   className,
-}: SolutionsClientReviewProps) {
+}: ClientReviewSectionProps) {
   const isRtl = lang === 'ar';
 
   const rawQuote =
@@ -87,5 +95,8 @@ export function SolutionsClientReview({
   );
 }
 
-// Reusable alias
-export const ClientReview = SolutionsClientReview;
+// Reusable aliases
+export const ClientReview = ClientReviewSection;
+export type ClientReviewProps = ClientReviewSectionProps;
+export const SolutionsClientReview = ClientReviewSection;
+export type SolutionsClientReviewProps = ClientReviewSectionProps;

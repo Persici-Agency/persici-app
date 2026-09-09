@@ -6,7 +6,7 @@ import { FadeUp, HomeButton } from '@shared';
 import { type ContentCardItem } from '@shared/components/content-card';
 import { ContentCarousel, type ContentCarouselOrderBy } from '@shared/components/content-carousel';
 
-export interface SolutionsInsightsSectionProps {
+export interface InsightsSectionProps {
   /**
    * Main section heading (defaults to "Our latest thinking")
    */
@@ -76,7 +76,7 @@ export interface SolutionsInsightsSectionProps {
   className?: string;
 }
 
-export function SolutionsInsightsSection({
+export function InsightsSection({
   title,
   subtitle,
   ctaText,
@@ -96,7 +96,7 @@ export function SolutionsInsightsSection({
   backgroundCode,
   lang,
   className,
-}: SolutionsInsightsSectionProps) {
+}: InsightsSectionProps) {
   const isRtl = lang === 'ar';
   const codeContainerRef = useRef<HTMLDivElement>(null);
 
@@ -320,6 +320,8 @@ export function SolutionsInsightsSection({
   );
 }
 
-// Aliases
-export const SolutionsLatestThinking = SolutionsInsightsSection;
-export const LatestThinkingSection = SolutionsInsightsSection;
+// Reusable aliases
+export const SolutionsInsightsSection = InsightsSection;
+export type SolutionsInsightsSectionProps = InsightsSectionProps;
+export const SolutionsLatestThinking = InsightsSection;
+export const LatestThinkingSection = InsightsSection;

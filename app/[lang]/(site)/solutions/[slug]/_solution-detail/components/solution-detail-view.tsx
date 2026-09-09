@@ -1,4 +1,5 @@
 import React from 'react';
+import { FeaturedClientStories, FaqSection, ClientReviewSection } from '@shared';
 import type { Dictionary } from '@dictionaries';
 import type { SolutionOfferingItem } from '@shared/types';
 import { sectionContainer, sectionPaddingY } from '@shared/constants';
@@ -6,10 +7,7 @@ import { HomeContactSection } from '../../../../_home/components/home-contact-se
 import {
   SolutionsHeroSection,
   SolutionsVectorDiagram,
-  StackedFeaturedClientStories,
-  SolutionsClientReview,
-  SolutionsFaqSection,
-} from '../../../_solutions/components';
+  } from '../../../_solutions/components';
 
 export type SolutionDetailViewProps = {
   solution: SolutionOfferingItem;
@@ -109,7 +107,7 @@ export function SolutionDetailView({ solution, lang, dict }: SolutionDetailViewP
       </section>
 
       {/* 3. Reusable Featured Spotlight Story */}
-      <StackedFeaturedClientStories
+      <FeaturedClientStories
         badge={isRtl ? 'نتائج مثبتة في الميدان' : 'Proven Track Record'}
         title={isRtl ? 'نمو قابل للقياس وأثر مباشر على الأرباح' : 'Measurable Growth With Direct Bottom-Line Impact'}
         description={
@@ -128,7 +126,7 @@ export function SolutionDetailView({ solution, lang, dict }: SolutionDetailViewP
       />
 
       {/* 4. Reusable Client Review */}
-      <SolutionsClientReview
+      <ClientReviewSection
         badge={isRtl ? 'شهادة العميل' : 'Client Review'}
         quoteText={{
           en: `Partnering with Persici for our ${title} transformation allowed us to scale throughput while significantly cutting operational overhead. A truly transformative engagement.`,
@@ -143,7 +141,7 @@ export function SolutionDetailView({ solution, lang, dict }: SolutionDetailViewP
       />
 
       {/* 5. Reusable Solutions FAQ */}
-      <SolutionsFaqSection
+      <FaqSection
         title="FAQ"
         subtitle={
           isRtl

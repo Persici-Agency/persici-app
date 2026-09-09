@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { FeaturedClientStories, InsightsSection, FaqSection, ClientReviewSection } from '@shared';
 import type { Dictionary } from '@dictionaries';
 import { uxProductDesignData } from '../data/ux-product-design.data';
 import { UxOfferingsGrid } from './ux-offerings-grid';
@@ -9,11 +10,10 @@ import { UxTechStackSection } from './ux-tech-stack-section';
 import { SolutionsHeroSection } from '../../../_solutions/components/solutions-hero-section';
 import { SolutionsWhyItMatters } from '../../../_solutions/components/solutions-why-it-matters';
 import { SolutionsBenefitsStrip } from '../../../_solutions/components/solutions-benefits-strip';
-import { StackedFeaturedClientStories } from '../../../_solutions/components/stacked-featured-client-stories';
+
 import { SolutionsDeliveryEngine } from '../../../_solutions/components/solutions-delivery-engine';
-import { SolutionsInsightsSection } from '../../../_solutions/components/solutions-insights-section';
-import { SolutionsClientReview } from '../../../_solutions/components/solutions-client-review';
-import { SolutionsFaqSection } from '../../../_solutions/components/solutions-faq-section';
+
+
 import { HomeContactSection } from '../../../../_home/components/home-contact-section';
 
 interface UxProductDesignViewProps {
@@ -100,7 +100,7 @@ export function UxProductDesignView({ lang, dict }: UxProductDesignViewProps) {
       />
 
       {/* 7. Featured Client Stories (Stacked Sticky Cards + Scroll Scale-Out) */}
-      <StackedFeaturedClientStories
+      <FeaturedClientStories
         stories={data.clientStories}
         sectionBadge={isRtl ? 'قصص النجاح المميزة' : 'Featured Client Stories'}
         sectionTitle={isRtl ? 'تجارب رقمية استثنائية ونمو متسارع في التحويل' : 'Transformative Digital Products & Proven User Growth'}
@@ -118,7 +118,7 @@ export function UxProductDesignView({ lang, dict }: UxProductDesignViewProps) {
       />
 
       {/* 9. Solutions Insights (Dynamic 2-Card ContentCarousel) */}
-      <SolutionsInsightsSection
+      <InsightsSection
         items={data.insights}
         title={isRtl ? 'رؤى وأفكار في تصميم المنتجات وتجربة المستخدم' : 'Insights & Strategic Product Architecture'}
         subtitle={isRtl ? 'أحدث الدراسات العملية لمنهجيات التصميم، وتقليل الإرهاق المعرفي، وربط فيجما بكود الواجهات.' : 'Actionable playbooks on living design systems, cognitive friction elimination, and Figma-to-code architectures.'}
@@ -126,7 +126,7 @@ export function UxProductDesignView({ lang, dict }: UxProductDesignViewProps) {
       />
 
       {/* 10. Executive Client Review */}
-      <SolutionsClientReview
+      <ClientReviewSection
         quoteText={data.clientReview.quote}
         quoteAuthor={data.clientReview.author}
         quoteRole={data.clientReview.role}
@@ -135,7 +135,7 @@ export function UxProductDesignView({ lang, dict }: UxProductDesignViewProps) {
       />
 
       {/* 11. Enterprise FAQs Accordion */}
-      <SolutionsFaqSection
+      <FaqSection
         faqs={data.faqs}
         title={faqsTitle}
         subtitle={faqsSubtitle}
