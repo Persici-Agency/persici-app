@@ -52,6 +52,7 @@ export interface EcommerceGrowthData {
     description: { en: string; ar: string };
     video: {
       src: string;
+      poster?: string;
       title: { en: string; ar: string };
       caption: { en: string; ar: string };
       partnerBadge: { en: string; ar: string };
@@ -159,6 +160,7 @@ export const ecommerceGrowthData: EcommerceGrowthData = {
     },
     video: {
       src: '/videos/solutions/e-commerce/salla-logeria-store-story-video.mp4',
+      poster: '/videos/solutions/e-commerce/salla-logeria-store-story-video-poster.jpg',
       title: {
         en: 'Logeria Store Story: An Idea Turned Into Reality on Salla Platform',
         ar: 'قصة متجر لوجيريا: فكرة صارت حقيقة على منصة سلة',
