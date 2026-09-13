@@ -52,6 +52,7 @@ export interface EcommerceGrowthData {
     description: { en: string; ar: string };
     video: {
       src: string;
+      poster?: string;
       title: { en: string; ar: string };
       caption: { en: string; ar: string };
       partnerBadge: { en: string; ar: string };
@@ -159,6 +160,7 @@ export const ecommerceGrowthData: EcommerceGrowthData = {
     },
     video: {
       src: '/videos/solutions/e-commerce/salla-logeria-store-story-video.mp4',
+      poster: '/videos/solutions/e-commerce/salla-logeria-store-story-video-poster.jpg',
       title: {
         en: 'Logeria Store Story: An Idea Turned Into Reality on Salla Platform',
         ar: 'قصة متجر لوجيريا: فكرة صارت حقيقة على منصة سلة',
@@ -849,7 +851,7 @@ export const ecommerceGrowthData: EcommerceGrowthData = {
         en: 'Why modern retail brands in Saudi Arabia and the UAE are abandoning heavy monolithic templates in favor of sub-second headless storefronts and modular API architectures.',
         ar: 'لماذا تتخلى كبرى العلامات التجارية في السعودية والإمارات عن القوالب التقليدية لصالح المتاجر الهجينة فائقة السرعة وواجهات برمجة التطبيقات المعيارية.',
       },
-      image: 'https://images.unsplash.com/photo-1556742049-0a67c5574f73?auto=format&fit=crop&w=800&q=80',
+      image: 'https://images.unsplash.com/photo-1563013544-824ae1b704d3?auto=format&fit=crop&w=800&q=80',
       href: '/insights/gcc-headless-commerce-shift',
       systemType: 'insight',
     },

@@ -7,6 +7,8 @@ import {
   contactPageContent,
   solutionsPageContent,
   solutionsOfferingsList,
+  industriesPageContent,
+  industriesOfferingsList,
   projectsList,
   servicesList,
   insightsArticles,
@@ -20,6 +22,8 @@ import type {
   ContactPageContent,
   SolutionsPageContent,
   SolutionOfferingItem,
+  IndustriesPageContent,
+  IndustryOfferingItem,
   ProjectItem,
   ServiceItem,
   InsightArticle,
@@ -104,6 +108,10 @@ export async function getSolutionsPageData(): Promise<SolutionsPageContent> {
   return getPageContent<SolutionsPageContent>('solutions', solutionsPageContent);
 }
 
+export async function getIndustriesPageData(): Promise<IndustriesPageContent> {
+  return getPageContent<IndustriesPageContent>('industries', industriesPageContent);
+}
+
 export async function getDbSolutions(): Promise<SolutionOfferingItem[]> {
   try {
     const db = await getDb();
@@ -132,6 +140,38 @@ export async function getDbSolutionBySlug(slug: string): Promise<SolutionOfferin
     return found || null;
   } catch {
     const fallback = solutionsOfferingsList.find((s) => s.slug === slug);
+    return fallback || null;
+  }
+}
+
+export async function getDbIndustries(): Promise<IndustryOfferingItem[]> {
+  try {
+    const db = await getDb();
+    if (!db) return industriesOfferingsList;
+
+    const items = await db
+      .collection(COLLECTIONS.INDUSTRIES)
+      .find({})
+      .sort({ order: 1 })
+      .toArray();
+
+    if (items.length === 0) return industriesOfferingsList;
+    return items.map((doc) => {
+      const { _id, ...rest } = doc;
+      return { ...rest, id: _id?.toString() } as unknown as IndustryOfferingItem;
+    });
+  } catch {
+    return industriesOfferingsList;
+  }
+}
+
+export async function getDbIndustryBySlug(slug: string): Promise<IndustryOfferingItem | null> {
+  try {
+    const all = await getDbIndustries();
+    const found = all.find((s) => s.slug === slug);
+    return found || null;
+  } catch {
+    const fallback = industriesOfferingsList.find((s) => s.slug === slug);
     return fallback || null;
   }
 }
