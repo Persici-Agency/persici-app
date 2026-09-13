@@ -25,6 +25,8 @@ import type {
   SolutionsPageContent,
   IndustryOfferingItem,
   IndustriesPageContent,
+  HowWeDoItOfferingItem,
+  HowWeDoItPageContent,
   platformsType,
 } from './types';
 
@@ -71,6 +73,7 @@ export const siteNavLinks: NavLink[] = [
       { key: 'digitalTransformationFramework', href: '/how-we-do-it/digital-transformation-framework' },
       { key: 'productManagement', href: '/how-we-do-it/product-management' },
       { key: 'engineeringTechnology', href: '/how-we-do-it/engineering-technology' },
+      { key: 'experienceTransformation', href: '/how-we-do-it/experience-transformation' },
     ],
   },
   {
@@ -2364,6 +2367,311 @@ export const industriesPageContent: IndustriesPageContent = {
 
 export * from './data/featured-client-stories.data';
 
+// ============================================================================
+// 15. How We Do It Offerings List & Hub Page Content
+// ============================================================================
+export const howWeDoItOfferingsList: HowWeDoItOfferingItem[] = [
+  {
+    slug: 'strategy-consulting',
+    title: {
+      en: 'Strategy & Consulting',
+      ar: 'الاستراتيجية والاستشارات',
+    },
+    description: {
+      en: 'Turn business ambition into actionable growth roadmaps through market intelligence, digital advisory, and practical execution frameworks.',
+      ar: 'تحويل الطموح التجاري إلى خارطة طريق نمو قابلة للتنفيذ عبر ذكاء السوق والاستشارات الرقمية وأطر التنفيذ العملية.',
+    },
+    tag: {
+      en: 'Growth & Advisory',
+      ar: 'النمو والاستشارات',
+    },
+    icon: '/icons/solutions/mkt-brand-strategy.svg',
+    diagramType: 'prism-refraction-beam',
+    order: 1,
+    href: '/how-we-do-it/strategy-consulting',
+  },
+  {
+    slug: 'digital-transformation-framework',
+    title: {
+      en: 'Digital Transformation Framework',
+      ar: 'إطار التحول الرقمي',
+    },
+    description: {
+      en: 'Accelerate business transformation at pace with our SPEED framework unifying Strategy, Product, Experience, Engineering, and Data & AI.',
+      ar: 'تسريع التحول الرقمي المؤسسي بوتيرة استثنائية عبر إطار SPEED الجامع للاستراتيجية والمنتج والتجربة والهندسة والبيانات والذكاء الاصطناعي.',
+    },
+    tag: {
+      en: 'SPEED Framework',
+      ar: 'إطار SPEED',
+    },
+    icon: '/icons/solutions/de-cloud-architecture.svg',
+    diagramType: 'quantum-core-cube',
+    order: 2,
+    href: '/how-we-do-it/digital-transformation-framework',
+  },
+  {
+    slug: 'product-management',
+    title: {
+      en: 'Product Management',
+      ar: 'إدارة المنتجات',
+    },
+    description: {
+      en: 'Product thinking that drives organizational transformation through continuous cycles of identifying, creating, and delivering value.',
+      ar: 'التفكير المتمحور حول المنتج الذي يقود التحول المؤسسي عبر دورات مستمرة لتحديد وخلق وتسليم القيمة بأعلى درجات المرونة.',
+    },
+    tag: {
+      en: 'Living Products',
+      ar: 'المنتجات الحية',
+    },
+    icon: '/icons/solutions/app-ios-android.svg',
+    diagramType: 'ux-prototype-interaction',
+    order: 3,
+    href: '/how-we-do-it/product-management',
+  },
+  {
+    slug: 'engineering-technology',
+    title: {
+      en: 'Engineering & Technology',
+      ar: 'الهندسة والتكنولوجيا',
+    },
+    description: {
+      en: 'Lead the way with agile engineering, microservices architectures, cloud-native scalability, and rapid software delivery.',
+      ar: 'ريادة المشهد عبر الهندسة الرشيقة وبنى الخدمات المصغرة والأنظمة السحابية القابلة للتوسع وتسريع دورات تطوير البرمجيات.',
+    },
+    tag: {
+      en: 'Cloud & Microservices',
+      ar: 'السحابة والخدمات المصغرة',
+    },
+    icon: '/icons/solutions/de-devops-ci-cd.svg',
+    diagramType: 'de-microservices-mesh',
+    order: 4,
+    href: '/how-we-do-it/engineering-technology',
+  },
+  {
+    slug: 'experience-transformation',
+    title: {
+      en: 'Experience Transformation',
+      ar: 'تحول تجربة المستخدم',
+    },
+    description: {
+      en: 'Elevate expectations through future-ready human-centered design, enterprise design systems, and seamless omnichannel customer journeys.',
+      ar: 'الارتقاء بالتطلعات عبر تصميم مستقبلي متمحور حول الإنسان، وأنظمة تصميم موحدة، ورحلات عملاء متكاملة عبر كافة القنوات الرقمية والواقعية.',
+    },
+    tag: {
+      en: 'Human-Centered Design',
+      ar: 'التصميم المتمحور حول الإنسان',
+    },
+    icon: '/icons/solutions/ux-design-systems.svg',
+    diagramType: 'ux-design-token-matrix',
+    order: 5,
+    href: '/how-we-do-it/experience-transformation',
+  },
+];
 
-
-
+export const howWeDoItPageContent: HowWeDoItPageContent = {
+  page: 'how-we-do-it',
+  heroBadge: {
+    en: 'Our Delivery Methodology',
+    ar: 'منهجية العمل والتنفيذ',
+  },
+  heroTitle: {
+    en: 'How We Transform & Deliver Differently',
+    ar: 'كيف نُحدث التحول وننفذ بشكل مختلف',
+  },
+  heroSubtitle: {
+    en: 'Our multidisciplinary engineering and product teams cut delivery cycles from months to days with high-velocity execution, living products, and proven transformation frameworks.',
+    ar: 'فرقنا الهندسية والاستراتيجية متعددة التخصصات تختصر دورات التنفيذ من أشهر إلى أيام عبر أطر عمل مجربة وأعلى معايير السرعة والموثوقية والمنتجات المتطورة باستمرار.',
+  },
+  heroCtaPrimary: {
+    en: 'Explore Capabilities',
+    ar: 'استكشف منهجياتنا',
+  },
+  heroCtaSecondary: {
+    en: 'Schedule Strategy Session',
+    ar: 'احجز جلسة استراتيجية',
+  },
+  heroImage: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1400&q=85',
+  offeringsTitle: {
+    en: 'The 5 Core Methodology Pillars',
+    ar: 'الركائز الخمس لمنهجيتنا في التنفيذ',
+  },
+  offeringsSubtitle: {
+    en: 'Deep-dive into each specialized operational domain powering our enterprise transformation engagements.',
+    ar: 'تعرف بعمق على كل مجال تشغيلي متخصص يقود نجاح مشاريع التحول الرقمي المؤسسية التي ننفذها.',
+  },
+  offeringsList: howWeDoItOfferingsList,
+  frameworkTitle: {
+    en: 'The SPEED Transformation Engine',
+    ar: 'محرك التحول الرقمي SPEED',
+  },
+  frameworkSubtitle: {
+    en: 'True transformation demands that all core capabilities work seamlessly together, reinforcing and amplifying one another to unlock lasting impact.',
+    ar: 'يتطلب التحول الحقيقي عمل جميع القدرات الأساسية بتناغم وتكامل تام لتعزيز بعضها البعض وإطلاق قيمة مستدامة لعملائنا.',
+  },
+  frameworkPillars: [
+    {
+      letter: 'S',
+      name: { en: 'Strategy', ar: 'الاستراتيجية' },
+      description: {
+        en: 'Define and validate sources of value with clear, scalable plans for sustainable market growth.',
+        ar: 'تحديد مصادر القيمة والتحقق منها بخطط نمو واضحة وقابلة للتوسع في السوق.',
+      },
+    },
+    {
+      letter: 'P',
+      name: { en: 'Product', ar: 'المنتج' },
+      description: {
+        en: 'Build evolving, living products that continuously deliver value through agile, outcome-focused models.',
+        ar: 'بناء منتجات حية ومتطورة تقدم قيمة مستمرة عبر نماذج عمل رشيقة وموجهة بالنتائج.',
+      },
+    },
+    {
+      letter: 'E',
+      name: { en: 'Experience', ar: 'التجربة' },
+      description: {
+        en: 'Craft human-centric journeys connecting digital and physical touchpoints, powered by emerging tech.',
+        ar: 'تصميم رحلات متمحورة حول الإنسان تربط نقاط التماس الرقمية والمادية بالتقنيات الحديثة.',
+      },
+    },
+    {
+      letter: 'E',
+      name: { en: 'Engineering', ar: 'الهندسة' },
+      description: {
+        en: 'Transform technology from a cost center into a true enabler of speed, quality, and architectural agility.',
+        ar: 'تحويل التكنولوجيا من مركز تكلفة إلى محرك حقيقي للسرعة والجودة والمرونة المعمارية.',
+      },
+    },
+    {
+      letter: 'D',
+      name: { en: 'Data & AI', ar: 'البيانات والذكاء الاصطناعي' },
+      description: {
+        en: 'Leverage data responsibly to fuel predictive insights, automation, and real-time business personalization.',
+        ar: 'توظيف البيانات بمسؤولية لدعم الرؤى التنبؤية والأتمتة الذكية والتخصيص اللحظي.',
+      },
+    },
+  ],
+  deliveryTitle: {
+    en: 'High-Velocity Agile Delivery',
+    ar: 'تنفيذ رشيق فائق السرعة والموثوقية',
+  },
+  deliverySubtitle: {
+    en: 'Autonomous cross-functional pods equipped with continuous delivery toolchains, eliminating organizational friction and accelerating speed to market.',
+    ar: 'فرق عمل متكاملة ومستقلة ومجهزة بأحدث أدوات التكامل والتسليم المستمر، لإلغاء أي تعقيدات روتينية وتسريع الوصول إلى السوق.',
+  },
+  deliveryImage: 'https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&fit=crop&w=1200&q=85',
+  deliveryPillars: [
+    {
+      number: '01',
+      title: {
+        en: 'Autonomous Pods',
+        ar: 'فرق عمل مستقلة ومتكاملة',
+      },
+      description: {
+        en: 'Dedicated cross-functional squads containing strategy leads, UI/UX designers, and full-stack cloud engineers acting as an extension of your team.',
+        ar: 'فرق عمل متخصصة تضم قادة استراتيجية ومصممي تجارب ومطوري سحابة يعملون كامتداد مباشر لفريقك المؤسسي.',
+      },
+    },
+    {
+      number: '02',
+      title: {
+        en: 'Outcome-Driven Roadmaps',
+        ar: 'خرائط طريق موجهة بالنتائج',
+      },
+      description: {
+        en: 'We prioritize initiatives based on validated ROI and business impact rather than arbitrary feature checklists.',
+        ar: 'نرتب المبادرات بناءً على العائد الاستثماري المحقق والأثر التجاري الملموس بدلاً من قوائم المزايا الشكلية.',
+      },
+    },
+    {
+      number: '03',
+      title: {
+        en: 'Continuous Deployment Pipelines',
+        ar: 'مسارات نشر وتكامل مستمرة',
+      },
+      description: {
+        en: 'Automated CI/CD pipelines, automated testing suites, and containerized cloud environments guaranteeing zero-downtime releases.',
+        ar: 'مسارات أتمتة CI/CD واختبارات برمجية آلية وحاويات سحابية تضمن إطلاق التحديثات دون أي انقطاع في الخدمة.',
+      },
+    },
+    {
+      number: '04',
+      title: {
+        en: 'Continuous Value Optimization',
+        ar: 'تحسين وتطوير مستمر للقيمة',
+      },
+      description: {
+        en: 'Real-time telemetry, user behavioral analytics, and AI feedback loops ensuring products constantly evolve and adapt to shifting market conditions.',
+        ar: 'تحليلات سلوكية فورية وملاحظات ذكية تضمن استمرار تطور المنتجات وتكيفها السريع مع تغيرات السوق.',
+      },
+    },
+  ],
+  quoteText: {
+    en: 'Persici transformed our development methodology from the ground up. Their cross-functional pod delivered our core digital platform in 6 weeks instead of our projected 9 months, with flawless architectural stability.',
+    ar: 'أحدثت بيرسيكي تحولاً جذرياً في منهجية التطوير لدينا. نجح فريقهم المتكامل في إطلاق منصتنا الرقمية الأساسية في 6 أسابيع فقط بدلاً من 9 أشهر كانت متوقعة، وبأعلى معايير الاستقرار المعماري.',
+  },
+  quoteAuthor: 'Tariq Al-Mansoor',
+  quoteRole: {
+    en: 'Chief Technology & Digital Officer, Sovereign Retail Group',
+    ar: 'الرئيس التنفيذي للتكنولوجيا والتحول الرقمي، مجموعة التجزئة السيادية',
+  },
+  faqsTitle: {
+    en: 'Frequently Asked Questions',
+    ar: 'الأسئلة الأكثر شيوعاً',
+  },
+  faqsSubtitle: {
+    en: 'Clear answers on how we collaborate, structure delivery squads, and guarantee enterprise agility.',
+    ar: 'إجابات واضحة حول آليات التعاون وتشكيل فرق التنفيذ وضمان أعلى معايير المرونة والسرعة المؤسسية.',
+  },
+  faqs: [
+    {
+      question: {
+        en: 'How do you structure your engagement models with clients?',
+        ar: 'كيف تحددون نموذج التعاون والمشاركة مع العملاء؟',
+      },
+      answer: {
+        en: 'We offer flexible engagement models tailored to enterprise maturity: from embedded multidisciplinary pods that operate directly inside your business, to end-to-end outcome-based project delivery, and ongoing strategic advisory partnerships.',
+        ar: 'نقدم نماذج مشاركة مرنة تناسب نضج المؤسسة: من فرق العمل المدمجة متعددة التخصصات التي تعمل داخل مؤسستك، إلى التسليم المتكامل القائم على تحقيق النتائج، وشراكات الاستشارات الاستراتيجية المستمرة.',
+      },
+    },
+    {
+      question: {
+        en: 'How does Persici compress development time from months to days?',
+        ar: 'كيف تختصر بيرسيكي فترات التطوير من أشهر إلى أيام؟',
+      },
+      answer: {
+        en: 'By leveraging pre-built architectural building blocks, cloud-native API patterns, automated DevOps CI/CD pipelines, and dedicated cross-functional squads working in rapid agile sprints with daily validation.',
+        ar: 'من خلال الاستفادة من المكونات المعمارية الجاهزة والموثوقة، وبنى واجهات البرمجة السحابية، ومسارات الأتمتة الكاملة، والفرق المتكاملة التي تعمل في دورات تطوير سريعة باختبارات يومية مستمرة.',
+      },
+    },
+    {
+      question: {
+        en: 'Can your frameworks integrate with our existing enterprise IT landscape?',
+        ar: 'هل يمكن لأطر عملكم التكامل مع بنيتنا التحتية وأنظمتنا التقنية القائمة؟',
+      },
+      answer: {
+        en: 'Yes. We specialize in non-invasive strangler patterns and modular microservices architectures that connect seamlessly with legacy SAP, Salesforce, Oracle, and proprietary backends without requiring operational shutdowns.',
+        ar: 'نعم بالتأكيد. نحن متخصصون في أنماط التفكيك التدريجي غير المعطلة وبنى الخدمات المصغرة التي تتصل بسلاسة مع أنظمة SAP وSalesforce وOracle والأنظمة الخاصة دون الحاجة إلى أي إيقاف تشغيلي.',
+      },
+    },
+    {
+      question: {
+        en: 'How do you ensure knowledge transfer to our in-house teams?',
+        ar: 'كيف تضمنون نقل المعرفة والخبرات إلى كوادرنا الداخلية؟',
+      },
+      answer: {
+        en: 'Co-creation is at the heart of our methodology. We pair our senior architects and engineers directly with your internal staff, run comprehensive workshops, deliver extensive documentation, and transition operations smoothly at launch.',
+        ar: 'الابتكار المشترك هو جوهر منهجيتنا. يقوم خبراؤنا ومهندسونا بالعمل جنباً إلى جنب مع كوادركم الداخلية، وتقديم ورش عمل تدريبية وتوثيق معماري شامل لضمان إدارة المنظومة باستقلالية تامة.',
+      },
+    },
+    {
+      question: {
+        en: 'How do you measure success and return on investment during an engagement?',
+        ar: 'كيف تقيسون النجاح والعائد الاستثماري أثناء تنفيذ المشاريع؟',
+      },
+      answer: {
+        en: 'Before writing any code, we establish clear North Star metrics and measurable KPIs: such as time-to-market speed, conversion rates, infrastructure cost reductions, customer lifetime value, and operational throughput.',
+        ar: 'قبل كتابة أي كود برمجي، نحدد مؤشرات الأداء الرئيسية ومقياس النجم الشمالي (North Star): مثل سرعة الوصول للسوق، ونسب التحويل، وخفض تكاليف البنية التحتية، وقيمة العميل مدى الحياة، والكفاءة التشغيلية.',
+      },
+    },
+  ],
+};

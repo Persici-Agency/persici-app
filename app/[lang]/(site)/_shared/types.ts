@@ -662,6 +662,20 @@ export interface SolutionBenefitItem {
 export interface SolutionExecutionPillar {
   title: LocalizedString;
   description: LocalizedString;
+  number?: string;
+}
+
+export interface TechStackItem {
+  name: string;
+  badge?: string;
+  category?: string;
+}
+
+export interface TechInfrastructurePod {
+  title: LocalizedString;
+  badge?: LocalizedString;
+  description: LocalizedString;
+  technologies: TechStackItem[];
 }
 
 export interface SolutionFaqItem {
@@ -839,5 +853,44 @@ export interface IndustriesPageContent extends BaseMongoDocument {
   faqsSubtitle: LocalizedString;
   faqs: SolutionFaqItem[];
 }
+export interface HowWeDoItOfferingItem {
+  slug: string;
+  title: LocalizedString;
+  description: LocalizedString;
+  tag: LocalizedString;
+  icon?: string;
+  diagramType?: SolutionDiagramType;
+  order: number;
+  href: string;
+  accentColor?: string;
+}
 
-
+export interface HowWeDoItPageContent extends BaseMongoDocument {
+  page: 'how-we-do-it';
+  heroBadge: LocalizedString;
+  heroTitle: LocalizedString;
+  heroSubtitle: LocalizedString;
+  heroCtaPrimary: LocalizedString;
+  heroCtaSecondary: LocalizedString;
+  heroImage: string;
+  offeringsTitle: LocalizedString;
+  offeringsSubtitle: LocalizedString;
+  offeringsList: HowWeDoItOfferingItem[];
+  frameworkTitle: LocalizedString;
+  frameworkSubtitle: LocalizedString;
+  frameworkPillars: {
+    letter: string;
+    name: LocalizedString;
+    description: LocalizedString;
+  }[];
+  deliveryTitle: LocalizedString;
+  deliverySubtitle: LocalizedString;
+  deliveryImage: string;
+  deliveryPillars: SolutionExecutionPillar[];
+  quoteText: LocalizedString;
+  quoteAuthor: string;
+  quoteRole: LocalizedString;
+  faqsTitle: LocalizedString;
+  faqsSubtitle: LocalizedString;
+  faqs: SolutionFaqItem[];
+}

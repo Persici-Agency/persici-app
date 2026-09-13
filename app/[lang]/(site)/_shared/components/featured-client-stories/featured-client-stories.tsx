@@ -4,6 +4,7 @@ import React, { useRef, useEffect } from 'react';
 import type { SolutionsPageContent, FeaturedClientStoryItem, StoryMetricItem } from '@shared/types';
 import { sectionContainer, sectionPaddingY } from '@shared/constants';
 import { FeaturedClientStoryCard } from '../featured-client-story-card';
+import { FadeUp } from '../fade-up';
 
 export type { StoryMetricItem, FeaturedClientStoryItem };
 
@@ -481,17 +482,23 @@ export function FeaturedClientStories({
         {secTitle && (
           <div className="max-w-3xl mx-auto text-center mb-12 sm:mb-16">
             {secBadge && (
-              <span className="text-xs sm:text-sm font-bold uppercase tracking-widest text-persici-crimson block mb-3">
-                {secBadge}
-              </span>
+              <FadeUp delay={0} duration={700} distance={16}>
+                <span className="text-xs sm:text-sm font-bold uppercase tracking-widest text-persici-crimson block mb-3">
+                  {secBadge}
+                </span>
+              </FadeUp>
             )}
-            <h2 className="font-primary text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900">
-              {secTitle}
-            </h2>
+            <FadeUp delay={120} duration={850} distance={24} blur={true}>
+              <h2 className="font-primary text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900">
+                {secTitle}
+              </h2>
+            </FadeUp>
             {secSubtitle && (
-              <p className="mt-4 text-base sm:text-lg text-slate-600">
-                {secSubtitle}
-              </p>
+              <FadeUp delay={240} duration={750} distance={20}>
+                <p className="mt-4 text-base sm:text-lg text-slate-600">
+                  {secSubtitle}
+                </p>
+              </FadeUp>
             )}
           </div>
         )}
