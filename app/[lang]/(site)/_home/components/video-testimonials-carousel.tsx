@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Image from 'next/image';
 import type { Dictionary } from '@dictionaries';
-import { FadeUp } from '@shared/components';
+import { FadeUp, VideoPlayer } from '@shared/components';
 import { getHomeVideoTestimonials } from '../services';
 import type { VideoTestimonialItem } from '@shared/types';
 import { sectionHeading } from '../../_shared';
@@ -260,15 +260,13 @@ export function VideoTestimonialsCarousel({
             {/* Video Player */}
             <div className="relative aspect-video w-full bg-black">
               {activeModalItem.videoUrl ? (
-                <video
+                <VideoPlayer
                   src={activeModalItem.videoUrl}
-                  controls
-                  autoPlay
                   poster={activeModalItem.image}
-                  className="h-full w-full object-cover"
-                >
-                  Your browser does not support HTML video playback.
-                </video>
+                  autoPlay
+                  className="h-full w-full"
+                  objectFit="contain"
+                />
               ) : (
                 <div className="flex h-full w-full items-center justify-center bg-neutral-900 text-white">
                   <div className="text-center p-6">

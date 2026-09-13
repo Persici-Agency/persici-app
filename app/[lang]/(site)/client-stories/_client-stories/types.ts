@@ -3,7 +3,8 @@ import type { LocalizedString } from '@shared/types';
 export type StoryTemplateType =
   | 'marketing-video-showcase'
   | 'image-gallery-showcase'
-  | 'software-web-app-showcase';
+  | 'software-web-app-showcase'
+  | 'mobile-app-showcase';
 
 export type StoryCategorySlug =
   | 'all'
@@ -39,6 +40,8 @@ export interface StorySoftwareDeviceMockup {
   type: 'desktop' | 'mobile' | 'tablet';
   image: string;
   title?: LocalizedString;
+  mediaType?: 'image' | 'gif' | 'video';
+  videoUrl?: string;
 }
 
 export interface StoryTechBadge {

@@ -27,4 +27,4 @@ export * from './industry-future-strip';
 export * from './industry-agile-foundation';
 export * from './panoramic-card';
 export * from './panoramic-carousel';
-
+export * from './video-player';

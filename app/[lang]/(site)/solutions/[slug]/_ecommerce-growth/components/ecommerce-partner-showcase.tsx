@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useRef, useState } from 'react';
+import React from 'react';
 import Image from 'next/image';
 import { sectionContainer } from '@shared/constants';
 import { FadeUp } from '@shared';
-import { TbPlayerPlay } from 'react-icons/tb';
+import { VideoPlayer } from '@shared/components/video-player';
 
 interface EcommercePartnerItem {
   name: string;
@@ -36,26 +36,13 @@ export function EcommercePartnerShowcase({
   lang,
 }: EcommercePartnerShowcaseProps) {
   const isRtl = lang === 'ar';
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-
-  const togglePlay = () => {
-    if (!videoRef.current) return;
-    if (isPlaying) {
-      videoRef.current.pause();
-      setIsPlaying(false);
-    } else {
-      videoRef.current.play();
-      setIsPlaying(true);
-    }
-  };
 
   return (
-    <section id="partners" className="py-20 sm:py-28 lg:py-32 bg-[#F9F8F6] border-b border-black/[0.04] relative scroll-mt-24">
+    <section className="relative py-20 sm:py-28 bg-white overflow-hidden border-t border-slate-100">
       <div className={sectionContainer}>
-        {/* Header */}
-        <FadeUp delay={0} duration={700} distance={20} className="text-center max-w-3xl mx-auto mb-14 sm:mb-20">
-          <span className="text-xs sm:text-sm font-bold uppercase tracking-widest text-persici-crimson block mb-3">
+        {/* Header Title & Subtitle */}
+        <FadeUp delay={0} duration={700} distance={20} className="max-w-3xl mx-auto text-center mb-12 sm:mb-16">
+          <span className="inline-block px-4 py-1.5 rounded-full text-xs font-mono font-bold tracking-wider uppercase bg-red-50 text-persici-crimson border border-red-100 mb-4">
             {badge}
           </span>
           <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900">
@@ -68,38 +55,16 @@ export function EcommercePartnerShowcase({
 
         {/* Featured Video Card */}
         <FadeUp delay={100} duration={750} distance={24} className="max-w-5xl mx-auto mb-16 sm:mb-20">
-          <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-black border border-slate-200/80 shadow-[0_12px_32px_-8px_rgba(0,0,0,0.18)] group">
-            {/* Video Element */}
+          <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-black border border-slate-200/80 shadow-[0_12px_32px_-8px_rgba(0,0,0,0.18)]">
             <div className="relative w-full aspect-video bg-black flex items-center justify-center">
-              <video
-                ref={videoRef}
+              <VideoPlayer
                 src={video.src}
                 poster={video.poster || '/videos/solutions/e-commerce/salla-logeria-store-story-video-poster.jpg'}
-                preload="metadata"
-                playsInline
-                controls={isPlaying}
-                onPlay={() => setIsPlaying(true)}
-                onPause={() => setIsPlaying(false)}
-                onEnded={() => setIsPlaying(false)}
-                className="w-full h-full object-contain"
+                title={video.title ? (video.title[lang as 'en' | 'ar'] || video.title.en) : undefined}
+                lang={lang as 'en' | 'ar'}
+                className="w-full h-full"
+                objectFit="contain"
               />
-
-              {/* Play Overlay when paused */}
-              {!isPlaying && (
-                <button
-                  type="button"
-                  onClick={togglePlay}
-                  className="absolute inset-0 w-full h-full flex flex-col items-center justify-center bg-black/40 hover:bg-black/30 transition-all cursor-pointer group/btn"
-                  aria-label={isRtl ? 'مشاهدة قصة النجاح' : 'Watch the success story'}
-                >
-                  <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-white text-slate-900 flex items-center justify-center shadow-xl group-hover/btn:scale-110 group-hover/btn:bg-slate-100 transition-transform duration-300">
-                    <TbPlayerPlay className="text-2xl sm:text-3xl translate-x-0.5 rtl:-translate-x-0.5 text-slate-900" />
-                  </div>
-                  <span className="mt-4 text-sm sm:text-base font-semibold text-white drop-shadow-md">
-                    {isRtl ? 'مشاهدة قصة النجاح' : 'Watch the success story'}
-                  </span>
-                </button>
-              )}
             </div>
           </div>
         </FadeUp>
