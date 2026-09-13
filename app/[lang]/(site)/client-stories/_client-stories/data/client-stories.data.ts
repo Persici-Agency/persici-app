@@ -1055,7 +1055,7 @@ export const clientStoriesData: ClientStoryDetail[] = [
   {
     "id": "hala-food-mobile-app-development",
     "slug": "hala-food-mobile-app-development",
-    "templateType": "software-web-app-showcase",
+    "templateType": "mobile-app-showcase",
     "category": {
       "en": "Mobile Engineering & Product Design",
       "ar": "تطوير تطبيقات الهاتف وتجربة المستخدم"
@@ -1194,6 +1194,26 @@ export const clientStoriesData: ClientStoryDetail[] = [
       "mockups": [
         {
           "type": "mobile",
+          "mediaType": "gif",
+          "image": "/client-stories/softwares-and-web-apps/Hala%20Food/Hala%20Food%201K.gif",
+          "title": {
+            "en": "Live Onboarding & Interaction (GIF)",
+            "ar": "عرض حي لتجربة وتفاعل التطبيق (GIF)"
+          }
+        },
+        {
+          "type": "mobile",
+          "mediaType": "video",
+          "videoUrl": "https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/client-stories/softwares-and-web-apps/Hala%20Food/hala-food.mp4",
+          "image": "https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/client-stories/softwares-and-web-apps/Hala%20Food/images/hala-food-app-1.webp",
+          "title": {
+            "en": "App Experience Walkthrough (Video)",
+            "ar": "جولة مرئية داخل التطبيق (فيديو)"
+          }
+        },
+        {
+          "type": "mobile",
+          "mediaType": "image",
           "image": "https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/client-stories/softwares-and-web-apps/Hala%20Food/images/hala-food-app-1.webp",
           "title": {
             "en": "Weekly Recipe Discovery",
@@ -1202,6 +1222,7 @@ export const clientStoriesData: ClientStoryDetail[] = [
         },
         {
           "type": "mobile",
+          "mediaType": "image",
           "image": "https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/client-stories/softwares-and-web-apps/Hala%20Food/images/hala-food-app-2.webp",
           "title": {
             "en": "Nutritional Breakdown Screen",
@@ -1210,10 +1231,29 @@ export const clientStoriesData: ClientStoryDetail[] = [
         },
         {
           "type": "mobile",
+          "mediaType": "image",
           "image": "https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/client-stories/softwares-and-web-apps/Hala%20Food/images/hala-food-app-3.webp",
           "title": {
             "en": "Delivery Calendar Management",
             "ar": "جدول مواعيد التوصيل الأسبوعي"
+          }
+        },
+        {
+          "type": "mobile",
+          "mediaType": "image",
+          "image": "https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/client-stories/softwares-and-web-apps/Hala%20Food/images/hala-food-app-4.webp",
+          "title": {
+            "en": "Custom Portion Selector",
+            "ar": "تحديد الحصص والمقادير المخصصة"
+          }
+        },
+        {
+          "type": "mobile",
+          "mediaType": "image",
+          "image": "https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/client-stories/softwares-and-web-apps/Hala%20Food/images/hala-food-app-5.webp",
+          "title": {
+            "en": "Real-Time Cold-Chain Tracking",
+            "ar": "التتبع الحي للمركبات المبردة"
           }
         }
       ],
