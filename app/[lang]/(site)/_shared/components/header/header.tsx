@@ -8,7 +8,7 @@ import { Logo } from '@shared/components/logo';
 import type { HeaderProps, NavLink } from '@shared/types';
 import { HomeButton, sectionContainer } from '@shared';
 import { siteNavLinks } from '@shared/data';
-import { NavDropdownCard, solutionIconMap } from './nav-dropdown-card';
+import { NavDropdownCard, solutionIconMap, iconMap } from './nav-dropdown-card';
 
 /**
  * Checks whether a single DOM element represents a visually dark background.
@@ -460,6 +460,7 @@ export function Header({ lang, dict }: HeaderProps) {
                           const subLabel = dict.nav[sub.key as keyof typeof dict.nav] || sub.key;
                           const subHref = `/${lang}${sub.href}`;
                           const solutionIcon = solutionIconMap[sub.key];
+                          const SubItemIcon = iconMap[sub.key];
                           return (
                             <Link
                               key={sub.key}
@@ -468,7 +469,7 @@ export function Header({ lang, dict }: HeaderProps) {
                               className="flex items-center justify-between rounded-md px-3 py-1.5 text-xs font-medium text-foreground/75 hover:bg-black/5 hover:text-black"
                             >
                               <span className="flex items-center gap-2">
-                                {solutionIcon && (
+                                {solutionIcon ? (
                                   <Image
                                     src={solutionIcon}
                                     alt=""
@@ -478,7 +479,9 @@ export function Header({ lang, dict }: HeaderProps) {
                                     style={{ filter: 'brightness(0)' }}
                                     aria-hidden="true"
                                   />
-                                )}
+                                ) : SubItemIcon ? (
+                                  <SubItemIcon className="h-3.5 w-3.5 shrink-0 text-foreground/75" />
+                                ) : null}
                                 <span>{subLabel}</span>
                               </span>
                               <span className="text-foreground/40">{isRtl ? '←' : '→'}</span>

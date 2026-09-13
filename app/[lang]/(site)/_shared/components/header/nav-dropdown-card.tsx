@@ -11,7 +11,6 @@ import {
   TbCirclesRelation,
   TbUsers,
   TbShoppingBag,
-  TbAdjustmentsHorizontal,
   TbBasket,
   TbAntenna,
   TbBuildingSkyscraper,
@@ -51,7 +50,6 @@ export const solutionIconMap: Record<string, string> = {
   marketingCommunications: '/icons/solutions/Marketing%20%26%20Communicating%404x.png',
   ecommerceGrowth: '/icons/solutions/E-Commerce%20Growth%404x.png',
   aiIntegration: '/icons/solutions/AI%404x.png',
-  experienceTransformation: '/icons/solutions/Experience%20Transformation%404x.png',
   customerEngagement: '/icons/solutions/Customer%20Engagement%404x.png',
   digitalEngineering: '/icons/solutions/Digital%20Engineering%404x.png',
   supplyChain: '/icons/solutions/Supply%20Chain%404x.png',
@@ -64,7 +62,7 @@ export const solutionIconMap: Record<string, string> = {
 };
 
 // Fallback semantic icons map
-const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
+export const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   // Solutions
   applicationManagement: TbDeviceLaptop,
   legacyModernization: TbDeviceLaptop,
@@ -78,7 +76,6 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   digitalEngineering: TbCode,
   supplyChain: TbTruck,
   crmManagement: TbDatabase,
-  experienceTransformation: TbAdjustmentsHorizontal,
 
   // Industries
   consumerProducts: TbBasket,
@@ -93,6 +90,7 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   digitalTransformationFramework: TbCirclesRelation,
   productManagement: TbLayoutDashboard,
   engineeringTechnology: TbCode,
+  experienceTransformation: TbColorSwatch,
 
   // Company
   aboutUs: TbUsers,

@@ -9,6 +9,8 @@ import {
   solutionsOfferingsList,
   industriesPageContent,
   industriesOfferingsList,
+  howWeDoItPageContent,
+  howWeDoItOfferingsList,
   projectsList,
   servicesList,
   insightsArticles,
@@ -24,6 +26,8 @@ import type {
   SolutionOfferingItem,
   IndustriesPageContent,
   IndustryOfferingItem,
+  HowWeDoItPageContent,
+  HowWeDoItOfferingItem,
   ProjectItem,
   ServiceItem,
   InsightArticle,
@@ -110,6 +114,31 @@ export async function getSolutionsPageData(): Promise<SolutionsPageContent> {
 
 export async function getIndustriesPageData(): Promise<IndustriesPageContent> {
   return getPageContent<IndustriesPageContent>('industries', industriesPageContent);
+}
+
+export async function getHowWeDoItPageData(): Promise<HowWeDoItPageContent> {
+  return getPageContent<HowWeDoItPageContent>('how-we-do-it', howWeDoItPageContent);
+}
+
+export async function getDbHowWeDoItOfferings(): Promise<HowWeDoItOfferingItem[]> {
+  try {
+    const db = await getDb();
+    if (!db) return howWeDoItOfferingsList;
+
+    const items = await db
+      .collection(COLLECTIONS.PAGES)
+      .find({ type: 'how-we-do-it-offering' })
+      .sort({ order: 1 })
+      .toArray();
+
+    if (items.length === 0) return howWeDoItOfferingsList;
+    return items.map((doc) => {
+      const { _id, ...rest } = doc;
+      return { ...rest, id: _id?.toString() } as unknown as HowWeDoItOfferingItem;
+    });
+  } catch {
+    return howWeDoItOfferingsList;
+  }
 }
 
 export async function getDbSolutions(): Promise<SolutionOfferingItem[]> {
