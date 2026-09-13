@@ -18,6 +18,7 @@ export const COLLECTIONS = {
   PROJECTS: 'projects',
   SERVICES: 'services',
   SOLUTIONS: 'solutions',
+  INDUSTRIES: 'industries',
   INSIGHTS: 'insights',
   CLIENT_LOGOS: 'client_logos',
   REVIEWS: 'reviews',

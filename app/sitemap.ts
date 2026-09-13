@@ -6,7 +6,9 @@ const locales = ['en', 'ar'];
 const staticRoutes = [
   '',
   '/about',
-  '/services',
+  '/solutions',
+  '/industries',
+  '/client-stories',
   '/work',
   '/insights',
   '/careers',

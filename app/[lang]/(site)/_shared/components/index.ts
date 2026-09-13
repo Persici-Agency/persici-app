@@ -16,3 +16,15 @@ export * from './capability-card';
 export * from './industry-card';
 export * from './tech-infrastructure-card';
 
+export * from './featured-client-stories';
+export * from './featured-client-story-card';
+export * from './faq-section';
+export * from './faq-item';
+export * from './insights-section';
+export * from './insight-card';
+export * from './client-review-section';
+export * from './industry-future-strip';
+export * from './industry-agile-foundation';
+export * from './panoramic-card';
+export * from './panoramic-carousel';
+

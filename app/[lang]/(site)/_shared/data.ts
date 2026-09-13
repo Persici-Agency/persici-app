@@ -23,6 +23,10 @@ import type {
   ContactPageContent,
   SolutionOfferingItem,
   SolutionsPageContent,
+  IndustryOfferingItem,
+  IndustriesPageContent,
+  HowWeDoItOfferingItem,
+  HowWeDoItPageContent,
   platformsType,
 } from './types';
 
@@ -69,6 +73,7 @@ export const siteNavLinks: NavLink[] = [
       { key: 'digitalTransformationFramework', href: '/how-we-do-it/digital-transformation-framework' },
       { key: 'productManagement', href: '/how-we-do-it/product-management' },
       { key: 'engineeringTechnology', href: '/how-we-do-it/engineering-technology' },
+      { key: 'experienceTransformation', href: '/how-we-do-it/experience-transformation' },
     ],
   },
   {
@@ -349,7 +354,7 @@ export const videoTestimonials: VideoTestimonialItem[] = [
     role: 'Head of Growth',
     company: 'Bella Casa Botanicals',
     quote: 'The UX audit and speed enhancements they implemented on our Shopify store resulted in an instant +34% lift in checkout completions.',
-    image: 'https://images.unsplash.com/photo-1534751516642-a171edd2521d?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=800&q=80',
     videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
     duration: '1:52',
     category: 'Storefront Optimization',
@@ -935,7 +940,7 @@ export const approachTeamAvatars: GrowthTeamMember[] = [
   {
     id: '11',
     name: 'Omar Farooq',
-    avatar: 'https://images.unsplash.com/photo-1534751516642-a171edd2521d?auto=format&fit=crop&w=150&q=80',
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80',
     alt: 'Omar Farooq - Senior Copywriter',
     role: 'Senior Copywriter',
   },
@@ -2047,7 +2052,626 @@ export const solutionsPageContent: SolutionsPageContent = {
   ],
 };
 
+// ============================================================================
+// 14. Industries Offerings List & Hub Page Content
+// ============================================================================
+export const industriesOfferingsList: IndustryOfferingItem[] = [
+  {
+    slug: 'consumer-products',
+    title: {
+      en: 'Consumer Products',
+      ar: 'المنتجات الاستهلاكية',
+    },
+    description: {
+      en: 'Exceed evolving consumer expectations with direct-to-consumer agility, unified inventory intelligence, and ethical consumption at scale.',
+      ar: 'تجاوز توقعات المستهلكين المتطورة عبر سرعة الوصول المباشر للمستهلك (D2C)، وذكاء المخزون الموحد، وتوسيع الاستهلاك الأخلاقي.',
+    },
+    diagramType: 'lattice-loop',
+    tag: {
+      en: 'CPG & Fast-Moving Goods',
+      ar: 'السلع الاستهلاكية سريعة التداول',
+    },
+    icon: '/icons/solutions/mkt-brand-strategy.svg',
+    order: 1,
+    href: '/industries/consumer-products',
+  },
+  {
+    slug: 'telecom-media-technology',
+    title: {
+      en: 'Telecommunications, Media & Technology',
+      ar: 'الاتصالات والإعلام والتكنولوجيا',
+    },
+    description: {
+      en: 'Build trust and break barriers with seamless digital experiences. Modernize 5G networks, streaming content engines, and enterprise AI workflows.',
+      ar: 'بناء الثقة وكسر الحواجز بتجارب رقمية استثنائية. تحديث شبكات الجيل الخامس، ومحركات بث المحتوى، ومسارات الذكاء الاصطناعي المؤسسية.',
+    },
+    diagramType: 'wave-frequency-stream',
+    tag: {
+      en: '5G, Streaming & Tech',
+      ar: 'الجيل الخامس والبث الرقمي',
+    },
+    icon: '/icons/solutions/de-cloud-architecture.svg',
+    order: 2,
+    href: '/industries/telecom-media-technology',
+  },
+  {
+    slug: 'public-sector',
+    title: {
+      en: 'Public Sector',
+      ar: 'القطاع العام',
+    },
+    description: {
+      en: 'Transform the way communities experience public services with citizen-centric digital portals, sovereign data security, and automated workflows.',
+      ar: 'إحداث نقلة نوعية في تجربة المجتمعات مع الخدمات الحكومية عبر بوابات رقمية موجهة للمواطن، وأمان البيانات السيادية، وأتمتة الإجراءات.',
+    },
+    diagramType: 'cyber-shield-lock',
+    tag: {
+      en: 'GovTech & Citizen Services',
+      ar: 'الحكومة الرقمية وخدمات المواطنين',
+    },
+    icon: '/icons/solutions/ux-user-research.svg',
+    order: 3,
+    href: '/industries/public-sector',
+  },
+  {
+    slug: 'retail',
+    title: {
+      en: 'Retail',
+      ar: 'تجارة التجزئة',
+    },
+    description: {
+      en: 'Remain indispensable by adapting continuously to customer needs through IT modernization, headless commerce architecture, and omnichannel fulfillment.',
+      ar: 'حافظ على صدارتك وتكيف باستمرار مع تطلعات المستهلكين من خلال تحديث البنية التقنية، ومعمارية التجارة المستقلة، والتنفيذ الشامل متعدد القنوات.',
+    },
+    diagramType: 'cart-checkout-funnel',
+    tag: {
+      en: 'Unified Omnichannel Commerce',
+      ar: 'التجارة الموحدة متعددة القنوات',
+    },
+    icon: '/icons/solutions/ecom-cro-optimization.svg',
+    order: 4,
+    href: '/industries/retail',
+  },
+  {
+    slug: 'health',
+    title: {
+      en: 'Health',
+      ar: 'الرعاية الصحية',
+    },
+    description: {
+      en: 'Drive smarter clinical decisions, broader access, and stronger patient outcomes with secure telemedicine platforms and compliant healthcare technologies.',
+      ar: 'دعم القرارات الطبية الذكية وتوسيع نطاق الرعاية وتحقيق نتائج علاجية أفضل عبر منصات التطبيب عن بعد والتقنيات الصحية المتوافقة تنظيمياً.',
+    },
+    diagramType: 'helix-data-strand',
+    tag: {
+      en: 'Connected Care & HealthTech',
+      ar: 'الرعاية المتصلة والتقنية الصحية',
+    },
+    icon: '/icons/solutions/ai-rag-retrieval.svg',
+    order: 5,
+    href: '/industries/health',
+  },
+  {
+    slug: 'energy-commodities',
+    title: {
+      en: 'Energy & Commodities',
+      ar: 'الطاقة والسلع',
+    },
+    description: {
+      en: 'Push the boundaries of digital transformation to create sustainable value from market volatility, smart grid IoT, and automated trade risk dispatch.',
+      ar: 'توسيع آفاق التحول الرقمي لتوليد قيمة مستدامة من تقلبات الأسواق، وشبكات الطاقة الذكية، وأتمتة إدارة مخاطر تداول السلع.',
+    },
+    diagramType: 'matrix-intersect',
+    tag: {
+      en: 'CleanTech & Trading Operations',
+      ar: 'الطاقة النظيفة وعمليات التداول',
+    },
+    icon: '/icons/solutions/sc-control-tower.svg',
+    order: 6,
+    href: '/industries/energy-commodities',
+  },
+];
+
+export const industriesPageContent: IndustriesPageContent = {
+  page: 'industries',
+  heroBadge: {
+    en: 'Industry-Specific Architectures',
+    ar: 'هندسة رقمية متخصصة لكل صناعة',
+  },
+  heroTitle: {
+    en: 'Specialized Industry Expertise for Complex Enterprise Sectors',
+    ar: 'خبرة قطاعية متخصصة لتحقيق التحول في كبرى الصناعات',
+  },
+  heroSubtitle: {
+    en: 'Whoever your audience may be, digital transformation is no longer optional. We engineer purpose-built digital platforms tailored to the regulatory, operational, and customer demands of your sector.',
+    ar: 'أياً كانت شريحة عملائك، لم يعد التحول الرقمي خياراً بل ضرورة ملحة. نصمم حلولاً رقمية مخصصة تواكب المتطلبات التنظيمية والتشغيلية والتجارية لقطاعك بدقة وكفاءة.',
+  },
+  heroCtaPrimary: {
+    en: 'Explore Industries',
+    ar: 'استكشف القطاعات',
+  },
+  heroCtaSecondary: {
+    en: 'Book Strategy Call',
+    ar: 'احجز استشارة استراتيجية',
+  },
+  heroImage: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1400&q=85',
+  offeringsTitle: {
+    en: 'Industries We Transform',
+    ar: 'القطاعات التي نقود تحولها الرقمي',
+  },
+  offeringsSubtitle: {
+    en: 'Deep domain knowledge combined with enterprise software engineering velocity across six core industries.',
+    ar: 'فهم عميق لخصوصية كل صناعة مدمج بسرعة هندسية لتسريع وتيرة النمو ومضاعفة الأثر المؤسسي.',
+  },
+  offeringsList: industriesOfferingsList,
+  whyItMattersTitle: {
+    en: 'Why Industry-Specific Engineering Matters',
+    ar: 'لماذا يُعد التخصص القطاعي محورياً للنجاح؟',
+  },
+  whyItMattersText: {
+    en: 'Generic software and standard agencies fail when faced with domain-specific regulations, complex legacy infrastructures, and distinct customer journeys. From patient privacy in health to trading latency in commodities, our domain-focused engineering pods deliver compliant, high-performance systems from day one.',
+    ar: 'تفشل الحلول البرمجية الجاهزة والوكالات العامة أمام اللوائح المعقدة والبنى القديمة الخاصة بكل قطاع. من معايير حماية بيانات المرضى في الصحة إلى خفض زمن استجابة التداول في السلع، تقدم فرقنا المتخصصة أنظمة متوافقة وفائقة الأداء من اليوم الأول.',
+  },
+  whyItMattersImage: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=1200&q=80',
+  benefitsTitle: {
+    en: 'The Strategic Advantage of Domain Alignment',
+    ar: 'المزايا الاستراتيجية للتوافق القطاعي المتخصص',
+  },
+  benefitsImage: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1400&q=80',
+  benefits: [
+    {
+      title: {
+        en: 'Regulatory Compliance by Design',
+        ar: 'جاهزية الامتثال واللوائح التنظيمية',
+      },
+      description: {
+        en: 'Built-in adherence to industry governance, privacy mandates, and sovereign cloud frameworks across GCC and global jurisdictions.',
+        ar: 'امتثال مدمج منذ التأسيس لمعايير الحوكمة وخصوصية البيانات والأطر السحابية السيادية في منطقة الخليج والأسواق العالمية.',
+      },
+      accentColor: '#D83427',
+    },
+    {
+      title: {
+        en: 'Rapid Domain Time-to-Value',
+        ar: 'سرعة استثنائية في الوصول للقيمة',
+      },
+      description: {
+        en: 'Pre-validated sector components and battle-tested architectures accelerate deployment and shorten release cycles from months to days.',
+        ar: 'مكونات معمارية قطاعية مجربة ومختبرة مسبقاً تختصر فترات الإطلاق والتطوير من أشهر طويلة إلى بضعة أيام.',
+      },
+      accentColor: '#EF8C7D',
+    },
+    {
+      title: {
+        en: 'Defensible Competitive Moats',
+        ar: 'بناء مزايا تنافسية مستدامة ومحمية',
+      },
+      description: {
+        en: 'Custom customer touchpoints and proprietary workflow automation that generic vendor tools cannot duplicate.',
+        ar: 'تجارب تفاعلية فريدة وأتمتة تشغيلية مصممة خصيصاً لمؤسستك يستحيل على الأدوات الجاهزة محاكاتها.',
+      },
+      accentColor: '#121212',
+    },
+  ],
+  deliveryTitle: {
+    en: 'Cut Development Time from Months to Days',
+    ar: 'اختصر زمن التطوير والابتكار من أشهر إلى أيام',
+  },
+  deliverySubtitle: {
+    en: 'Our reusable platform components and cloud-native architectures eliminate repetitive scaffolding, letting you focus on high-impact domain differentiation.',
+    ar: 'مكوناتنا المعمارية القابلة لإعادة الاستخدام والبنى السحابية الأصلية تلغي العمل المكرر، لتركز مؤسستك على الميزات الأكثر تأثيراً في قطاعها.',
+  },
+  deliveryImage: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1400&q=85',
+  deliveryPillars: [
+    {
+      title: {
+        en: 'Domain Discovery & Blueprinting',
+        ar: 'الاستكشاف وتخطيط المعمارية القطاعية',
+      },
+      description: {
+        en: 'We dissect your industry constraints, legacy infrastructure, and market opportunities to architect high-yield roadmaps.',
+        ar: 'نحلل التحديات الخاصة بقطاعك والبنية التحتية القائمة والفرص المتاحة لبناء خارطة طريق استراتيجية عالية العائد.',
+      },
+    },
+    {
+      title: {
+        en: 'Modular Platform Assembly',
+        ar: 'البناء الهندسي الموديولي السريع',
+      },
+      description: {
+        en: 'Deploy cloud-native microservices, secure APIs, and data pipelines on modern composable foundations.',
+        ar: 'إطلاق خدمات مصغرة سحابية أصلية، وواجهات برمجة آمنة، ومسارات تدفق بيانات على أسس قابلة للتوسع.',
+      },
+    },
+    {
+      title: {
+        en: 'Autonomous Process Automation',
+        ar: 'أتمتة العمليات بالذكاء الاصطناعي',
+      },
+      description: {
+        en: 'Integrate intelligent workflows that reduce operational friction and automate cross-departmental operations.',
+        ar: 'دمج وكلاء الذكاء الاصطناعي ومسارات الأتمتة التي تلغي الاحتكاك التشغيلي وترفع الكفاءة بين مختلف الإدارات.',
+      },
+    },
+    {
+      title: {
+        en: 'Continuous Enterprise Scaling',
+        ar: 'التوسع والتحسين المستمر',
+      },
+      description: {
+        en: 'Real-time telemetry, automated CI/CD pipelines, and SLA-backed monitoring ensure 99.99% operational uptime.',
+        ar: 'قياس الأداء اللحظي ومسارات النشر الآلي مع مراقبة مدعومة باتفاقية مستوى الخدمة لضمان استمرارية بنسبة 99.99%.',
+      },
+    },
+  ],
+  quoteText: {
+    en: "Persici's deep domain expertise allowed us to deploy sovereign, high-throughput digital platforms in a fraction of the time required by traditional consultancies.",
+    ar: 'مكنتنا خبرة بيرسيكي القطاعية العميقة من إطلاق منصات رقمية سيادية فائقة السرعة في وقت قياسي مقارنة بالاستشارات التقليدية.',
+  },
+  quoteAuthor: 'Faris Al-Otaibi',
+  quoteRole: {
+    en: 'Chief Information & Technology Officer',
+    ar: 'الرئيس التنفيذي للمعلومات والتقنية',
+  },
+  faqsTitle: {
+    en: 'Frequently Asked Questions',
+    ar: 'الأسئلة الأكثر شيوعاً',
+  },
+  faqsSubtitle: {
+    en: 'Answers to common questions regarding our industry engagement models, architecture, and regulatory compliance.',
+    ar: 'إجابات وافية حول نماذج عملنا، والامتثال التنظيمي، والبنى التحتية لكل قطاع.',
+  },
+  faqs: [
+    {
+      question: {
+        en: 'How does Persici approach regulatory compliance in heavily regulated sectors?',
+        ar: 'كيف تتعامل بيرسيكي مع متطلبات الامتثال في القطاعات شديدة التنظيم؟',
+      },
+      answer: {
+        en: 'Our engineering blueprints embed compliance by design. We build with air-gapped data pipelines, local sovereign cloud infrastructure (AWS/Azure/GCP UAE and KSA data centers), and strict ISO/IEC and local regulatory adherence from sprint zero.',
+        ar: 'تتضمن مخططاتنا الهندسية معايير الامتثال منذ مرحلة التصميم، حيث نعتمد مسارات بيانات معزولة، ومراكز بيانات سحابية سيادية محلية في السعودية والإمارات، مع الالتزام التام بمعايير ISO واللوائح الوطنية.',
+      },
+    },
+    {
+      question: {
+        en: 'Can we modernize our legacy sector systems without operational disruption?',
+        ar: 'هل يمكننا تحديث أنظمتنا القديمة دون التسبب في انقطاع للعمليات اليومية؟',
+      },
+      answer: {
+        en: 'Yes. We employ Strangler Fig patterns and decoupled microservice architectures that incrementally carve out functionality from monolithic legacy stacks with zero system downtime.',
+        ar: 'نعم بكل تأكيد. نطبق أنماط التفكيك التدريجي (Strangler Fig) وبنى الخدمات المصغرة المنفصلة لتحديث المنظومات القديمة خطوة بخطوة دون أي توقف في الخدمات التشغيلية.',
+      },
+    },
+    {
+      question: {
+        en: 'How do you incorporate AI into enterprise industry workflows?',
+        ar: 'كيف تقومون بدمج الذكاء الاصطناعي في العمليات المؤسسية؟',
+      },
+      answer: {
+        en: 'We implement sovereign enterprise RAG pipelines, autonomous agentic workflow dispatchers, and domain-tuned predictive models that connect securely to your existing enterprise data lakes.',
+        ar: 'نقوم بتطوير محركات استرجاع معرفي سيادية (Enterprise RAG)، ووكلاء أذكياء لأتمتة المهام، ونماذج تنبؤية مدربة على بيانات قطاعك تتصل بأمان مع مستودعات البيانات الحالية.',
+      },
+    },
+    {
+      question: {
+        en: 'What is the typical timeline for an enterprise industry deployment?',
+        ar: 'ما هو الجدول الزمني المعتاد لتنفيذ المشاريع المؤسسية؟',
+      },
+      answer: {
+        en: 'Initial proof-of-value deliverables and architectural blueprints are completed within 3 to 4 weeks, with production pilot rollouts launching in 60 to 90 days.',
+        ar: 'يتم تسليم النماذج الأولية والمخططات المعمارية خلال 3 إلى 4 أسابيع، مع إطلاق النسخ التشغيلية الأولى في غضون 60 إلى 90 يوماً.',
+      },
+    },
+  ],
+};
+
 export * from './data/featured-client-stories.data';
 
+// ============================================================================
+// 15. How We Do It Offerings List & Hub Page Content
+// ============================================================================
+export const howWeDoItOfferingsList: HowWeDoItOfferingItem[] = [
+  {
+    slug: 'strategy-consulting',
+    title: {
+      en: 'Strategy & Consulting',
+      ar: 'الاستراتيجية والاستشارات',
+    },
+    description: {
+      en: 'Turn business ambition into actionable growth roadmaps through market intelligence, digital advisory, and practical execution frameworks.',
+      ar: 'تحويل الطموح التجاري إلى خارطة طريق نمو قابلة للتنفيذ عبر ذكاء السوق والاستشارات الرقمية وأطر التنفيذ العملية.',
+    },
+    tag: {
+      en: 'Growth & Advisory',
+      ar: 'النمو والاستشارات',
+    },
+    icon: '/icons/solutions/mkt-brand-strategy.svg',
+    diagramType: 'prism-refraction-beam',
+    order: 1,
+    href: '/how-we-do-it/strategy-consulting',
+  },
+  {
+    slug: 'digital-transformation-framework',
+    title: {
+      en: 'Digital Transformation Framework',
+      ar: 'إطار التحول الرقمي',
+    },
+    description: {
+      en: 'Accelerate business transformation at pace with our SPEED framework unifying Strategy, Product, Experience, Engineering, and Data & AI.',
+      ar: 'تسريع التحول الرقمي المؤسسي بوتيرة استثنائية عبر إطار SPEED الجامع للاستراتيجية والمنتج والتجربة والهندسة والبيانات والذكاء الاصطناعي.',
+    },
+    tag: {
+      en: 'SPEED Framework',
+      ar: 'إطار SPEED',
+    },
+    icon: '/icons/solutions/de-cloud-architecture.svg',
+    diagramType: 'quantum-core-cube',
+    order: 2,
+    href: '/how-we-do-it/digital-transformation-framework',
+  },
+  {
+    slug: 'product-management',
+    title: {
+      en: 'Product Management',
+      ar: 'إدارة المنتجات',
+    },
+    description: {
+      en: 'Product thinking that drives organizational transformation through continuous cycles of identifying, creating, and delivering value.',
+      ar: 'التفكير المتمحور حول المنتج الذي يقود التحول المؤسسي عبر دورات مستمرة لتحديد وخلق وتسليم القيمة بأعلى درجات المرونة.',
+    },
+    tag: {
+      en: 'Living Products',
+      ar: 'المنتجات الحية',
+    },
+    icon: '/icons/solutions/app-ios-android.svg',
+    diagramType: 'ux-prototype-interaction',
+    order: 3,
+    href: '/how-we-do-it/product-management',
+  },
+  {
+    slug: 'engineering-technology',
+    title: {
+      en: 'Engineering & Technology',
+      ar: 'الهندسة والتكنولوجيا',
+    },
+    description: {
+      en: 'Lead the way with agile engineering, microservices architectures, cloud-native scalability, and rapid software delivery.',
+      ar: 'ريادة المشهد عبر الهندسة الرشيقة وبنى الخدمات المصغرة والأنظمة السحابية القابلة للتوسع وتسريع دورات تطوير البرمجيات.',
+    },
+    tag: {
+      en: 'Cloud & Microservices',
+      ar: 'السحابة والخدمات المصغرة',
+    },
+    icon: '/icons/solutions/de-devops-ci-cd.svg',
+    diagramType: 'de-microservices-mesh',
+    order: 4,
+    href: '/how-we-do-it/engineering-technology',
+  },
+  {
+    slug: 'experience-transformation',
+    title: {
+      en: 'Experience Transformation',
+      ar: 'تحول تجربة المستخدم',
+    },
+    description: {
+      en: 'Elevate expectations through future-ready human-centered design, enterprise design systems, and seamless omnichannel customer journeys.',
+      ar: 'الارتقاء بالتطلعات عبر تصميم مستقبلي متمحور حول الإنسان، وأنظمة تصميم موحدة، ورحلات عملاء متكاملة عبر كافة القنوات الرقمية والواقعية.',
+    },
+    tag: {
+      en: 'Human-Centered Design',
+      ar: 'التصميم المتمحور حول الإنسان',
+    },
+    icon: '/icons/solutions/ux-design-systems.svg',
+    diagramType: 'ux-design-token-matrix',
+    order: 5,
+    href: '/how-we-do-it/experience-transformation',
+  },
+];
 
-
+export const howWeDoItPageContent: HowWeDoItPageContent = {
+  page: 'how-we-do-it',
+  heroBadge: {
+    en: 'Our Delivery Methodology',
+    ar: 'منهجية العمل والتنفيذ',
+  },
+  heroTitle: {
+    en: 'How We Transform & Deliver Differently',
+    ar: 'كيف نُحدث التحول وننفذ بشكل مختلف',
+  },
+  heroSubtitle: {
+    en: 'Our multidisciplinary engineering and product teams cut delivery cycles from months to days with high-velocity execution, living products, and proven transformation frameworks.',
+    ar: 'فرقنا الهندسية والاستراتيجية متعددة التخصصات تختصر دورات التنفيذ من أشهر إلى أيام عبر أطر عمل مجربة وأعلى معايير السرعة والموثوقية والمنتجات المتطورة باستمرار.',
+  },
+  heroCtaPrimary: {
+    en: 'Explore Capabilities',
+    ar: 'استكشف منهجياتنا',
+  },
+  heroCtaSecondary: {
+    en: 'Schedule Strategy Session',
+    ar: 'احجز جلسة استراتيجية',
+  },
+  heroImage: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1400&q=85',
+  offeringsTitle: {
+    en: 'The 5 Core Methodology Pillars',
+    ar: 'الركائز الخمس لمنهجيتنا في التنفيذ',
+  },
+  offeringsSubtitle: {
+    en: 'Deep-dive into each specialized operational domain powering our enterprise transformation engagements.',
+    ar: 'تعرف بعمق على كل مجال تشغيلي متخصص يقود نجاح مشاريع التحول الرقمي المؤسسية التي ننفذها.',
+  },
+  offeringsList: howWeDoItOfferingsList,
+  frameworkTitle: {
+    en: 'The SPEED Transformation Engine',
+    ar: 'محرك التحول الرقمي SPEED',
+  },
+  frameworkSubtitle: {
+    en: 'True transformation demands that all core capabilities work seamlessly together, reinforcing and amplifying one another to unlock lasting impact.',
+    ar: 'يتطلب التحول الحقيقي عمل جميع القدرات الأساسية بتناغم وتكامل تام لتعزيز بعضها البعض وإطلاق قيمة مستدامة لعملائنا.',
+  },
+  frameworkPillars: [
+    {
+      letter: 'S',
+      name: { en: 'Strategy', ar: 'الاستراتيجية' },
+      description: {
+        en: 'Define and validate sources of value with clear, scalable plans for sustainable market growth.',
+        ar: 'تحديد مصادر القيمة والتحقق منها بخطط نمو واضحة وقابلة للتوسع في السوق.',
+      },
+    },
+    {
+      letter: 'P',
+      name: { en: 'Product', ar: 'المنتج' },
+      description: {
+        en: 'Build evolving, living products that continuously deliver value through agile, outcome-focused models.',
+        ar: 'بناء منتجات حية ومتطورة تقدم قيمة مستمرة عبر نماذج عمل رشيقة وموجهة بالنتائج.',
+      },
+    },
+    {
+      letter: 'E',
+      name: { en: 'Experience', ar: 'التجربة' },
+      description: {
+        en: 'Craft human-centric journeys connecting digital and physical touchpoints, powered by emerging tech.',
+        ar: 'تصميم رحلات متمحورة حول الإنسان تربط نقاط التماس الرقمية والمادية بالتقنيات الحديثة.',
+      },
+    },
+    {
+      letter: 'E',
+      name: { en: 'Engineering', ar: 'الهندسة' },
+      description: {
+        en: 'Transform technology from a cost center into a true enabler of speed, quality, and architectural agility.',
+        ar: 'تحويل التكنولوجيا من مركز تكلفة إلى محرك حقيقي للسرعة والجودة والمرونة المعمارية.',
+      },
+    },
+    {
+      letter: 'D',
+      name: { en: 'Data & AI', ar: 'البيانات والذكاء الاصطناعي' },
+      description: {
+        en: 'Leverage data responsibly to fuel predictive insights, automation, and real-time business personalization.',
+        ar: 'توظيف البيانات بمسؤولية لدعم الرؤى التنبؤية والأتمتة الذكية والتخصيص اللحظي.',
+      },
+    },
+  ],
+  deliveryTitle: {
+    en: 'High-Velocity Agile Delivery',
+    ar: 'تنفيذ رشيق فائق السرعة والموثوقية',
+  },
+  deliverySubtitle: {
+    en: 'Autonomous cross-functional pods equipped with continuous delivery toolchains, eliminating organizational friction and accelerating speed to market.',
+    ar: 'فرق عمل متكاملة ومستقلة ومجهزة بأحدث أدوات التكامل والتسليم المستمر، لإلغاء أي تعقيدات روتينية وتسريع الوصول إلى السوق.',
+  },
+  deliveryImage: 'https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&fit=crop&w=1200&q=85',
+  deliveryPillars: [
+    {
+      number: '01',
+      title: {
+        en: 'Autonomous Pods',
+        ar: 'فرق عمل مستقلة ومتكاملة',
+      },
+      description: {
+        en: 'Dedicated cross-functional squads containing strategy leads, UI/UX designers, and full-stack cloud engineers acting as an extension of your team.',
+        ar: 'فرق عمل متخصصة تضم قادة استراتيجية ومصممي تجارب ومطوري سحابة يعملون كامتداد مباشر لفريقك المؤسسي.',
+      },
+    },
+    {
+      number: '02',
+      title: {
+        en: 'Outcome-Driven Roadmaps',
+        ar: 'خرائط طريق موجهة بالنتائج',
+      },
+      description: {
+        en: 'We prioritize initiatives based on validated ROI and business impact rather than arbitrary feature checklists.',
+        ar: 'نرتب المبادرات بناءً على العائد الاستثماري المحقق والأثر التجاري الملموس بدلاً من قوائم المزايا الشكلية.',
+      },
+    },
+    {
+      number: '03',
+      title: {
+        en: 'Continuous Deployment Pipelines',
+        ar: 'مسارات نشر وتكامل مستمرة',
+      },
+      description: {
+        en: 'Automated CI/CD pipelines, automated testing suites, and containerized cloud environments guaranteeing zero-downtime releases.',
+        ar: 'مسارات أتمتة CI/CD واختبارات برمجية آلية وحاويات سحابية تضمن إطلاق التحديثات دون أي انقطاع في الخدمة.',
+      },
+    },
+    {
+      number: '04',
+      title: {
+        en: 'Continuous Value Optimization',
+        ar: 'تحسين وتطوير مستمر للقيمة',
+      },
+      description: {
+        en: 'Real-time telemetry, user behavioral analytics, and AI feedback loops ensuring products constantly evolve and adapt to shifting market conditions.',
+        ar: 'تحليلات سلوكية فورية وملاحظات ذكية تضمن استمرار تطور المنتجات وتكيفها السريع مع تغيرات السوق.',
+      },
+    },
+  ],
+  quoteText: {
+    en: 'Persici transformed our development methodology from the ground up. Their cross-functional pod delivered our core digital platform in 6 weeks instead of our projected 9 months, with flawless architectural stability.',
+    ar: 'أحدثت بيرسيكي تحولاً جذرياً في منهجية التطوير لدينا. نجح فريقهم المتكامل في إطلاق منصتنا الرقمية الأساسية في 6 أسابيع فقط بدلاً من 9 أشهر كانت متوقعة، وبأعلى معايير الاستقرار المعماري.',
+  },
+  quoteAuthor: 'Tariq Al-Mansoor',
+  quoteRole: {
+    en: 'Chief Technology & Digital Officer, Sovereign Retail Group',
+    ar: 'الرئيس التنفيذي للتكنولوجيا والتحول الرقمي، مجموعة التجزئة السيادية',
+  },
+  faqsTitle: {
+    en: 'Frequently Asked Questions',
+    ar: 'الأسئلة الأكثر شيوعاً',
+  },
+  faqsSubtitle: {
+    en: 'Clear answers on how we collaborate, structure delivery squads, and guarantee enterprise agility.',
+    ar: 'إجابات واضحة حول آليات التعاون وتشكيل فرق التنفيذ وضمان أعلى معايير المرونة والسرعة المؤسسية.',
+  },
+  faqs: [
+    {
+      question: {
+        en: 'How do you structure your engagement models with clients?',
+        ar: 'كيف تحددون نموذج التعاون والمشاركة مع العملاء؟',
+      },
+      answer: {
+        en: 'We offer flexible engagement models tailored to enterprise maturity: from embedded multidisciplinary pods that operate directly inside your business, to end-to-end outcome-based project delivery, and ongoing strategic advisory partnerships.',
+        ar: 'نقدم نماذج مشاركة مرنة تناسب نضج المؤسسة: من فرق العمل المدمجة متعددة التخصصات التي تعمل داخل مؤسستك، إلى التسليم المتكامل القائم على تحقيق النتائج، وشراكات الاستشارات الاستراتيجية المستمرة.',
+      },
+    },
+    {
+      question: {
+        en: 'How does Persici compress development time from months to days?',
+        ar: 'كيف تختصر بيرسيكي فترات التطوير من أشهر إلى أيام؟',
+      },
+      answer: {
+        en: 'By leveraging pre-built architectural building blocks, cloud-native API patterns, automated DevOps CI/CD pipelines, and dedicated cross-functional squads working in rapid agile sprints with daily validation.',
+        ar: 'من خلال الاستفادة من المكونات المعمارية الجاهزة والموثوقة، وبنى واجهات البرمجة السحابية، ومسارات الأتمتة الكاملة، والفرق المتكاملة التي تعمل في دورات تطوير سريعة باختبارات يومية مستمرة.',
+      },
+    },
+    {
+      question: {
+        en: 'Can your frameworks integrate with our existing enterprise IT landscape?',
+        ar: 'هل يمكن لأطر عملكم التكامل مع بنيتنا التحتية وأنظمتنا التقنية القائمة؟',
+      },
+      answer: {
+        en: 'Yes. We specialize in non-invasive strangler patterns and modular microservices architectures that connect seamlessly with legacy SAP, Salesforce, Oracle, and proprietary backends without requiring operational shutdowns.',
+        ar: 'نعم بالتأكيد. نحن متخصصون في أنماط التفكيك التدريجي غير المعطلة وبنى الخدمات المصغرة التي تتصل بسلاسة مع أنظمة SAP وSalesforce وOracle والأنظمة الخاصة دون الحاجة إلى أي إيقاف تشغيلي.',
+      },
+    },
+    {
+      question: {
+        en: 'How do you ensure knowledge transfer to our in-house teams?',
+        ar: 'كيف تضمنون نقل المعرفة والخبرات إلى كوادرنا الداخلية؟',
+      },
+      answer: {
+        en: 'Co-creation is at the heart of our methodology. We pair our senior architects and engineers directly with your internal staff, run comprehensive workshops, deliver extensive documentation, and transition operations smoothly at launch.',
+        ar: 'الابتكار المشترك هو جوهر منهجيتنا. يقوم خبراؤنا ومهندسونا بالعمل جنباً إلى جنب مع كوادركم الداخلية، وتقديم ورش عمل تدريبية وتوثيق معماري شامل لضمان إدارة المنظومة باستقلالية تامة.',
+      },
+    },
+    {
+      question: {
+        en: 'How do you measure success and return on investment during an engagement?',
+        ar: 'كيف تقيسون النجاح والعائد الاستثماري أثناء تنفيذ المشاريع؟',
+      },
+      answer: {
+        en: 'Before writing any code, we establish clear North Star metrics and measurable KPIs: such as time-to-market speed, conversion rates, infrastructure cost reductions, customer lifetime value, and operational throughput.',
+        ar: 'قبل كتابة أي كود برمجي، نحدد مؤشرات الأداء الرئيسية ومقياس النجم الشمالي (North Star): مثل سرعة الوصول للسوق، ونسب التحويل، وخفض تكاليف البنية التحتية، وقيمة العميل مدى الحياة، والكفاءة التشغيلية.',
+      },
+    },
+  ],
+};

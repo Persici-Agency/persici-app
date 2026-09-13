@@ -513,5 +513,12 @@ html[lang="ar"] .font-secondary {
   will-change: transform, opacity;
 }
 
+/* Industry sub-navbar sticky coordination: hide main fixed header */
+html.industry-subnav-sticky header.fixed {
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
 
 

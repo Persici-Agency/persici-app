@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { FeaturedClientStories, InsightsSection, FaqSection, ClientReviewSection } from '@shared';
 import type { Dictionary } from '@dictionaries';
 import { aiIntegrationData } from '../data/ai-integration.data';
 import { AiOfferingsGrid } from './ai-offerings-grid';
@@ -9,11 +10,10 @@ import { AiTechStackSection } from './ai-tech-stack-section';
 import { SolutionsHeroSection } from '../../../_solutions/components/solutions-hero-section';
 import { SolutionsWhyItMatters } from '../../../_solutions/components/solutions-why-it-matters';
 import { SolutionsBenefitsStrip } from '../../../_solutions/components/solutions-benefits-strip';
-import { StackedFeaturedClientStories } from '../../../_solutions/components/stacked-featured-client-stories';
+
 import { SolutionsDeliveryEngine } from '../../../_solutions/components/solutions-delivery-engine';
-import { SolutionsInsightsSection } from '../../../_solutions/components/solutions-insights-section';
-import { SolutionsClientReview } from '../../../_solutions/components/solutions-client-review';
-import { SolutionsFaqSection } from '../../../_solutions/components/solutions-faq-section';
+
+
 import { HomeContactSection } from '../../../../_home/components/home-contact-section';
 
 interface AiIntegrationViewProps {
@@ -100,7 +100,7 @@ export function AiIntegrationView({ lang, dict }: AiIntegrationViewProps) {
       />
 
       {/* 7. Featured Client Stories (Stacked Sticky Cards + Scroll Scale-Out) */}
-      <StackedFeaturedClientStories
+      <FeaturedClientStories
         stories={data.clientStories}
         sectionBadge={isRtl ? 'قصص النجاح المميزة' : 'Featured Client Stories'}
         sectionTitle={isRtl ? 'أثر تشغيلي استثنائي ونماذج ذكاء اصطناعي سيادية' : 'Proven Enterprise Impact & Sovereign AI Scalability'}
@@ -118,7 +118,7 @@ export function AiIntegrationView({ lang, dict }: AiIntegrationViewProps) {
       />
 
       {/* 9. Solutions Insights (Dynamic 2-Card ContentCarousel) */}
-      <SolutionsInsightsSection
+      <InsightsSection
         items={data.insights}
         title={isRtl ? 'رؤى وأفكار في الذكاء الاصطناعي المؤسسي' : 'Insights & Enterprise AI Architecture'}
         subtitle={isRtl ? 'أحدث الأبحاث والدراسات الميدانية حول استرجاع المعرفة الهجين، وهندسة الوكلاء المستقلين، وحوكمة النماذج التوليدية.' : 'Cutting-edge engineering playbooks on sovereign RAG retrieval, agentic workflows, and LLM governance.'}
@@ -126,7 +126,7 @@ export function AiIntegrationView({ lang, dict }: AiIntegrationViewProps) {
       />
 
       {/* 10. Executive Client Review */}
-      <SolutionsClientReview
+      <ClientReviewSection
         quoteText={data.clientReview.quote}
         quoteAuthor={data.clientReview.author}
         quoteRole={data.clientReview.role}
@@ -135,7 +135,7 @@ export function AiIntegrationView({ lang, dict }: AiIntegrationViewProps) {
       />
 
       {/* 11. Enterprise FAQs Accordion */}
-      <SolutionsFaqSection
+      <FaqSection
         faqs={data.faqs}
         title={faqsTitle}
         subtitle={faqsSubtitle}

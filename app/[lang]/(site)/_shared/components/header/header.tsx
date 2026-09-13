@@ -8,7 +8,7 @@ import { Logo } from '@shared/components/logo';
 import type { HeaderProps, NavLink } from '@shared/types';
 import { HomeButton, sectionContainer } from '@shared';
 import { siteNavLinks } from '@shared/data';
-import { NavDropdownCard, solutionIconMap } from './nav-dropdown-card';
+import { NavDropdownCard, solutionIconMap, iconMap } from './nav-dropdown-card';
 
 /**
  * Checks whether a single DOM element represents a visually dark background.
@@ -114,6 +114,17 @@ function isPointDark(x: number, y: number, headerEl: HTMLElement | null): boolea
     return true;
   }) as HTMLElement[];
 
+  // 1. Explicit section-level luminance declaration takes precedence
+  for (const el of candidateElements) {
+    const section = el.closest?.('[data-header-luminance]') as HTMLElement | null;
+    if (section) {
+      const lum = section.getAttribute('data-header-luminance');
+      if (lum === 'light') return false;
+      if (lum === 'dark') return true;
+    }
+  }
+
+  // 2. Fallback to computed element styles and background inspections
   for (const el of candidateElements) {
     const result = getElementLuminance(el);
     if (result.solidFound) {
@@ -133,6 +144,7 @@ export function Header({ lang, dict }: HeaderProps) {
   const [isLogoDark, setIsLogoDark] = useState(false);
   const [isNavDark, setIsNavDark] = useState(false);
   const [isCtaDark, setIsCtaDark] = useState(false);
+  const [isHeaderHidden, setIsHeaderHidden] = useState(false);
 
   const pathname = usePathname();
   const [prevPathname, setPrevPathname] = useState(pathname);
@@ -140,7 +152,23 @@ export function Header({ lang, dict }: HeaderProps) {
     setPrevPathname(pathname);
     setOpenDropdownKey(null);
     setMobileMenuOpen(false);
+    setIsHeaderHidden(false);
   }
+
+  // Listen for custom hide event from page-specific sub-navbars
+  useEffect(() => {
+    function handleToggleMainHeader(e: Event) {
+      const customEvent = e as CustomEvent<{ hide: boolean }>;
+      if (customEvent.detail !== undefined) {
+        setIsHeaderHidden(Boolean(customEvent.detail.hide));
+      }
+    }
+
+    window.addEventListener('persici:hide-main-header', handleToggleMainHeader);
+    return () => {
+      window.removeEventListener('persici:hide-main-header', handleToggleMainHeader);
+    };
+  }, []);
 
   const isRtl = lang === 'ar';
   
@@ -249,7 +277,13 @@ export function Header({ lang, dict }: HeaderProps) {
   };
 
   return (
-    <header ref={headerRef} className="fixed top-0 z-50 w-full transition-all duration-300" suppressHydrationWarning>
+    <header
+      ref={headerRef}
+      className={`fixed top-0 z-50 w-full transition-all duration-300 ${
+        isHeaderHidden ? '-translate-y-full opacity-0 pointer-events-none' : 'translate-y-0 opacity-100'
+      }`}
+      suppressHydrationWarning
+    >
       <div
         className={`${sectionContainer} max-w-9xl flex h-25 items-center justify-between relative`}
         suppressHydrationWarning
@@ -314,7 +348,7 @@ export function Header({ lang, dict }: HeaderProps) {
             return (
               <Link
                 key={link.key}
-                href={link.href.startsWith('/') ? `/${lang}${link.href}` : `/${lang}/${link.href}`}
+                href={link.href}
                 data-nav-item="true"
                 className={`group relative inline-flex flex-col items-center px-3.5 py-1.5 text-sm font-medium transition-colors cursor-pointer select-none outline-none ${
                   isNavDark
@@ -437,6 +471,7 @@ export function Header({ lang, dict }: HeaderProps) {
                           const subLabel = dict.nav[sub.key as keyof typeof dict.nav] || sub.key;
                           const subHref = `/${lang}${sub.href}`;
                           const solutionIcon = solutionIconMap[sub.key];
+                          const SubItemIcon = iconMap[sub.key];
                           return (
                             <Link
                               key={sub.key}
@@ -445,7 +480,7 @@ export function Header({ lang, dict }: HeaderProps) {
                               className="flex items-center justify-between rounded-md px-3 py-1.5 text-xs font-medium text-foreground/75 hover:bg-black/5 hover:text-black"
                             >
                               <span className="flex items-center gap-2">
-                                {solutionIcon && (
+                                {solutionIcon ? (
                                   <Image
                                     src={solutionIcon}
                                     alt=""
@@ -455,7 +490,9 @@ export function Header({ lang, dict }: HeaderProps) {
                                     style={{ filter: 'brightness(0)' }}
                                     aria-hidden="true"
                                   />
-                                )}
+                                ) : SubItemIcon ? (
+                                  <SubItemIcon className="h-3.5 w-3.5 shrink-0 text-foreground/75" />
+                                ) : null}
                                 <span>{subLabel}</span>
                               </span>
                               <span className="text-foreground/40">{isRtl ? '←' : '→'}</span>

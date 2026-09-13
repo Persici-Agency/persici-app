@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { FeaturedClientStories, InsightsSection, FaqSection, ClientReviewSection } from '@shared';
 import type { Dictionary } from '@dictionaries';
 import { supplyChainData } from '../data/supply-chain.data';
 
@@ -10,11 +11,10 @@ import { SolutionsWhyItMatters } from '../../../_solutions/components/solutions-
 import { SolutionsBenefitsStrip } from '../../../_solutions/components/solutions-benefits-strip';
 import { SupplyChainVerticalsSection } from './supply-chain-verticals-section';
 import { SupplyChainTechStackSection } from './supply-chain-tech-stack-section';
-import { StackedFeaturedClientStories } from '../../../_solutions/components/stacked-featured-client-stories';
+
 import { SolutionsDeliveryEngine } from '../../../_solutions/components/solutions-delivery-engine';
-import { SolutionsInsightsSection } from '../../../_solutions/components/solutions-insights-section';
-import { SolutionsClientReview } from '../../../_solutions/components/solutions-client-review';
-import { SolutionsFaqSection } from '../../../_solutions/components/solutions-faq-section';
+
+
 import { HomeContactSection } from '../../../../_home/components/home-contact-section';
 
 interface SupplyChainViewProps {
@@ -28,17 +28,6 @@ export function SupplyChainView({
 }: SupplyChainViewProps) {
   const isRtl = lang === 'ar';
   const data = supplyChainData;
-
-  // Localized strings
-  const heroContent = {
-    heroBadge: data.hero.tag,
-    heroTitle: data.hero.title,
-    heroSubtitle: data.hero.subtitle,
-    heroImage: data.hero.image,
-    heroCtaText: data.hero.ctaText,
-    heroCtaHref: data.hero.ctaHref,
-    heroHighlights: data.hero.highlights,
-  };
 
   const offeringsTitle = data.offeringsTitle[lang as 'en' | 'ar'] || data.offeringsTitle.en;
   const offeringsSubtitle = data.offeringsSubtitle[lang as 'en' | 'ar'] || data.offeringsSubtitle.en;
@@ -62,7 +51,16 @@ export function SupplyChainView({
   return (
     <div className="flex flex-col min-h-screen">
       {/* 1. Hero Section */}
-      <SolutionsHeroSection content={heroContent as any} lang={lang} />
+      <SolutionsHeroSection
+        title={data.hero.title}
+        subtitle={data.hero.subtitle}
+        tag={data.hero.tag}
+        secondaryTag={data.hero.secondaryTag}
+        image={data.hero.image}
+        ctaText={data.hero.ctaText}
+        ctaHref={data.hero.ctaHref}
+        lang={lang}
+      />
 
       {/* 2. Core Capabilities: 6 Cards with No Learn More Button */}
       <SupplyChainOfferingsGrid
@@ -105,7 +103,7 @@ export function SupplyChainView({
       />
 
       {/* 7. Featured Client Stories: Stacked Sticky Cards */}
-      <StackedFeaturedClientStories
+      <FeaturedClientStories
         stories={data.clientStories}
         sectionBadge={isRtl ? 'قصص النجاح اللوجستية المميزة' : 'Featured Supply Chain Stories'}
         sectionTitle={isRtl ? 'تحول لوجستي رائد وشبكات إمداد فائقة الصمود' : 'Transformative Supply Chain & High-Velocity Logistics'}
@@ -123,7 +121,7 @@ export function SupplyChainView({
       />
 
       {/* 9. Solutions Insights: 2-Card Dynamic Carousel */}
-      <SolutionsInsightsSection
+      <InsightsSection
         items={data.insights}
         title={isRtl ? 'رؤى واستراتيجيات سلاسل الإمداد' : 'Insights & Logistics Architecture'}
         subtitle={isRtl ? 'أحدث الأبحاث العملية لأبراج المراقبة المستقلة، والمتاجر المظلمة، والتنبؤ بالطلب بالذكاء الاصطناعي.' : 'Actionable playbooks on autonomous control towers, dark stores, and AI demand sensing across the Middle East.'}
@@ -131,7 +129,7 @@ export function SupplyChainView({
       />
 
       {/* 10. Executive Client Review */}
-      <SolutionsClientReview
+      <ClientReviewSection
         quoteText={data.clientReview.quote}
         quoteAuthor={data.clientReview.author}
         quoteRole={data.clientReview.role}
@@ -140,7 +138,7 @@ export function SupplyChainView({
       />
 
       {/* 11. Solutions FAQs */}
-      <SolutionsFaqSection
+      <FaqSection
         faqs={data.faqs}
         title={faqsTitle}
         subtitle={faqsSubtitle}

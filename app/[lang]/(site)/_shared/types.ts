@@ -662,6 +662,20 @@ export interface SolutionBenefitItem {
 export interface SolutionExecutionPillar {
   title: LocalizedString;
   description: LocalizedString;
+  number?: string;
+}
+
+export interface TechStackItem {
+  name: string;
+  badge?: string;
+  category?: string;
+}
+
+export interface TechInfrastructurePod {
+  title: LocalizedString;
+  badge?: LocalizedString;
+  description: LocalizedString;
+  technologies: TechStackItem[];
 }
 
 export interface SolutionFaqItem {
@@ -778,3 +792,105 @@ export interface SolutionDetailContent extends BaseMongoDocument {
   faqs: SolutionFaqItem[];
 }
 
+export interface IndustryOfferingItem {
+  slug: string;
+  title: LocalizedString;
+  description: LocalizedString;
+  diagramType: SolutionDiagramType;
+  tag: LocalizedString;
+  icon?: string;
+  order: number;
+  href: string;
+}
+
+export interface IndustryFutureTrendItem {
+  title: LocalizedString;
+  description: LocalizedString;
+  badge: LocalizedString;
+  image: string;
+  href?: string;
+}
+
+export interface IndustryAgileFoundationPillar {
+  number: string;
+  title: LocalizedString;
+  diagramTitle?: LocalizedString;
+  description: LocalizedString;
+}
+
+export interface IndustryAgileFoundation {
+  title: LocalizedString;
+  subtitle: LocalizedString;
+  diagramBadge: LocalizedString;
+  pillars: IndustryAgileFoundationPillar[];
+}
+
+export interface IndustriesPageContent extends BaseMongoDocument {
+  page: 'industries';
+  heroBadge: LocalizedString;
+  heroTitle: LocalizedString;
+  heroSubtitle: LocalizedString;
+  heroCtaPrimary: LocalizedString;
+  heroCtaSecondary: LocalizedString;
+  heroImage: string;
+  offeringsTitle: LocalizedString;
+  offeringsSubtitle: LocalizedString;
+  offeringsList: IndustryOfferingItem[];
+  whyItMattersTitle: LocalizedString;
+  whyItMattersText: LocalizedString;
+  whyItMattersImage: string;
+  benefitsTitle: LocalizedString;
+  benefitsImage: string;
+  benefits: SolutionBenefitItem[];
+  deliveryTitle: LocalizedString;
+  deliverySubtitle: LocalizedString;
+  deliveryImage: string;
+  deliveryPillars: SolutionExecutionPillar[];
+  quoteText: LocalizedString;
+  quoteAuthor: string;
+  quoteRole: LocalizedString;
+  faqsTitle: LocalizedString;
+  faqsSubtitle: LocalizedString;
+  faqs: SolutionFaqItem[];
+}
+export interface HowWeDoItOfferingItem {
+  slug: string;
+  title: LocalizedString;
+  description: LocalizedString;
+  tag: LocalizedString;
+  icon?: string;
+  diagramType?: SolutionDiagramType;
+  order: number;
+  href: string;
+  accentColor?: string;
+}
+
+export interface HowWeDoItPageContent extends BaseMongoDocument {
+  page: 'how-we-do-it';
+  heroBadge: LocalizedString;
+  heroTitle: LocalizedString;
+  heroSubtitle: LocalizedString;
+  heroCtaPrimary: LocalizedString;
+  heroCtaSecondary: LocalizedString;
+  heroImage: string;
+  offeringsTitle: LocalizedString;
+  offeringsSubtitle: LocalizedString;
+  offeringsList: HowWeDoItOfferingItem[];
+  frameworkTitle: LocalizedString;
+  frameworkSubtitle: LocalizedString;
+  frameworkPillars: {
+    letter: string;
+    name: LocalizedString;
+    description: LocalizedString;
+  }[];
+  deliveryTitle: LocalizedString;
+  deliverySubtitle: LocalizedString;
+  deliveryImage: string;
+  deliveryPillars: SolutionExecutionPillar[];
+  quoteText: LocalizedString;
+  quoteAuthor: string;
+  quoteRole: LocalizedString;
+  faqsTitle: LocalizedString;
+  faqsSubtitle: LocalizedString;
+  faqs: SolutionFaqItem[];
+}

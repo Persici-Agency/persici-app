@@ -2,11 +2,7 @@
 
 import React from 'react';
 
-export interface TechStackItem {
-  name: string;
-  badge?: string;
-  category?: string;
-}
+import type { TechStackItem } from '@shared/types';
 
 export interface TechInfrastructureCardProps {
   badge: string;
