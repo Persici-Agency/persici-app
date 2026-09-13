@@ -114,6 +114,17 @@ function isPointDark(x: number, y: number, headerEl: HTMLElement | null): boolea
     return true;
   }) as HTMLElement[];
 
+  // 1. Explicit section-level luminance declaration takes precedence
+  for (const el of candidateElements) {
+    const section = el.closest?.('[data-header-luminance]') as HTMLElement | null;
+    if (section) {
+      const lum = section.getAttribute('data-header-luminance');
+      if (lum === 'light') return false;
+      if (lum === 'dark') return true;
+    }
+  }
+
+  // 2. Fallback to computed element styles and background inspections
   for (const el of candidateElements) {
     const result = getElementLuminance(el);
     if (result.solidFound) {
@@ -337,7 +348,7 @@ export function Header({ lang, dict }: HeaderProps) {
             return (
               <Link
                 key={link.key}
-                href={link.href.startsWith('/') ? `/${lang}${link.href}` : `/${lang}/${link.href}`}
+                href={link.href}
                 data-nav-item="true"
                 className={`group relative inline-flex flex-col items-center px-3.5 py-1.5 text-sm font-medium transition-colors cursor-pointer select-none outline-none ${
                   isNavDark

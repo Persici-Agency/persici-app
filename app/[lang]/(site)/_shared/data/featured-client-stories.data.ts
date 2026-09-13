@@ -66,19 +66,19 @@ export const sharedFeaturedClientStories: Record<string, FeaturedClientStoryItem
         },
       },
     ],
-    image: 'https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=1200&q=85',
+    image: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/client-stories/softwares-and-web-apps/Lahfaa/Lahfa Full packaging concpt for Pinkish/lahfaa-perfumes-luxury-brand-identity-featured-image.webp',
     ctaText: {
       en: 'Explore Case Study',
       ar: 'استكشف قصة النجاح',
     },
-    ctaHref: '/client-stories/lahfaa-perfumes',
+    ctaHref: '/client-stories/lahfaa-perfumes-luxury-branding-bottle-design',
     tags: ['Luxury Brand Identity', 'Packaging Architecture', 'Sensory Marketing', 'GCC Retail'],
   },
 
   // 2. Meraas' The Beach (Dubai Waterfront Destination)
   'meraas-the-beach': {
     id: 'meraas-the-beach',
-    slug: 'meraas-the-beach',
+    slug: 'meraas-the-beach-defining-a-contemporary-coastal-lifestyle',
     badge: {
       en: 'Urban Destination Marketing',
       ar: 'تسويق الوجهات السياحية والحضرية',
@@ -134,12 +134,12 @@ export const sharedFeaturedClientStories: Record<string, FeaturedClientStoryItem
         },
       },
     ],
-    image: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=1200&q=85',
+    image: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/client-stories/marketing/Meraas/The Beach/the-beach-project-cover.webp',
     ctaText: {
       en: 'Explore Case Study',
       ar: 'استكشف قصة النجاح',
     },
-    ctaHref: '/client-stories/meraas-the-beach',
+    ctaHref: '/client-stories/meraas-the-beach-defining-a-contemporary-coastal-lifestyle',
     tags: ['Destination Marketing', 'Visual Storytelling', 'Experiential Events', 'Dubai Tourism'],
   },
 
