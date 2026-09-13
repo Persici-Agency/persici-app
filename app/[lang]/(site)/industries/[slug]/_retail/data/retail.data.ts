@@ -190,7 +190,7 @@ export const retailData: RetailData = {
         en: 'Realities of Retail 04',
         ar: 'واقع قطاع التجزئة 04',
       },
-      image: 'https://images.unsplash.com/photo-1556742049-0a67c5574f73?auto=format&fit=crop&w=1200&q=85',
+      image: 'https://images.unsplash.com/photo-1556742111-a301076d9d18?auto=format&fit=crop&w=1200&q=85',
     },
   ],
 
@@ -214,6 +214,10 @@ export const retailData: RetailData = {
           en: 'Real-Time Unified Inventory Core',
           ar: 'نواة موحدة للمخزون في الوقت الحقيقي',
         },
+        diagramTitle: {
+          en: 'Unified Inventory Core',
+          ar: 'نواة المخزون الموحد',
+        },
         description: {
           en: 'Aggregate live stock counts across every shelf, regional hub, and transit container to guarantee zero overselling and eliminate cancelled orders.',
           ar: 'تجميع بيانات المخزون المباشرة عبر كل رف ومستودع وشاحنة نقل لضمان عدم بيع سلع غير متوفرة وإلغاء إلغاء الطلبات نهائياً.',
@@ -225,6 +229,10 @@ export const retailData: RetailData = {
           en: 'Composable Headless Commerce',
           ar: 'تجارة معيارية بدون رأس قابلة للتوسع',
         },
+        diagramTitle: {
+          en: 'Composable Commerce Engine',
+          ar: 'محرك التجارة المعيارية',
+        },
         description: {
           en: 'Decouple frontend shopping touchpoints from backend inventory and pricing engines to launch localized storefronts and mobile apps in weeks.',
           ar: 'فصل واجهات التسوق الرقمية عن أنظمة المخزون والتسعير الخلفية، لإطلاق المتاجر والتطبيقات المحلية في غضون أسابيع.',
@@ -235,6 +243,10 @@ export const retailData: RetailData = {
         title: {
           en: 'Hyper-Personalized Loyalty Hub',
           ar: 'منظومة ولاء فائقة التخصيص والربط',
+        },
+        diagramTitle: {
+          en: 'Personalized Loyalty Hub',
+          ar: 'منظومة الولاء المخصصة',
         },
         description: {
           en: 'Recognize shoppers instantly in-store or online, delivering dynamic promotions, tiered VIP perks, and single-click rewards redemption.',

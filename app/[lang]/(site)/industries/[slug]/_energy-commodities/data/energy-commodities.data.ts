@@ -160,7 +160,7 @@ export const energyCommoditiesData: EnergyCommoditiesData = {
         en: 'Realities of Energy 02',
         ar: 'واقع قطاع الطاقة 02',
       },
-      image: 'https://images.unsplash.com/photo-1509391365360-2e959784a276?auto=format&fit=crop&w=1200&q=85',
+      image: 'https://images.unsplash.com/photo-1497440001374-f26997328c1b?auto=format&fit=crop&w=1200&q=85',
     },
     {
       title: {
@@ -214,6 +214,10 @@ export const energyCommoditiesData: EnergyCommoditiesData = {
           en: 'Unified Industrial IoT & SCADA Backbone',
           ar: 'منظومة إنترنت الأشياء الصناعي و SCADA الموحدة',
         },
+        diagramTitle: {
+          en: 'Industrial IoT & SCADA Core',
+          ar: 'منظومة IoT و SCADA الموحدة',
+        },
         description: {
           en: 'Ingest millions of sensor readings per second across substations, solar inverters, and wellheads with sub-10ms operational latency.',
           ar: 'استقبال ملايين القراءات في الثانية من محطات التحويل، والمحولات الشمسية، ورؤوس الآبار بزمن تشغيلي يقل عن 10 ميلي ثانية.',
@@ -225,6 +229,10 @@ export const energyCommoditiesData: EnergyCommoditiesData = {
           en: 'Low-Latency ETRM Trading Hub',
           ar: 'مركز تداول السلع وإدارة المخاطر فائق السرعة',
         },
+        diagramTitle: {
+          en: 'Low-Latency ETRM Trading',
+          ar: 'مركز تداول السلع والتحوط',
+        },
         description: {
           en: 'Real-time Mark-to-Market (MtM) valuations, Value-at-Risk (VaR) simulations, and automated contract settlement across energy markets.',
           ar: 'تقييمات فورية للقيمة السوقية العادلة (MtM)، ومحاكاة القيمة المعرضة للمخاطر (VaR)، وتسوية تعاقدية مؤتمتة في أسواق الطاقة.',
@@ -235,6 +243,10 @@ export const energyCommoditiesData: EnergyCommoditiesData = {
         title: {
           en: 'Auditable Scope 1-3 Carbon Ledger',
           ar: 'سجل موثق ومدقق لانبعاثات النطاقات 1 و 2 و 3',
+        },
+        diagramTitle: {
+          en: 'Scope 1-3 Carbon Ledger',
+          ar: 'سجل الانبعاثات الكربونية',
         },
         description: {
           en: 'Automated greenhouse gas accounting tied directly to physical energy flows, satisfying regional and international ESG disclosure mandates.',
@@ -702,7 +714,7 @@ export const energyCommoditiesData: EnergyCommoditiesData = {
       },
       slug: 'autonomous-smart-grid-solar-wind-management',
       href: '/insights/autonomous-smart-grid-solar-wind-management',
-      image: 'https://images.unsplash.com/photo-1509391365360-2e959784a276?auto=format&fit=crop&w=800&q=80',
+      image: 'https://images.unsplash.com/photo-1548337138-e87d889cc369?auto=format&fit=crop&w=800&q=80',
       date: '2026-02-16',
     },
     {

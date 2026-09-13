@@ -218,6 +218,10 @@ export const consumerProductsData: ConsumerProductsData = {
           en: 'Unified Consumer Data Core',
           ar: 'نواة موحدة لبيانات المستهلكين',
         },
+        diagramTitle: {
+          en: 'Unified Customer Data',
+          ar: 'بيانات العملاء الموحدة',
+        },
         description: {
           en: 'Unify transactional POS records, e-commerce clicks, and retail distribution telemetry into a single, clean customer profile for predictive modeling.',
           ar: 'توحيد سجلات نقاط البيع، وتفاعلات المتاجر الرقمية، وبيانات الموزعين في ملف موحد للعميل يدعم النمذجة التنبؤية الفورية.',
@@ -229,6 +233,10 @@ export const consumerProductsData: ConsumerProductsData = {
           en: 'Responsive Supply Chain Execution',
           ar: 'سلسلة إمداد استباقية وفورية التفاعل',
         },
+        diagramTitle: {
+          en: 'Responsive Supply Chain',
+          ar: 'سلسلة الإمداد الاستباقية',
+        },
         description: {
           en: 'Connect retail inventory with automated replenishment systems, cutting stockouts by 42% and eliminating excess warehouse deadstock.',
           ar: 'ربط مخزون منافذ التوزيع بأنظمة إعادة التوريد الآلية، مما يخفض نفاد المخزون بنسبة 42% ويلغي التكدس الراكد في المستودعات.',
@@ -239,6 +247,10 @@ export const consumerProductsData: ConsumerProductsData = {
         title: {
           en: 'Omnichannel Experience Engine',
           ar: 'محرك تجربة متكامل متعدد القنوات',
+        },
+        diagramTitle: {
+          en: 'Omnichannel Experience Engine',
+          ar: 'محرك التجربة المتكاملة',
         },
         description: {
           en: 'Deliver sub-second mobile commerce, localized pricing, and frictionless loyalty redemption across flagship stores and digital apps.',
@@ -436,7 +448,7 @@ export const consumerProductsData: ConsumerProductsData = {
       en: 'Strategic Advantages for Enterprise Consumer Brands',
       ar: 'المزايا الاستراتيجية للعلامات التجارية والمصنعين',
     },
-    image: 'https://images.unsplash.com/photo-1556742049-0a67c5574f73?auto=format&fit=crop&w=1200&q=85',
+    image: 'https://images.unsplash.com/photo-1556740758-90de374c12ad?auto=format&fit=crop&w=1200&q=85',
     benefits: [
       {
         title: { en: 'D2C Margin Expansion', ar: 'مضاعفة هوامش التجارة المباشرة' },

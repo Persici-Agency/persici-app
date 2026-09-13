@@ -214,6 +214,10 @@ export const healthData: HealthData = {
           en: 'Interoperable FHIR Data Backbone',
           ar: 'عمود فقري موحد لتبادل البيانات الصحية (FHIR)',
         },
+        diagramTitle: {
+          en: 'Interoperable FHIR Backbone',
+          ar: 'عمود بيانات FHIR الموحد',
+        },
         description: {
           en: 'Standardized FHIR R4 APIs harmonizing patient encounters, prescriptions, lab results, and diagnostic scans across public and private hospitals.',
           ar: 'واجهات FHIR R4 معيارية توحد سجلات مراجعات المرضى، والوصفات الطبية، ونتائج المختبرات، والأشعة بين المستشفيات الحكومية والخاصة.',
@@ -225,6 +229,10 @@ export const healthData: HealthData = {
           en: 'Patient-Centric Engagement Tier',
           ar: 'واجهات تفاعلية متمحورة حول المريض',
         },
+        diagramTitle: {
+          en: 'Patient Engagement Tier',
+          ar: 'واجهات رعاية المرضى',
+        },
         description: {
           en: 'Empathetic, accessible mobile apps offering seamless appointment booking, digital prescriptions, lab results, and video consultations.',
           ar: 'تطبيقات جوال ميسرة تتيح حجز المواعيد، واستعراض الوصفات الرقمية، ونتائج الفحوصات، والاستشارات المرئية مع الأطباء بسلاسة.',
@@ -235,6 +243,10 @@ export const healthData: HealthData = {
         title: {
           en: 'Sovereign Health Security & Privacy',
           ar: 'حماية وأمان صحي سيادي مشدد',
+        },
+        diagramTitle: {
+          en: 'Sovereign Health Security',
+          ar: 'الأمان الصحي السيادي',
         },
         description: {
           en: 'In-country localized health data lakes protected by AES-256 zero-knowledge encryption, ensuring compliance with regional Ministry of Health laws.',

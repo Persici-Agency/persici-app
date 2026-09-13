@@ -214,6 +214,10 @@ export const telecomMediaTechnologyData: TelecomMediaTechnologyData = {
           en: 'Decoupled BSS/OSS Microservices',
           ar: 'فصل خدمات الفوترة والعمليات (BSS/OSS)',
         },
+        diagramTitle: {
+          en: 'Decoupled BSS/OSS Core',
+          ar: 'نواة BSS/OSS المعيارية',
+        },
         description: {
           en: 'Isolate billing, product catalog, and network provisioning into resilient microservices, enabling new mobile plan launches in days rather than quarters.',
           ar: 'عزل الفوترة وكتالوج الباقات وتشغيل الشبكات في خدمات مصغرة مرنة، مما يتيح إطلاق باقات المشتركين الجديدة في أيام معدودة بدلاً من شهور.',
@@ -225,6 +229,10 @@ export const telecomMediaTechnologyData: TelecomMediaTechnologyData = {
           en: 'Real-Time Telemetry & Autonomous Care',
           ar: 'الرصد الفوري والخدمة الذاتية المؤتمتة',
         },
+        diagramTitle: {
+          en: 'Real-Time Telemetry & AI',
+          ar: 'الرصد الفوري والذكاء الاصطناعي',
+        },
         description: {
           en: 'Ingest network cell tower telemetry and subscriber device signals in real time to proactively resolve call drops and bandwidth throttling via AI.',
           ar: 'جمع بيانات أبراج الاتصال وإشارات أجهزة المشتركين في الوقت الفعلي لحل مشاكل انقطاع المكالمات وبطء السرعة استباقياً بواسطة الذكاء الاصطناعي.',
@@ -235,6 +243,10 @@ export const telecomMediaTechnologyData: TelecomMediaTechnologyData = {
         title: {
           en: 'Omnichannel Subscriber Self-Care Portal',
           ar: 'بوابة موحدة للخدمة الذاتية للمشتركين',
+        },
+        diagramTitle: {
+          en: 'Subscriber Self-Care Hub',
+          ar: 'بوابة الخدمة الذاتية',
         },
         description: {
           en: 'Unified mobile apps, eSIM provisioning, instant top-ups, and sovereign generative AI copilots that deflect up to 68% of contact center call volume.',

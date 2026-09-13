@@ -214,6 +214,10 @@ export const publicSectorData: PublicSectorData = {
           en: 'Secure Inter-Agency Data Mesh',
           ar: 'شبكة تبادل البيانات الحكومية الآمنة',
         },
+        diagramTitle: {
+          en: 'Inter-Agency Data Mesh',
+          ar: 'شبكة البيانات الحكومية',
+        },
         description: {
           en: 'Standardized REST and GraphQL data exchange nodes connecting civil registries, municipal records, and commercial licensing with complete audit logging.',
           ar: 'عقد تبادل بيانات معيارية تربط السجلات المدنية، والبلديات، والتراخيص التجارية مع توثيق أمني شامل لجميع العمليات.',
@@ -225,6 +229,10 @@ export const publicSectorData: PublicSectorData = {
           en: 'Zero-Trust Identity Verification',
           ar: 'التحقق من الهوية الرقمية بانعدام الثقة',
         },
+        diagramTitle: {
+          en: 'Zero-Trust Identity Core',
+          ar: 'الهوية الرقمية الموثوقة',
+        },
         description: {
           en: 'National digital identity federation with biometric liveness checks, role-based access control (RBAC), and sovereign single sign-on (SSO).',
           ar: 'ربط الهوية الرقمية الوطنية بالتحقق الحيوي (Biometric)، والصلاحيات المعتمدة على الأدوار، وتسجيل الدخول الموحد لجميع المنصات.',
@@ -235,6 +243,10 @@ export const publicSectorData: PublicSectorData = {
         title: {
           en: 'Accessible Universal Experience Tier',
           ar: 'واجهات رقمية شاملة وسهلة الوصول',
+        },
+        diagramTitle: {
+          en: 'Universal Experience Tier',
+          ar: 'منظومة الواجهات الشاملة',
         },
         description: {
           en: 'Bilingual Arabic-first UI engineered to WCAG 2.1 AAA accessibility guidelines, ensuring seamless engagement for all demographics and seniors.',

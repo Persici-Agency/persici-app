@@ -351,7 +351,7 @@ export const videoTestimonials: VideoTestimonialItem[] = [
     role: 'Head of Growth',
     company: 'Bella Casa Botanicals',
     quote: 'The UX audit and speed enhancements they implemented on our Shopify store resulted in an instant +34% lift in checkout completions.',
-    image: 'https://images.unsplash.com/photo-1534751516642-a171edd2521d?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=800&q=80',
     videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
     duration: '1:52',
     category: 'Storefront Optimization',
@@ -937,7 +937,7 @@ export const approachTeamAvatars: GrowthTeamMember[] = [
   {
     id: '11',
     name: 'Omar Farooq',
-    avatar: 'https://images.unsplash.com/photo-1534751516642-a171edd2521d?auto=format&fit=crop&w=150&q=80',
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80',
     alt: 'Omar Farooq - Senior Copywriter',
     role: 'Senior Copywriter',
   },

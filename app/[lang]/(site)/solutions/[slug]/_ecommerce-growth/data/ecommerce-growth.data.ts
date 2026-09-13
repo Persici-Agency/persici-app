@@ -851,7 +851,7 @@ export const ecommerceGrowthData: EcommerceGrowthData = {
         en: 'Why modern retail brands in Saudi Arabia and the UAE are abandoning heavy monolithic templates in favor of sub-second headless storefronts and modular API architectures.',
         ar: 'لماذا تتخلى كبرى العلامات التجارية في السعودية والإمارات عن القوالب التقليدية لصالح المتاجر الهجينة فائقة السرعة وواجهات برمجة التطبيقات المعيارية.',
       },
-      image: 'https://images.unsplash.com/photo-1556742049-0a67c5574f73?auto=format&fit=crop&w=800&q=80',
+      image: 'https://images.unsplash.com/photo-1563013544-824ae1b704d3?auto=format&fit=crop&w=800&q=80',
       href: '/insights/gcc-headless-commerce-shift',
       systemType: 'insight',
     },

@@ -797,15 +797,18 @@ export interface IndustryFutureTrendItem {
   href?: string;
 }
 
+export interface IndustryAgileFoundationPillar {
+  number: string;
+  title: LocalizedString;
+  diagramTitle?: LocalizedString;
+  description: LocalizedString;
+}
+
 export interface IndustryAgileFoundation {
   title: LocalizedString;
   subtitle: LocalizedString;
   diagramBadge: LocalizedString;
-  pillars: {
-    number: string;
-    title: LocalizedString;
-    description: LocalizedString;
-  }[];
+  pillars: IndustryAgileFoundationPillar[];
 }
 
 export interface IndustriesPageContent extends BaseMongoDocument {
