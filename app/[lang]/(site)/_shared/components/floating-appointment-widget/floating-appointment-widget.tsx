@@ -65,13 +65,47 @@ export function FloatingAppointmentWidget({ lang, dict }: FloatingAppointmentWid
     revenue: '$25,000 - $100,000',
   });
 
-  const handleBookingSubmit = (e: React.FormEvent) => {
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const handleBookingSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
+    setErrorMessage(null);
+
+    try {
+      const selectedDay = days[selectedDayIndex];
+      const selectedDayStr = selectedDay
+        ? `${selectedDay.dayName} ${selectedDay.dayNum} (${selectedDay.fullDate.toLocaleDateString(lang === 'ar' ? 'ar-EG' : 'en-US')})`
+        : '';
+      const selectedTimeSlot = timeSlots[selectedTimeIndex] || '';
+
+      const payload = {
+        name: form.name.trim(),
+        email: form.email.trim(),
+        website: form.website.trim(),
+        revenue: form.revenue,
+        selectedDate: selectedDayStr,
+        selectedTime: selectedTimeSlot,
+      };
+
+      const res = await fetch('/api/appointment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || 'Failed to book appointment. Please try again.');
+      }
+
       setStep('success');
-    }, 750);
+    } catch (err) {
+      console.error('[FloatingAppointmentWidget] Booking error:', err);
+      setErrorMessage(err instanceof Error ? err.message : 'An error occurred while booking your call.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleReset = () => {
@@ -303,6 +337,12 @@ export function FloatingAppointmentWidget({ lang, dict }: FloatingAppointmentWid
                     placeholder="https://brand.com"
                   />
                 </div>
+
+                {errorMessage && (
+                  <div className="rounded-xl bg-red-50 border border-red-200 p-2.5 text-[11px] text-red-700 font-medium leading-tight">
+                    {errorMessage}
+                  </div>
+                )}
 
                 <div className="pt-2">
                   <HomeButton

@@ -57,19 +57,49 @@ export function HomeContactSection({ lang, dict }: HomeContactSectionProps) {
     'Other',
   ];
 
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
   const handleCaptchaChange = (token: string | null) => {
     setIsVerifiedHuman(Boolean(token));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!isVerifiedHuman) return;
 
     setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
+    setErrorMessage(null);
+
+    try {
+      const payload = {
+        name: `${formData.firstName} ${formData.lastName}`.trim(),
+        email: formData.email.trim(),
+        company: formData.company.trim(),
+        country: formData.country.trim(),
+        jobTitle: formData.jobTitle.trim(),
+        reason: formData.reason.trim(),
+        message: formData.message.trim(),
+        subject: formData.reason ? `Contact: ${formData.reason}` : 'General Agency Inquiry',
+      };
+
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || 'Failed to submit inquiry. Please try again.');
+      }
+
       setIsSubmitted(true);
-    }, 850);
+    } catch (err) {
+      console.error('[HomeContactSection] Submit error:', err);
+      setErrorMessage(err instanceof Error ? err.message : 'An error occurred while sending your inquiry.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleReset = () => {
@@ -339,6 +369,13 @@ export function HomeContactSection({ lang, dict }: HomeContactSectionProps) {
                         />
                       </div>
                     </div>
+
+                    {/* Error Banner */}
+                    {errorMessage && (
+                      <div className="rounded-xl bg-red-50 border border-red-200 p-3 text-xs text-red-700 font-medium">
+                        {errorMessage}
+                      </div>
+                    )}
 
                     {/* Marketing Consent & HomeButton Submit Row */}
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-2">

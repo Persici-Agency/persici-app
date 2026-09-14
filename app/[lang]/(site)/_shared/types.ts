@@ -399,10 +399,29 @@ export interface ContactFormData {
   message: string;
   phone?: string;
   subject?: string;
+  company?: string;
+  country?: string;
+  jobTitle?: string;
+  reason?: string;
 }
 
 export interface ContactSubmission extends BaseMongoDocument, ContactFormData {
   status?: 'unread' | 'read' | 'replied';
+}
+
+export interface AppointmentFormData {
+  name: string;
+  email: string;
+  website?: string;
+  revenue?: string;
+  selectedDate?: string;
+  selectedTime?: string;
+  phone?: string;
+  notes?: string;
+}
+
+export interface AppointmentSubmission extends BaseMongoDocument, AppointmentFormData {
+  status?: 'pending' | 'confirmed' | 'cancelled';
 }
 
 // ============================================================================

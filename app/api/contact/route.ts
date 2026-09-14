@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { saveContactSubmission } from '@shared/services/db.service';
 import { getDb, COLLECTIONS } from '@/lib/mongodb';
+import { sendContactFormNotification } from '@/lib/email';
 import type { ContactFormData } from '@shared/types';
 
 export const runtime = 'nodejs';
@@ -72,13 +73,26 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const result = await saveContactSubmission({
+    const contactData: ContactFormData = {
       name: body.name.trim(),
       email: body.email.trim(),
       message: body.message?.trim() || '',
       phone: body.phone?.trim() || '',
       subject: body.subject?.trim() || 'General Inquiry',
-    });
+      company: body.company?.trim() || '',
+      country: body.country?.trim() || '',
+      jobTitle: body.jobTitle?.trim() || '',
+      reason: body.reason?.trim() || '',
+    };
+
+    const result = await saveContactSubmission(contactData);
+
+    // Dispatch Hostinger email notification
+    try {
+      await sendContactFormNotification(contactData);
+    } catch (emailErr) {
+      console.error('[API /api/contact POST] Email notification dispatch failed:', emailErr);
+    }
 
     return NextResponse.json(
       {

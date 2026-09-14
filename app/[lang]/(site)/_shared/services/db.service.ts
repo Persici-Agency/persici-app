@@ -38,6 +38,8 @@ import type {
   ContactSubmission,
   DiscoveryFormData,
   DiscoverySubmission,
+  AppointmentFormData,
+  AppointmentSubmission,
 } from '@shared/types';
 
 /**
@@ -366,3 +368,29 @@ export async function saveDiscoverySubmission(
     return { success: false };
   }
 }
+
+export async function saveAppointmentSubmission(
+  data: AppointmentFormData
+): Promise<{ success: boolean; id?: string }> {
+  try {
+    const db = await getDb();
+    if (!db) {
+      console.warn('[db.service] MongoDB not connected, simulated appointment submission.');
+      return { success: true, id: 'simulated-' + Date.now() };
+    }
+
+    const submission: AppointmentSubmission = {
+      ...data,
+      status: 'pending',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    const res = await db.collection(COLLECTIONS.APPOINTMENTS).insertOne(submission as unknown as Document);
+    return { success: true, id: res.insertedId.toString() };
+  } catch (err) {
+    console.error('[db.service] saveAppointmentSubmission error:', err);
+    return { success: false };
+  }
+}
+
