@@ -17,6 +17,7 @@ import {
   clientLogos,
   reviewsList,
 } from '@shared/data';
+import { aboutPageData, type AboutPageData } from '@/app/[lang]/(site)/about/_about/data/about.data';
 import type {
   HomePageContent,
   ServicesPageContent,
@@ -118,6 +119,12 @@ export async function getIndustriesPageData(): Promise<IndustriesPageContent> {
 
 export async function getHowWeDoItPageData(): Promise<HowWeDoItPageContent> {
   return getPageContent<HowWeDoItPageContent>('how-we-do-it', howWeDoItPageContent);
+}
+
+export type { AboutPageData };
+
+export async function getAboutPageData(): Promise<AboutPageData> {
+  return getPageContent<AboutPageData>('about', aboutPageData);
 }
 
 export async function getDbHowWeDoItOfferings(): Promise<HowWeDoItOfferingItem[]> {
