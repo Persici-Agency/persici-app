@@ -2,10 +2,10 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import type { ClientStoryDetail } from '../types';
+import type { InsightDetail } from '../types';
 
-export interface ClientStoryMinimalCardProps {
-  story: ClientStoryDetail;
+export interface InsightMinimalCardProps {
+  insight: InsightDetail;
   lang: string;
   className?: string;
   index?: number;
@@ -28,11 +28,7 @@ const monthsEnToAr: Record<string, string> = {
 };
 
 function formatDisplayDate(dateStr: string | undefined, isRtl: boolean): string {
-  if (!dateStr || dateStr === '2025' || dateStr === '2024') {
-    const defaultDate = dateStr === '2024' ? 'November 18, 2024' : 'August 05, 2025';
-    return isRtl ? (dateStr === '2024' ? '18 نوفمبر 2024' : '05 أغسطس 2025') : defaultDate;
-  }
-
+  if (!dateStr) return '';
   if (!isRtl) return dateStr;
 
   let localized = dateStr;
@@ -45,19 +41,18 @@ function formatDisplayDate(dateStr: string | undefined, isRtl: boolean): string 
   return localized;
 }
 
-export function ClientStoryMinimalCard({
-  story,
+export function InsightMinimalCard({
+  insight,
   lang,
   className = '',
   index = 0,
   columns = 3,
-}: ClientStoryMinimalCardProps) {
+}: InsightMinimalCardProps) {
   const isRtl = lang === 'ar';
   const cardRef = useRef<HTMLDivElement | null>(null);
   const [isVisible, setIsVisible] = useState(false);
 
-  // Calculate staggered diagonal wave delay
-  // Column sweeps from left to right (0 -> 1 -> 2), row cascades down
+  // Staggered diagonal wave cascade delay
   const colIndex = index % columns;
   const rowIndex = Math.floor((index % 6) / columns);
   const waveDelay = colIndex * 90 + rowIndex * 120;
@@ -91,12 +86,13 @@ export function ClientStoryMinimalCard({
     };
   }, []);
 
-  const title = story.title[lang as 'en' | 'ar'] || story.title.en;
+  const title = insight.title[lang as 'en' | 'ar'] || insight.title.en;
+  const categoryLabel = insight.category[lang as 'en' | 'ar'] || insight.category.en;
 
   // Gradient IDs unique to avoid collisions
-  const safeId = (story.id || story.slug || 'card').replace(/[^a-zA-Z0-9-_]/g, '-');
-  const normId = `norm-grad-${safeId}-${index}`;
-  const hovId = `hov-grad-${safeId}-${index}`;
+  const safeId = (insight.id || insight.slug || 'card').replace(/[^a-zA-Z0-9-_]/g, '-');
+  const normId = `norm-grad-insight-${safeId}-${index}`;
+  const hovId = `hov-grad-insight-${safeId}-${index}`;
 
   return (
     <div
@@ -112,7 +108,7 @@ export function ClientStoryMinimalCard({
       className="w-full h-full will-change-transform"
     >
       <Link
-        href={`/${lang}/client-stories/${story.slug}`}
+        href={`/${lang}/insights/${insight.slug}`}
         dir={isRtl ? 'rtl' : 'ltr'}
         className={`group relative flex flex-col justify-between h-full min-h-[260px] sm:min-h-[280px] p-6 sm:p-7 md:p-8 rounded-2xl overflow-hidden shadow-[0_10px_30px_-5px_rgba(0,0,0,0.07),0_4px_12px_-2px_rgba(0,0,0,0.03)] hover:shadow-[0_20px_45px_-10px_rgba(180,30,25,0.22),0_8px_20px_-4px_rgba(0,0,0,0.06)] hover:-translate-y-1.5 transition-all duration-300 ease-out select-none cursor-pointer ${className}`}
       >
@@ -187,29 +183,47 @@ export function ClientStoryMinimalCard({
             {/* Thin Horizontal Divider */}
             <div className="w-full border-t border-slate-300/80 group-hover:border-white/25 transition-colors duration-300 mb-4 sm:mb-4.5" />
 
-            {/* Bottom Row: Icon + "Client Story" on start, Full Date on end with space between */}
+            {/* Bottom Row: Icon + Category on start, Full Date on end with space between */}
             <div className="flex items-center justify-between font-mono text-xs sm:text-[13px] tracking-wide text-slate-700 group-hover:text-white transition-colors duration-300">
-              {/* Start: Person Icon + "Client Story" */}
+              {/* Start: Icon + Category ("Article" or "Research") */}
               <div className="flex items-center gap-2 font-medium">
-                <svg
-                  className="w-4 h-4 shrink-0 transition-colors duration-300"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  aria-hidden="true"
-                >
-                  <circle cx="12" cy="7" r="4" />
-                  <path d="M5.5 21v-2a4.5 4.5 0 0 1 4.5 -4.5h4a4.5 4.5 0 0 1 4.5 4.5v2" />
-                </svg>
-                <span>{isRtl ? 'قصة عميل' : 'Client Story'}</span>
+                {insight.categorySlug === 'research' ? (
+                  <svg
+                    className="w-4 h-4 shrink-0 transition-colors duration-300"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M10 2v7.31M14 2v7.31M8.5 2h7M14 9.3a6.5 6.5 0 1 1-4 0M5.52 16h12.96" />
+                  </svg>
+                ) : (
+                  <svg
+                    className="w-4 h-4 shrink-0 transition-colors duration-300"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                    <polyline points="14 2 14 8 20 8" />
+                    <line x1="16" y1="13" x2="8" y2="13" />
+                    <line x1="16" y1="17" x2="8" y2="17" />
+                    <polyline points="10 9 9 9 8 9" />
+                  </svg>
+                )}
+                <span>{categoryLabel}</span>
               </div>
 
               {/* End: Full Date */}
               <span className="font-medium tabular-nums opacity-90 group-hover:opacity-100">
-                {formatDisplayDate(story.date, isRtl)}
+                {formatDisplayDate(insight.date, isRtl)}
               </span>
             </div>
           </div>

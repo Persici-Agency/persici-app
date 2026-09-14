@@ -27,8 +27,8 @@ export function StoryMetadataStrip({ story, lang }: StoryMetadataStripProps) {
     if (!el) return;
 
     if (typeof IntersectionObserver === 'undefined') {
-      setIsVisible(true);
-      return;
+      const timer = setTimeout(() => setIsVisible(true), 0);
+      return () => clearTimeout(timer);
     }
 
     const observer = new IntersectionObserver(
