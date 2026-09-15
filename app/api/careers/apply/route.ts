@@ -146,7 +146,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('[API /api/careers/apply] Error processing application:', error);
     return NextResponse.json(
-      { error: 'Failed to process job application. Please try again or contact careers@persiciagency.com.' },
+      { error: 'Failed to process job application. Please try again or contact hr@persiciagency.com.' },
       { status: 500 }
     );
   }

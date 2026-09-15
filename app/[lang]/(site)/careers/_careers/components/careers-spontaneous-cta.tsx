@@ -38,7 +38,7 @@ export function CareersSpontaneousCta({ data, lang }: CareersSpontaneousCtaProps
 
               <div className="flex flex-wrap items-center gap-4">
                 <HomeButton
-                  href={`mailto:careers@persiciagency.com?subject=${encodeURIComponent(
+                  href={`mailto:hr@persiciagency.com?subject=${encodeURIComponent(
                     isAr ? 'طلب انضمام عام لنخبة برسيسي' : 'Spontaneous Application — Persici Talent Collective'
                   )}`}
                   title={data.ctaText[isAr ? 'ar' : 'en']}
@@ -48,7 +48,7 @@ export function CareersSpontaneousCta({ data, lang }: CareersSpontaneousCtaProps
                 />
 
                 <div className="inline-flex items-center gap-2 px-4 py-3 rounded-full bg-white/5 border border-white/10 text-xs text-white/70 font-mono">
-                  <span>careers@persiciagency.com</span>
+                  <span>hr@persiciagency.com</span>
                 </div>
               </div>
             </div>

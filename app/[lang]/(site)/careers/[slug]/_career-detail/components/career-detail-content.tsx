@@ -331,10 +331,10 @@ export function CareerDetailContent({ job, lang }: CareerDetailContentProps) {
                 {isAr ? 'تواصل مباشرة مع فريق التوظيف لدينا.' : 'Reach out directly to our talent acquisition team.'}
               </p>
               <a
-                href={`mailto:careers@persiciagency.com?subject=Inquiry:%20${encodeURIComponent(job.title.en)}`}
+                href={`mailto:hr@persiciagency.com?subject=Inquiry:%20${encodeURIComponent(job.title.en)}`}
                 className="text-xs font-semibold text-persici-crimson hover:underline"
               >
-                careers@persiciagency.com
+                hr@persiciagency.com
               </a>
             </div>
           </aside>

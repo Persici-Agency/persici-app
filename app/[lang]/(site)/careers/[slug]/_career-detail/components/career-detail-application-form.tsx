@@ -148,8 +148,8 @@ export function CareerDetailApplicationForm({ job, lang }: CareerDetailApplicati
         err instanceof Error
           ? err.message
           : isAr
-          ? 'حدث خطأ أثناء إرسال طلبك. يرجى المحاولة مرة أخرى أو مراسلتنا على careers@persiciagency.com.'
-          : 'An error occurred while submitting your application. Please try again or email careers@persiciagency.com.'
+          ? 'حدث خطأ أثناء إرسال طلبك. يرجى المحاولة مرة أخرى أو مراسلتنا على hr@persiciagency.com.'
+          : 'An error occurred while submitting your application. Please try again or email hr@persiciagency.com.'
       );
     } finally {
       setIsSubmitting(false);

@@ -48,7 +48,7 @@ export function getEmailConfig(): EmailConfig {
 
   const contactReceiver = process.env.CONTACT_RECEIVER_EMAIL || process.env.SITE_RECEIVER_EMAIL || smtpUser || 'info@persiciagency.com';
   const appointmentReceiver = process.env.APPOINTMENT_RECEIVER_EMAIL || contactReceiver;
-  const careersReceiver = process.env.CAREERS_RECEIVER_EMAIL || 'careers@persiciagency.com';
+  const careersReceiver = process.env.CAREERS_RECEIVER_EMAIL || process.env.HR_RECEIVER_EMAIL || 'hr@persiciagency.com';
 
   return {
     smtp: {

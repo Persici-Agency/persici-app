@@ -227,7 +227,7 @@ export const contactPageData: ContactPageData = {
         en: 'Interested in joining our squads? Explore our open engineering, consulting, and design roles worldwide.',
         ar: 'هل تود الانضمام إلى فرق عملنا؟ استكشف الشواغر المتاحة في الاستشارات وتصميم التجارب والهندسة الرقمية.',
       },
-      email: 'careers@persiciagency.com',
+      email: 'hr@persiciagency.com',
       sla: {
         en: 'Reviewed by recruitment squad weekly',
         ar: 'تتم مراجعة الطلبات أسبوعياً',
