@@ -1,4 +1,4 @@
-import type { Dictionary } from '@dictionaries';
+﻿import type { Dictionary } from '@dictionaries';
 import { sectionContainer, sectionPaddingY, sectionHeading, bannerStrip, HomeButton, FadeUp, SwiperWrapper } from '@shared';
 import { getHomeReviews } from '../services';
 import type { ReviewItem } from '@shared/types';
@@ -38,7 +38,7 @@ export function ReviewsSection({ lang, dict, reviews: customReviews }: ReviewsSe
         {/* Author Details */}
         <div className="flex items-start justify-between gap-2">
           <div>
-            <h4 className="font-primary text-sm sm:text-base font-bold text-foreground tracking-tight">
+            <h4 className="font-primary text-sm sm:text-base font-medium text-foreground tracking-tight">
               {rev.name}
             </h4>
             <p className="text-xs font-medium text-foreground/60 mt-0.5">
@@ -46,7 +46,7 @@ export function ReviewsSection({ lang, dict, reviews: customReviews }: ReviewsSe
             </p>
           </div>
           {rev.verified && (
-            <span className="rounded-full bg-black/5 px-2 py-0.5 text-[10px] font-medium text-foreground/60 shrink-0">
+            <span className="rounded-full bg-black/5 px-2 py-0.5 text-[9.5px] font-medium text-foreground/60 shrink-0">
               {rev.verified}
             </span>
           )}
@@ -64,13 +64,13 @@ export function ReviewsSection({ lang, dict, reviews: customReviews }: ReviewsSe
           {Array.from({ length: 5 }).map((_, i) => (
             <span
               key={i}
-              className="flex h-5 w-5 items-center justify-center rounded bg-primary text-[11px] text-white shadow-2xs transition-transform duration-200 group-hover:scale-105"
+              className="flex h-5 w-5 items-center justify-center rounded bg-primary text-[9.5px] text-white shadow-2xs transition-transform duration-200 group-hover:scale-105"
             >
               ★
             </span>
           ))}
         </div>
-        <span className="text-[11px] font-semibold text-primary">
+        <span className="text-[9.5px] font-semibold text-primary">
           5.0
         </span>
       </div>

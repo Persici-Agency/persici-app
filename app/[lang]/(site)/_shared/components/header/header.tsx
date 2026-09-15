@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
@@ -18,8 +18,85 @@ interface PersiciImageElement extends HTMLImageElement {
   _persiciLum?: number;
 }
 
+let _cachedCanvas: HTMLCanvasElement | null = null;
+let _cachedCtx: CanvasRenderingContext2D | null = null;
+
+function getColorLuminanceAndAlpha(colorStr: string): { lum: number; alpha: number } | null {
+  if (!colorStr || colorStr === 'transparent' || colorStr === 'rgba(0, 0, 0, 0)') {
+    return null;
+  }
+
+  // 1. Fast-path: OKLCH format (e.g. oklch(0.984 0.003 247.858 / 0.5) or oklch(0.984 0.003 247.858))
+  if (colorStr.startsWith('oklch')) {
+    const nums = colorStr.match(/[-+]?\d*\.?\d+(?:[eE][-+]?\d+)?/g);
+    if (nums && nums.length >= 1) {
+      const L = parseFloat(nums[0]);
+      let alpha = 1;
+      if (colorStr.includes('/')) {
+        const slashParts = colorStr.split('/');
+        const aNum = slashParts[1]?.match(/[-+]?\d*\.?\d+/);
+        if (aNum) {
+          alpha = parseFloat(aNum[0]);
+          if (slashParts[1].includes('%')) {
+            alpha /= 100;
+          }
+        }
+      }
+      return { lum: L, alpha };
+    }
+  }
+
+  // 2. Fast-path: Standard RGB / RGBA format
+  if (colorStr.startsWith('rgb')) {
+    const nums = colorStr.match(/[-+]?\d*\.?\d+/g);
+    if (nums && nums.length >= 3) {
+      const r = parseFloat(nums[0]);
+      const g = parseFloat(nums[1]);
+      const b = parseFloat(nums[2]);
+      let a = nums.length >= 4 ? parseFloat(nums[3]) : 1;
+      if (colorStr.includes('%') && nums.length >= 4 && colorStr.split(',')[3]?.includes('%')) {
+        a /= 100;
+      }
+      const lum = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
+      return { lum, alpha: a };
+    }
+  }
+
+  // 3. Universal Canvas 2D fallback (handles color-mix, lab, hex, hsl, named colors, display-p3)
+  if (typeof document !== 'undefined') {
+    try {
+      if (!_cachedCanvas) {
+        _cachedCanvas = document.createElement('canvas');
+        _cachedCanvas.width = 1;
+        _cachedCanvas.height = 1;
+        _cachedCtx = _cachedCanvas.getContext('2d', { willReadFrequently: true });
+      }
+      if (_cachedCtx) {
+        _cachedCtx.clearRect(0, 0, 1, 1);
+        _cachedCtx.fillStyle = colorStr;
+        _cachedCtx.fillRect(0, 0, 1, 1);
+        const data = _cachedCtx.getImageData(0, 0, 1, 1).data;
+        const a = data[3] / 255;
+        if (a > 0) {
+          const lum = (0.2126 * data[0] + 0.7152 * data[1] + 0.0722 * data[2]) / 255;
+          return { lum, alpha: a };
+        }
+      }
+    } catch {
+      // In case canvas is inaccessible
+    }
+  }
+
+  return null;
+}
+
 function getElementLuminance(el: HTMLElement): { isDark: boolean; solidFound: boolean } {
-  // 1. If it's an <img> tag, sample its pixel brightness via canvas
+  // 1. Explicit section-level data attribute
+  const directLum = el.getAttribute?.('data-header-luminance');
+  if (directLum === 'light') return { isDark: false, solidFound: true };
+  if (directLum === 'dark') return { isDark: true, solidFound: true };
+
+  // 2. If it's an <img> tag, sample its pixel brightness via canvas
   if (el.tagName === 'IMG') {
     const img = el as PersiciImageElement;
     if (img._persiciLum !== undefined) {
@@ -47,52 +124,55 @@ function getElementLuminance(el: HTMLElement): { isDark: boolean; solidFound: bo
     }
   }
 
-
-  // 2. Videos are visually dark
+  // 3. Videos are visually dark
   if (el.tagName === 'VIDEO') {
     return { isDark: true, solidFound: true };
   }
 
-  // 3. Inspect computed backgroundColor
-  const computed = window.getComputedStyle(el);
-  const bg = computed.backgroundColor;
+  // 4. Explicit solid / Tailwind background classes
+  const classes = (el.className || '').toString().split(/\s+/);
+  for (const cls of classes) {
+    if (!cls.startsWith('bg-')) continue;
 
-  if (bg && bg !== 'transparent' && bg !== 'rgba(0, 0, 0, 0)') {
-    const rgb = bg.match(/\d+(\.\d+)?/g);
-    if (rgb && rgb.length >= 3) {
-      const r = parseFloat(rgb[0]);
-      const g = parseFloat(rgb[1]);
-      const b = parseFloat(rgb[2]);
-      const alpha = rgb.length >= 4 ? parseFloat(rgb[3]) : 1;
+    // Known dark background classes
+    if (
+      cls === 'bg-persici-black' ||
+      cls === 'bg-black' ||
+      cls === 'bg-slate-900' ||
+      cls === 'bg-zinc-900' ||
+      cls === 'bg-neutral-900' ||
+      cls === 'bg-gray-900' ||
+      cls === 'bg-persici-crimson'
+    ) {
+      return { isDark: true, solidFound: true };
+    }
 
-      // Only evaluate if background opacity is at least 25% (prevents bg-black/[0.02] from matching)
-      if (alpha >= 0.25) {
-        const lum = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
-        return { isDark: lum < 0.45, solidFound: true };
-      }
+    // Known light background classes (including opacity variants like bg-slate-50/50, bg-white/80)
+    if (
+      cls === 'bg-white' ||
+      cls === 'bg-persici-white' ||
+      cls.startsWith('bg-white/') ||
+      cls.startsWith('bg-persici-white/') ||
+      cls === 'bg-slate-50' ||
+      cls.startsWith('bg-slate-50/') ||
+      cls === 'bg-gray-50' ||
+      cls.startsWith('bg-gray-50/') ||
+      cls === 'bg-neutral-50' ||
+      cls.startsWith('bg-neutral-50/') ||
+      cls === 'bg-slate-100' ||
+      cls.startsWith('bg-slate-100/') ||
+      cls === 'bg-[#FFFAFA]' ||
+      cls === 'bg-[#F9F8F6]'
+    ) {
+      return { isDark: false, solidFound: true };
     }
   }
 
-  // 4. Explicit solid background classes
-  const classes = (el.className || '').toString().split(/\s+/);
-  if (
-    classes.includes('bg-persici-black') ||
-    classes.includes('bg-black') ||
-    classes.includes('bg-persici-crimson') ||
-    classes.includes('bg-slate-900') ||
-    classes.includes('bg-zinc-900') ||
-    classes.includes('bg-neutral-900')
-  ) {
-    return { isDark: true, solidFound: true };
-  }
-
-  if (
-    classes.includes('bg-white') ||
-    classes.includes('bg-persici-white') ||
-    classes.includes('bg-slate-50') ||
-    classes.includes('bg-gray-50')
-  ) {
-    return { isDark: false, solidFound: true };
+  // 5. Inspect computed backgroundColor
+  const computed = window.getComputedStyle(el);
+  const parsed = getColorLuminanceAndAlpha(computed.backgroundColor);
+  if (parsed && parsed.alpha >= 0.25) {
+    return { isDark: parsed.lum < 0.45, solidFound: true };
   }
 
   return { isDark: false, solidFound: false };
@@ -132,6 +212,15 @@ function isPointDark(x: number, y: number, headerEl: HTMLElement | null): boolea
     }
   }
 
+  // 3. Fallback: inspect document.body background
+  if (document.body) {
+    const bodyResult = getElementLuminance(document.body);
+    if (bodyResult.solidFound) {
+      return bodyResult.isDark;
+    }
+  }
+
+  // Default to false (light background, base page in Persici is --persici-white)
   return false;
 }
 
@@ -197,41 +286,42 @@ export function Header({ lang, dict }: HeaderProps) {
     }
   }, [openDropdownKey]);
 
-  // Real-time per-element dark detection on scroll
+  // Real-time per-element dark detection
+  const evaluateHeaderTheme = useCallback(() => {
+    const headerEl = headerRef.current;
+    if (!headerEl) return;
+
+    // 1. Evaluate Logo element
+    if (logoRef.current) {
+      const r = logoRef.current.getBoundingClientRect();
+      const dark = isPointDark(r.left + r.width / 2, r.top + r.height / 2, headerEl);
+      setIsLogoDark(dark);
+    }
+
+    // 2. Evaluate Nav Pill element across its full width (5 sample points)
+    if (navRef.current) {
+      const r = navRef.current.getBoundingClientRect();
+      const p1 = isPointDark(r.left + r.width * 0.15, r.top + r.height / 2, headerEl);
+      const p2 = isPointDark(r.left + r.width * 0.35, r.top + r.height / 2, headerEl);
+      const p3 = isPointDark(r.left + r.width * 0.50, r.top + r.height / 2, headerEl);
+      const p4 = isPointDark(r.left + r.width * 0.70, r.top + r.height / 2, headerEl);
+      const p5 = isPointDark(r.left + r.width * 0.85, r.top + r.height / 2, headerEl);
+      
+      // If any section of the pill is over a dark element, adapt pill to dark mode
+      setIsNavDark(p1 || p2 || p3 || p4 || p5);
+    }
+
+    // 3. Evaluate CTA Button element
+    if (ctaRef.current) {
+      const r = ctaRef.current.getBoundingClientRect();
+      const dark = isPointDark(r.left + r.width / 2, r.top + r.height / 2, headerEl);
+      setIsCtaDark(dark);
+    }
+  }, []);
+
+  // Listen for scroll, resize, load
   useEffect(() => {
     let animationFrameId: number;
-
-    function evaluateHeaderTheme() {
-      const headerEl = headerRef.current;
-      if (!headerEl) return;
-
-      // 1. Evaluate Logo element
-      if (logoRef.current) {
-        const r = logoRef.current.getBoundingClientRect();
-        const dark = isPointDark(r.left + r.width / 2, r.top + r.height / 2, headerEl);
-        setIsLogoDark(dark);
-      }
-
-      // 2. Evaluate Nav Pill element across its full width (5 sample points)
-      if (navRef.current) {
-        const r = navRef.current.getBoundingClientRect();
-        const p1 = isPointDark(r.left + r.width * 0.15, r.top + r.height / 2, headerEl);
-        const p2 = isPointDark(r.left + r.width * 0.35, r.top + r.height / 2, headerEl);
-        const p3 = isPointDark(r.left + r.width * 0.50, r.top + r.height / 2, headerEl);
-        const p4 = isPointDark(r.left + r.width * 0.70, r.top + r.height / 2, headerEl);
-        const p5 = isPointDark(r.left + r.width * 0.85, r.top + r.height / 2, headerEl);
-        
-        // If any section of the pill is over a dark element, adapt pill to dark mode
-        setIsNavDark(p1 || p2 || p3 || p4 || p5);
-      }
-
-      // 3. Evaluate CTA Button element
-      if (ctaRef.current) {
-        const r = ctaRef.current.getBoundingClientRect();
-        const dark = isPointDark(r.left + r.width / 2, r.top + r.height / 2, headerEl);
-        setIsCtaDark(dark);
-      }
-    }
 
     function onScroll() {
       cancelAnimationFrame(animationFrameId);
@@ -249,7 +339,18 @@ export function Header({ lang, dict }: HeaderProps) {
       window.removeEventListener('load', evaluateHeaderTheme);
       cancelAnimationFrame(animationFrameId);
     };
-  }, []);
+  }, [evaluateHeaderTheme]);
+
+  // Re-evaluate whenever route changes (immediate + post-hydration passes)
+  useEffect(() => {
+    evaluateHeaderTheme();
+    const t1 = setTimeout(evaluateHeaderTheme, 50);
+    const t2 = setTimeout(evaluateHeaderTheme, 150);
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+    };
+  }, [pathname, evaluateHeaderTheme]);
 
   const navLinks = siteNavLinks.map((link) => ({
     ...link,

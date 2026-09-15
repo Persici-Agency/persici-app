@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import Link from 'next/link';
@@ -22,10 +22,10 @@ export function CareerDetailRelatedRoles({ relatedJobs, lang }: CareerDetailRela
       <div className={sectionContainer}>
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10 sm:mb-14">
           <div>
-            <span className="inline-block font-mono text-[11px] font-semibold uppercase tracking-wider text-persici-crimson bg-persici-crimson/10 px-3.5 py-1 rounded-full mb-3">
+            <span className="inline-block font-mono text-[9.5px] font-semibold uppercase tracking-wider text-persici-crimson bg-persici-crimson/10 px-3.5 py-1 rounded-full mb-3">
               {isAr ? 'فرص أخرى ذات صلة' : 'Explore More Opportunities'}
             </span>
-            <h2 className="font-primary text-2xl sm:text-3xl lg:text-4xl font-extrabold text-foreground">
+            <h2 className="font-primary text-2xl sm:text-3xl lg:text-4xl font-medium text-foreground">
               {isAr ? 'وظائف شاغرة إضافية في المجموعة' : 'Similar Roles in the Collective'}
             </h2>
           </div>
@@ -48,19 +48,19 @@ export function CareerDetailRelatedRoles({ relatedJobs, lang }: CareerDetailRela
             >
               <div>
                 <div className="flex flex-wrap items-center gap-2 mb-3">
-                  <span className="font-mono text-[10px] font-semibold text-persici-crimson bg-persici-crimson/10 px-2.5 py-0.5 rounded-full">
+                  <span className="font-mono text-[9.5px] font-semibold text-persici-crimson bg-persici-crimson/10 px-2.5 py-0.5 rounded-full">
                     {job.department[isAr ? 'ar' : 'en']}
                   </span>
-                  <span className="inline-flex items-center gap-1 text-[11px] text-foreground/60 bg-black/5 px-2 py-0.5 rounded-full">
+                  <span className="inline-flex items-center gap-1 text-[9.5px] text-foreground/60 bg-black/5 px-2 py-0.5 rounded-full">
                     <TbMapPin className="w-3 h-3 text-persici-blush" />
                     <span>{job.location[isAr ? 'ar' : 'en']}</span>
                   </span>
-                  <span className="text-[11px] text-foreground/60 bg-black/5 px-2 py-0.5 rounded-full">
+                  <span className="text-[9.5px] text-foreground/60 bg-black/5 px-2 py-0.5 rounded-full">
                     {job.type[isAr ? 'ar' : 'en']}
                   </span>
                 </div>
 
-                <h3 className="font-primary text-lg sm:text-xl font-bold text-foreground mb-2 group-hover:text-persici-crimson transition-colors">
+                <h3 className="font-primary text-lg sm:text-xl font-medium text-foreground mb-2 group-hover:text-persici-crimson transition-colors">
                   <Link href={`/${lang}/careers/${job.slug}`} className="hover:underline">
                     {job.title[isAr ? 'ar' : 'en']}
                   </Link>

@@ -61,7 +61,7 @@ export function ContactHeroSection({ data, lang }: ContactHeroSectionProps) {
   ];
 
   return (
-    <section className="relative pt-24 sm:pt-28 lg:pt-32 pb-14 sm:pb-16 lg:pb-20 bg-gradient-to-b from-slate-50 via-white to-white overflow-hidden border-b border-black/[0.04]">
+    <section data-header-luminance="light" className="relative pt-24 sm:pt-28 lg:pt-32 pb-14 sm:pb-16 lg:pb-20 bg-gradient-to-b from-slate-50 via-white to-white overflow-hidden border-b border-black/[0.04]">
       {/* Ambient background decoration */}
       <div className="absolute top-0 inset-x-0 h-64 bg-radial from-persici-crimson/[0.04] to-transparent pointer-events-none" />
 
@@ -69,14 +69,14 @@ export function ContactHeroSection({ data, lang }: ContactHeroSectionProps) {
         <div className="max-w-4xl mx-auto text-center">
           {/* Badge */}
           <FadeUp delay={0} duration={600} distance={16}>
-            <span className={`${badgePill} mb-4 tracking-wide uppercase text-[11px] font-mono font-semibold`}>
+            <span className={`${badgePill} mb-4 tracking-wide uppercase text-[9.5px] font-mono font-semibold`}>
               {badge}
             </span>
           </FadeUp>
 
           {/* Heading */}
           <FadeUp delay={100} duration={750} distance={20}>
-            <h1 className="font-primary text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-persici-black leading-[1.12] rtl:leading-[1.25] mb-6">
+            <h1 className="font-primary text-3xl sm:text-5xl lg:text-6xl font-medium tracking-tight text-persici-black leading-[1.12] rtl:leading-[1.25] mb-6">
               {title}
             </h1>
           </FadeUp>

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import Image from 'next/image';
@@ -29,13 +29,13 @@ export function ContactOfficesSection({
         {/* Section Header */}
         <div className="max-w-3xl mx-auto text-center mb-12 sm:mb-16">
           <FadeUp delay={0} duration={600} distance={16}>
-            <span className={`${badgePill} mb-4 tracking-wide uppercase text-[11px] font-mono font-semibold`}>
+            <span className={`${badgePill} mb-4 tracking-wide uppercase text-[9.5px] font-mono font-semibold`}>
               {isAr ? 'حضور استراتيجي عالمي' : 'Global Presence'}
             </span>
           </FadeUp>
 
           <FadeUp delay={100} duration={750} distance={20}>
-            <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-persici-black leading-[1.15] rtl:leading-[1.25] mb-4">
+            <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-persici-black leading-[1.15] rtl:leading-[1.25] mb-4">
               {sectionTitle}
             </h2>
           </FadeUp>
@@ -79,7 +79,7 @@ export function ContactOfficesSection({
                     {/* Floating Badge */}
                     {badge && (
                       <div className="absolute top-4 left-4 rtl:left-auto rtl:right-4 z-10">
-                        <span className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-mono font-semibold uppercase tracking-wider bg-white/90 backdrop-blur-md text-persici-black border border-white/40 shadow-xs">
+                        <span className="inline-flex items-center px-3 py-1 rounded-full text-[9.5px] font-mono font-semibold uppercase tracking-wider bg-white/90 backdrop-blur-md text-persici-black border border-white/40 shadow-xs">
                           {badge}
                         </span>
                       </div>
@@ -87,7 +87,7 @@ export function ContactOfficesSection({
 
                     {/* City Heading on Image bottom */}
                     <div className="absolute bottom-4 left-5 right-5 z-10 text-white">
-                      <h3 className="font-primary text-2xl font-bold tracking-tight">
+                      <h3 className="font-primary text-2xl font-medium tracking-tight">
                         {city}
                       </h3>
                       <p className="text-xs text-white/85 font-secondary">
@@ -117,7 +117,7 @@ export function ContactOfficesSection({
                         </svg>
                         <div className="font-secondary text-xs text-slate-500 leading-normal">
                           <div>{hours}</div>
-                          <div className="text-[11px] font-mono text-slate-400 mt-0.5">{office.timezone}</div>
+                          <div className="text-[9.5px] font-mono text-slate-400 mt-0.5">{office.timezone}</div>
                         </div>
                       </div>
 

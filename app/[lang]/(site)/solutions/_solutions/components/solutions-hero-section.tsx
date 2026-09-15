@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import Image from 'next/image';
 import type { SolutionsPageContent } from '@shared/types';
 import { sectionContainer } from '@shared/constants';
@@ -83,7 +83,7 @@ export function SolutionsHeroSection({
             <div className="lg:col-span-7">
               {tagText && (
                 <div className="flex items-center gap-2.5 mb-4">
-                  <span className="text-xs sm:text-sm font-bold uppercase tracking-widest text-persici-crimson">
+                  <span className="text-xs sm:text-sm font-semibold uppercase tracking-widest text-persici-crimson">
                     {tagText}
                   </span>
                   {secTagText && (
@@ -97,7 +97,7 @@ export function SolutionsHeroSection({
                 </div>
               )}
 
-              <h1 className="font-primary text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 leading-[1.15]">
+              <h1 className="font-primary text-4xl sm:text-5xl lg:text-6xl font-medium tracking-tight text-slate-900 leading-[1.15]">
                 {heroTitle}
               </h1>
 
@@ -159,7 +159,7 @@ export function SolutionsHeroSection({
         <div className="max-w-xl lg:max-w-2xl">
           {tagText && (
             <div className="flex items-center gap-2.5 mb-5">
-              <span className="text-xs sm:text-sm font-bold uppercase tracking-widest text-persici-crimson">
+              <span className="text-xs sm:text-sm font-semibold uppercase tracking-widest text-persici-crimson">
                 {tagText}
               </span>
               {secTagText && (
@@ -173,7 +173,7 @@ export function SolutionsHeroSection({
             </div>
           )}
 
-          <h1 className="font-primary text-4xl sm:text-5xl lg:text-[54px] xl:text-[62px] font-extrabold tracking-tight text-slate-900 leading-[1.1] sm:leading-[1.08]">
+          <h1 className="font-primary text-4xl sm:text-5xl lg:text-[51px] xl:text-[58px] font-medium tracking-tight text-slate-900 leading-[1.1] sm:leading-[1.08]">
             {heroTitle}
           </h1>
 

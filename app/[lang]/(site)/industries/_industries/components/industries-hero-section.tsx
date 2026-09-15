@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import Image from 'next/image';
 import type { IndustriesPageContent } from '@shared/types';
 import { sectionContainer } from '@shared/constants';
@@ -106,7 +106,7 @@ export function IndustriesHeroSection({
         <div className="max-w-xl lg:max-w-2xl">
           {tagText && (
             <div className="flex items-center gap-2.5 mb-5">
-              <span className="text-xs sm:text-sm font-bold uppercase tracking-widest text-persici-crimson">
+              <span className="text-xs sm:text-sm font-semibold uppercase tracking-widest text-persici-crimson">
                 {tagText}
               </span>
               {secTagText && (
@@ -120,7 +120,7 @@ export function IndustriesHeroSection({
             </div>
           )}
 
-          <h1 className="font-primary text-4xl sm:text-5xl lg:text-[54px] xl:text-[62px] font-extrabold tracking-tight text-slate-900 leading-[1.1] sm:leading-[1.08]">
+          <h1 className="font-primary text-4xl sm:text-5xl lg:text-[51px] xl:text-[58px] font-medium tracking-tight text-slate-900 leading-[1.1] sm:leading-[1.08]">
             {heroTitle}
           </h1>
 

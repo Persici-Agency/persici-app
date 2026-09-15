@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
@@ -119,12 +119,12 @@ export function InsightStickyRailNav({
                 />
               </div>
             ) : (
-              <div className="w-12 h-12 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-sm shrink-0">
+              <div className="w-12 h-12 rounded-full bg-slate-900 text-white flex items-center justify-center font-semibold text-sm shrink-0">
                 {author.name.charAt(0)}
               </div>
             )}
             <div className="min-w-0">
-              <h4 className="font-primary text-sm font-bold text-slate-900 truncate">
+              <h4 className="font-primary text-sm font-medium text-slate-900 truncate">
                 {author.name}
               </h4>
               <p className="text-xs text-slate-500 leading-snug mt-0.5 line-clamp-2">
@@ -136,7 +136,7 @@ export function InsightStickyRailNav({
 
         {/* 2. Table of Contents */}
         <div className="p-1">
-          <h3 className="font-mono text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-4 px-3">
+          <h3 className="font-mono text-[9.5px] font-medium uppercase tracking-widest text-slate-400 mb-4 px-3">
             {isRtl ? 'جدول المحتويات' : 'Table of Contents'}
           </h3>
 
@@ -150,9 +150,9 @@ export function InsightStickyRailNav({
                   key={item.id}
                   type="button"
                   onClick={() => scrollTo(item.id)}
-                  className={`text-start px-4 py-2 text-xs sm:text-[13px] leading-relaxed transition-all duration-200 cursor-pointer -ms-0.5 border-s-2 ${
+                  className={`text-start px-4 py-2 text-xs sm:text-[12px] leading-relaxed transition-all duration-200 cursor-pointer -ms-0.5 border-s-2 ${
                     isActive
-                      ? 'border-persici-crimson font-bold text-persici-crimson bg-persici-crimson/5 rounded-e-lg'
+                      ? 'border-persici-crimson font-semibold text-persici-crimson bg-persici-crimson/5 rounded-e-lg'
                       : 'border-transparent font-medium text-slate-600 hover:text-slate-900 hover:border-slate-300'
                   }`}
                 >

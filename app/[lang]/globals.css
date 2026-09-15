@@ -304,6 +304,11 @@
   --container-8xl: 90rem;
   --container-9xl: 100rem;
   --container-10xl: 112rem;
+
+  /* Typography Boldness Cap: Max boldness across the site is semibold (600) */
+  --font-weight-bold: 600;
+  --font-weight-extrabold: 600;
+  --font-weight-black: 600;
 }
 
 /* =============================================
@@ -311,6 +316,7 @@
    ============================================= */
 
 html {
+  font-size: 93.75%; /* 15px base (15/16 = 93.75%): proportionally scales 16px -> 15px, 32px -> 30px */
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -320,6 +326,20 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-secondary), "Roboto", sans-serif;
+}
+
+/* Headings, bold text, and table header tags font weight set to 500 */
+h1, h2, h3, h4, h5, h6, b, strong, th,
+h1.font-semibold,
+h2.font-semibold,
+h3.font-semibold,
+h4.font-semibold,
+h5.font-semibold,
+h6.font-semibold,
+b.font-semibold,
+strong.font-semibold,
+th.font-semibold {
+  font-weight: 500;
 }
 
 /* Primary font utility */

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState } from 'react';
 import type { InsightDetail } from '../../../_insights/types';
@@ -158,7 +158,7 @@ export function InsightAiOverview({ insight, lang }: InsightAiOverviewProps) {
               <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-persici-crimson/10 text-persici-crimson">
                 <TbSparkles className="h-4 w-4 animate-pulse" />
               </div>
-              <h3 className="font-primary text-sm sm:text-base font-bold text-slate-900 tracking-tight">
+              <h3 className="font-primary text-sm sm:text-base font-medium text-slate-900 tracking-tight">
                 {isRtl
                   ? 'نظرة عامة سريعة بواسطة الذكاء الاصطناعي'
                   : 'Quick Overview by AI'}
@@ -166,7 +166,7 @@ export function InsightAiOverview({ insight, lang }: InsightAiOverviewProps) {
             </div>
 
             <div className="flex items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/95 border border-slate-200/80 px-2.5 py-1 text-[11px] font-mono font-medium text-slate-600 shadow-2xs">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/95 border border-slate-200/80 px-2.5 py-1 text-[9.5px] font-mono font-medium text-slate-600 shadow-2xs">
                 <span className="h-1.5 w-1.5 rounded-full bg-persici-crimson animate-ping" />
                 <span>
                   {aiSource === 'gemini-live'
@@ -210,14 +210,14 @@ export function InsightAiOverview({ insight, lang }: InsightAiOverviewProps) {
               </div>
             ) : summary ? (
               <>
-                <p className="text-sm sm:text-[15px] font-medium leading-relaxed text-slate-800">
+                <p className="text-sm sm:text-[13px] font-medium leading-relaxed text-slate-800">
                   {summary}
                 </p>
 
                 {/* Key Takeaways */}
                 {keyTakeaways.length > 0 && (
                   <div className="mt-5 pt-4 border-t border-slate-200/60">
-                    <h4 className="font-mono text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-3">
+                    <h4 className="font-mono text-[9.5px] font-medium uppercase tracking-wider text-slate-500 mb-3">
                       {isRtl ? 'أبرز النقاط المستخلصة (Key Takeaways)' : 'Key Takeaways'}
                     </h4>
                     <ul className="space-y-2.5">

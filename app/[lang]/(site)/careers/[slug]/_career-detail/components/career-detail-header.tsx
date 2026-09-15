@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import Link from 'next/link';
@@ -83,7 +83,7 @@ export function CareerDetailHeader({ job, lang }: CareerDetailHeaderProps) {
         {/* Main Job Title */}
         <FadeUp delay={200} duration={700}>
           <div className="max-w-4xl">
-            <h1 className="font-primary text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-foreground leading-[1.15] mb-6">
+            <h1 className="font-primary text-3xl sm:text-5xl lg:text-6xl font-medium tracking-tight text-foreground leading-[1.15] mb-6">
               {job.title[isAr ? 'ar' : 'en']}
             </h1>
 

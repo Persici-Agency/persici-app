@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import {
@@ -679,7 +679,7 @@ export function VideoPlayer({
             {/* Hover Tooltip Timestamp */}
             {hoverTime !== null && (
               <div
-                className="absolute bottom-5 sm:bottom-6 -translate-x-1/2 rounded-md bg-black/90 border border-white/20 px-1.5 py-0.5 text-[10px] sm:text-[11px] font-mono text-white pointer-events-none shadow-md whitespace-nowrap"
+                className="absolute bottom-5 sm:bottom-6 -translate-x-1/2 rounded-md bg-black/90 border border-white/20 px-1.5 py-0.5 text-[9.5px] sm:text-[9.5px] font-mono text-white pointer-events-none shadow-md whitespace-nowrap"
                 style={{ left: `${Math.max(12, Math.min(88, hoverPosition))}%` }}
               >
                 {formatTime(hoverTime)}
@@ -772,7 +772,7 @@ export function VideoPlayer({
               {/* Time Display */}
               <div
                 className={`${
-                  isVeryCompact ? 'text-[10px] tracking-tight' : 'text-[11px] sm:text-xs'
+                  isVeryCompact ? 'text-[9.5px] tracking-tight' : 'text-[9.5px] sm:text-xs'
                 } font-mono text-white/80 select-none shrink-0 tabular-nums`}
               >
                 <span>{formatTime(currentTime)}</span>
@@ -793,7 +793,7 @@ export function VideoPlayer({
                   }}
                   aria-label="Video Quality"
                   className={`flex ${
-                    isVeryCompact ? 'h-7 px-1.5 text-[10px]' : 'h-8 px-2 text-xs'
+                    isVeryCompact ? 'h-7 px-1.5 text-[9.5px]' : 'h-8 px-2 text-xs'
                   } items-center gap-0.5 sm:gap-1 rounded-lg font-mono font-semibold hover:bg-white/15 text-white/80 hover:text-white transition-colors cursor-pointer`}
                   title={`Quality: ${selectedQuality}`}
                 >
@@ -808,7 +808,7 @@ export function VideoPlayer({
                 {/* Quality Popover Menu - Floats cleanly above control bar */}
                 {showQualityMenu && (
                   <div className="absolute bottom-full mb-2.5 end-0 z-50 flex flex-col rounded-xl bg-neutral-900/95 backdrop-blur-xl border border-white/20 p-2 shadow-2xl min-w-[130px] sm:min-w-[160px]">
-                    <div className="flex items-center justify-between pb-1.5 px-1 text-[10px] font-mono uppercase tracking-wider text-slate-400 border-b border-white/10 mb-1">
+                    <div className="flex items-center justify-between pb-1.5 px-1 text-[9.5px] font-mono uppercase tracking-wider text-slate-400 border-b border-white/10 mb-1">
                       <span>{isRtl ? 'جودة الفيديو' : 'Quality'}</span>
                       <span className="text-slate-500 font-normal">
                         {availableQualities.length > 1
@@ -824,14 +824,14 @@ export function VideoPlayer({
                           key={qual.label}
                           type="button"
                           onClick={() => handleQualitySelect(qual)}
-                          className={`flex items-center justify-between gap-2 rounded-lg px-2 py-1.5 text-[11px] font-mono text-start hover:bg-white/15 transition-colors cursor-pointer ${
-                            isSelected ? 'text-persici-crimson font-bold bg-white/5' : 'text-white/80'
+                          className={`flex items-center justify-between gap-2 rounded-lg px-2 py-1.5 text-[9.5px] font-mono text-start hover:bg-white/15 transition-colors cursor-pointer ${
+                            isSelected ? 'text-persici-crimson font-semibold bg-white/5' : 'text-white/80'
                           }`}
                         >
                           <div className="flex items-center gap-1.5">
                             <span>{qual.label}</span>
                             {qual.badge && (
-                              <span className="rounded bg-persici-crimson/20 border border-persici-crimson/40 px-1 py-0.2 text-[9px] font-bold text-persici-crimson">
+                              <span className="rounded bg-persici-crimson/20 border border-persici-crimson/40 px-1 py-0.2 text-[8.5px] font-semibold text-persici-crimson">
                                 {qual.badge}
                               </span>
                             )}
@@ -842,7 +842,7 @@ export function VideoPlayer({
                     })}
 
                     {availableQualities.length === 1 && (
-                      <div className="pt-1.5 px-1 text-[10px] text-slate-400/90 font-sans leading-tight border-t border-white/10 mt-1">
+                      <div className="pt-1.5 px-1 text-[9.5px] text-slate-400/90 font-sans leading-tight border-t border-white/10 mt-1">
                         {isRtl
                           ? 'أعلى جودة أصلية متاحة لهذا الفيديو'
                           : 'Highest native source quality for this video'}
@@ -862,7 +862,7 @@ export function VideoPlayer({
                   }}
                   aria-label="Playback speed"
                   className={`flex ${
-                    isVeryCompact ? 'h-7 px-1.5 text-[10px]' : 'h-8 px-2 text-xs'
+                    isVeryCompact ? 'h-7 px-1.5 text-[9.5px]' : 'h-8 px-2 text-xs'
                   } items-center gap-0.5 sm:gap-1 rounded-lg font-mono font-semibold hover:bg-white/15 text-white/80 hover:text-white transition-colors cursor-pointer`}
                   title="Playback Speed"
                 >
@@ -873,7 +873,7 @@ export function VideoPlayer({
                 {/* Speed Popover Menu - Floats cleanly above control bar */}
                 {showSpeedMenu && (
                   <div className="absolute bottom-full mb-2.5 end-0 z-50 flex flex-col rounded-xl bg-neutral-900/95 backdrop-blur-xl border border-white/20 p-1.5 shadow-2xl min-w-[90px] sm:min-w-[110px]">
-                    <div className="px-2 py-1 text-[10px] font-mono uppercase tracking-wider text-slate-400 border-b border-white/10 mb-1">
+                    <div className="px-2 py-1 text-[9.5px] font-mono uppercase tracking-wider text-slate-400 border-b border-white/10 mb-1">
                       {isRtl ? 'سرعة التشغيل' : 'Speed'}
                     </div>
                     {SPEED_OPTIONS.map((speed) => {
@@ -883,8 +883,8 @@ export function VideoPlayer({
                           key={speed}
                           type="button"
                           onClick={() => handleSpeedSelect(speed)}
-                          className={`flex items-center justify-between rounded-lg px-2 py-1 text-[11px] font-mono text-start hover:bg-white/15 transition-colors cursor-pointer ${
-                            isSelected ? 'text-persici-crimson font-bold' : 'text-white/80'
+                          className={`flex items-center justify-between rounded-lg px-2 py-1 text-[9.5px] font-mono text-start hover:bg-white/15 transition-colors cursor-pointer ${
+                            isSelected ? 'text-persici-crimson font-semibold' : 'text-white/80'
                           }`}
                         >
                           <span>{speed === 1 ? (isRtl ? 'عادي (1x)' : '1x (Normal)') : `${speed}x`}</span>

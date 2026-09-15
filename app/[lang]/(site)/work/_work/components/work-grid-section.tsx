@@ -1,4 +1,4 @@
-import Image from 'next/image';
+﻿import Image from 'next/image';
 import Link from 'next/link';
 import { fetchProjectsList } from '../services';
 import { sectionContainer, sectionPaddingY } from '@shared';
@@ -31,7 +31,7 @@ export async function WorkGridSection({ lang }: { lang: string }) {
               <span className="text-xs font-semibold uppercase tracking-wider text-persici-crimson">
                 {proj.category}
               </span>
-              <h3 className="mt-2 font-primary text-2xl font-bold text-foreground">
+              <h3 className="mt-2 font-primary text-2xl font-medium text-foreground">
                 {proj.title}
               </h3>
               <p className="mt-2 text-xs leading-relaxed text-foreground/70 sm:text-sm">

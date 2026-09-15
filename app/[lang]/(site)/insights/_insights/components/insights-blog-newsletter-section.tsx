@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState } from 'react';
 import Image from 'next/image';
@@ -50,13 +50,13 @@ export function InsightsBlogNewsletterSection({ lang }: InsightsBlogNewsletterSe
           {/* Left Column: Heading, Subtitle & Subscription Form */}
           <div className="lg:col-span-7 flex flex-col items-start text-start">
             <FadeUp delay={0} duration={700} distance={16}>
-              <span className="font-mono text-xs font-bold uppercase tracking-wider text-persici-crimson mb-2 block">
+              <span className="font-mono text-xs font-semibold uppercase tracking-wider text-persici-crimson mb-2 block">
                 {isRtl ? 'النشرة المعرفية' : 'Persici Dispatch'}
               </span>
             </FadeUp>
 
             <FadeUp delay={120} duration={850} distance={24} blur={true}>
-              <h2 className="font-primary text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight">
+              <h2 className="font-primary text-4xl sm:text-5xl lg:text-6xl font-medium text-slate-900 tracking-tight">
                 {isRtl ? 'المدونة المعرفية' : 'Blog'}
               </h2>
             </FadeUp>

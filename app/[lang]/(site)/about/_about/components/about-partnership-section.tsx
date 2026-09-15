@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import { sectionContainer, sectionPaddingY, badgePill } from '@shared/constants';
@@ -24,13 +24,13 @@ export function AboutPartnershipSection({ data, lang }: AboutPartnershipSectionP
           {/* Left Column: Partnership Narrative & Philosophy */}
           <div className="lg:col-span-6">
             <FadeUp delay={0} duration={600} distance={16}>
-              <span className={`${badgePill} mb-4 tracking-wide uppercase text-[11px] font-mono font-semibold`}>
+              <span className={`${badgePill} mb-4 tracking-wide uppercase text-[9.5px] font-mono font-semibold`}>
                 {badge}
               </span>
             </FadeUp>
 
             <FadeUp delay={100} duration={750} distance={20}>
-              <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-persici-black leading-[1.15] rtl:leading-[1.25] mb-6">
+              <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-persici-black leading-[1.15] rtl:leading-[1.25] mb-6">
                 {title}
               </h2>
             </FadeUp>
@@ -38,7 +38,7 @@ export function AboutPartnershipSection({ data, lang }: AboutPartnershipSectionP
             {/* Standout Quote Callout */}
             <FadeUp delay={150} duration={750} distance={20}>
               <div className="border-l-2 rtl:border-l-0 rtl:border-r-2 border-persici-crimson pl-4 rtl:pl-0 rtl:pr-4 mb-6">
-                <p className="font-primary text-lg sm:text-xl font-bold text-persici-black leading-snug">
+                <p className="font-primary text-lg sm:text-xl font-semibold text-persici-black leading-snug">
                   {quote}
                 </p>
               </div>

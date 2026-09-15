@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState } from 'react';
 import { sectionContainer, sectionPaddingY, badgePill } from '@shared/constants';
@@ -37,13 +37,13 @@ export function ContactDirectChannelsSection({
         {/* Section Header */}
         <div className="max-w-3xl mx-auto text-center mb-12 sm:mb-16">
           <FadeUp delay={0} duration={600} distance={16}>
-            <span className={`${badgePill} mb-4 tracking-wide uppercase text-[11px] font-mono font-semibold`}>
+            <span className={`${badgePill} mb-4 tracking-wide uppercase text-[9.5px] font-mono font-semibold`}>
               {isAr ? 'قنوات تواصل سريعة ومباشرة' : 'Direct Inquiries'}
             </span>
           </FadeUp>
 
           <FadeUp delay={100} duration={750} distance={20}>
-            <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-persici-black leading-[1.15] rtl:leading-[1.25] mb-4">
+            <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-persici-black leading-[1.15] rtl:leading-[1.25] mb-4">
               {sectionTitle}
             </h2>
           </FadeUp>
@@ -78,11 +78,11 @@ export function ContactDirectChannelsSection({
 
                   {/* Content */}
                   <div>
-                    <span className="text-[11px] font-mono font-semibold uppercase tracking-wider text-slate-500 block mb-2">
+                    <span className="text-[9.5px] font-mono font-semibold uppercase tracking-wider text-slate-500 block mb-2">
                       {chCategory}
                     </span>
 
-                    <h3 className="font-primary text-lg font-bold text-persici-black leading-snug mb-3 group-hover:text-persici-crimson transition-colors">
+                    <h3 className="font-primary text-lg font-medium text-persici-black leading-snug mb-3 group-hover:text-persici-crimson transition-colors">
                       {chTitle}
                     </h3>
 
@@ -94,7 +94,7 @@ export function ContactDirectChannelsSection({
                   {/* Bottom Action Box */}
                   <div className="pt-4 border-t border-black/5 space-y-3">
                     {/* SLA commitment */}
-                    <div className="inline-flex items-center gap-1.5 text-[11px] font-medium text-emerald-700 bg-emerald-50 border border-emerald-200/60 px-2.5 py-1 rounded-full">
+                    <div className="inline-flex items-center gap-1.5 text-[9.5px] font-medium text-emerald-700 bg-emerald-50 border border-emerald-200/60 px-2.5 py-1 rounded-full">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                       <span>{chSla}</span>
                     </div>
@@ -111,7 +111,7 @@ export function ContactDirectChannelsSection({
                       <button
                         type="button"
                         onClick={() => handleCopy(ch.email)}
-                        className="text-[11px] font-medium text-slate-500 hover:text-persici-crimson shrink-0 px-2 py-0.5 rounded-md hover:bg-slate-100 transition-all cursor-pointer"
+                        className="text-[9.5px] font-medium text-slate-500 hover:text-persici-crimson shrink-0 px-2 py-0.5 rounded-md hover:bg-slate-100 transition-all cursor-pointer"
                         title={isAr ? 'نسخ البريد الإلكتروني' : 'Copy email address'}
                       >
                         {isCopied ? (isAr ? 'تم النسخ!' : 'Copied!') : (isAr ? 'نسخ' : 'Copy')}

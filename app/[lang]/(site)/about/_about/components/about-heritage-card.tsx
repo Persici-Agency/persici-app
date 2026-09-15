@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import Image from 'next/image';
@@ -37,7 +37,7 @@ export function AboutHeritageCard({ data, lang }: AboutHeritageCardProps) {
               {/* Left Column: Title, Narrative, Divider, 3 Clean Metrics, and End-Aligned Home Button */}
               <div className="lg:col-span-7 flex flex-col justify-between">
                 {/* Title */}
-                <h2 className="font-primary text-3xl sm:text-4xl lg:text-[42px] font-medium tracking-tight text-persici-black leading-[1.18] mb-4">
+                <h2 className="font-primary text-3xl sm:text-4xl lg:text-[39px] font-medium tracking-tight text-persici-black leading-[1.18] mb-4">
                   {title}
                 </h2>
 
@@ -55,7 +55,7 @@ export function AboutHeritageCard({ data, lang }: AboutHeritageCardProps) {
                     const label = metric.label[lang as 'en' | 'ar'] || metric.label.en;
                     return (
                       <div key={idx}>
-                        <div className="font-primary text-3xl sm:text-4xl lg:text-[42px] font-normal tracking-tight text-persici-black mb-1">
+                        <div className="font-primary text-3xl sm:text-4xl lg:text-[39px] font-normal tracking-tight text-persici-black mb-1">
                           {metric.value}
                         </div>
                         <div className="font-secondary text-xs sm:text-sm text-slate-500 font-normal leading-snug">

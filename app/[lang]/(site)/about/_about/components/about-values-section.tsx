@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import { sectionContainer, sectionPaddingY, badgePill } from '@shared/constants';
@@ -23,13 +23,13 @@ export function AboutValuesSection({ data, lang }: AboutValuesSectionProps) {
         {/* Section Header */}
         <div className="max-w-3xl mx-auto text-center mb-12 sm:mb-16">
           <FadeUp delay={0} duration={600} distance={16}>
-            <span className={`${badgePill} mb-4 tracking-wide uppercase text-[11px] font-mono font-semibold`}>
+            <span className={`${badgePill} mb-4 tracking-wide uppercase text-[9.5px] font-mono font-semibold`}>
               {badge}
             </span>
           </FadeUp>
 
           <FadeUp delay={100} duration={750} distance={20}>
-            <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-persici-black leading-[1.15] rtl:leading-[1.25] mb-4">
+            <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-persici-black leading-[1.15] rtl:leading-[1.25] mb-4">
               {title}
             </h2>
           </FadeUp>
@@ -107,12 +107,12 @@ export function AboutValuesSection({ data, lang }: AboutValuesSectionProps) {
                         )}
                       </div>
 
-                      <span className="inline-block px-3 py-1 rounded-full text-[11px] font-mono font-bold tracking-wider uppercase bg-white border border-black/10 text-slate-600 group-hover:border-persici-crimson/30 group-hover:text-persici-crimson transition-colors">
+                      <span className="inline-block px-3 py-1 rounded-full text-[9.5px] font-mono font-semibold tracking-wider uppercase bg-white border border-black/10 text-slate-600 group-hover:border-persici-crimson/30 group-hover:text-persici-crimson transition-colors">
                         {cardBadge}
                       </span>
                     </div>
 
-                    <h3 className="font-primary text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-persici-black leading-tight group-hover:text-persici-crimson transition-colors max-w-xl">
+                    <h3 className="font-primary text-2xl sm:text-3xl lg:text-4xl font-medium tracking-tight text-persici-black leading-tight group-hover:text-persici-crimson transition-colors max-w-xl">
                       {cardTitle}
                     </h3>
                   </div>

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import Image from 'next/image';
@@ -72,7 +72,7 @@ export function ClientReviewSection({
       <div className={sectionContainer}>
         <FadeUp delay={0} duration={800} distance={24} className="max-w-5xl mx-auto">
           {/* Subtitle / Eyebrow (No background, brand primary color distinct from heading) */}
-          <span className="text-xs font-bold uppercase tracking-widest text-persici-crimson block mb-6">
+          <span className="text-xs font-semibold uppercase tracking-widest text-persici-crimson block mb-6">
             {badgeText}
           </span>
 
@@ -97,13 +97,13 @@ export function ClientReviewSection({
               )}
               <div>
                 {author && (
-                  <div className="font-semibold text-slate-900 text-sm sm:text-[15px] flex items-center gap-1.5">
+                  <div className="font-semibold text-slate-900 text-sm sm:text-[13px] flex items-center gap-1.5">
                     <span className="text-slate-400 font-normal">—</span>
                     <span>{author}</span>
                   </div>
                 )}
                 {role && (
-                  <div className="text-xs sm:text-[13px] text-slate-500 mt-0.5">
+                  <div className="text-xs sm:text-[12px] text-slate-500 mt-0.5">
                     {role}
                   </div>
                 )}

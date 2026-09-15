@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useRef, useState, useEffect } from 'react';
 import Image from 'next/image';
@@ -63,13 +63,13 @@ export function AboutMilestonesTimeline({ data, lang }: AboutMilestonesTimelineP
         {/* Section Header */}
         <div className="max-w-3xl mx-auto text-center mb-16 sm:mb-24">
           <FadeUp delay={0} duration={600} distance={16}>
-            <span className={`${badgePill} mb-4 tracking-wide uppercase text-[11px] font-mono font-semibold`}>
+            <span className={`${badgePill} mb-4 tracking-wide uppercase text-[9.5px] font-mono font-semibold`}>
               {badge}
             </span>
           </FadeUp>
 
           <FadeUp delay={100} duration={750} distance={20}>
-            <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-persici-black leading-[1.15] rtl:leading-[1.25] mb-4">
+            <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-persici-black leading-[1.15] rtl:leading-[1.25] mb-4">
               {title}
             </h2>
           </FadeUp>
@@ -154,7 +154,7 @@ export function AboutMilestonesTimeline({ data, lang }: AboutMilestonesTimelineP
                   </div>
 
                   {/* Title */}
-                  <h3 className="font-primary text-2xl sm:text-3xl lg:text-4xl font-bold text-persici-black tracking-tight leading-snug mb-4">
+                  <h3 className="font-primary text-2xl sm:text-3xl lg:text-4xl font-medium text-persici-black tracking-tight leading-snug mb-4">
                     {itemTitle}
                   </h3>
 

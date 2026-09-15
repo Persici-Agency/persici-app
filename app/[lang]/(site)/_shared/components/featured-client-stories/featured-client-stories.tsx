@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useRef, useEffect } from 'react';
 import type { SolutionsPageContent, FeaturedClientStoryItem, StoryMetricItem } from '@shared/types';
@@ -483,13 +483,13 @@ export function FeaturedClientStories({
           <div className="max-w-3xl mx-auto text-center mb-12 sm:mb-16">
             {secBadge && (
               <FadeUp delay={0} duration={700} distance={16}>
-                <span className="text-xs sm:text-sm font-bold uppercase tracking-widest text-persici-crimson block mb-3">
+                <span className="text-xs sm:text-sm font-semibold uppercase tracking-widest text-persici-crimson block mb-3">
                   {secBadge}
                 </span>
               </FadeUp>
             )}
             <FadeUp delay={120} duration={850} distance={24} blur={true}>
-              <h2 className="font-primary text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900">
+              <h2 className="font-primary text-3xl sm:text-4xl font-medium tracking-tight text-slate-900">
                 {secTitle}
               </h2>
             </FadeUp>

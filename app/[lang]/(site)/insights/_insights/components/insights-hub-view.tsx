@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import type { InsightDetail } from '../types';
 import type { Dictionary } from '@dictionaries';
 import { sectionContainer } from '@shared/constants';
@@ -32,12 +32,12 @@ export function InsightsHubView({ insights, lang, dict }: InsightsHubViewProps) 
           {/* Section Header */}
           <div className="max-w-3xl mx-auto text-center mb-12 sm:mb-16">
             <FadeUp delay={0} duration={700} distance={16}>
-              <span className="font-mono text-xs font-bold uppercase tracking-wider text-persici-crimson mb-2 block">
+              <span className="font-mono text-xs font-semibold uppercase tracking-wider text-persici-crimson mb-2 block">
                 {isRtl ? 'المعرفة والتحليلات' : 'Knowledge & Analysis'}
               </span>
             </FadeUp>
             <FadeUp delay={120} duration={850} distance={24} blur={true}>
-              <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight">
+              <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-medium text-slate-900 tracking-tight">
                 {isRtl ? 'استكشف كافة المحتويات والرؤى' : 'Explore all content'}
               </h2>
             </FadeUp>

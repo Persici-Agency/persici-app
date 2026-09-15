@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState } from 'react';
 import {
@@ -70,7 +70,7 @@ export function CareerDetailContent({ job, lang }: CareerDetailContentProps) {
           <div className="lg:col-span-8 space-y-12 sm:space-y-14">
             {/* 1. The Mission & Strategic Context */}
             <div>
-              <h2 className="font-primary text-2xl sm:text-3xl font-extrabold text-foreground mb-4 sm:mb-5">
+              <h2 className="font-primary text-2xl sm:text-3xl font-medium text-foreground mb-4 sm:mb-5">
                 {isAr ? 'الهدف والرؤية العامة للدور' : 'The Mission & Context'}
               </h2>
               <p className="font-secondary text-base sm:text-lg text-foreground/80 leading-relaxed">
@@ -80,7 +80,7 @@ export function CareerDetailContent({ job, lang }: CareerDetailContentProps) {
 
             {/* 2. Key Responsibilities */}
             <div>
-              <h2 className="font-primary text-2xl sm:text-3xl font-extrabold text-foreground mb-5 sm:mb-6">
+              <h2 className="font-primary text-2xl sm:text-3xl font-medium text-foreground mb-5 sm:mb-6">
                 {isAr ? 'المسؤوليات والمهام الأساسية' : 'What You Will Own & Deliver'}
               </h2>
               <ul className="space-y-4">
@@ -99,7 +99,7 @@ export function CareerDetailContent({ job, lang }: CareerDetailContentProps) {
 
             {/* 3. Requirements & Qualifications */}
             <div>
-              <h2 className="font-primary text-2xl sm:text-3xl font-extrabold text-foreground mb-5 sm:mb-6">
+              <h2 className="font-primary text-2xl sm:text-3xl font-medium text-foreground mb-5 sm:mb-6">
                 {isAr ? 'المؤهلات والمهارات المطلوبة' : 'What You Bring to the Collective'}
               </h2>
               <ul className="space-y-4">
@@ -119,7 +119,7 @@ export function CareerDetailContent({ job, lang }: CareerDetailContentProps) {
             {/* 4. Preferred Qualifications (if available) */}
             {job.preferredQualifications && job.preferredQualifications.length > 0 && (
               <div>
-                <h2 className="font-primary text-xl sm:text-2xl font-bold text-foreground mb-4 sm:mb-5">
+                <h2 className="font-primary text-xl sm:text-2xl font-medium text-foreground mb-4 sm:mb-5">
                   {isAr ? 'نقاط إضافية مميزة' : 'Bonus Points & Preferred Experience'}
                 </h2>
                 <ul className="space-y-3.5">
@@ -137,7 +137,7 @@ export function CareerDetailContent({ job, lang }: CareerDetailContentProps) {
 
             {/* 5. Tech Stack & Tooling Cloud */}
             <div>
-              <h2 className="font-primary text-xl sm:text-2xl font-bold text-foreground mb-4">
+              <h2 className="font-primary text-xl sm:text-2xl font-medium text-foreground mb-4">
                 {isAr ? 'الأدوات والمنظومة التقنية' : 'Tech Stack & Core Tooling'}
               </h2>
               <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
@@ -155,7 +155,7 @@ export function CareerDetailContent({ job, lang }: CareerDetailContentProps) {
             {/* 6. Role-Specific Total Rewards */}
             {job.benefits && job.benefits.length > 0 && (
               <div className="p-6 sm:p-8 rounded-3xl bg-[#FFFAFA] border border-black/8">
-                <h2 className="font-primary text-xl sm:text-2xl font-bold text-foreground mb-4">
+                <h2 className="font-primary text-xl sm:text-2xl font-medium text-foreground mb-4">
                   {isAr ? 'المزايا الخاصة بهذه الوظيفة' : 'Role Perks & Total Rewards'}
                 </h2>
                 <ul className="space-y-3">
@@ -178,7 +178,7 @@ export function CareerDetailContent({ job, lang }: CareerDetailContentProps) {
           <aside className="lg:col-span-4 lg:sticky lg:top-28 space-y-6">
             {/* Quick Spec Card */}
             <div className="p-6 sm:p-7 rounded-3xl bg-[#FFFAFA] border border-black/8 shadow-xs">
-              <h3 className="font-primary text-lg font-bold text-foreground mb-5 pb-4 border-b border-black/5">
+              <h3 className="font-primary text-lg font-medium text-foreground mb-5 pb-4 border-b border-black/5">
                 {isAr ? 'ملخص الوظيفة السريع' : 'Role Specifications'}
               </h3>
 
@@ -187,7 +187,7 @@ export function CareerDetailContent({ job, lang }: CareerDetailContentProps) {
                 <div className="flex items-start gap-3">
                   <TbBuildingSkyscraper className="w-4 h-4 text-persici-crimson shrink-0 mt-0.5" />
                   <div>
-                    <div className="text-foreground/50 text-[11px] uppercase font-mono font-medium">
+                    <div className="text-foreground/50 text-[9.5px] uppercase font-mono font-medium">
                       {isAr ? 'القسم' : 'Department'}
                     </div>
                     <div className="font-semibold text-foreground">
@@ -200,7 +200,7 @@ export function CareerDetailContent({ job, lang }: CareerDetailContentProps) {
                 <div className="flex items-start gap-3">
                   <TbMapPin className="w-4 h-4 text-persici-crimson shrink-0 mt-0.5" />
                   <div>
-                    <div className="text-foreground/50 text-[11px] uppercase font-mono font-medium">
+                    <div className="text-foreground/50 text-[9.5px] uppercase font-mono font-medium">
                       {isAr ? 'المقر وساعات العمل' : 'Location & Rhythm'}
                     </div>
                     <div className="font-semibold text-foreground">
@@ -213,7 +213,7 @@ export function CareerDetailContent({ job, lang }: CareerDetailContentProps) {
                 <div className="flex items-start gap-3">
                   <TbClock className="w-4 h-4 text-persici-crimson shrink-0 mt-0.5" />
                   <div>
-                    <div className="text-foreground/50 text-[11px] uppercase font-mono font-medium">
+                    <div className="text-foreground/50 text-[9.5px] uppercase font-mono font-medium">
                       {isAr ? 'المستوى والخبرة' : 'Seniority Level'}
                     </div>
                     <div className="font-semibold text-foreground">
@@ -226,7 +226,7 @@ export function CareerDetailContent({ job, lang }: CareerDetailContentProps) {
                 <div className="flex items-start gap-3">
                   <TbCurrencyDollar className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
                   <div>
-                    <div className="text-foreground/50 text-[11px] uppercase font-mono font-medium">
+                    <div className="text-foreground/50 text-[9.5px] uppercase font-mono font-medium">
                       {isAr ? 'حزمة المكافأة' : 'Compensation Package'}
                     </div>
                     <div className="font-semibold text-foreground font-mono">
@@ -239,7 +239,7 @@ export function CareerDetailContent({ job, lang }: CareerDetailContentProps) {
                 <div className="flex items-start gap-3">
                   <TbPlane className="w-4 h-4 text-persici-crimson shrink-0 mt-0.5" />
                   <div>
-                    <div className="text-foreground/50 text-[11px] uppercase font-mono font-medium">
+                    <div className="text-foreground/50 text-[9.5px] uppercase font-mono font-medium">
                       {isAr ? 'رعاية التأشيرة' : 'Visa Sponsorship'}
                     </div>
                     <div className="font-semibold text-foreground">
@@ -252,7 +252,7 @@ export function CareerDetailContent({ job, lang }: CareerDetailContentProps) {
                 <div className="flex items-start gap-3">
                   <TbDeviceLaptop className="w-4 h-4 text-persici-crimson shrink-0 mt-0.5" />
                   <div>
-                    <div className="text-foreground/50 text-[11px] uppercase font-mono font-medium">
+                    <div className="text-foreground/50 text-[9.5px] uppercase font-mono font-medium">
                       {isAr ? 'العتاد والأجهزة' : 'Workstation Provided'}
                     </div>
                     <div className="font-semibold text-foreground">
@@ -314,7 +314,7 @@ export function CareerDetailContent({ job, lang }: CareerDetailContentProps) {
                   type="button"
                   onClick={shareOnX}
                   title="Share on X"
-                  className="w-10 h-10 rounded-xl bg-black/5 hover:bg-black/10 flex items-center justify-center text-foreground/80 hover:text-foreground transition-colors font-mono font-bold text-xs"
+                  className="w-10 h-10 rounded-xl bg-black/5 hover:bg-black/10 flex items-center justify-center text-foreground/80 hover:text-foreground transition-colors font-mono font-semibold text-xs"
                 >
                   𝕏
                 </button>
@@ -324,7 +324,7 @@ export function CareerDetailContent({ job, lang }: CareerDetailContentProps) {
             {/* Talent Concierge Direct Inquiries */}
             <div className="p-6 rounded-3xl bg-black/[0.02] border border-black/5 text-center">
               <TbMail className="w-5 h-5 text-persici-crimson mx-auto mb-2" />
-              <div className="font-primary text-xs sm:text-sm font-bold text-foreground mb-1">
+              <div className="font-primary text-xs sm:text-sm font-semibold text-foreground mb-1">
                 {isAr ? 'لديك استفسار حول الدور؟' : 'Questions About This Role?'}
               </div>
               <p className="font-secondary text-xs text-foreground/60 mb-3">

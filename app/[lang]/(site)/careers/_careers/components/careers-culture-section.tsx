@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import Image from 'next/image';
@@ -22,12 +22,12 @@ export function CareersCultureSection({ data, lang }: CareersCultureSectionProps
         {/* Section Header */}
         <div className="max-w-3xl mb-12 sm:mb-16">
           <FadeUp delay={100} duration={600}>
-            <span className="inline-block font-mono text-[11px] sm:text-xs font-semibold uppercase tracking-wider text-persici-crimson bg-persici-crimson/10 px-3.5 py-1 rounded-full mb-3">
+            <span className="inline-block font-mono text-[9.5px] sm:text-xs font-semibold uppercase tracking-wider text-persici-crimson bg-persici-crimson/10 px-3.5 py-1 rounded-full mb-3">
               {data.badge[isAr ? 'ar' : 'en']}
             </span>
           </FadeUp>
           <FadeUp delay={200} duration={700}>
-            <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-foreground mb-4">
+            <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-foreground mb-4">
               {data.title[isAr ? 'ar' : 'en']}
             </h2>
           </FadeUp>
@@ -53,11 +53,11 @@ export function CareersCultureSection({ data, lang }: CareersCultureSectionProps
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
                 <div className="absolute bottom-0 inset-x-0 p-6 sm:p-8 text-white">
-                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-[11px] font-medium text-white mb-2">
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-[9.5px] font-medium text-white mb-2">
                     <TbMapPin className="w-3.5 h-3.5 text-persici-blush" />
                     <span>{photos[0].location[isAr ? 'ar' : 'en']}</span>
                   </div>
-                  <h3 className="font-primary text-lg sm:text-xl font-bold leading-snug">
+                  <h3 className="font-primary text-lg sm:text-xl font-medium leading-snug">
                     {photos[0].title[isAr ? 'ar' : 'en']}
                   </h3>
                 </div>
@@ -79,11 +79,11 @@ export function CareersCultureSection({ data, lang }: CareersCultureSectionProps
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
                     <div className="absolute bottom-0 inset-x-0 p-5 text-white">
-                      <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/20 backdrop-blur-md text-[10px] font-medium text-white mb-1.5">
+                      <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/20 backdrop-blur-md text-[9.5px] font-medium text-white mb-1.5">
                         <TbMapPin className="w-3 h-3 text-persici-blush" />
                         <span>{photos[1].location[isAr ? 'ar' : 'en']}</span>
                       </div>
-                      <h4 className="font-primary text-sm sm:text-base font-bold leading-snug">
+                      <h4 className="font-primary text-sm sm:text-base font-medium leading-snug">
                         {photos[1].title[isAr ? 'ar' : 'en']}
                       </h4>
                     </div>
@@ -101,11 +101,11 @@ export function CareersCultureSection({ data, lang }: CareersCultureSectionProps
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
                     <div className="absolute bottom-0 inset-x-0 p-5 text-white">
-                      <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/20 backdrop-blur-md text-[10px] font-medium text-white mb-1.5">
+                      <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/20 backdrop-blur-md text-[9.5px] font-medium text-white mb-1.5">
                         <TbMapPin className="w-3 h-3 text-persici-blush" />
                         <span>{photos[2].location[isAr ? 'ar' : 'en']}</span>
                       </div>
-                      <h4 className="font-primary text-sm sm:text-base font-bold leading-snug">
+                      <h4 className="font-primary text-sm sm:text-base font-medium leading-snug">
                         {photos[2].title[isAr ? 'ar' : 'en']}
                       </h4>
                     </div>
@@ -125,11 +125,11 @@ export function CareersCultureSection({ data, lang }: CareersCultureSectionProps
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
                   <div className="absolute bottom-0 inset-x-0 p-6 sm:p-7 text-white">
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-[11px] font-medium text-white mb-2">
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-[9.5px] font-medium text-white mb-2">
                       <TbMapPin className="w-3.5 h-3.5 text-persici-blush" />
                       <span>{photos[3].location[isAr ? 'ar' : 'en']}</span>
                     </div>
-                    <h3 className="font-primary text-base sm:text-lg font-bold leading-snug">
+                    <h3 className="font-primary text-base sm:text-lg font-medium leading-snug">
                       {photos[3].title[isAr ? 'ar' : 'en']}
                     </h3>
                   </div>

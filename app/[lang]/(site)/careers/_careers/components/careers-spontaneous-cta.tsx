@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import { TbMail } from 'react-icons/tb';
@@ -24,11 +24,11 @@ export function CareersSpontaneousCta({ data, lang }: CareersSpontaneousCtaProps
             <div className="pointer-events-none absolute -bottom-32 -start-32 w-96 h-96 bg-persici-blush/10 blur-3xl rounded-full" />
 
             <div className="relative z-10 max-w-3xl">
-              <div className="inline-flex items-center px-3.5 py-1 rounded-full bg-white/10 border border-white/15 text-[11px] font-mono font-semibold uppercase tracking-wider text-persici-blush mb-6">
+              <div className="inline-flex items-center px-3.5 py-1 rounded-full bg-white/10 border border-white/15 text-[9.5px] font-mono font-semibold uppercase tracking-wider text-persici-blush mb-6">
                 <span>{data.badge[isAr ? 'ar' : 'en']}</span>
               </div>
 
-              <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white mb-6 leading-tight">
+              <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-white mb-6 leading-tight">
                 {data.title[isAr ? 'ar' : 'en']}
               </h2>
 

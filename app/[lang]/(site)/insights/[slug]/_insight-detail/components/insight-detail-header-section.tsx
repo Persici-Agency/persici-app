@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
@@ -149,7 +149,7 @@ export function InsightDetailHeaderSection({ insight, lang }: InsightDetailHeade
           {/* Breadcrumb Navigation Sequence */}
           <FadeUp delay={0} duration={600} distance={12}>
             <nav aria-label={isRtl ? 'مسار التنقل' : 'Breadcrumb'} className="mb-6">
-              <ol className="flex items-center flex-wrap gap-1.5 sm:gap-2 text-xs sm:text-[13px] font-medium text-slate-500">
+              <ol className="flex items-center flex-wrap gap-1.5 sm:gap-2 text-xs sm:text-[12px] font-medium text-slate-500">
                 {/* 1. Home */}
                 <li className="inline-flex items-center">
                   <Link
@@ -221,7 +221,7 @@ export function InsightDetailHeaderSection({ insight, lang }: InsightDetailHeade
 
           {/* Main Title H1 */}
           <FadeUp delay={100} duration={750} distance={20} blur={true}>
-            <h1 className="font-primary text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight leading-[1.15]">
+            <h1 className="font-primary text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-medium text-slate-900 tracking-tight leading-[1.15]">
               {title}
             </h1>
           </FadeUp>
@@ -243,7 +243,7 @@ export function InsightDetailHeaderSection({ insight, lang }: InsightDetailHeade
                   {formatDisplayDate(insight.date, isRtl)}
                 </span>
                 <span className="text-slate-300">•</span>
-                <span className="inline-flex items-center rounded-full bg-persici-crimson/10 text-persici-crimson font-sans font-bold px-3 py-1 text-xs">
+                <span className="inline-flex items-center rounded-full bg-persici-crimson/10 text-persici-crimson font-sans font-semibold px-3 py-1 text-xs">
                   {categoryLabel}
                 </span>
                 <span className="text-slate-300">•</span>
@@ -282,7 +282,7 @@ export function InsightDetailHeaderSection({ insight, lang }: InsightDetailHeade
                         ) : (
                           <TbCopy className="h-4 w-4 text-slate-500 shrink-0" />
                         )}
-                        <span className={copied ? 'text-emerald-700 font-bold' : ''}>
+                        <span className={copied ? 'text-emerald-700 font-semibold' : ''}>
                           {isRtl
                             ? copied
                               ? 'تم النسخ بنجاح!'

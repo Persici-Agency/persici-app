@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import type { Dictionary } from '@dictionaries';
@@ -36,7 +36,7 @@ export function DiscoveryCallForm({ dict }: { dict: Dictionary }) {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
           </svg>
         </div>
-        <h4 className="mt-4 font-primary text-xl font-bold text-foreground">
+        <h4 className="mt-4 font-primary text-xl font-medium text-foreground">
           {dict.discovery.form.successTitle}
         </h4>
         <p className="mt-2 text-sm text-foreground/70">
@@ -57,10 +57,10 @@ export function DiscoveryCallForm({ dict }: { dict: Dictionary }) {
     <div className="rounded-3xl border border-black/10 bg-white p-6 shadow-xl sm:p-8">
       <div className="mb-6 flex items-center justify-between border-b border-black/5 pb-4">
         <div>
-          <span className="inline-block rounded-full bg-persici-crimson/10 px-3 py-1 text-[11px] font-semibold text-persici-crimson">
+          <span className="inline-block rounded-full bg-persici-crimson/10 px-3 py-1 text-[9.5px] font-semibold text-persici-crimson">
             {dict.discovery.form.badge}
           </span>
-          <h3 className="mt-2 font-primary text-lg font-bold text-foreground">
+          <h3 className="mt-2 font-primary text-lg font-medium text-foreground">
             {dict.discovery.form.title}
           </h3>
           <p className="text-xs text-foreground/60">

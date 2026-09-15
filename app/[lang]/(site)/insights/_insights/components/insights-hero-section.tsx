@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import Image from 'next/image';
@@ -50,7 +50,7 @@ export function InsightsHeroSection({ lang }: InsightsHeroSectionProps) {
 
             {/* Main Headline */}
             <FadeUp delay={120} duration={850} distance={24} blur={true}>
-              <h1 className="font-primary text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-slate-900 leading-[1.12]">
+              <h1 className="font-primary text-4xl sm:text-5xl lg:text-6xl font-medium tracking-tight text-slate-900 leading-[1.12]">
                 {isRtl ? (
                   <>
                     قيادة فكرية حائزة على{' '}

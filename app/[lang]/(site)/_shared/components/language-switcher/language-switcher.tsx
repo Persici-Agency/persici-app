@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
@@ -68,7 +68,7 @@ export function LanguageSwitcher({
               <Link
                 key={locale.code}
                 href={getLocalizedPath(locale.code)}
-                className={`rounded-full px-2.5 py-0.5 text-[11px] font-medium transition-all ${
+                className={`rounded-full px-2.5 py-0.5 text-[9.5px] font-medium transition-all ${
                   isActive
                     ? 'bg-persici-crimson text-white shadow-xs'
                     : 'text-white/60 hover:text-white'

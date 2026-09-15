@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
@@ -84,7 +84,7 @@ export function DarkTestimonialCard({
               />
             </div>
             <div>
-              <span className="block font-primary text-base font-bold tracking-wider text-white">
+              <span className="block font-primary text-base font-semibold tracking-wider text-white">
                 {current.company}
               </span>
               <div className="flex text-xs text-amber-400">★★★★★</div>
@@ -92,7 +92,7 @@ export function DarkTestimonialCard({
           </div>
 
           {current.metric && (
-            <div className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-[11px] font-bold text-emerald-400">
+            <div className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-[9.5px] font-semibold text-emerald-400">
               {current.metric}
             </div>
           )}
@@ -121,7 +121,7 @@ export function DarkTestimonialCard({
             )}
           >
             <div className="text-xs font-semibold text-white">{current.author}</div>
-            <div className="text-[11px] text-white/60">{current.role}</div>
+            <div className="text-[9.5px] text-white/60">{current.role}</div>
           </div>
 
           {/* Controls: Prev / Next Buttons */}

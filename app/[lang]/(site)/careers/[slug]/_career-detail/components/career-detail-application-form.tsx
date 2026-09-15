@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useRef } from 'react';
 import {
@@ -171,7 +171,7 @@ export function CareerDetailApplicationForm({ job, lang }: CareerDetailApplicati
                 {isAr ? 'تم استلام طلبك بنجاح' : 'Application Received'}
               </span>
 
-              <h2 className="font-primary text-2xl sm:text-4xl font-extrabold text-foreground mt-4 mb-3">
+              <h2 className="font-primary text-2xl sm:text-4xl font-medium text-foreground mt-4 mb-3">
                 {isAr ? 'شكراً لاهتمامك بالانضمام إلى برسيسي' : 'Thank You for Applying to Persici'}
               </h2>
 
@@ -183,7 +183,7 @@ export function CareerDetailApplicationForm({ job, lang }: CareerDetailApplicati
 
               <div className="inline-flex items-center gap-2 font-mono text-xs text-foreground/60 bg-black/5 px-4 py-2 rounded-xl mb-8">
                 <span>{isAr ? 'رقم المرجع:' : 'Application Ref:'}</span>
-                <span className="font-bold text-foreground">{submittedId}</span>
+                <span className="font-semibold text-foreground">{submittedId}</span>
               </div>
 
               <div className="flex flex-wrap items-center justify-center gap-4">
@@ -207,10 +207,10 @@ export function CareerDetailApplicationForm({ job, lang }: CareerDetailApplicati
             <div className="p-6 sm:p-10 lg:p-12 rounded-3xl bg-white border border-black/8 shadow-xl">
               {/* Header */}
               <div className="mb-8 sm:mb-10 pb-6 border-b border-black/5">
-                <div className="inline-flex items-center px-3.5 py-1 rounded-full bg-persici-crimson/10 text-[11px] font-mono font-semibold uppercase tracking-wider text-persici-crimson mb-3">
+                <div className="inline-flex items-center px-3.5 py-1 rounded-full bg-persici-crimson/10 text-[9.5px] font-mono font-semibold uppercase tracking-wider text-persici-crimson mb-3">
                   <span>{isAr ? 'نموذج التقديم المباشر' : 'Official Application'}</span>
                 </div>
-                <h2 className="font-primary text-2xl sm:text-3xl font-extrabold text-foreground mb-2">
+                <h2 className="font-primary text-2xl sm:text-3xl font-medium text-foreground mb-2">
                   {isAr ? `التقديم على: ${job.title.ar}` : `Apply for: ${job.title.en}`}
                 </h2>
                 <p className="font-secondary text-xs sm:text-sm text-foreground/60">
@@ -369,10 +369,10 @@ export function CareerDetailApplicationForm({ job, lang }: CareerDetailApplicati
                       <div className="flex items-center gap-3">
                         <TbFileText className="w-6 h-6 text-emerald-600" />
                         <div>
-                          <div className="font-primary text-xs sm:text-sm font-bold truncate max-w-[200px] sm:max-w-md">
+                          <div className="font-primary text-xs sm:text-sm font-semibold truncate max-w-[200px] sm:max-w-md">
                             {resumeFile.name}
                           </div>
-                          <div className="font-mono text-[10px] text-foreground/50">
+                          <div className="font-mono text-[9.5px] text-foreground/50">
                             {(resumeFile.size / (1024 * 1024)).toFixed(2)} MB
                           </div>
                         </div>
@@ -394,10 +394,10 @@ export function CareerDetailApplicationForm({ job, lang }: CareerDetailApplicati
                       className="flex flex-col items-center justify-center p-8 rounded-2xl border-2 border-dashed border-black/15 hover:border-persici-crimson bg-black/[0.01] hover:bg-persici-crimson/[0.02] cursor-pointer transition-all text-center group"
                     >
                       <TbCloudUpload className="w-8 h-8 text-foreground/40 group-hover:text-persici-crimson transition-colors mb-2" />
-                      <div className="font-primary text-xs sm:text-sm font-bold text-foreground mb-1">
+                      <div className="font-primary text-xs sm:text-sm font-semibold text-foreground mb-1">
                         {isAr ? 'انقر لرفع ملف السيرة الذاتية أو اسحبه هنا' : 'Click to upload your resume or drag and drop'}
                       </div>
-                      <p className="font-secondary text-[11px] text-foreground/50">
+                      <p className="font-secondary text-[9.5px] text-foreground/50">
                         PDF, DOC, DOCX ({isAr ? 'حتى 10 ميغابايت' : 'up to 10MB'})
                       </p>
                     </div>
@@ -431,7 +431,7 @@ export function CareerDetailApplicationForm({ job, lang }: CareerDetailApplicati
 
                 {/* Security Note & Submit Button */}
                 <div className="pt-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-                  <div className="flex items-center gap-2 text-[11px] text-foreground/50">
+                  <div className="flex items-center gap-2 text-[9.5px] text-foreground/50">
                     <TbShieldCheck className="w-4 h-4 text-emerald-600" />
                     <span>
                       {isAr

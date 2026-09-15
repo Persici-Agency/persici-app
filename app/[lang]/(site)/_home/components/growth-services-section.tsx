@@ -1,4 +1,4 @@
-import type { Dictionary } from '@dictionaries';
+﻿import type { Dictionary } from '@dictionaries';
 import {
   sectionContainer,
   sectionPaddingY,
@@ -88,7 +88,7 @@ export function GrowthServicesSection({ lang, dict }: GrowthServicesSectionProps
       {/* Bottom Banner Strip with Dual Action Buttons */}
       <FadeUp delay={450} duration={750} distance={20}>
         <div className="mt-8 flex flex-col items-center justify-between gap-6 rounded-3xl border border-black/10 bg-persici-black/[0.02] p-6 sm:px-8 sm:py-6 shadow-sm md:flex-row">
-          <p className="font-primary text-base font-bold text-foreground sm:text-lg">
+          <p className="font-primary text-base font-semibold text-foreground sm:text-lg">
             {dict.growthServices.bannerText}
           </p>
           <div className="flex flex-wrap items-center gap-3">

@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { cn } from '@shared/utils';
 import { FadeUp } from '../fade-up';
 import { platforms as platformsData } from '../../data';
@@ -55,7 +55,7 @@ function getPlatformIcon(platform: string, iconColor?: string, customClassName?:
     case 'shopify':
       return <SiShopify className={cn('h-6 w-6', iconColor, customClassName, !iconColor && 'text-[#95BF47]')} aria-hidden="true" />;
     default:
-      return <span className={cn('text-xs font-bold', iconColor)}>{platform.charAt(0).toUpperCase()}</span>;
+      return <span className={cn('text-xs font-semibold', iconColor)}>{platform.charAt(0).toUpperCase()}</span>;
   }
 }
 
@@ -264,7 +264,7 @@ export function GrowthServiceCard({
           )}
 
           {/* Service Title */}
-          <h3 className="mt-6 font-primary text-2xl font-bold text-foreground sm:text-3xl">
+          <h3 className="mt-6 font-primary text-2xl font-medium text-foreground sm:text-3xl">
             {title}
           </h3>
 

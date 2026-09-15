@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import { TbClock } from 'react-icons/tb';
@@ -20,12 +20,12 @@ export function CareersProcessSection({ data, lang }: CareersProcessSectionProps
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-14 sm:mb-20">
           <FadeUp delay={100} duration={600}>
-            <span className="inline-block font-mono text-[11px] sm:text-xs font-semibold uppercase tracking-wider text-persici-crimson bg-persici-crimson/10 px-3.5 py-1 rounded-full mb-3">
+            <span className="inline-block font-mono text-[9.5px] sm:text-xs font-semibold uppercase tracking-wider text-persici-crimson bg-persici-crimson/10 px-3.5 py-1 rounded-full mb-3">
               {data.badge[isAr ? 'ar' : 'en']}
             </span>
           </FadeUp>
           <FadeUp delay={200} duration={700}>
-            <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-foreground mb-4">
+            <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-foreground mb-4">
               {data.title[isAr ? 'ar' : 'en']}
             </h2>
           </FadeUp>
@@ -44,16 +44,16 @@ export function CareersProcessSection({ data, lang }: CareersProcessSectionProps
                 <div>
                   {/* Step Number & Duration */}
                   <div className="flex items-center justify-between mb-5">
-                    <span className="font-mono text-2xl sm:text-3xl font-extrabold text-persici-crimson">
+                    <span className="font-mono text-2xl sm:text-3xl font-semibold text-persici-crimson">
                       {step.step}
                     </span>
-                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/5 text-[10px] sm:text-[11px] font-medium text-foreground/70">
+                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/5 text-[9.5px] sm:text-[9.5px] font-medium text-foreground/70">
                       <TbClock className="w-3.5 h-3.5 text-persici-crimson" />
                       <span>{step.duration[isAr ? 'ar' : 'en']}</span>
                     </div>
                   </div>
 
-                  <h3 className="font-primary text-base sm:text-lg font-bold text-foreground mb-2 leading-snug group-hover:text-persici-crimson transition-colors">
+                  <h3 className="font-primary text-base sm:text-lg font-medium text-foreground mb-2 leading-snug group-hover:text-persici-crimson transition-colors">
                     {step.title[isAr ? 'ar' : 'en']}
                   </h3>
 

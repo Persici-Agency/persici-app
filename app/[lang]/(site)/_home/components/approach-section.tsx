@@ -1,4 +1,4 @@
-import Image from 'next/image';
+﻿import Image from 'next/image';
 import type { Dictionary } from '@dictionaries';
 import { sectionContainer, sectionPaddingY, HomeButton, FadeUp } from '@shared';
 import { getHomeApproachTeam } from '../services';
@@ -35,10 +35,10 @@ export function ApproachSection({ lang, dict }: ApproachSectionProps) {
           <div className="absolute bottom-4 sm:bottom-6 start-4 sm:start-6 end-4 sm:end-6 rounded-2xl sm:rounded-3xl border border-black/10 bg-white/95 p-4 sm:p-5 shadow-2xl backdrop-blur-md">
             <div className="flex flex-col gap-3">
               <div>
-                <span className="block text-[11px] font-semibold tracking-wider uppercase text-persici-crimson">
+                <span className="block text-[9.5px] font-semibold tracking-wider uppercase text-persici-crimson">
                   {dict.approach.teamBadgeLabel || 'Team Persici'}
                 </span>
-                <h4 className="font-primary text-sm sm:text-base font-bold text-foreground mt-0.5">
+                <h4 className="font-primary text-sm sm:text-base font-medium text-foreground mt-0.5">
                   {dict.approach.teamBadgeTitle || 'Your team of specialists'}
                 </h4>
               </div>
@@ -67,7 +67,7 @@ export function ApproachSection({ lang, dict }: ApproachSectionProps) {
 
         {/* Right Column: Approach Copy & CTAs */}
         <FadeUp delay={200} duration={800} distance={24} className="relative lg:col-span-6">
-          <h2 className="font-primary text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl lg:text-5xl leading-[1.15]">
+          <h2 className="font-primary text-3xl font-medium tracking-tight text-foreground sm:text-4xl lg:text-5xl leading-[1.15]">
             {dict.approach.title}
           </h2>
           <p className="mt-6 text-sm leading-relaxed text-foreground/75 sm:text-base">

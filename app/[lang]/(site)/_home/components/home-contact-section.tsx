@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useRef } from 'react';
 import ReCAPTCHA from 'react-google-recaptcha';
@@ -160,14 +160,14 @@ export function HomeContactSection({ lang, dict }: HomeContactSectionProps) {
               {/* Left Column: Ready to learn more? & Checklist */}
               <div className="flex flex-col justify-between h-full lg:col-span-6 lg:pe-6">
                 <div>
-                  <h3 className="font-primary text-2xl sm:text-3xl lg:text-4xl font-extrabold text-foreground tracking-tight">
+                  <h3 className="font-primary text-2xl sm:text-3xl lg:text-4xl font-medium text-foreground tracking-tight">
                     {dict.homeContact?.leftTitle || 'Ready to learn more?'}
                   </h3>
 
                   <ul className="mt-8 space-y-4 sm:space-y-5">
                     {points.map((pointText, idx) => (
                       <li key={idx} className="flex items-start gap-3.5 text-sm sm:text-base text-foreground/80 font-medium leading-relaxed">
-                        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-dark text-dark mt-0.5 shadow-2xs font-bold text-xs">
+                        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-dark text-dark mt-0.5 shadow-2xs font-semibold text-xs">
                           ✓
                         </span>
                         <span>{pointText}</span>
@@ -197,7 +197,7 @@ export function HomeContactSection({ lang, dict }: HomeContactSectionProps) {
               {/* Right Column: Get in touch Form */}
               <div className="lg:col-span-6">
                 <div>
-                  <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-extrabold text-foreground tracking-tight">
+                  <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-medium text-foreground tracking-tight">
                     {dict.homeContact?.title || 'Get in touch'}
                   </h2>
                   <p className="mt-3 text-sm sm:text-base leading-relaxed text-foreground/75">
@@ -210,10 +210,10 @@ export function HomeContactSection({ lang, dict }: HomeContactSectionProps) {
 
                 {isSubmitted ? (
                   <div className="mt-8 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 p-8 text-center animate-wave-1">
-                    <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500 text-white shadow-lg text-2xl font-bold">
+                    <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500 text-white shadow-lg text-2xl font-semibold">
                       ✓
                     </div>
-                    <h4 className="font-primary text-xl font-bold text-foreground mt-4">
+                    <h4 className="font-primary text-xl font-medium text-foreground mt-4">
                       {dict.homeContact?.successTitle || 'Thank you for reaching out!'}
                     </h4>
                     <p className="mt-2 text-sm text-foreground/75 max-w-md mx-auto leading-relaxed">
@@ -405,7 +405,7 @@ export function HomeContactSection({ lang, dict }: HomeContactSectionProps) {
                     </div>
 
                     {/* Legal Disclaimer */}
-                    <p className="pt-2 text-[11px] leading-relaxed text-foreground/50">
+                    <p className="pt-2 text-[9.5px] leading-relaxed text-foreground/50">
                       {dict.homeContact?.disclaimer ||
                         'By submitting this form, you authorize Persici to contact you regarding your inquiry. Read our Privacy Policy for more detail or opt out at any time.'}
                     </p>

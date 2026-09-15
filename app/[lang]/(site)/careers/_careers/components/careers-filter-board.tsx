@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
@@ -80,12 +80,12 @@ export function CareersFilterBoard({ openings, lang }: CareersFilterBoardProps) 
         {/* Board Header */}
         <div className="max-w-3xl mb-10 sm:mb-14">
           <FadeUp delay={100} duration={600}>
-            <span className="inline-block font-mono text-[11px] sm:text-xs font-semibold uppercase tracking-wider text-persici-crimson bg-persici-crimson/10 px-3.5 py-1 rounded-full mb-3">
+            <span className="inline-block font-mono text-[9.5px] sm:text-xs font-semibold uppercase tracking-wider text-persici-crimson bg-persici-crimson/10 px-3.5 py-1 rounded-full mb-3">
               {isAr ? 'فرص العمل الحالية' : 'Open Positions'}
             </span>
           </FadeUp>
           <FadeUp delay={200} duration={700}>
-            <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-foreground mb-4">
+            <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-foreground mb-4">
               {isAr ? 'انضم إلى نخبة البناة والمبتكرين' : 'Find Your Role in the Collective'}
             </h2>
           </FadeUp>
@@ -211,7 +211,7 @@ export function CareersFilterBoard({ openings, lang }: CareersFilterBoardProps) 
                   <div className="flex-1 pe-0 lg:pe-8">
                     {/* Badges Row */}
                     <div className="flex flex-wrap items-center gap-2 mb-3.5">
-                      <span className="font-mono text-[11px] font-semibold text-persici-crimson bg-persici-crimson/10 px-3 py-0.5 rounded-full">
+                      <span className="font-mono text-[9.5px] font-semibold text-persici-crimson bg-persici-crimson/10 px-3 py-0.5 rounded-full">
                         {job.department[isAr ? 'ar' : 'en']}
                       </span>
                       <span className="inline-flex items-center gap-1 font-secondary text-xs text-foreground/60 bg-black/5 px-2.5 py-0.5 rounded-full">
@@ -225,14 +225,14 @@ export function CareersFilterBoard({ openings, lang }: CareersFilterBoardProps) 
                         {job.experience[isAr ? 'ar' : 'en']}
                       </span>
                       {job.featured && (
-                        <span className="font-mono text-[10px] uppercase font-bold text-amber-700 bg-amber-500/15 border border-amber-500/30 px-2.5 py-0.5 rounded-full">
+                        <span className="font-mono text-[9.5px] uppercase font-semibold text-amber-700 bg-amber-500/15 border border-amber-500/30 px-2.5 py-0.5 rounded-full">
                           {isAr ? 'مطلوبة بشدة' : 'High Priority'}
                         </span>
                       )}
                     </div>
 
                     {/* Role Title */}
-                    <h3 className="font-primary text-xl sm:text-2xl font-bold text-foreground mb-2 group-hover:text-persici-crimson transition-colors">
+                    <h3 className="font-primary text-xl sm:text-2xl font-medium text-foreground mb-2 group-hover:text-persici-crimson transition-colors">
                       <Link href={`/${lang}/careers/${job.slug}`} className="hover:underline">
                         {job.title[isAr ? 'ar' : 'en']}
                       </Link>
@@ -245,19 +245,19 @@ export function CareersFilterBoard({ openings, lang }: CareersFilterBoardProps) 
 
                     {/* Tech Stack Pills & Compensation Preview */}
                     <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-black/5">
-                      <span className="text-[11px] font-semibold text-foreground/50">
+                      <span className="text-[9.5px] font-semibold text-foreground/50">
                         {isAr ? 'التقنيات:' : 'Stack:'}
                       </span>
                       {job.techStack.slice(0, 5).map((tech: string) => (
                         <span
                           key={tech}
-                          className="font-mono text-[10px] px-2 py-0.5 rounded-md bg-black/[0.03] text-foreground/75 border border-black/5"
+                          className="font-mono text-[9.5px] px-2 py-0.5 rounded-md bg-black/[0.03] text-foreground/75 border border-black/5"
                         >
                           {tech}
                         </span>
                       ))}
                       {job.techStack.length > 5 && (
-                        <span className="font-mono text-[10px] text-foreground/50">
+                        <span className="font-mono text-[9.5px] text-foreground/50">
                           +{job.techStack.length - 5}
                         </span>
                       )}
@@ -289,7 +289,7 @@ export function CareersFilterBoard({ openings, lang }: CareersFilterBoardProps) 
             <div className="w-16 h-16 rounded-3xl bg-persici-crimson/10 text-persici-crimson flex items-center justify-center mx-auto mb-4">
               <TbBriefcase className="w-8 h-8" />
             </div>
-            <h3 className="font-primary text-xl font-bold text-foreground mb-2">
+            <h3 className="font-primary text-xl font-medium text-foreground mb-2">
               {isAr ? 'لم نجد وظائف مطابقة للبحث' : 'No Matching Openings Found'}
             </h3>
             <p className="font-secondary text-sm text-foreground/60 max-w-md mx-auto mb-6">

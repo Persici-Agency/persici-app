@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import type { InsightDetail } from '../../../_insights/types';
 import type { Dictionary } from '@dictionaries';
 import { sectionContainer } from '@shared/constants';
@@ -56,7 +56,7 @@ export function InsightDetailView({ insight, lang, dict }: InsightDetailViewProp
                     className="scroll-mt-28 border-b border-slate-100 pb-10 last:border-b-0"
                   >
                     {/* Section Heading */}
-                    <h2 className="font-primary text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight leading-snug mb-6">
+                    <h2 className="font-primary text-2xl sm:text-3xl font-medium text-slate-900 tracking-tight leading-snug mb-6">
                       {heading}
                     </h2>
 

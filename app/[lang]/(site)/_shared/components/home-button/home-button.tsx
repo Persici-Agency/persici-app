@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import type { HomeButtonProps } from "@shared";
 import { cn, transitionEffect } from "@shared";
 import { ImArrowRight2 } from "react-icons/im";
@@ -31,7 +31,7 @@ export const HomeButton = ({
             {hasIcon && (
                 <span
                     className={cn(
-                        `flex h-8 w-8 text-sm font-bold items-center justify-center rounded-full text-black bg-white shrink-0 ${transitionEffect + "500"}`,
+                        `flex h-8 w-8 text-sm font-semibold items-center justify-center rounded-full text-black bg-white shrink-0 ${transitionEffect + "500"}`,
                         isLangEffectIcon && (
                             iconDirection === 'down'
                                 ? lang === 'ar'

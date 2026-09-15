@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
 import Image from 'next/image';
@@ -169,10 +169,10 @@ export function FloatingAppointmentWidget({ lang, dict }: FloatingAppointmentWid
               </div>
 
               <div>
-                <div className="font-primary text-sm font-bold text-foreground">
+                <div className="font-primary text-sm font-semibold text-foreground">
                   {dict.floatingAppointment?.advisorName || 'Hanan'}
                 </div>
-                <div className="text-[11px] font-medium text-foreground/60">
+                <div className="text-[9.5px] font-medium text-foreground/60">
                   {dict.floatingAppointment?.advisorRole || 'Senior Growth Advisor'}
                 </div>
               </div>
@@ -195,7 +195,7 @@ export function FloatingAppointmentWidget({ lang, dict }: FloatingAppointmentWid
               <div className="space-y-4">
                 {/* Title & Description */}
                 <div>
-                  <h4 className="font-primary text-sm sm:text-base font-bold text-foreground leading-snug">
+                  <h4 className="font-primary text-sm sm:text-base font-medium text-foreground leading-snug">
                     {dict.floatingAppointment?.title || 'Schedule your free 30-minute discovery call'}
                   </h4>
                   <p className="mt-1.5 text-xs text-foreground/70 leading-relaxed">
@@ -213,7 +213,7 @@ export function FloatingAppointmentWidget({ lang, dict }: FloatingAppointmentWid
                     <span className="text-xs font-semibold text-foreground/90">
                       {dict.floatingAppointment?.urgencyText || 'Only few slots are left.'}
                     </span>
-                    <span className="font-mono text-xs font-bold text-persici-crimson bg-persici-crimson/10 px-2 py-0.5 rounded-md">
+                    <span className="font-mono text-xs font-semibold text-persici-crimson bg-persici-crimson/10 px-2 py-0.5 rounded-md">
                       {formattedTime}
                     </span>
                   </div>
@@ -231,12 +231,12 @@ export function FloatingAppointmentWidget({ lang, dict }: FloatingAppointmentWid
                         className={cn(
                           'flex flex-col items-center justify-center rounded-2xl py-2.5 px-1 transition-all cursor-pointer text-center',
                           isSelected
-                            ? 'border-2 border-persici-crimson bg-persici-crimson/5 text-persici-crimson shadow-xs font-bold'
+                            ? 'border-2 border-persici-crimson bg-persici-crimson/5 text-persici-crimson shadow-xs font-semibold'
                             : 'border border-black/10 bg-white text-foreground/80 hover:border-black/25'
                         )}
                       >
-                        <span className="text-[11px] font-medium opacity-80">{item.dayName}</span>
-                        <span className="text-sm font-extrabold mt-0.5">{item.dayNum}</span>
+                        <span className="text-[9.5px] font-medium opacity-80">{item.dayName}</span>
+                        <span className="text-sm font-semibold mt-0.5">{item.dayNum}</span>
                       </button>
                     );
                   })}
@@ -244,7 +244,7 @@ export function FloatingAppointmentWidget({ lang, dict }: FloatingAppointmentWid
 
                 {/* Time Slots Selector */}
                 <div>
-                  <label className="block text-[11px] font-semibold text-foreground/70 mb-1.5">
+                  <label className="block text-[9.5px] font-semibold text-foreground/70 mb-1.5">
                     {dict.floatingAppointment?.selectTime || 'Select time slot'}
                   </label>
                   <div className="grid grid-cols-3 gap-1.5">
@@ -256,7 +256,7 @@ export function FloatingAppointmentWidget({ lang, dict }: FloatingAppointmentWid
                           type="button"
                           onClick={() => setSelectedTimeIndex(idx)}
                           className={cn(
-                            'rounded-xl py-2 px-1 text-[11px] font-semibold transition-all cursor-pointer text-center',
+                            'rounded-xl py-2 px-1 text-[9.5px] font-semibold transition-all cursor-pointer text-center',
                             isSelected
                               ? 'bg-persici-black text-white shadow-xs'
                               : 'border border-black/10 bg-white text-foreground/80 hover:bg-neutral-50'
@@ -274,7 +274,7 @@ export function FloatingAppointmentWidget({ lang, dict }: FloatingAppointmentWid
                   <button
                     type="button"
                     onClick={() => setStep('form')}
-                    className="w-full flex items-center justify-center rounded-full bg-persici-crimson py-3 text-xs sm:text-sm font-bold text-white shadow-lg shadow-persici-crimson/25 transition-all hover:bg-persici-crimson-80 hover:shadow-xl active:scale-98 cursor-pointer"
+                    className="w-full flex items-center justify-center rounded-full bg-persici-crimson py-3 text-xs sm:text-sm font-semibold text-white shadow-lg shadow-persici-crimson/25 transition-all hover:bg-persici-crimson-80 hover:shadow-xl active:scale-98 cursor-pointer"
                   >
                     {dict.floatingAppointment?.cta || 'Schedule a discovery call'}
                   </button>
@@ -285,20 +285,20 @@ export function FloatingAppointmentWidget({ lang, dict }: FloatingAppointmentWid
             {step === 'form' && (
               <form onSubmit={handleBookingSubmit} className="space-y-3.5 animate-in fade-in">
                 <div className="flex items-center justify-between pb-1 border-b border-black/5">
-                  <span className="text-xs font-bold text-foreground">
+                  <span className="text-xs font-semibold text-foreground">
                     {days[selectedDayIndex]?.dayName} {days[selectedDayIndex]?.dayNum} • {timeSlots[selectedTimeIndex]}
                   </span>
                   <button
                     type="button"
                     onClick={() => setStep('picker')}
-                    className="text-[11px] font-semibold text-persici-crimson hover:underline cursor-pointer"
+                    className="text-[9.5px] font-semibold text-persici-crimson hover:underline cursor-pointer"
                   >
                     Change
                   </button>
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-semibold text-foreground/75 mb-1">
+                  <label className="block text-[9.5px] font-semibold text-foreground/75 mb-1">
                     {dict.floatingAppointment?.fullName || 'Full Name'} *
                   </label>
                   <input
@@ -312,7 +312,7 @@ export function FloatingAppointmentWidget({ lang, dict }: FloatingAppointmentWid
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-semibold text-foreground/75 mb-1">
+                  <label className="block text-[9.5px] font-semibold text-foreground/75 mb-1">
                     {dict.floatingAppointment?.email || 'Work Email'} *
                   </label>
                   <input
@@ -326,7 +326,7 @@ export function FloatingAppointmentWidget({ lang, dict }: FloatingAppointmentWid
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-semibold text-foreground/75 mb-1">
+                  <label className="block text-[9.5px] font-semibold text-foreground/75 mb-1">
                     {dict.floatingAppointment?.website || 'Store Website / URL'}
                   </label>
                   <input
@@ -339,7 +339,7 @@ export function FloatingAppointmentWidget({ lang, dict }: FloatingAppointmentWid
                 </div>
 
                 {errorMessage && (
-                  <div className="rounded-xl bg-red-50 border border-red-200 p-2.5 text-[11px] text-red-700 font-medium leading-tight">
+                  <div className="rounded-xl bg-red-50 border border-red-200 p-2.5 text-[9.5px] text-red-700 font-medium leading-tight">
                     {errorMessage}
                   </div>
                 )}
@@ -364,10 +364,10 @@ export function FloatingAppointmentWidget({ lang, dict }: FloatingAppointmentWid
 
             {step === 'success' && (
               <div className="py-6 text-center space-y-3 animate-in fade-in">
-                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500 text-white text-2xl font-bold shadow-lg shadow-emerald-500/20">
+                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500 text-white text-2xl font-semibold shadow-lg shadow-emerald-500/20">
                   ✓
                 </div>
-                <h4 className="font-primary text-base font-bold text-foreground">
+                <h4 className="font-primary text-base font-medium text-foreground">
                   {dict.floatingAppointment?.successTitle || 'Appointment Scheduled!'}
                 </h4>
                 <p className="text-xs text-foreground/70 leading-relaxed max-w-xs mx-auto">
@@ -386,7 +386,7 @@ export function FloatingAppointmentWidget({ lang, dict }: FloatingAppointmentWid
           </div>
 
           {/* Popover Footer Branding */}
-          <div className="border-t border-black/5 bg-neutral-50/60 py-2.5 text-center text-[10px] font-medium text-foreground/50">
+          <div className="border-t border-black/5 bg-neutral-50/60 py-2.5 text-center text-[9.5px] font-medium text-foreground/50">
             {dict.floatingAppointment?.poweredBy || 'Powered by Persici Growth OS'}
           </div>
         </div>

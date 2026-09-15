@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState } from 'react';
 import { TbThumbUp, TbThumbDown, TbCheck } from 'react-icons/tb';
@@ -21,7 +21,7 @@ export function InsightFeedbackWidget({ lang }: InsightFeedbackWidgetProps) {
       className="mt-16 pt-8 border-t border-slate-200/80 flex items-center justify-between flex-wrap gap-4"
     >
       <div className="flex items-center gap-4">
-        <span className="font-mono text-xs font-bold uppercase tracking-wider text-slate-700">
+        <span className="font-mono text-xs font-semibold uppercase tracking-wider text-slate-700">
           {isRtl ? 'هل كانت هذه المقالة مفيدة لك؟' : 'Was this article helpful?'}
         </span>
 
@@ -59,7 +59,7 @@ export function InsightFeedbackWidget({ lang }: InsightFeedbackWidgetProps) {
         )}
       </div>
 
-      <div className="font-mono text-[11px] text-slate-400">
+      <div className="font-mono text-[9.5px] text-slate-400">
         {isRtl ? 'بيرسيكي للبحوث والتحليلات' : 'Persici Research & Intelligence'}
       </div>
     </div>

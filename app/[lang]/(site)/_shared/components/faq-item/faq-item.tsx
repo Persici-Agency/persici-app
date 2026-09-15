@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState } from 'react';
 
@@ -113,7 +113,7 @@ export function FaqItem({
           {resolvedQuestion}
         </span>
         <span
-          className={`flex h-7 w-7 sm:h-8 sm:w-8 shrink-0 items-center justify-center rounded-full bg-white shadow-2xs font-bold text-sm sm:text-base transition-transform duration-300 ${
+          className={`flex h-7 w-7 sm:h-8 sm:w-8 shrink-0 items-center justify-center rounded-full bg-white shadow-2xs font-semibold text-sm sm:text-base transition-transform duration-300 ${
             isOpen ? 'rotate-45 text-persici-crimson' : 'text-slate-700'
           }`}
           aria-hidden="true"

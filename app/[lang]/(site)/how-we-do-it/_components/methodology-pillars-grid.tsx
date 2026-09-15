@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState } from 'react';
 import Link from 'next/link';
@@ -32,7 +32,7 @@ export function MethodologyPillarsGrid({
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-persici-crimson/10 border border-persici-crimson/20 text-persici-crimson text-xs font-semibold uppercase tracking-wider mb-4">
             {isRtl ? 'ركائز المنهجية الخمس' : 'The 5 Core Methodology Pillars'}
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-primary font-bold text-slate-900 tracking-tight leading-tight mb-5">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-primary font-medium text-slate-900 tracking-tight leading-tight mb-5">
             {title}
           </h2>
           <p className="text-base sm:text-lg text-slate-600 font-secondary leading-relaxed">
@@ -60,7 +60,7 @@ export function MethodologyPillarsGrid({
                 <div>
                   {/* Header Row: Index Number & Tag */}
                   <div className="flex items-center justify-between gap-4 mb-6">
-                    <span className="font-mono text-2xl sm:text-3xl font-bold text-slate-300 group-hover:text-persici-crimson transition-colors duration-300">
+                    <span className="font-mono text-2xl sm:text-3xl font-semibold text-slate-300 group-hover:text-persici-crimson transition-colors duration-300">
                       {numStr}
                     </span>
                     <span className="inline-block px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-200/70 text-slate-700 group-hover:bg-persici-crimson/10 group-hover:text-persici-crimson transition-colors duration-300">
@@ -69,7 +69,7 @@ export function MethodologyPillarsGrid({
                   </div>
 
                   {/* Title */}
-                  <h3 className="text-xl sm:text-2xl font-primary font-bold text-slate-900 mb-3 group-hover:text-persici-crimson transition-colors duration-200">
+                  <h3 className="text-xl sm:text-2xl font-primary font-medium text-slate-900 mb-3 group-hover:text-persici-crimson transition-colors duration-200">
                     {itemTitle}
                   </h3>
 

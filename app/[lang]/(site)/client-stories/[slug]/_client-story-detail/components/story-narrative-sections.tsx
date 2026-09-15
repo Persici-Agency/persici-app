@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import type { ClientStoryDetail, StoryNarrativeSection } from '../../../_client-stories/types';
 import { TbCheck, TbQuote } from 'react-icons/tb';
 
@@ -21,7 +21,7 @@ export function StoryNarrativeSections({ story, lang }: StoryNarrativeSectionsPr
         className="scroll-mt-32 pt-8 sm:pt-10 border-b border-slate-100 pb-12 sm:pb-16 first:pt-0"
       >
         {/* Section Title */}
-        <h2 className="font-primary text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight mb-6">
+        <h2 className="font-primary text-2xl sm:text-3xl lg:text-4xl font-medium text-slate-900 tracking-tight mb-6">
           {title}
         </h2>
 
@@ -58,7 +58,7 @@ export function StoryNarrativeSections({ story, lang }: StoryNarrativeSectionsPr
               &ldquo;{section.quote.text[lang as 'en' | 'ar'] || section.quote.text.en}&rdquo;
             </p>
             <footer className="mt-4 flex items-center gap-2">
-              <span className="font-bold text-sm text-slate-900">{section.quote.author}</span>
+              <span className="font-semibold text-sm text-slate-900">{section.quote.author}</span>
               {section.quote.role && (
                 <>
                   <span className="text-slate-400">•</span>

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import type { Dictionary } from '@dictionaries';
@@ -32,7 +32,7 @@ export function ContactFormSection({ dict }: { dict: Dictionary }) {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
-                <h3 className="mt-4 font-primary text-xl font-bold text-foreground">
+                <h3 className="mt-4 font-primary text-xl font-medium text-foreground">
                   {dict.discovery.form.successTitle}
                 </h3>
                 <p className="mt-2 text-sm text-foreground/70">
@@ -93,7 +93,7 @@ export function ContactFormSection({ dict }: { dict: Dictionary }) {
         {/* Office Locations Column */}
         <div className="flex flex-col justify-between space-y-6 lg:col-span-5">
           <div className="space-y-4">
-            <h3 className="font-primary text-xl font-bold text-foreground">
+            <h3 className="font-primary text-xl font-medium text-foreground">
               Global Growth Hubs
             </h3>
             {offices.map((office) => (
@@ -101,7 +101,7 @@ export function ContactFormSection({ dict }: { dict: Dictionary }) {
                 key={office.city}
                 className="rounded-2xl border border-black/10 bg-white p-5 shadow-xs"
               >
-                <div className="font-primary text-sm font-bold text-persici-crimson">
+                <div className="font-primary text-sm font-semibold text-persici-crimson">
                   {office.city}
                 </div>
                 <div className="mt-1 text-xs text-foreground/70">{office.address}</div>
@@ -112,7 +112,7 @@ export function ContactFormSection({ dict }: { dict: Dictionary }) {
 
           <div className="rounded-2xl bg-persici-black p-6 text-white">
             <div className="text-xs text-persici-blush font-semibold">Direct Inquiries</div>
-            <div className="mt-1 text-sm font-bold">growth@persici.com</div>
+            <div className="mt-1 text-sm font-semibold">growth@persici.com</div>
             <div className="mt-2 text-xs text-white/60">Response within 2 hours during business days.</div>
           </div>
         </div>

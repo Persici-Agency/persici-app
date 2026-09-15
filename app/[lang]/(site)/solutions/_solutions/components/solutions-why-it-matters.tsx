@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { sectionContainer, sectionPaddingY } from '@shared/constants';
 import { ShapedImageContainer, FadeUp, CountUp } from '@shared';
 
@@ -48,7 +48,7 @@ export function SolutionsWhyItMatters({
               distance={28}
               duration={800}
             >
-              <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 leading-[1.2]">
+              <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-slate-900 leading-[1.2]">
                 {title}
               </h2>
 
@@ -59,7 +59,7 @@ export function SolutionsWhyItMatters({
               {/* Micro-proof points */}
               <div className="mt-8 grid grid-cols-2 gap-6 pt-6 border-t border-slate-200/70">
                 <div>
-                  <div className="font-primary text-2xl sm:text-3xl font-extrabold text-persici-crimson">
+                  <div className="font-primary text-2xl sm:text-3xl font-semibold text-persici-crimson">
                     <CountUp value="3.4x" />
                   </div>
                   <div className="text-xs sm:text-sm text-slate-500 mt-1">
@@ -67,7 +67,7 @@ export function SolutionsWhyItMatters({
                   </div>
                 </div>
                 <div>
-                  <div className="font-primary text-2xl sm:text-3xl font-extrabold text-slate-900">
+                  <div className="font-primary text-2xl sm:text-3xl font-semibold text-slate-900">
                     <CountUp value="-38%" />
                   </div>
                   <div className="text-xs sm:text-sm text-slate-500 mt-1">
