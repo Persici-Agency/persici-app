@@ -1,7 +1,7 @@
 import nodemailer from 'nodemailer';
 import type { Transporter } from 'nodemailer';
 import { getEmailConfig } from './email.config';
-import type { ContactFormData, AppointmentFormData } from '@shared/types';
+import type { ContactFormData, AppointmentFormData, JobApplicationFormData } from '@shared/types';
 
 let cachedTransporter: Transporter | null = null;
 
@@ -379,3 +379,183 @@ Notes: ${data.notes || 'None'}
     return { success: false };
   }
 }
+
+/**
+ * Send Job Application Notification to Persici Talent Acquisition & Applicant Confirmation
+ */
+export async function sendJobApplicationNotification(
+  data: JobApplicationFormData
+): Promise<{ success: boolean; simulated?: boolean; messageId?: string }> {
+  const config = getEmailConfig();
+  const transporter = getTransporter();
+
+  const subject = `[Persici Careers] New Application: ${data.name} — ${data.roleTitle}`;
+
+  const textContent = `
+NEW PERSICI CAREERS APPLICATION
+===============================
+Role Applied: ${data.roleTitle} (${data.department || 'General'})
+Role Slug: ${data.roleSlug}
+
+Candidate Details:
+------------------
+Name: ${data.name}
+Email: ${data.email}
+Phone: ${data.phone || 'N/A'}
+Location: ${data.location || 'N/A'}
+Earliest Start Date: ${data.startDate || 'Immediate / Flexible'}
+Expected Compensation: ${data.expectedSalary || 'Negotiable'}
+
+Profiles & Links:
+-----------------
+LinkedIn: ${data.linkedinUrl || 'N/A'}
+Portfolio / GitHub: ${data.portfolioUrl || data.githubUrl || 'N/A'}
+Resume URL: ${data.resumeUrl || 'N/A'} (Filename: ${data.resumeFileName || 'N/A'})
+
+Cover Note / Why Persici:
+-------------------------
+${data.coverNote || 'None provided.'}
+
+Timestamp: ${new Date().toISOString()}
+  `.trim();
+
+  const htmlContent = `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="utf-8">
+        <style>
+          body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f8fafc; margin: 0; padding: 24px; color: #1e293b; }
+          .container { max-width: 640px; margin: 0 auto; background: #ffffff; border-radius: 16px; border: 1px solid #e2e8f0; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+          .header { background: #121212; padding: 32px; border-bottom: 3px solid #D83427; }
+          .badge { display: inline-block; background: rgba(216, 52, 39, 0.15); color: #D83427; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 4px 10px; border-radius: 9999px; border: 1px solid rgba(216,52,39,0.3); margin-bottom: 8px; }
+          .title { color: #ffffff; margin: 0; font-size: 22px; font-weight: 700; }
+          .subtitle { color: #94a3b8; font-size: 14px; margin-top: 4px; }
+          .content { padding: 32px; }
+          .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 24px; }
+          .data-box { background: #f8fafc; padding: 16px; border-radius: 10px; border: 1px solid #e2e8f0; }
+          .label { font-size: 11px; font-weight: 600; text-transform: uppercase; color: #64748b; letter-spacing: 0.5px; margin-bottom: 4px; }
+          .val { font-size: 15px; font-weight: 600; color: #0f172a; word-break: break-all; }
+          .note-box { background: #fdf3f2; border: 1px solid #f9ccc8; border-radius: 12px; padding: 20px; margin-bottom: 24px; }
+          .note-text { font-size: 14px; line-height: 1.6; color: #334155; white-space: pre-wrap; margin: 0; }
+          .btn { display: inline-block; background: #D83427; color: #ffffff; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; font-size: 14px; margin-top: 8px; }
+          .footer { background: #f8fafc; padding: 20px 32px; border-top: 1px solid #e2e8f0; font-size: 12px; color: #94a3b8; text-align: center; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <span class="badge">Persici Careers Portal</span>
+            <h1 class="title">New Candidate Application</h1>
+            <p class="subtitle">${data.roleTitle} &bull; ${data.department || 'General'}</p>
+          </div>
+          <div class="content">
+            <div class="grid">
+              <div class="data-box">
+                <div class="label">Full Name</div>
+                <div class="val">${data.name}</div>
+              </div>
+              <div class="data-box">
+                <div class="label">Email Address</div>
+                <div class="val"><a href="mailto:${data.email}" style="color: #D83427; text-decoration: none;">${data.email}</a></div>
+              </div>
+              <div class="data-box">
+                <div class="label">Phone</div>
+                <div class="val">${data.phone || 'N/A'}</div>
+              </div>
+              <div class="data-box">
+                <div class="label">Current Location</div>
+                <div class="val">${data.location || 'N/A'}</div>
+              </div>
+              <div class="data-box">
+                <div class="label">Earliest Availability</div>
+                <div class="val">${data.startDate || 'Immediate / Flexible'}</div>
+              </div>
+              <div class="data-box">
+                <div class="label">Expected Compensation</div>
+                <div class="val">${data.expectedSalary || 'Negotiable'}</div>
+              </div>
+            </div>
+
+            <div style="background: #f1f5f9; padding: 16px; border-radius: 10px; margin-bottom: 24px;">
+              <div class="label" style="margin-bottom: 8px;">Professional Profiles & Dossier</div>
+              <div style="display: flex; gap: 16px; flex-wrap: wrap; font-size: 14px;">
+                ${data.linkedinUrl ? `<div><strong>LinkedIn:</strong> <a href="${data.linkedinUrl}" target="_blank" style="color: #D83427;">View Profile &rarr;</a></div>` : ''}
+                ${data.portfolioUrl ? `<div><strong>Portfolio:</strong> <a href="${data.portfolioUrl}" target="_blank" style="color: #D83427;">View Showcase &rarr;</a></div>` : ''}
+                ${data.githubUrl ? `<div><strong>GitHub:</strong> <a href="${data.githubUrl}" target="_blank" style="color: #D83427;">View Code &rarr;</a></div>` : ''}
+                ${data.resumeUrl ? `<div><strong>Resume/CV:</strong> <a href="${data.resumeUrl}" target="_blank" style="color: #D83427; font-weight: bold;">Download ${data.resumeFileName || 'Resume'} &darr;</a></div>` : ''}
+              </div>
+            </div>
+
+            ${data.coverNote ? `
+              <div class="label" style="margin-bottom: 6px;">Cover Note / Candidate Statement</div>
+              <div class="note-box">
+                <p class="note-text">${data.coverNote}</p>
+              </div>
+            ` : ''}
+
+            <div style="text-align: center; margin-top: 24px;">
+              <a href="mailto:${data.email}?subject=Persici%20Careers%20Follow-up%20%7C%20${encodeURIComponent(data.roleTitle)}" class="btn">
+                Reply Directly to Candidate &rarr;
+              </a>
+            </div>
+          </div>
+          <div class="footer">
+            Persici Agency Talent Acquisition &bull; Dubai &bull; Riyadh &bull; Amman &bull; Global
+          </div>
+        </div>
+      </body>
+    </html>
+  `;
+
+  if (!transporter) {
+    console.log('[EmailService (DEV/SIMULATED)] Careers Application Notification:');
+    console.log(textContent);
+    return { success: true, simulated: true };
+  }
+
+  try {
+    const info = await transporter.sendMail({
+      from: config.from,
+      to: config.recipients.careers,
+      replyTo: data.email,
+      subject,
+      text: textContent,
+      html: htmlContent,
+    });
+
+    // Auto-reply to applicant
+    try {
+      await transporter.sendMail({
+        from: config.from,
+        to: data.email,
+        subject: `Application Received: ${data.roleTitle} at Persici Agency`,
+        text: `Dear ${data.name},\n\nThank you for applying for the ${data.roleTitle} role at Persici Agency.\n\nOur talent team and department leads are reviewing your profile and portfolio. If there is mutual alignment, we will reach out within 48 to 72 hours for an initial alignment conversation.\n\nIn the meantime, feel free to explore our recent client transformations at https://persiciagency.com/client-stories.\n\nBest regards,\nPersici Agency Talent Collective`,
+        html: `
+          <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #1e293b; max-width: 580px; margin: 0 auto; padding: 28px; border: 1px solid #e2e8f0; border-radius: 12px; background: #ffffff;">
+            <div style="margin-bottom: 20px;">
+              <span style="font-size: 11px; font-weight: 700; color: #D83427; letter-spacing: 1px; text-transform: uppercase;">Persici Agency</span>
+              <h2 style="color: #0f172a; margin: 8px 0 0 0; font-size: 20px;">Your application has been received</h2>
+            </div>
+            <p>Dear ${data.name},</p>
+            <p>Thank you for your interest in shaping the digital landscape with us. We have received your application for <strong>${data.roleTitle}</strong>.</p>
+            <div style="background: #f8fafc; border-left: 3px solid #D83427; padding: 14px 16px; margin: 20px 0; border-radius: 0 8px 8px 0;">
+              <p style="margin: 0; font-size: 13px; color: #475569;"><strong>Next Steps:</strong> Our hiring team reviews every submission thoroughly. You can expect a response within <strong>48 to 72 business hours</strong> regarding next steps.</p>
+            </div>
+            <p>We appreciate the time you took to share your journey with us.</p>
+            <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 24px 0;" />
+            <p style="font-size: 12px; color: #94a3b8; margin: 0;">Persici Agency &bull; Dubai HQ &bull; Riyadh &bull; Amman &bull; Global Remote</p>
+          </div>
+        `,
+      });
+    } catch (clientErr) {
+      console.warn('[EmailService] Applicant auto-reply failed:', clientErr);
+    }
+
+    return { success: true, messageId: info.messageId };
+  } catch (error) {
+    console.error('[EmailService] Failed to send careers notification email:', error);
+    return { success: false };
+  }
+}
+

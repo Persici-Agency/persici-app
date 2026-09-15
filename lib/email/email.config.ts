@@ -29,6 +29,7 @@ export interface EmailConfig {
   recipients: {
     contactForm: string;
     appointment: string;
+    careers: string;
   };
 }
 
@@ -47,6 +48,7 @@ export function getEmailConfig(): EmailConfig {
 
   const contactReceiver = process.env.CONTACT_RECEIVER_EMAIL || process.env.SITE_RECEIVER_EMAIL || smtpUser || 'info@persiciagency.com';
   const appointmentReceiver = process.env.APPOINTMENT_RECEIVER_EMAIL || contactReceiver;
+  const careersReceiver = process.env.CAREERS_RECEIVER_EMAIL || 'careers@persiciagency.com';
 
   return {
     smtp: {
@@ -71,6 +73,7 @@ export function getEmailConfig(): EmailConfig {
     recipients: {
       contactForm: contactReceiver,
       appointment: appointmentReceiver,
+      careers: careersReceiver,
     },
   };
 }

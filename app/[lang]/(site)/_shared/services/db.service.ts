@@ -40,6 +40,8 @@ import type {
   DiscoverySubmission,
   AppointmentFormData,
   AppointmentSubmission,
+  JobApplicationFormData,
+  JobApplicationSubmission,
 } from '@shared/types';
 
 /**
@@ -390,6 +392,31 @@ export async function saveAppointmentSubmission(
     return { success: true, id: res.insertedId.toString() };
   } catch (err) {
     console.error('[db.service] saveAppointmentSubmission error:', err);
+    return { success: false };
+  }
+}
+
+export async function saveJobApplicationSubmission(
+  data: JobApplicationFormData
+): Promise<{ success: boolean; id?: string }> {
+  try {
+    const db = await getDb();
+    if (!db) {
+      console.warn('[db.service] MongoDB not connected, simulated job application submission.');
+      return { success: true, id: 'simulated-job-' + Date.now() };
+    }
+
+    const submission: JobApplicationSubmission = {
+      ...data,
+      status: 'new',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    const res = await db.collection(COLLECTIONS.JOB_APPLICATIONS).insertOne(submission as unknown as Document);
+    return { success: true, id: res.insertedId.toString() };
+  } catch (err) {
+    console.error('[db.service] saveJobApplicationSubmission error:', err);
     return { success: false };
   }
 }
