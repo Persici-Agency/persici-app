@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useEffect } from 'react';
 
@@ -148,7 +148,7 @@ export function StoryStickyRailNav({ lang, className = '' }: StoryStickyRailNavP
                 onClick={() => scrollTo(item.id)}
                 className={`text-start px-4 py-2 text-sm transition-all duration-200 cursor-pointer -ms-0.5 border-s-2 ${
                   isActive
-                    ? 'border-persici-crimson font-bold text-persici-crimson bg-persici-crimson/5 rounded-e-lg'
+                    ? 'border-persici-crimson font-semibold text-persici-crimson bg-persici-crimson/5 rounded-e-lg'
                     : 'border-transparent font-medium text-slate-500 hover:text-slate-900 hover:border-slate-300'
                 }`}
               >

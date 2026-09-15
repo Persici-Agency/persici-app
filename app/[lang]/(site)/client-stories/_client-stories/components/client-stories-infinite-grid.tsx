@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import type { ClientStoryDetail, StoryCategorySlug } from '../types';
@@ -115,7 +115,7 @@ export function ClientStoriesInfiniteGrid({
       ) : (
         <div className="flex flex-col items-center justify-center py-20 text-center rounded-3xl border border-dashed border-slate-200 bg-slate-50/50">
           <TbFolderOff className="h-12 w-12 text-slate-400 mb-3" />
-          <h4 className="text-lg font-bold text-slate-800">
+          <h4 className="text-lg font-medium text-slate-800">
             {isRtl ? 'لا توجد قصص نجاح في هذا التصنيف' : 'No client stories in this category'}
           </h4>
           <p className="text-sm text-slate-500 mt-1">

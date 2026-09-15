@@ -1,6 +1,6 @@
 import type { Dictionary } from '@dictionaries';
-import { InsightsHeroSection } from './insights-hero-section';
-import { InsightsGridSection } from './insights-grid-section';
+import { getAllInsights } from '../data/insights.data';
+import { InsightsHubView } from './insights-hub-view';
 
 export type InsightsViewProps = {
   lang: string;
@@ -8,10 +8,6 @@ export type InsightsViewProps = {
 };
 
 export function InsightsView({ lang, dict }: InsightsViewProps) {
-  return (
-    <div>
-      <InsightsHeroSection dict={dict} />
-      <InsightsGridSection lang={lang} />
-    </div>
-  );
+  const insights = getAllInsights();
+  return <InsightsHubView insights={insights} lang={lang} dict={dict} />;
 }

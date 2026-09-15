@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useRef, useEffect } from 'react';
 import { sectionContainer, sectionPaddingY } from '@shared/constants';
@@ -279,7 +279,7 @@ export function InsightsSection({
           {/* Left Column: Heading, Subtitle & Action Button */}
           <div className="lg:col-span-4 flex flex-col justify-between h-full">
             <FadeUp direction={isRtl ? 'left' : 'right'} distance={20} duration={700}>
-              <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight leading-[1.15] mb-4">
+              <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-medium text-slate-900 tracking-tight leading-[1.15] mb-4">
                 {headingText}
               </h2>
               <p className="text-base sm:text-lg text-slate-600 leading-relaxed font-normal mb-8 max-w-sm">

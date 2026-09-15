@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState } from 'react';
 import type { Dictionary } from '@dictionaries';
@@ -68,7 +68,7 @@ export function StrategyConsultingView({
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-persici-crimson/10 border border-persici-crimson/20 text-persici-crimson text-xs font-semibold uppercase tracking-wider mb-4">
               {isAr ? 'القدرات الاستشارية' : 'Advisory Capabilities'}
             </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-primary font-bold text-slate-900 tracking-tight leading-tight mb-5">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-primary font-medium text-slate-900 tracking-tight leading-tight mb-5">
               {offeringsTitle}
             </h2>
             <p className="text-base sm:text-lg text-slate-600 font-secondary leading-relaxed">
@@ -155,7 +155,7 @@ export function StrategyConsultingView({
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-persici-crimson/10 border border-persici-crimson/20 text-persici-crimson text-xs font-semibold uppercase tracking-wider mb-4">
               {isAr ? 'نموذج التنفيذ' : 'Engagement Model'}
             </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-primary font-bold text-slate-900 tracking-tight leading-tight mb-5">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-primary font-medium text-slate-900 tracking-tight leading-tight mb-5">
               {engagementTitle}
             </h2>
             <p className="text-base sm:text-lg text-slate-600 font-secondary leading-relaxed">
@@ -175,10 +175,10 @@ export function StrategyConsultingView({
                 >
                   <div className="absolute top-0 inset-x-0 h-1 bg-persici-crimson opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-t-2xl" />
                   <div>
-                    <span className="font-mono text-3xl font-extrabold text-persici-crimson mb-4 block">
+                    <span className="font-mono text-3xl font-semibold text-persici-crimson mb-4 block">
                       {step.number}
                     </span>
-                    <h3 className="text-xl font-primary font-bold text-slate-900 mb-3 group-hover:text-persici-crimson transition-colors">
+                    <h3 className="text-xl font-primary font-medium text-slate-900 mb-3 group-hover:text-persici-crimson transition-colors">
                       {stepTitle}
                     </h3>
                     <p className="text-sm text-slate-600 font-secondary leading-relaxed">
@@ -200,7 +200,7 @@ export function StrategyConsultingView({
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-persici-crimson/20 border border-persici-crimson/30 text-persici-crimson text-xs font-semibold uppercase tracking-wider mb-4">
                 {isAr ? 'الأدوات والبنية التحتية' : 'Toolchains & Platforms'}
               </div>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-primary font-bold text-white tracking-tight leading-tight mb-5">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-primary font-medium text-white tracking-tight leading-tight mb-5">
                 {isAr ? 'منظومة التقنيات الاستراتيجية' : 'Strategic Technology Ecosystem'}
               </h2>
               <p className="text-base sm:text-lg text-slate-300 font-secondary leading-relaxed">

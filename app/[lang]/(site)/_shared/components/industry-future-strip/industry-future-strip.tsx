@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import Image from 'next/image';
@@ -36,7 +36,7 @@ export function IndustryFutureStrip({
               {badge}
             </div>
           )}
-          <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 leading-tight">
+          <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-slate-900 leading-tight">
             {title}
           </h2>
           <p className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed">
@@ -75,11 +75,11 @@ export function IndustryFutureStrip({
 
                   {/* Card Content at Bottom */}
                   <div className="relative z-10">
-                    <span className="inline-block text-[11px] font-mono font-semibold tracking-wider uppercase text-white/90 bg-white/15 border border-white/20 backdrop-blur-md px-3 py-1 rounded-full mb-3">
+                    <span className="inline-block text-[9.5px] font-mono font-semibold tracking-wider uppercase text-white/90 bg-white/15 border border-white/20 backdrop-blur-md px-3 py-1 rounded-full mb-3">
                       {cardBadge}
                     </span>
 
-                    <h3 className="font-primary text-xl sm:text-2xl lg:text-3xl font-bold text-white leading-snug mb-3 transition-colors group-hover:text-white">
+                    <h3 className="font-primary text-xl sm:text-2xl lg:text-3xl font-medium text-white leading-snug mb-3 transition-colors group-hover:text-white">
                       {cardTitle}
                     </h3>
 
@@ -90,7 +90,7 @@ export function IndustryFutureStrip({
                     {item.href && (
                       <Link
                         href={`/${lang}${item.href}`}
-                        className="inline-flex items-center gap-2 text-xs font-bold text-white/90 hover:text-white group/link"
+                        className="inline-flex items-center gap-2 text-xs font-semibold text-white/90 hover:text-white group/link"
                       >
                         <span className="relative py-0.5 after:absolute after:bottom-0 after:h-[1.5px] after:w-full after:scale-x-0 after:bg-current after:transition-transform after:duration-300 after:ease-in-out group-hover/link:after:scale-x-100">
                           {isRtl ? 'اكتشف التحول' : 'Explore Shift'}

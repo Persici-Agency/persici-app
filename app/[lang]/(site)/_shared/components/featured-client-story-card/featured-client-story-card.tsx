@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import Image from 'next/image';
@@ -292,7 +292,7 @@ export function FeaturedClientStoryCard({
                   >
                     {itemCta}
                   </span>
-                  <span className="text-base font-bold transition-transform duration-300 ease-in-out group-hover:translate-x-1.5 rtl:group-hover:-translate-x-1.5 rtl:rotate-180 shrink-0">
+                  <span className="text-base font-semibold transition-transform duration-300 ease-in-out group-hover:translate-x-1.5 rtl:group-hover:-translate-x-1.5 rtl:rotate-180 shrink-0">
                     →
                   </span>
                 </Link>

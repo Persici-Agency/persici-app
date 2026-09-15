@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import { sectionContainer } from '@shared/constants';
@@ -45,7 +45,7 @@ export function ClientStoriesHeroSection({ lang }: ClientStoriesHeroSectionProps
 
           {/* Main Title */}
           <FadeUp delay={120} duration={850} distance={24} blur={true}>
-            <h1 className="font-primary text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl lg:text-6xl sm:leading-[1.12]">
+            <h1 className="font-primary text-4xl font-medium tracking-tight text-slate-900 sm:text-5xl lg:text-6xl sm:leading-[1.12]">
               {isRtl ? (
                 <>
                   أعمال تحولية تصنع الفارق{' '}

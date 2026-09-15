@@ -50,7 +50,7 @@ export type PartnerBadge = {
 export type HomeButtonProps = {
   href?: string;
   type?: 'button' | 'submit' | 'reset';
-  icon?: React.ReactNode;
+  icon?: React.ReactNode | null;
   className?: string;
   title?: string;
   onClick?: (e?: React.MouseEvent) => void;
@@ -59,7 +59,7 @@ export type HomeButtonProps = {
   iconClassName?: string;
   isLangEffectIcon?: boolean;
   currentLang?: string;
-  iconDirection?: string;
+  iconDirection?: 'right' | 'left' | 'down' | string;
 };
 
 export type LogoSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | number;
@@ -399,10 +399,53 @@ export interface ContactFormData {
   message: string;
   phone?: string;
   subject?: string;
+  company?: string;
+  country?: string;
+  jobTitle?: string;
+  reason?: string;
 }
 
 export interface ContactSubmission extends BaseMongoDocument, ContactFormData {
   status?: 'unread' | 'read' | 'replied';
+}
+
+export interface AppointmentFormData {
+  name: string;
+  email: string;
+  website?: string;
+  revenue?: string;
+  selectedDate?: string;
+  selectedTime?: string;
+  phone?: string;
+  notes?: string;
+}
+
+export interface AppointmentSubmission extends BaseMongoDocument, AppointmentFormData {
+  status?: 'pending' | 'confirmed' | 'cancelled';
+}
+
+export interface JobApplicationFormData {
+  name: string;
+  email: string;
+  phone: string;
+  location?: string;
+  roleSlug: string;
+  roleTitle: string;
+  department?: string;
+  linkedinUrl?: string;
+  portfolioUrl?: string;
+  githubUrl?: string;
+  startDate?: string;
+  expectedSalary?: string;
+  resumeUrl?: string;
+  resumeFileName?: string;
+  coverNote?: string;
+  locale?: string;
+}
+
+export interface JobApplicationSubmission extends BaseMongoDocument, JobApplicationFormData {
+  status?: 'new' | 'reviewed' | 'interviewing' | 'rejected' | 'accepted';
+  notes?: string;
 }
 
 // ============================================================================

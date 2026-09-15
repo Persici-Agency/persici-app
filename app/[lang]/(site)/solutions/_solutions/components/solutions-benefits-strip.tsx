@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import type { SolutionBenefitItem } from '@shared/types';
 import { sectionContainer, sectionPaddingY } from '@shared/constants';
 import { ShapedImageContainer, FadeUp } from '@shared';
@@ -23,7 +23,7 @@ export function SolutionsBenefitsStrip({
       <div className={sectionContainer}>
         {/* Section Title with FadeUp */}
         <FadeUp delay={0} duration={700} distance={20} className="text-center max-w-3xl mx-auto mb-10 sm:mb-14">
-          <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900">
+          <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-slate-900">
             {title}
           </h2>
         </FadeUp>
@@ -55,7 +55,7 @@ export function SolutionsBenefitsStrip({
                   style={{ backgroundColor: accentColor }}
                 />
 
-                <h3 className="font-primary text-xl font-bold text-slate-900 mb-3">
+                <h3 className="font-primary text-xl font-medium text-slate-900 mb-3">
                   {itemTitle}
                 </h3>
 

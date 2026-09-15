@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import Link from 'next/link';
 import type { ClientStoryDetail } from '../../../_client-stories/types';
 import { sectionContainer } from '@shared/constants';
@@ -70,7 +70,7 @@ export function StoryDetailHeroSection({ story, lang }: StoryDetailHeroSectionPr
           </div>
 
           {/* Headline */}
-          <h1 className="font-primary text-3xl font-black tracking-tight text-slate-900 sm:text-5xl lg:text-6xl sm:leading-[1.12]">
+          <h1 className="font-primary text-3xl font-medium tracking-tight text-slate-900 sm:text-5xl lg:text-6xl sm:leading-[1.12]">
             {title}
           </h1>
 

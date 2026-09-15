@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState } from 'react';
 import type { SolutionFaqItem } from '@shared/types';
@@ -44,7 +44,7 @@ export function FaqSection({
       <div className={sectionContainer}>
         {/* Section Heading with FadeUp */}
         <FadeUp delay={0} duration={700} distance={20} className="text-center max-w-4xl mx-auto mb-10 sm:mb-14">
-          <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900">
+          <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-slate-900">
             {displayTitle}
           </h2>
           {displaySubtitle && (

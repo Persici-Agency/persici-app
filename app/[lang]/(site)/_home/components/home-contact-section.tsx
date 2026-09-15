@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useRef } from 'react';
 import ReCAPTCHA from 'react-google-recaptcha';
@@ -57,19 +57,49 @@ export function HomeContactSection({ lang, dict }: HomeContactSectionProps) {
     'Other',
   ];
 
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
   const handleCaptchaChange = (token: string | null) => {
     setIsVerifiedHuman(Boolean(token));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!isVerifiedHuman) return;
 
     setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
+    setErrorMessage(null);
+
+    try {
+      const payload = {
+        name: `${formData.firstName} ${formData.lastName}`.trim(),
+        email: formData.email.trim(),
+        company: formData.company.trim(),
+        country: formData.country.trim(),
+        jobTitle: formData.jobTitle.trim(),
+        reason: formData.reason.trim(),
+        message: formData.message.trim(),
+        subject: formData.reason ? `Contact: ${formData.reason}` : 'General Agency Inquiry',
+      };
+
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || 'Failed to submit inquiry. Please try again.');
+      }
+
       setIsSubmitted(true);
-    }, 850);
+    } catch (err) {
+      console.error('[HomeContactSection] Submit error:', err);
+      setErrorMessage(err instanceof Error ? err.message : 'An error occurred while sending your inquiry.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleReset = () => {
@@ -130,14 +160,14 @@ export function HomeContactSection({ lang, dict }: HomeContactSectionProps) {
               {/* Left Column: Ready to learn more? & Checklist */}
               <div className="flex flex-col justify-between h-full lg:col-span-6 lg:pe-6">
                 <div>
-                  <h3 className="font-primary text-2xl sm:text-3xl lg:text-4xl font-extrabold text-foreground tracking-tight">
+                  <h3 className="font-primary text-2xl sm:text-3xl lg:text-4xl font-medium text-foreground tracking-tight">
                     {dict.homeContact?.leftTitle || 'Ready to learn more?'}
                   </h3>
 
                   <ul className="mt-8 space-y-4 sm:space-y-5">
                     {points.map((pointText, idx) => (
                       <li key={idx} className="flex items-start gap-3.5 text-sm sm:text-base text-foreground/80 font-medium leading-relaxed">
-                        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-dark text-dark mt-0.5 shadow-2xs font-bold text-xs">
+                        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-dark text-dark mt-0.5 shadow-2xs font-semibold text-xs">
                           ✓
                         </span>
                         <span>{pointText}</span>
@@ -155,7 +185,7 @@ export function HomeContactSection({ lang, dict }: HomeContactSectionProps) {
                       titleClassName="text-center"
                       logoSize="xs"
                       speed="normal"
-                      gap="sm"
+                      gap={1}
                       fadeMask={true}
                       pauseOnHover={false}
                       className="py-1"
@@ -167,7 +197,7 @@ export function HomeContactSection({ lang, dict }: HomeContactSectionProps) {
               {/* Right Column: Get in touch Form */}
               <div className="lg:col-span-6">
                 <div>
-                  <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-extrabold text-foreground tracking-tight">
+                  <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-medium text-foreground tracking-tight">
                     {dict.homeContact?.title || 'Get in touch'}
                   </h2>
                   <p className="mt-3 text-sm sm:text-base leading-relaxed text-foreground/75">
@@ -180,10 +210,10 @@ export function HomeContactSection({ lang, dict }: HomeContactSectionProps) {
 
                 {isSubmitted ? (
                   <div className="mt-8 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 p-8 text-center animate-wave-1">
-                    <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500 text-white shadow-lg text-2xl font-bold">
+                    <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500 text-white shadow-lg text-2xl font-semibold">
                       ✓
                     </div>
-                    <h4 className="font-primary text-xl font-bold text-foreground mt-4">
+                    <h4 className="font-primary text-xl font-medium text-foreground mt-4">
                       {dict.homeContact?.successTitle || 'Thank you for reaching out!'}
                     </h4>
                     <p className="mt-2 text-sm text-foreground/75 max-w-md mx-auto leading-relaxed">
@@ -340,6 +370,13 @@ export function HomeContactSection({ lang, dict }: HomeContactSectionProps) {
                       </div>
                     </div>
 
+                    {/* Error Banner */}
+                    {errorMessage && (
+                      <div className="rounded-xl bg-red-50 border border-red-200 p-3 text-xs text-red-700 font-medium">
+                        {errorMessage}
+                      </div>
+                    )}
+
                     {/* Marketing Consent & HomeButton Submit Row */}
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-2">
                       <label className="flex items-start gap-2.5 cursor-pointer select-none max-w-sm">
@@ -368,7 +405,7 @@ export function HomeContactSection({ lang, dict }: HomeContactSectionProps) {
                     </div>
 
                     {/* Legal Disclaimer */}
-                    <p className="pt-2 text-[11px] leading-relaxed text-foreground/50">
+                    <p className="pt-2 text-[9.5px] leading-relaxed text-foreground/50">
                       {dict.homeContact?.disclaimer ||
                         'By submitting this form, you authorize Persici to contact you regarding your inquiry. Read our Privacy Policy for more detail or opt out at any time.'}
                     </p>

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { ContentCard, type ContentCardItem } from '../content-card';
@@ -362,7 +362,7 @@ export function ContentCarousel({
               aria-label={isRtl ? 'السابق' : 'Previous'}
               title={isRtl ? 'السابق' : 'Previous'}
             >
-              <span className="text-sm font-bold" aria-hidden="true">
+              <span className="text-sm font-semibold" aria-hidden="true">
                 {isRtl ? '→' : '←'}
               </span>
             </button>
@@ -377,7 +377,7 @@ export function ContentCarousel({
               aria-label={isRtl ? 'التالي' : 'Next'}
               title={isRtl ? 'التالي' : 'Next'}
             >
-              <span className="text-sm font-bold" aria-hidden="true">
+              <span className="text-sm font-semibold" aria-hidden="true">
                 {isRtl ? '←' : '→'}
               </span>
             </button>

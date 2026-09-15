@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useRef } from 'react';
 import Image from 'next/image';
@@ -100,10 +100,10 @@ export function StoryMediaShowcase({ story, lang }: StoryMediaShowcaseProps) {
     >
       {/* Header */}
       <div className="mb-8 sm:mb-12">
-        <span className="font-mono text-xs font-bold uppercase tracking-wider text-persici-crimson mb-2 block">
+        <span className="font-mono text-xs font-semibold uppercase tracking-wider text-persici-crimson mb-2 block">
           {isRtl ? 'معرض المخرجات والإنتاج' : 'Deliverables & Production'}
         </span>
-        <h2 className="font-primary text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight">
+        <h2 className="font-primary text-2xl sm:text-3xl lg:text-4xl font-medium text-slate-900 tracking-tight">
           {showcaseTitle}
         </h2>
         {showcaseDesc && (
@@ -136,7 +136,7 @@ export function StoryMediaShowcase({ story, lang }: StoryMediaShowcaseProps) {
           {/* Episode / Video Selector Tabs */}
           {videos.length > 1 && (
             <div>
-              <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-500 mb-4">
+              <h3 className="text-xs font-mono font-medium uppercase tracking-wider text-slate-500 mb-4">
                 {isRtl ? 'اختر الحلقة أو المشهد' : 'Select Episode / Cut'}
               </h3>
 
@@ -180,7 +180,7 @@ export function StoryMediaShowcase({ story, lang }: StoryMediaShowcaseProps) {
                       <div className="flex items-center justify-between text-xs font-semibold text-slate-900 mt-1">
                         <span className="truncate">{vidTitle}</span>
                         {vid.duration && (
-                          <span className="text-[11px] font-mono text-slate-500 ms-2">
+                          <span className="text-[9.5px] font-mono text-slate-500 ms-2">
                             {vid.duration}
                           </span>
                         )}
@@ -200,7 +200,7 @@ export function StoryMediaShowcase({ story, lang }: StoryMediaShowcaseProps) {
       {gallery.length > 0 && (
         <div className={videos.length > 0 ? 'mt-12 sm:mt-16' : ''}>
           {videos.length > 0 && (
-            <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-500 mb-6">
+            <h3 className="text-xs font-mono font-medium uppercase tracking-wider text-slate-500 mb-6">
               {isRtl ? 'معرض الصور والإنتاج الميداني' : 'Campaign Photography & Production Stills'}
             </h3>
           )}
@@ -405,7 +405,7 @@ export function StoryMediaShowcase({ story, lang }: StoryMediaShowcaseProps) {
                     </div>
 
                     {/* Online Status Badge */}
-                    <div className="flex items-center gap-1.5 text-[11px] font-mono text-slate-400">
+                    <div className="flex items-center gap-1.5 text-[9.5px] font-mono text-slate-400">
                       <span className="h-2 w-2 rounded-full bg-emerald-400 inline-block animate-pulse" />
                       <span className="hidden sm:inline">LIVE</span>
                     </div>
@@ -514,7 +514,7 @@ export function StoryMediaShowcase({ story, lang }: StoryMediaShowcaseProps) {
           {/* Single Demo Video if available */}
           {mediaShowcase.demoVideo && (
             <div className="mt-4">
-              <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-500 mb-4">
+              <h3 className="text-xs font-mono font-medium uppercase tracking-wider text-slate-500 mb-4">
                 {isRtl ? 'عرض فيديو تطبيقي حي' : 'Interactive App Demo Video'}
               </h3>
               <div className="relative w-full aspect-16/9 rounded-2xl sm:rounded-3xl overflow-hidden bg-black shadow-2xl border border-slate-800">
@@ -532,7 +532,7 @@ export function StoryMediaShowcase({ story, lang }: StoryMediaShowcaseProps) {
           {/* Technology Architecture Badges */}
           {techStack.length > 0 && (
             <div className="rounded-2xl sm:rounded-3xl border border-slate-200/80 bg-slate-50/70 p-6 sm:p-8">
-              <div className="flex items-center gap-2 text-slate-800 font-bold mb-4">
+              <div className="flex items-center gap-2 text-slate-800 font-semibold mb-4">
                 <TbStack2 className="h-5 w-5 text-persici-crimson" />
                 <h3 className="text-base sm:text-lg">
                   {isRtl ? 'المنظومة التقنية والبرمجية' : 'Engineered Tech Stack & Architecture'}
@@ -566,10 +566,10 @@ export function StoryMediaShowcase({ story, lang }: StoryMediaShowcaseProps) {
               {/* Header Bar: Category Label & Optional Tablet Switcher */}
               <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-mono font-bold uppercase tracking-wider text-slate-500">
+                  <span className="text-xs font-mono font-semibold uppercase tracking-wider text-slate-500">
                     {isRtl ? 'استعراض الشاشات والوسائط' : 'App Screens & Interactive Media'}
                   </span>
-                  <span className="inline-flex items-center rounded-full bg-persici-crimson/10 text-persici-crimson px-2.5 py-0.5 text-[11px] font-bold">
+                  <span className="inline-flex items-center rounded-full bg-persici-crimson/10 text-persici-crimson px-2.5 py-0.5 text-[9.5px] font-semibold">
                     {currentMobileAssets.length}
                   </span>
                 </div>
@@ -664,7 +664,7 @@ export function StoryMediaShowcase({ story, lang }: StoryMediaShowcaseProps) {
                             </div>
                           )}
                           {isGif && (
-                            <div className="absolute bottom-0 inset-x-0 bg-persici-crimson text-[7px] text-white font-mono font-bold text-center leading-tight">
+                            <div className="absolute bottom-0 inset-x-0 bg-persici-crimson text-[6.5px] text-white font-mono font-semibold text-center leading-tight">
                               GIF
                             </div>
                           )}
@@ -675,7 +675,7 @@ export function StoryMediaShowcase({ story, lang }: StoryMediaShowcaseProps) {
                           <span className="text-xs font-semibold truncate max-w-[130px] sm:max-w-[160px]">
                             {tabTitle}
                           </span>
-                          <span className="text-[10px] font-mono text-slate-500 uppercase tracking-wider mt-0.5">
+                          <span className="text-[9.5px] font-mono text-slate-500 uppercase tracking-wider mt-0.5">
                             {isVideo
                               ? (isRtl ? 'فيديو تفاعلي' : 'Interactive Video')
                               : isGif
@@ -880,7 +880,7 @@ export function StoryMediaShowcase({ story, lang }: StoryMediaShowcaseProps) {
           {/* Technology Architecture Badges */}
           {techStack.length > 0 && (
             <div className="rounded-2xl sm:rounded-3xl border border-slate-200/80 bg-slate-50/70 p-6 sm:p-8">
-              <div className="flex items-center gap-2 text-slate-800 font-bold mb-4">
+              <div className="flex items-center gap-2 text-slate-800 font-semibold mb-4">
                 <TbStack2 className="h-5 w-5 text-persici-crimson" />
                 <h3 className="text-base sm:text-lg">
                   {isRtl ? 'المنظومة التقنية والبرمجية' : 'Engineered Tech Stack & Architecture'}

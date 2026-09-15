@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import type { ClientStoryDetail } from '../types';
@@ -39,7 +39,7 @@ export function ClientStoriesCard({ story, lang, className = '' }: ClientStories
 
         {/* Client Tag on Image */}
         <div className="absolute top-4 start-4 z-10">
-          <span className="inline-flex items-center rounded-full bg-slate-900/75 backdrop-blur-md px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-white">
+          <span className="inline-flex items-center rounded-full bg-slate-900/75 backdrop-blur-md px-3 py-1 text-[9.5px] font-semibold uppercase tracking-wider text-white">
             {story.client}
           </span>
         </div>
@@ -47,7 +47,7 @@ export function ClientStoriesCard({ story, lang, className = '' }: ClientStories
         {/* Primary Metric Badge */}
         {primaryMetric && (
           <div className="absolute bottom-3 end-3 z-10">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-persici-crimson/90 backdrop-blur-md px-3 py-1 text-xs font-bold text-white shadow-md">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-persici-crimson/90 backdrop-blur-md px-3 py-1 text-xs font-semibold text-white shadow-md">
               <TbTrendingUp className="h-3.5 w-3.5" />
               <span>{primaryMetric.value}</span>
             </span>
@@ -65,7 +65,7 @@ export function ClientStoriesCard({ story, lang, className = '' }: ClientStories
         </div>
 
         {/* Title */}
-        <h3 className="font-primary text-xl sm:text-2xl font-bold text-slate-900 leading-snug group-hover:text-persici-crimson transition-colors line-clamp-2">
+        <h3 className="font-primary text-xl sm:text-2xl font-medium text-slate-900 leading-snug group-hover:text-persici-crimson transition-colors line-clamp-2">
           {title}
         </h3>
 

@@ -1,9 +1,4 @@
-import type { JobOpening } from '@shared/types';
-import { jobOpenings } from '@shared/data';
+export * from '../data/careers.data';
+import { getAllCareers, getCareerBySlug, getRelatedCareers, careerOpenings } from '../data/careers.data';
 
-export type { JobOpening };
-export { jobOpenings };
-
-export function getJobOpenings(): JobOpening[] {
-  return jobOpenings;
-}
+export { getAllCareers, getCareerBySlug, getRelatedCareers, careerOpenings };

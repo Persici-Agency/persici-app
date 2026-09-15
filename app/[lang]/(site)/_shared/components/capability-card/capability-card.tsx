@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import Image from 'next/image';
@@ -38,7 +38,7 @@ export function CapabilityCard({
       {/* Top: Tag + Dedicated SVG/Image Icon */}
       <div>
         <div className="flex items-center justify-between gap-2 mb-4">
-          <span className="text-[11px] font-bold tracking-wider uppercase text-persici-crimson bg-persici-crimson/5 px-2.5 py-1 rounded-md">
+          <span className="text-[9.5px] font-semibold tracking-wider uppercase text-persici-crimson bg-persici-crimson/5 px-2.5 py-1 rounded-md">
             {tag}
           </span>
           {icon && (
@@ -61,7 +61,7 @@ export function CapabilityCard({
           )}
         </div>
 
-        <h3 className="font-primary text-lg sm:text-xl font-bold text-slate-900 transition-colors group-hover:text-persici-crimson leading-snug">
+        <h3 className="font-primary text-lg sm:text-xl font-medium text-slate-900 transition-colors group-hover:text-persici-crimson leading-snug">
           {title}
         </h3>
       </div>
@@ -81,7 +81,7 @@ export function CapabilityCard({
 
       {/* Bottom: Description + Capability Highlights */}
       <div>
-        <p className="text-xs sm:text-[13px] leading-relaxed text-slate-600 mb-5 font-normal">
+        <p className="text-xs sm:text-[12px] leading-relaxed text-slate-600 mb-5 font-normal">
           {description}
         </p>
 
@@ -92,7 +92,7 @@ export function CapabilityCard({
                 {highlights.map((h, hIdx) => (
                   <span
                     key={hIdx}
-                    className="text-[11px] font-medium text-slate-600 bg-white/90 border border-black/[0.04] px-2 py-0.5 rounded-md"
+                    className="text-[9.5px] font-medium text-slate-600 bg-white/90 border border-black/[0.04] px-2 py-0.5 rounded-md"
                   >
                     {h}
                   </span>

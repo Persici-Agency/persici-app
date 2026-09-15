@@ -242,6 +242,12 @@ export function PanoramicCarousel({
                 : item.badge[lang as 'en' | 'ar'] || item.badge.en
               : undefined;
 
+            const cardHref = item.href
+              ? item.href.startsWith(`/${lang}`)
+                ? item.href
+                : `/${lang}${item.href.startsWith('/') ? item.href : `/${item.href}`}`
+              : undefined;
+
             return (
               <div
                 key={item.id || idx}
@@ -253,7 +259,7 @@ export function PanoramicCarousel({
                   title={cardTitle}
                   description={cardDesc}
                   badge={cardBadge}
-                  href={item.href ? `/${lang}${item.href}` : undefined}
+                  href={cardHref}
                   lang={lang}
                 />
               </div>

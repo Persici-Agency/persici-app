@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import Link from 'next/link';
@@ -163,7 +163,7 @@ export function ContentCard({
 
       {/* Middle: Title */}
       <div className="flex-1">
-        <h3 className="font-primary text-xl sm:text-2xl font-bold text-slate-900 leading-snug transition-colors group-hover:text-persici-crimson">
+        <h3 className="font-primary text-xl sm:text-2xl font-medium text-slate-900 leading-snug transition-colors group-hover:text-persici-crimson">
           {resolvedTitle}
         </h3>
       </div>

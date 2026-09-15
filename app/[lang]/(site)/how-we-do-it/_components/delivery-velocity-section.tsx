@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import Image from 'next/image';
@@ -53,7 +53,7 @@ export function DeliveryVelocitySection({
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-persici-crimson/10 border border-persici-crimson/20 text-persici-crimson text-xs font-semibold uppercase tracking-wider mb-4">
             {isRtl ? 'السرعة والفاعلية التنفيذية' : 'Velocity & Engineering Execution'}
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-primary font-bold text-slate-900 tracking-tight leading-tight mb-5">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-primary font-medium text-slate-900 tracking-tight leading-tight mb-5">
             {title}
           </h2>
           <p className="text-base sm:text-lg text-slate-600 font-secondary leading-relaxed">
@@ -69,7 +69,7 @@ export function DeliveryVelocitySection({
               className="p-6 sm:p-8 rounded-2xl bg-white border border-slate-200/80 shadow-sm flex flex-col justify-between"
             >
               <div className="flex items-baseline gap-1.5 mb-2">
-                <span className="font-mono text-3xl sm:text-4xl font-extrabold text-persici-crimson">
+                <span className="font-mono text-3xl sm:text-4xl font-semibold text-persici-crimson">
                   {m.value}
                 </span>
                 {m.unit && (
@@ -123,11 +123,11 @@ export function DeliveryVelocitySection({
                   key={numStr}
                   className="p-6 rounded-2xl bg-white border border-slate-200/80 hover:border-persici-crimson/40 transition-all duration-300 flex flex-col sm:flex-row gap-5 items-start"
                 >
-                  <span className="font-mono text-2xl font-bold text-persici-crimson bg-persici-crimson/10 px-3 py-1.5 rounded-xl shrink-0">
+                  <span className="font-mono text-2xl font-semibold text-persici-crimson bg-persici-crimson/10 px-3 py-1.5 rounded-xl shrink-0">
                     {numStr}
                   </span>
                   <div>
-                    <h3 className="text-lg sm:text-xl font-primary font-bold text-slate-900 mb-2">
+                    <h3 className="text-lg sm:text-xl font-primary font-medium text-slate-900 mb-2">
                       {pTitle}
                     </h3>
                     <p className="text-sm sm:text-base text-slate-600 font-secondary leading-relaxed">

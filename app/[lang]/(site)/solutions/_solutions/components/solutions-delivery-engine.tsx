@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import type { SolutionExecutionPillar } from '@shared/types';
 import { sectionContainer } from '@shared/constants';
 import { ShapedImageContainer, FadeUp } from '@shared';
@@ -27,10 +27,10 @@ export function SolutionsDeliveryEngine({
       <div className={sectionContainer}>
         {/* Section Header with FadeUp */}
         <FadeUp delay={0} duration={700} distance={20} className="max-w-3xl mb-12 sm:mb-16">
-          <span className="text-xs sm:text-sm font-bold uppercase tracking-widest text-persici-crimson block mb-3">
+          <span className="text-xs sm:text-sm font-semibold uppercase tracking-widest text-persici-crimson block mb-3">
             {isRtl ? 'إطار العمل التنفيذي' : 'Execution Framework'}
           </span>
-          <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 leading-tight">
+          <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-slate-900 leading-tight">
             {title}
           </h2>
           <p className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed font-normal">
@@ -75,10 +75,10 @@ export function SolutionsDeliveryEngine({
                   return (
                     <div key={idx} className={idx > 0 ? 'pt-6 sm:pt-8' : ''}>
                       <div className="flex items-center gap-3">
-                        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-persici-crimson text-white text-xs font-extrabold shadow-sm">
+                        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-persici-crimson text-white text-xs font-semibold shadow-sm">
                           0{idx + 1}
                         </span>
-                        <h3 className="font-primary text-xl font-bold text-slate-900 tracking-tight">
+                        <h3 className="font-primary text-xl font-medium text-slate-900 tracking-tight">
                           {pillarTitle}
                         </h3>
                       </div>

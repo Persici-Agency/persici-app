@@ -17,6 +17,7 @@ import {
   clientLogos,
   reviewsList,
 } from '@shared/data';
+import { aboutPageData, type AboutPageData } from '@/app/[lang]/(site)/about/_about/data/about.data';
 import type {
   HomePageContent,
   ServicesPageContent,
@@ -37,6 +38,10 @@ import type {
   ContactSubmission,
   DiscoveryFormData,
   DiscoverySubmission,
+  AppointmentFormData,
+  AppointmentSubmission,
+  JobApplicationFormData,
+  JobApplicationSubmission,
 } from '@shared/types';
 
 /**
@@ -118,6 +123,12 @@ export async function getIndustriesPageData(): Promise<IndustriesPageContent> {
 
 export async function getHowWeDoItPageData(): Promise<HowWeDoItPageContent> {
   return getPageContent<HowWeDoItPageContent>('how-we-do-it', howWeDoItPageContent);
+}
+
+export type { AboutPageData };
+
+export async function getAboutPageData(): Promise<AboutPageData> {
+  return getPageContent<AboutPageData>('about', aboutPageData);
 }
 
 export async function getDbHowWeDoItOfferings(): Promise<HowWeDoItOfferingItem[]> {
@@ -359,3 +370,54 @@ export async function saveDiscoverySubmission(
     return { success: false };
   }
 }
+
+export async function saveAppointmentSubmission(
+  data: AppointmentFormData
+): Promise<{ success: boolean; id?: string }> {
+  try {
+    const db = await getDb();
+    if (!db) {
+      console.warn('[db.service] MongoDB not connected, simulated appointment submission.');
+      return { success: true, id: 'simulated-' + Date.now() };
+    }
+
+    const submission: AppointmentSubmission = {
+      ...data,
+      status: 'pending',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    const res = await db.collection(COLLECTIONS.APPOINTMENTS).insertOne(submission as unknown as Document);
+    return { success: true, id: res.insertedId.toString() };
+  } catch (err) {
+    console.error('[db.service] saveAppointmentSubmission error:', err);
+    return { success: false };
+  }
+}
+
+export async function saveJobApplicationSubmission(
+  data: JobApplicationFormData
+): Promise<{ success: boolean; id?: string }> {
+  try {
+    const db = await getDb();
+    if (!db) {
+      console.warn('[db.service] MongoDB not connected, simulated job application submission.');
+      return { success: true, id: 'simulated-job-' + Date.now() };
+    }
+
+    const submission: JobApplicationSubmission = {
+      ...data,
+      status: 'new',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    const res = await db.collection(COLLECTIONS.JOB_APPLICATIONS).insertOne(submission as unknown as Document);
+    return { success: true, id: res.insertedId.toString() };
+  } catch (err) {
+    console.error('[db.service] saveJobApplicationSubmission error:', err);
+    return { success: false };
+  }
+}
+

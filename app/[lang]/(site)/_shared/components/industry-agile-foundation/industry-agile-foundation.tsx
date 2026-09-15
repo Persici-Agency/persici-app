@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState } from 'react';
 import { sectionContainer, sectionPaddingY } from '@shared/constants';
@@ -145,7 +145,7 @@ export function IndustryAgileFoundationSection({
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-persici-crimson/10 text-persici-crimson text-xs font-semibold uppercase tracking-wider mb-4">
             {isRtl ? 'الأساس المعماري الرشيق' : 'Architectural Blueprint'}
           </div>
-          <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 leading-tight">
+          <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-slate-900 leading-tight">
             {title}
           </h2>
           <p className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed">
@@ -158,7 +158,7 @@ export function IndustryAgileFoundationSection({
           <div className="rounded-3xl bg-white border border-black/5 p-8 sm:p-12 lg:p-14 shadow-xs">
             {/* SVG Transformation Arc / Architectural Matrix */}
             <div className="relative flex flex-col items-center justify-center py-4 sm:py-6 overflow-hidden">
-              <span className="text-[11px] font-mono font-bold uppercase tracking-widest text-slate-400 bg-slate-100 px-3.5 py-1 rounded-full mb-6 select-none">
+              <span className="text-[9.5px] font-mono font-semibold uppercase tracking-widest text-slate-400 bg-slate-100 px-3.5 py-1 rounded-full mb-6 select-none">
                 {diagramBadge}
               </span>
 
@@ -392,7 +392,7 @@ export function IndustryAgileFoundationSection({
 
                     <span
                       className={cn(
-                        'font-mono text-sm font-bold mb-3 tracking-wider transition-colors duration-300',
+                        'font-mono text-sm font-semibold mb-3 tracking-wider transition-colors duration-300',
                         isCurrentActive ? 'text-persici-crimson' : 'text-persici-crimson/80'
                       )}
                     >
@@ -401,7 +401,7 @@ export function IndustryAgileFoundationSection({
 
                     <h3
                       className={cn(
-                        'font-primary text-lg sm:text-xl font-bold mb-2 leading-snug transition-colors duration-300',
+                        'font-primary text-lg sm:text-xl font-medium mb-2 leading-snug transition-colors duration-300',
                         isCurrentActive ? 'text-slate-950' : 'text-slate-900'
                       )}
                     >

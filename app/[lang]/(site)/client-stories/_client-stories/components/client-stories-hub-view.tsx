@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import type { ClientStoryDetail } from '../types';
 import type { Dictionary } from '@dictionaries';
 import { sectionContainer } from '@shared/constants';
@@ -76,12 +76,12 @@ export function ClientStoriesHubView({ stories, lang, dict }: ClientStoriesHubVi
           {/* Section Header */}
           <div className="max-w-3xl mx-auto text-center mb-12 sm:mb-16">
             <FadeUp delay={0} duration={700} distance={16}>
-              <span className="font-mono text-xs font-bold uppercase tracking-wider text-persici-crimson mb-2 block">
+              <span className="font-mono text-xs font-semibold uppercase tracking-wider text-persici-crimson mb-2 block">
                 {isRtl ? 'الدليل الكامل' : 'All Case Studies'}
               </span>
             </FadeUp>
             <FadeUp delay={120} duration={850} distance={24} blur={true}>
-              <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight">
+              <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-medium text-slate-900 tracking-tight">
                 {isRtl ? 'استكشف جميع قصص النجاح' : 'Explore all client stories'}
               </h2>
             </FadeUp>

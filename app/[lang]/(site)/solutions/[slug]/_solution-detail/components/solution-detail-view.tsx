@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { FeaturedClientStories, FaqSection, ClientReviewSection } from '@shared';
 import type { Dictionary } from '@dictionaries';
 import type { SolutionOfferingItem } from '@shared/types';
@@ -39,7 +39,7 @@ export function SolutionDetailView({ solution, lang, dict }: SolutionDetailViewP
                 className="h-28 w-28 sm:h-36 sm:w-36 drop-shadow-md"
               />
             </div>
-            <h3 className="font-primary text-xl font-bold text-slate-900 mb-2">
+            <h3 className="font-primary text-xl font-medium text-slate-900 mb-2">
               {title} Architecture
             </h3>
             <p className="text-xs sm:text-sm text-slate-500 max-w-xs mx-auto">
@@ -56,7 +56,7 @@ export function SolutionDetailView({ solution, lang, dict }: SolutionDetailViewP
       <section className={`${sectionPaddingY} bg-white border-y border-slate-100`}>
         <div className={sectionContainer}>
           <div className="max-w-3xl mx-auto text-center mb-12 sm:mb-16">
-            <h2 className="font-primary text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900">
+            <h2 className="font-primary text-3xl sm:text-4xl font-medium tracking-tight text-slate-900">
               {isRtl ? 'القيمة التجارية ومحركات النمو' : 'Commercial Value & Growth Drivers'}
             </h2>
             <p className="mt-4 text-base sm:text-lg text-slate-600">
@@ -69,7 +69,7 @@ export function SolutionDetailView({ solution, lang, dict }: SolutionDetailViewP
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="rounded-2xl border border-slate-200/80 bg-slate-50/50 p-7">
               <div className="h-1 w-12 rounded-full bg-persici-crimson mb-4" />
-              <h3 className="font-primary text-lg font-bold text-slate-900 mb-2">
+              <h3 className="font-primary text-lg font-medium text-slate-900 mb-2">
                 {isRtl ? '01. كفاءة تشغيلية مثبتة' : '01. Validated Operational Velocity'}
               </h3>
               <p className="text-sm leading-relaxed text-slate-600">
@@ -81,7 +81,7 @@ export function SolutionDetailView({ solution, lang, dict }: SolutionDetailViewP
 
             <div className="rounded-2xl border border-slate-200/80 bg-slate-50/50 p-7">
               <div className="h-1 w-12 rounded-full bg-persici-blush mb-4" />
-              <h3 className="font-primary text-lg font-bold text-slate-900 mb-2">
+              <h3 className="font-primary text-lg font-medium text-slate-900 mb-2">
                 {isRtl ? '02. تحسين هوامش الربح' : '02. Margin & LTV Maximization'}
               </h3>
               <p className="text-sm leading-relaxed text-slate-600">
@@ -93,7 +93,7 @@ export function SolutionDetailView({ solution, lang, dict }: SolutionDetailViewP
 
             <div className="rounded-2xl border border-slate-200/80 bg-slate-50/50 p-7">
               <div className="h-1 w-12 rounded-full bg-persici-black mb-4" />
-              <h3 className="font-primary text-lg font-bold text-slate-900 mb-2">
+              <h3 className="font-primary text-lg font-medium text-slate-900 mb-2">
                 {isRtl ? '03. تكامل مؤسسي سلس' : '03. Seamless Enterprise Integration'}
               </h3>
               <p className="text-sm leading-relaxed text-slate-600">

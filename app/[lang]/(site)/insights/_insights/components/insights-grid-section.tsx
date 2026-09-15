@@ -1,4 +1,4 @@
-import Link from 'next/link';
+﻿import Link from 'next/link';
 import { fetchInsightsArticles } from '../services';
 import { sectionContainer, sectionPaddingY, featureCard } from '@shared';
 
@@ -19,7 +19,7 @@ export async function InsightsGridSection({ lang }: { lang: string }) {
                 <span className="font-semibold text-persici-crimson">{art.category}</span>
                 <span>{art.readTime}</span>
               </div>
-              <h3 className="mt-4 font-primary text-xl font-bold text-foreground transition-colors group-hover:text-persici-crimson">
+              <h3 className="mt-4 font-primary text-xl font-medium text-foreground transition-colors group-hover:text-persici-crimson">
                 {art.title}
               </h3>
               <p className="mt-3 text-xs leading-relaxed text-foreground/70 sm:text-sm">

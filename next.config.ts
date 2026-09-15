@@ -21,6 +21,20 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: '/:lang/solutions/ux-product-design',
+        destination: '/:lang/solutions/ux-and-product-design',
+        permanent: true,
+      },
+      {
+        source: '/solutions/ux-product-design',
+        destination: '/en/solutions/ux-and-product-design',
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

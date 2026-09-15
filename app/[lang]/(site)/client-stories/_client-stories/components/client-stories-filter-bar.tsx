@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import type { StoryCategorySlug } from '../types';
@@ -91,7 +91,7 @@ export function ClientStoriesFilterBar({
               <span>{label}</span>
               {typeof count === 'number' && (
                 <span
-                  className={`inline-flex items-center justify-center rounded-full text-[11px] font-mono px-2 py-0.5 min-w-[20px] transition-colors ${
+                  className={`inline-flex items-center justify-center rounded-full text-[9.5px] font-mono px-2 py-0.5 min-w-[20px] transition-colors ${
                     isActive
                       ? 'bg-white/20 text-white'
                       : 'bg-slate-200/90 text-slate-600 group-hover:bg-slate-300'

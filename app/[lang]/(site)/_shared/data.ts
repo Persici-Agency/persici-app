@@ -773,6 +773,21 @@ export const platforms: platformsType[] = [
 
 export const growthServicesHome: GrowthServiceItem[] = [
   {
+    id: 'technology-and-ai-digital-transformation',
+    key: 'technologyAndAiDigitalTransformation',
+    enSubService: 'Software Development • UX & Product Design • IT & Infrastructure • AI Integration',
+    arSubService: 'تطوير البرمجيات • تصميم تجربة وواجهة المستخدم • تكنولوجيا المعلومات والبنية التحتية • تكامل الذكاء الاصطناعي',
+    enTitle: 'Technology & AI Digital Transformation',
+    enDescription: 'Focuses on engineering scalable, secure, and user-centric digital solutions from the ground up. This pillar covers custom web/mobile software engineering, intuitive UX/UI product design, stable cloud hosting/DevOps infrastructure, and intelligent AI automation to optimize enterprise operations and product lifecycles.',
+    arTitle: 'التكنولوجيا و التحول الرقمي بالذكاء الاصطناعي',
+    arDescription: 'التركيز على هندسة حلول رقمية قابلة للتوسع وآمنة ومتمحورة حول المستخدم من البداية. يشمل تطوير البرمجيات المخصصة للويب وتطبيقات الجوال، وتصميم تجربة وواجهة المستخدم، والبنية التحتية السحابية، وأتمتة الذكاء الاصطناعي لتحسين العمليات التشغيلية ودورات حياة المنتجات.',
+    tagColor: 'text-persici-crimson',
+    dotColor: 'bg-persici-crimson',
+    platforms: ['nextjs', 'react', 'angular', 'flutter', 'react-native', 'nodejs', 'php-laravel', 'wordpress', 'aws', 'docker', 'gcp', 'mongodb', 'figma', 'openai-api'],
+    width: 'full',
+    order: 1,
+  },
+  {
     id: 'business-growth-and-strategy',
     key: 'businessGrowthAndStrategy',
     enSubService: 'Strategy & Consulting • E-Commerce • CRM & Customer Data',
@@ -785,7 +800,7 @@ export const growthServicesHome: GrowthServiceItem[] = [
     dotColor: 'bg-emerald-500',
     platforms: ['shopify', 'woocommerce', 'hubspot', 'salesforce', 'google-analytics', 'notion', 'clickup', 'jira', 'excel'],
     width: '1/2',
-    order: 1,
+    order: 2,
   },
   {
     id: 'branding-and-marketing-communications',
@@ -800,21 +815,6 @@ export const growthServicesHome: GrowthServiceItem[] = [
     dotColor: 'bg-amber-500',
     platforms: ['adobe-creative-cloud', 'figma', 'canva', 'meta-ads-manager', 'google-ads', 'snapchat-ads'],
     width: '1/2',
-    order: 2,
-  },
-  {
-    id: 'technology-and-digital-products',
-    key: 'technologyAndDigitalProducts',
-    enSubService: 'Software Development • UX & Product Design • IT & Infrastructure • AI Integration',
-    arSubService: 'تطوير البرمجيات • تصميم تجربة وواجهة المستخدم • تكنولوجيا المعلومات والبنية التحتية • تكامل الذكاء الاصطناعي',
-    enTitle: 'Technology & Digital Products',
-    enDescription: 'Focuses on engineering scalable, secure, and user-centric digital solutions from the ground up. This pillar covers custom web/mobile software engineering, intuitive UX/UI product design, stable cloud hosting/DevOps infrastructure, and intelligent AI automation to optimize enterprise operations and product lifecycles.',
-    arTitle: 'التكنولوجيا والمنتجات الرقمية',
-    arDescription: 'التركيز على هندسة حلول رقمية قابلة للتوسع وآمنة ومتمحورة حول المستخدم من البداية. يشمل تطوير البرمجيات المخصصة للويب وتطبيقات الجوال، وتصميم تجربة وواجهة المستخدم، والبنية التحتية السحابية، وأتمتة الذكاء الاصطناعي لتحسين العمليات التشغيلية ودورات حياة المنتجات.',
-    tagColor: 'text-persici-crimson',
-    dotColor: 'bg-persici-crimson',
-    platforms: ['nextjs', 'react', 'angular', 'flutter', 'react-native', 'nodejs', 'php-laravel', 'wordpress', 'aws', 'docker', 'gcp', 'mongodb', 'figma', 'openai-api'],
-    width: 'full',
     order: 3,
   },
 ];
