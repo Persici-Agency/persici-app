@@ -228,7 +228,7 @@ export function Header({ lang, dict }: HeaderProps) {
   const [openDropdownKey, setOpenDropdownKey] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileExpandedKeys, setMobileExpandedKeys] = useState<Record<string, boolean>>({});
-  
+
   // Independent per-zone theme detection
   const [isLogoDark, setIsLogoDark] = useState(false);
   const [isNavDark, setIsNavDark] = useState(false);
@@ -260,7 +260,7 @@ export function Header({ lang, dict }: HeaderProps) {
   }, []);
 
   const isRtl = lang === 'ar';
-  
+
   const headerRef = useRef<HTMLElement>(null);
   const logoRef = useRef<HTMLDivElement>(null);
   const navRef = useRef<HTMLElement>(null);
@@ -306,7 +306,7 @@ export function Header({ lang, dict }: HeaderProps) {
       const p3 = isPointDark(r.left + r.width * 0.50, r.top + r.height / 2, headerEl);
       const p4 = isPointDark(r.left + r.width * 0.70, r.top + r.height / 2, headerEl);
       const p5 = isPointDark(r.left + r.width * 0.85, r.top + r.height / 2, headerEl);
-      
+
       // If any section of the pill is over a dark element, adapt pill to dark mode
       setIsNavDark(p1 || p2 || p3 || p4 || p5);
     }
@@ -380,13 +380,12 @@ export function Header({ lang, dict }: HeaderProps) {
   return (
     <header
       ref={headerRef}
-      className={`fixed top-0 z-50 w-full transition-all duration-300 ${
-        isHeaderHidden ? '-translate-y-full opacity-0 pointer-events-none' : 'translate-y-0 opacity-100'
-      }`}
+      className={`fixed top-0 z-50 w-full transition-all duration-300 ${isHeaderHidden ? '-translate-y-full opacity-0 pointer-events-none' : 'translate-y-0 opacity-100'
+        }`}
       suppressHydrationWarning
     >
       <div
-        className={`${sectionContainer} max-w-9xl flex h-25 items-center justify-between relative`}
+        className={`${sectionContainer} max-w-8xl flex h-25 items-center justify-between relative`}
         suppressHydrationWarning
       >
         {/* Left: Brand Logo (Independently adapts to background under Logo) */}
@@ -398,11 +397,10 @@ export function Header({ lang, dict }: HeaderProps) {
         <nav
           ref={navRef}
           suppressHydrationWarning
-          className={`hidden md:flex items-center gap-2 rounded-full px-4 py-2 backdrop-blur-md transition-all duration-300 ${
-            isNavDark
+          className={`hidden md:flex items-center gap-2 rounded-full px-4 py-2 backdrop-blur-md transition-all duration-300 ${isNavDark
               ? 'bg-black/75 text-white border border-white/20 shadow-xl'
               : 'bg-black/5 text-slate-800 shadow-xs'
-          }`}
+            }`}
           aria-label="Main navigation"
         >
           {navLinks.map((link) => {
@@ -421,24 +419,22 @@ export function Header({ lang, dict }: HeaderProps) {
                     toggleDropdown(link.key);
                   }}
                   aria-expanded={isOpen}
-                  className={`group relative inline-flex flex-col items-center px-3.5 py-1.5 text-sm font-medium transition-colors cursor-pointer select-none outline-none ${
-                    isNavDark
+                  className={`group relative inline-flex flex-col items-center px-3.5 py-1.5 text-sm font-medium transition-colors cursor-pointer select-none outline-none ${isNavDark
                       ? 'text-white/85 hover:text-white'
                       : 'text-slate-800 hover:text-black'
-                  }`}
+                    }`}
                 >
                   <span className="relative">
                     {label}
                     {/* Publicis Sapient signature expanding red underline */}
                     <span className="absolute -bottom-1.5 left-0 right-0 h-[2px] overflow-hidden">
                       <span
-                        className={`absolute inset-0 bg-persici-crimson transition-transform duration-300 ease-in-out ${
-                          isOpen || active
+                        className={`absolute inset-0 bg-persici-crimson transition-transform duration-300 ease-in-out ${isOpen || active
                             ? 'scale-x-100'
                             : isRtl
                               ? 'origin-right scale-x-0 group-hover:scale-x-100'
                               : 'origin-left scale-x-0 group-hover:scale-x-100'
-                        }`}
+                          }`}
                       />
                     </span>
                   </span>
@@ -451,24 +447,22 @@ export function Header({ lang, dict }: HeaderProps) {
                 key={link.key}
                 href={link.href}
                 data-nav-item="true"
-                className={`group relative inline-flex flex-col items-center px-3.5 py-1.5 text-sm font-medium transition-colors cursor-pointer select-none outline-none ${
-                  isNavDark
+                className={`group relative inline-flex flex-col items-center px-3.5 py-1.5 text-sm font-medium transition-colors cursor-pointer select-none outline-none ${isNavDark
                     ? 'text-white/85 hover:text-white'
                     : 'text-slate-800 hover:text-black'
-                }`}
+                  }`}
               >
                 <span className="relative">
                   {label}
                   {/* Publicis Sapient signature expanding red underline */}
                   <span className="absolute -bottom-1.5 left-0 right-0 h-[2px] overflow-hidden">
                     <span
-                      className={`absolute inset-0 bg-persici-crimson transition-transform duration-300 ease-in-out ${
-                        active
+                      className={`absolute inset-0 bg-persici-crimson transition-transform duration-300 ease-in-out ${active
                           ? 'scale-x-100'
                           : isRtl
                             ? 'origin-right scale-x-0 group-hover:scale-x-100'
                             : 'origin-left scale-x-0 group-hover:scale-x-100'
-                      }`}
+                        }`}
                     />
                   </span>
                 </span>
@@ -482,11 +476,10 @@ export function Header({ lang, dict }: HeaderProps) {
           <HomeButton
             href={`/${lang}/contact`}
             title={dict.nav.bookCall}
-            className={`hidden sm:inline-flex transition-all duration-300 ${
-              isCtaDark
+            className={`hidden sm:inline-flex transition-all duration-300 ${isCtaDark
                 ? '!bg-white !text-persici-black hover:!bg-white/90 shadow-md'
                 : ''
-            }`}
+              }`}
             iconClassName={isCtaDark ? '!bg-persici-black !text-white' : ''}
             currentLang={lang}
             isLangEffectIcon={true}
@@ -496,11 +489,10 @@ export function Header({ lang, dict }: HeaderProps) {
           <button
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className={`flex h-10 w-10 items-center justify-center rounded-full transition-all duration-300 md:hidden cursor-pointer ${
-              isCtaDark || isNavDark
+            className={`flex h-10 w-10 items-center justify-center rounded-full transition-all duration-300 md:hidden cursor-pointer ${isCtaDark || isNavDark
                 ? 'border border-white/20 bg-white/15 text-white hover:bg-white/25'
                 : 'border border-black/5 bg-white/80 text-foreground hover:bg-white'
-            }`}
+              }`}
             aria-label={dict.nav.menu || 'Toggle Menu'}
           >
             <svg
@@ -555,9 +547,8 @@ export function Header({ lang, dict }: HeaderProps) {
                     >
                       <span>{dict.nav[link.key as keyof typeof dict.nav] || link.key}</span>
                       <svg
-                        className={`h-4 w-4 text-foreground/50 transition-transform duration-200 ${
-                          isExpanded ? 'rotate-180' : ''
-                        }`}
+                        className={`h-4 w-4 text-foreground/50 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''
+                          }`}
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -611,11 +602,10 @@ export function Header({ lang, dict }: HeaderProps) {
                   key={link.key}
                   href={link.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`rounded-lg px-3.5 py-2.5 text-sm font-medium ${
-                    active
+                  className={`rounded-lg px-3.5 py-2.5 text-sm font-medium ${active
                       ? 'bg-persici-crimson text-white'
                       : 'text-foreground hover:bg-black/5'
-                  }`}
+                    }`}
                 >
                   {dict.nav[link.key as keyof typeof dict.nav] || link.key}
                 </Link>

@@ -1,7 +1,7 @@
 ﻿// ==========================================
 // Layout & Section Containers
 // ==========================================
-export const sectionContainer = 'mx-auto max-w-8xl px-4 sm:px-6 lg:px-8';
+export const sectionContainer = 'mx-auto max-w-7xl px-4 sm:px-6 lg:px-8';
 export const sectionPaddingY = 'py-15 sm:py-20 md:py-30';
 export const sectionPaddingTop = 'pt-15 sm:pt-20 md:pt-30';
 export const sectionPaddingBottom = 'pb-15 sm:pb-20 md:pb-30';

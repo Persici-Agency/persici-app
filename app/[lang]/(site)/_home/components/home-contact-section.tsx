@@ -185,7 +185,7 @@ export function HomeContactSection({ lang, dict }: HomeContactSectionProps) {
                       titleClassName="text-center"
                       logoSize="xs"
                       speed="normal"
-                      gap="sm"
+                      gap={1}
                       fadeMask={true}
                       pauseOnHover={false}
                       className="py-1"
