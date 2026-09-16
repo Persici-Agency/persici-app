@@ -12,18 +12,18 @@ export const ctaSectionWrapper = 'mx-auto max-w-7xl px-4 py-20 text-center sm:px
 // ==========================================
 // Typography & Badges
 // ==========================================
-export const badgePill = 'inline-block rounded-full bg-persici-crimson/10 px-3.5 py-1 text-xs font-semibold text-persici-crimson';
-export const heroHeading = 'font-primary text-5xl font-medium leading-15 sm:leading-20 lg:leading-30 rtl:leading-20 rtl:sm:leading-30 rtl:lg:leading-40 tracking-tight text-foreground sm:text-7xl lg:text-8xl';
+export const badgePill = 'inline-block rounded-full bg-persici-crimson/10 px-3.5 py-1 text-xs font-semibold text-persici-crimson rtl:tracking-normal rtl:normal-case';
+export const heroHeading = 'font-primary text-5xl font-medium leading-15 sm:leading-18 lg:leading-22 rtl:leading-15 rtl:sm:leading-18 rtl:lg:leading-25 tracking-tight rtl:tracking-normal text-foreground sm:text-6xl lg:text-7xl';
 export const heroDescription = 'mt-6 text-base leading-relaxed text-foreground/70 sm:text-lg';
-export const sectionHeading = 'font-primary rtl:leading-15 rtl:sm:leading-20 rtl:lg:leading-25 text-3xl font-medium tracking-tight text-foreground sm:text-4xl lg:text-6xl';
-export const sectionHeadingMd = 'font-primary text-2xl font-medium tracking-tight text-foreground sm:text-2xl lg:text-4xl';
+export const sectionHeading = 'font-primary rtl:leading-15 rtl:sm:leading-20 rtl:lg:leading-25 text-3xl font-medium tracking-tight rtl:tracking-normal text-foreground sm:text-4xl lg:text-6xl';
+export const sectionHeadingMd = 'font-primary text-2xl font-medium tracking-tight rtl:tracking-normal text-foreground sm:text-2xl lg:text-4xl';
 export const sectionSubtitle = 'mt-4 text-sm text-foreground/60';
 
 // ==========================================
 // Cards & Banners
 // ==========================================
 export const ctaCard = 'rounded-3xl bg-persici-black px-6 py-16 text-white sm:px-12 sm:py-20';
-export const ctaHeading = 'font-primary text-3xl font-medium tracking-tight sm:text-4xl';
+export const ctaHeading = 'font-primary text-3xl font-medium tracking-tight rtl:tracking-normal sm:text-4xl';
 export const ctaDescription = 'mx-auto mt-4 max-w-xl text-sm text-white/70';
 export const featureCard = 'group flex flex-col justify-between rounded-3xl border border-black/10 bg-white p-8 shadow-sm transition-all duration-300 hover:border-persici-crimson/30 hover:shadow-xl';
 export const baseCard = 'rounded-3xl border border-black/10 bg-white p-6 shadow-sm transition-all hover:shadow-md';

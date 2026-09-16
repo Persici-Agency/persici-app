@@ -268,7 +268,7 @@ export function LegalPageView({ data, lang, dict }: LegalPageViewProps) {
 
           {/* Operating Regional Entities Strip */}
           <div className="mt-8 pt-6 border-t border-black/5">
-            <div className="text-xs font-mono uppercase tracking-wider text-slate-400 mb-3">
+            <div className="text-xs font-mono rtl:font-primary uppercase tracking-wider rtl:tracking-normal rtl:normal-case text-slate-400 mb-3">
               {isAr ? 'الكيانات التشغيلية والنطاقات القضائية لفروعنا' : 'Operating Branch Entities & Statutory Jurisdictions'}
             </div>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">

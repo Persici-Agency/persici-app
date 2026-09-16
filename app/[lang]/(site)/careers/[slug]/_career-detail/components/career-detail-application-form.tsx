@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState, useRef } from 'react';
 import {
@@ -10,6 +10,7 @@ import {
   TbX,
   TbSend,
   TbShieldCheck,
+  TbChevronDown,
 } from 'react-icons/tb';
 import { sectionContainer, sectionPaddingY } from '@shared/constants';
 import { HomeButton } from '@shared';
@@ -324,16 +325,21 @@ export function CareerDetailApplicationForm({ job, lang }: CareerDetailApplicati
                     <label className="block text-xs font-semibold text-foreground mb-1.5 font-secondary">
                       {isAr ? 'أقرب موعد للبدء' : 'Earliest Available Start Date'}
                     </label>
-                    <select
-                      value={formData.startDate}
-                      onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
-                      className="w-full px-4 py-3 text-xs sm:text-sm rounded-xl border border-black/10 bg-black/[0.02] text-foreground outline-none transition-all focus:border-persici-crimson focus:bg-white focus:ring-2 focus:ring-persici-crimson/20"
-                    >
-                      <option value="Immediately">{isAr ? 'فوري' : 'Immediately'}</option>
-                      <option value="Within 2–4 Weeks">{isAr ? 'خلال 2 – 4 أسابيع' : 'Within 2–4 Weeks'}</option>
-                      <option value="1 Month Notice">{isAr ? 'فترة إشعار شهر' : '1 Month Notice Period'}</option>
-                      <option value="Flexible / Negotiable">{isAr ? 'مرن / قابل للتفاوض' : 'Flexible / Negotiable'}</option>
-                    </select>
+                    <div className="relative">
+                      <select
+                        value={formData.startDate}
+                        onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
+                        className="w-full appearance-none px-4 pe-11 py-3 text-xs sm:text-sm rounded-xl border border-black/10 bg-black/[0.02] text-foreground outline-none transition-all focus:border-persici-crimson focus:bg-white focus:ring-2 focus:ring-persici-crimson/20 cursor-pointer"
+                      >
+                        <option value="Immediately">{isAr ? 'فوري' : 'Immediately'}</option>
+                        <option value="Within 2–4 Weeks">{isAr ? 'خلال 2 – 4 أسابيع' : 'Within 2–4 Weeks'}</option>
+                        <option value="1 Month Notice">{isAr ? 'فترة إشعار شهر' : '1 Month Notice Period'}</option>
+                        <option value="Flexible / Negotiable">{isAr ? 'مرن / قابل للتفاوض' : 'Flexible / Negotiable'}</option>
+                      </select>
+                      <div className="pointer-events-none absolute inset-y-0 end-0 flex items-center pe-4 text-foreground/50">
+                        <TbChevronDown className="h-4 w-4" />
+                      </div>
+                    </div>
                   </div>
 
                   <div>

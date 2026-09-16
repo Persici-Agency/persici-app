@@ -14,7 +14,7 @@ export function CareersHeroSection({ data, lang }: CareersHeroSectionProps) {
   const isAr = lang === 'ar';
 
   return (
-    <section data-header-luminance="light" className="relative overflow-hidden pt-28 pb-16 sm:pt-36 sm:pb-24 lg:pt-44 lg:pb-28 bg-[#FFFAFA]">
+    <section data-header-luminance="light" dir={isAr ? 'rtl' : 'ltr'} className="relative overflow-hidden pt-28 pb-16 sm:pt-36 sm:pb-24 lg:pt-44 lg:pb-28 bg-[#FFFAFA]">
       {/* Background ambient lighting */}
       <div className="pointer-events-none absolute -top-40 start-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-gradient-to-b from-persici-crimson/10 via-persici-blush/5 to-transparent blur-3xl rounded-full" />
       <div className="pointer-events-none absolute top-1/3 -start-32 w-80 h-80 bg-persici-crimson/5 blur-3xl rounded-full" />
@@ -26,7 +26,7 @@ export function CareersHeroSection({ data, lang }: CareersHeroSectionProps) {
           <FadeUp delay={100} duration={600}>
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-black/10 shadow-xs backdrop-blur-xs mb-6 sm:mb-8">
               <span className="flex h-2 w-2 rounded-full bg-persici-crimson animate-pulse" />
-              <span className="font-mono text-[9.5px] sm:text-xs font-semibold uppercase tracking-wider text-foreground/80">
+              <span className="font-mono text-[9.5px] sm:text-xs font-semibold uppercase tracking-wider rtl:tracking-normal rtl:normal-case rtl:font-primary text-foreground/80">
                 {data.badge[isAr ? 'ar' : 'en']}
               </span>
             </div>
@@ -34,7 +34,7 @@ export function CareersHeroSection({ data, lang }: CareersHeroSectionProps) {
 
           {/* Master Heading */}
           <FadeUp delay={200} duration={700}>
-            <h1 className="font-primary text-4xl sm:text-6xl lg:text-7xl font-medium tracking-tight text-foreground leading-[1.12] sm:leading-[1.1] mb-6 sm:mb-8">
+            <h1 className="font-primary text-4xl sm:text-6xl lg:text-7xl font-medium tracking-tight rtl:tracking-normal text-foreground leading-[1.12] sm:leading-[1.1] rtl:leading-[1.25] rtl:sm:leading-[1.2] mb-6 sm:mb-8">
               {data.title[isAr ? 'ar' : 'en']}
             </h1>
           </FadeUp>
@@ -77,7 +77,7 @@ export function CareersHeroSection({ data, lang }: CareersHeroSectionProps) {
                 return (
                   <div
                     key={idx}
-                    className="relative py-2 px-4 sm:px-6 lg:px-8 border-s border-dashed border-neutral-300 first:border-s-0 rtl:border-s-0 rtl:border-e rtl:first:border-e-0"
+                    className="relative py-2 px-4 sm:px-6 lg:px-8 border-s border-dashed border-neutral-300 first:border-s-0"
                   >
                     {/* Clean Monospace / Geometric Counter preserving current font size */}
                     <div className="font-mono text-2xl sm:text-3xl lg:text-4xl font-semibold text-foreground tracking-tight mb-2 tabular-nums">

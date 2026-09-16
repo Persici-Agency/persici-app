@@ -407,7 +407,7 @@ export const aboutPageData: AboutPageData = {
       en: 'CEO, Persici Agency',
       ar: 'الرئيس التنفيذي، وكالة بيرسيكي',
     },
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80',
+    avatar: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/members/amr-sharaf-v2.webp',
   },
 
   culture: {
