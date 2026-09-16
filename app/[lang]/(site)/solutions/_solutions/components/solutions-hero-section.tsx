@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import Image from 'next/image';
 import type { SolutionsPageContent } from '@shared/types';
 import { sectionContainer } from '@shared/constants';
@@ -77,19 +77,23 @@ export function SolutionsHeroSection({
   // If a custom visual node is provided (e.g. interactive vector diagram or component)
   if (visual) {
     return (
-      <section className={`relative w-full overflow-hidden bg-linear-to-b from-white via-persici-white to-slate-50/50 pt-28 pb-16 sm:pt-36 sm:pb-24 lg:pt-40 lg:pb-32 border-b border-black/[0.04] ${className || ''}`}>
+      <section
+        data-header-luminance="light"
+        dir={isRtl ? 'rtl' : 'ltr'}
+        className={`relative w-full overflow-hidden bg-linear-to-b from-white via-persici-white to-slate-50/50 pt-28 pb-16 sm:pt-36 sm:pb-24 lg:pt-40 lg:pb-32 border-b border-black/[0.04] ${className || ''}`}
+      >
         <div className={sectionContainer}>
           <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-16">
-            <div className="lg:col-span-7">
+            <div className="lg:col-span-7 text-start">
               {tagText && (
                 <div className="flex items-center gap-2.5 mb-4">
-                  <span className="text-xs sm:text-sm font-semibold uppercase tracking-widest text-persici-crimson">
+                  <span className="text-xs sm:text-sm font-semibold uppercase tracking-widest rtl:tracking-normal rtl:normal-case text-persici-crimson">
                     {tagText}
                   </span>
                   {secTagText && (
                     <>
                       <span className="text-slate-300 font-light">/</span>
-                      <span className="text-xs sm:text-sm font-semibold uppercase tracking-widest text-slate-400">
+                      <span className="text-xs sm:text-sm font-semibold uppercase tracking-widest rtl:tracking-normal rtl:normal-case text-slate-400">
                         {secTagText}
                       </span>
                     </>
@@ -97,15 +101,15 @@ export function SolutionsHeroSection({
                 </div>
               )}
 
-              <h1 className="font-primary text-4xl sm:text-5xl lg:text-6xl font-medium tracking-tight text-slate-900 leading-[1.15]">
+              <h1 className="font-primary text-4xl sm:text-5xl lg:text-6xl font-medium tracking-tight rtl:tracking-normal text-slate-900 leading-[1.15] rtl:leading-[1.25]">
                 {heroTitle}
               </h1>
 
-              <p className="mt-6 text-base sm:text-lg leading-relaxed text-slate-600 max-w-2xl">
+              <p className="mt-6 text-base sm:text-lg leading-relaxed rtl:leading-relaxed text-slate-600 max-w-2xl">
                 {heroSubtitle}
               </p>
 
-              <div className="mt-8 sm:mt-10 flex items-center">
+              <div className="mt-8 sm:mt-10 flex items-center rtl:justify-start">
                 <HomeButton
                   href={heroHref}
                   title={heroCtaPrimary}
@@ -126,10 +130,16 @@ export function SolutionsHeroSection({
   }
 
   return (
-    <section className={`relative w-full overflow-hidden bg-[#F6F3EE] pt-36 pb-16 sm:pt-44 sm:pb-24 lg:pt-48 lg:pb-32 min-h-[580px] lg:min-h-[660px] flex items-center border-b border-black/[0.04] ${className || ''}`}>
-      {/* Right Side: Editorial Panoramic Visual seamlessly integrated into background (Reference Style) */}
+    <section
+      data-header-luminance="light"
+      dir={isRtl ? 'rtl' : 'ltr'}
+      className={`relative w-full overflow-hidden bg-[#F6F3EE] pt-32 pb-16 sm:pt-40 sm:pb-24 lg:pt-44 lg:pb-32 min-h-[540px] lg:min-h-[620px] flex items-center border-b border-black/[0.04] ${className || ''}`}
+    >
+      {/* Editorial Panoramic Visual */}
       <div
-        className={`absolute top-0 bottom-0 ${isRtl ? 'left-0' : 'right-0'} w-full lg:w-[52%] pointer-events-none overflow-hidden select-none`}
+        className={`absolute top-0 bottom-0 ${
+          isRtl ? 'left-0' : 'right-0'
+        } w-full lg:w-[50%] xl:w-[52%] pointer-events-none overflow-hidden select-none`}
         aria-hidden="true"
       >
         <div className="relative h-full w-full">
@@ -139,14 +149,16 @@ export function SolutionsHeroSection({
             fill
             priority
             sizes="(max-width: 1024px) 100vw, 55vw"
-            className={`object-cover ${isRtl ? 'object-left-bottom' : 'object-right-bottom'} opacity-85 sm:opacity-90 lg:opacity-100`}
+            className={`object-cover ${
+              isRtl ? 'object-center lg:object-left' : 'object-center lg:object-right'
+            } opacity-90 sm:opacity-95 lg:opacity-100`}
           />
-          {/* Subtle directional gradient wash ensuring typography contrast */}
+          {/* Directional gradient wash ensuring seamless transition to background and high text contrast */}
           <div
             className={`absolute inset-0 hidden lg:block ${
               isRtl
-                ? 'bg-gradient-to-l from-transparent via-[#F6F3EE]/50 to-[#F6F3EE]'
-                : 'bg-gradient-to-r from-[#F6F3EE] via-[#F6F3EE]/50 to-transparent'
+                ? 'bg-gradient-to-l from-[#F6F3EE] via-[#F6F3EE]/60 to-transparent'
+                : 'bg-gradient-to-r from-[#F6F3EE] via-[#F6F3EE]/60 to-transparent'
             }`}
           />
           {/* Mobile wash */}
@@ -154,18 +166,22 @@ export function SolutionsHeroSection({
         </div>
       </div>
 
-      {/* Left Side: Typography & CTA */}
+      {/* Typography & CTA Container */}
       <div className={`${sectionContainer} relative z-10 w-full`}>
-        <div className="max-w-xl lg:max-w-2xl">
+        <div
+          className={`w-full max-w-xl lg:max-w-xl xl:max-w-2xl lg:w-[48%] xl:w-[50%] ${
+            isRtl ? 'mr-0 ml-auto text-start' : 'ml-0 mr-auto text-start'
+          }`}
+        >
           {tagText && (
             <div className="flex items-center gap-2.5 mb-5">
-              <span className="text-xs sm:text-sm font-semibold uppercase tracking-widest text-persici-crimson">
+              <span className="text-xs sm:text-sm font-semibold uppercase tracking-widest rtl:tracking-normal rtl:normal-case text-persici-crimson">
                 {tagText}
               </span>
               {secTagText && (
                 <>
                   <span className="text-slate-300 font-light">/</span>
-                  <span className="text-xs sm:text-sm font-semibold uppercase tracking-widest text-slate-400">
+                  <span className="text-xs sm:text-sm font-semibold uppercase tracking-widest rtl:tracking-normal rtl:normal-case text-slate-400">
                     {secTagText}
                   </span>
                 </>
@@ -173,15 +189,15 @@ export function SolutionsHeroSection({
             </div>
           )}
 
-          <h1 className="font-primary text-4xl sm:text-5xl lg:text-[51px] xl:text-[58px] font-medium tracking-tight text-slate-900 leading-[1.1] sm:leading-[1.08]">
+          <h1 className="font-primary text-4xl sm:text-5xl lg:text-[48px] xl:text-[56px] font-medium tracking-tight rtl:tracking-normal text-slate-900 leading-[1.12] sm:leading-[1.1] rtl:leading-[1.25] rtl:sm:leading-[1.2]">
             {heroTitle}
           </h1>
 
-          <p className="mt-5 sm:mt-6 text-base sm:text-lg lg:text-xl leading-relaxed text-slate-600 max-w-xl">
+          <p className="mt-5 sm:mt-6 text-base sm:text-lg lg:text-xl leading-relaxed rtl:leading-relaxed text-slate-600 max-w-xl">
             {heroSubtitle}
           </p>
 
-          <div className="mt-8 sm:mt-10 flex items-center">
+          <div className="mt-8 sm:mt-10 flex items-center rtl:justify-start">
             <HomeButton
               href={heroHref}
               title={heroCtaPrimary}

@@ -40,15 +40,15 @@ export const siteNavLinks: NavLink[] = [
     href: '/solutions',
     hasDropdown: true,
     subItems: [
-      { key: 'applicationManagement', href: '/solutions/application-management' },
-      { key: 'marketingCommunications', href: '/solutions/marketing-communications' },
-      { key: 'ecommerceGrowth', href: '/solutions/ecommerce-growth' },
       { key: 'aiIntegration', href: '/solutions/ai-integration' },
-      { key: 'uxProductDesign', href: '/solutions/ux-and-product-design' },
-      { key: 'customerEngagement', href: '/solutions/customer-engagement' },
+      { key: 'applicationManagement', href: '/solutions/application-management' },
       { key: 'digitalEngineering', href: '/solutions/digital-engineering' },
-      { key: 'supplyChain', href: '/solutions/supply-chain' },
+      { key: 'uxProductDesign', href: '/solutions/ux-and-product-design' },
+      { key: 'ecommerceGrowth', href: '/solutions/ecommerce-growth' },
+      { key: 'marketingCommunications', href: '/solutions/marketing-communications' },
+      { key: 'customerEngagement', href: '/solutions/customer-engagement' },
       { key: 'crmManagement', href: '/solutions/crm-management' },
+      { key: 'supplyChain', href: '/solutions/supply-chain' },
     ],
   },
   {
@@ -821,43 +821,63 @@ export const growthServicesHome: GrowthServiceItem[] = [
 
 export const servicesList: ServiceItem[] = [
   {
-    id: 'paid-social',
-    slug: 'paid-social',
-    titleKey: 'Paid Social & Performance Marketing',
-    descriptionKey: 'Data-backed acquisition campaigns across Meta, TikTok, and emerging channels.',
-    icon: '📱',
-    tag: 'Paid Acquisition',
+    id: 'ai-integration',
+    slug: 'ai-integration',
+    titleKey: 'AI Integration & Intelligent Systems',
+    descriptionKey: 'Autonomous agents, custom generative AI pipelines, and predictive enterprise automation.',
+    icon: '🤖',
+    tag: 'AI & Automation',
     order: 1,
     isActive: true,
   },
   {
-    id: 'google-ads',
-    slug: 'google-ads',
-    titleKey: 'Google Ads & Search',
-    descriptionKey: 'High-intent Search, Shopping, Performance Max, and YouTube campaigns.',
-    icon: '🔍',
-    tag: 'High-Intent Search',
+    id: 'software-engineering',
+    slug: 'software-engineering',
+    titleKey: 'Custom Software & Mobile Applications',
+    descriptionKey: 'Enterprise web apps, native iOS/Android development, and resilient microservices architectures.',
+    icon: '💻',
+    tag: 'Software Engineering',
     order: 2,
     isActive: true,
   },
   {
-    id: 'shopify-cro',
-    slug: 'shopify-cro',
-    titleKey: 'Shopify Plus & CRO',
-    descriptionKey: 'High-converting headless storefronts and continuous A/B conversion rate optimization.',
-    icon: '🛍️',
-    tag: 'Engineering & Conversion',
+    id: 'cloud-infrastructure',
+    slug: 'cloud-infrastructure',
+    titleKey: 'Cloud Infrastructure & DevOps Architecture',
+    descriptionKey: 'Scalable AWS/GCP cloud environments, automated CI/CD pipelines, and high-availability systems.',
+    icon: '☁️',
+    tag: 'Cloud & Infrastructure',
     order: 3,
     isActive: true,
   },
   {
-    id: 'strategy',
-    slug: 'strategy',
-    titleKey: 'Growth Strategy & Data Intelligence',
-    descriptionKey: 'Unit economics modeling, retention loops, and server-side tracking infrastructure.',
-    icon: '📊',
-    tag: 'Strategy & Intelligence',
+    id: 'digital-transformation',
+    slug: 'digital-transformation',
+    titleKey: 'Digital Transformation & Enterprise Strategy',
+    descriptionKey: 'End-to-end modernization frameworks aligning strategy, agile product delivery, and engineering.',
+    icon: '⚡',
+    tag: 'Transformation',
     order: 4,
+    isActive: true,
+  },
+  {
+    id: 'marketing-communications',
+    slug: 'marketing-communications',
+    titleKey: 'Marketing Communications & Performance Media',
+    descriptionKey: 'Data-driven omnichannel acquisition, creative storytelling, and scalable brand campaigns.',
+    icon: '📱',
+    tag: 'Performance Growth',
+    order: 5,
+    isActive: true,
+  },
+  {
+    id: 'ecommerce-growth',
+    slug: 'ecommerce-growth',
+    titleKey: 'Digital Commerce & Conversion Engineering',
+    descriptionKey: 'High-converting digital commerce platforms, continuous CRO, and unit economics optimization.',
+    icon: '🛍️',
+    tag: 'Digital Commerce',
+    order: 6,
     isActive: true,
   },
 ];
@@ -1261,12 +1281,12 @@ export const homePageContent: HomePageContent = {
   page: 'home',
   hero: {
     title: {
-      en: 'Specialists in eCommerce growth',
-      ar: 'متخصصون في نمو التجارة الإلكترونية',
+      en: 'Specialists in AI, Technology & Digital Transformation',
+      ar: 'متخصصون في الذكاء الاصطناعي والتكنولوجيا والتحول الرقمي',
     },
     subtitle: {
-      en: 'We help ambitious brands scale with predictable and profitable growth. Driven by full-funnel digital marketing, data intelligence, and conversion engineering.',
-      ar: 'نساعد العلامات التجارية الطموحة على التوسع بنمو متوقع ومربح. مدفوعين بالتسويق الرقمي الشامل، وذكاء البيانات، وهندسة التحويل.',
+      en: 'We engineer intelligent AI systems, custom software applications, cloud infrastructure, and transformative digital ecosystems. Empowering modern enterprises to scale with predictive intelligence, resilient architecture, and full-spectrum digitalization.',
+      ar: 'نهندس أنظمة الذكاء الاصطناعي الذكية، وتطبيقات البرمجيات المخصصة، والبنية التحتية السحابية، والمنظومات الرقمية المتطورة. نمكّن المؤسسات الحديثة من التوسع بالذكاء التنبؤي، والمعمارية المتينة، والتحول الرقمي المتكامل.',
     },
     ctaText: {
       en: 'Collaborate with us',
@@ -1275,18 +1295,18 @@ export const homePageContent: HomePageContent = {
     ctaHref: '/contact',
     ratingScore: '5.0',
     ratingLabel: {
-      en: 'Rated 4.9/5 by 50+ leading brands',
-      ar: 'تقييم 4.9/5 من أكثر من 50 علامة تجارية رائدة',
+      en: 'Rated 4.9/5 by 50+ leading enterprises',
+      ar: 'تقييم 4.9/5 من أكثر من 50 مؤسسة رائدة',
     },
     trustedByTitle: {
-      en: 'Trusted by industry-leading fast-growing brands',
-      ar: 'موثوق به من قبل العلامات التجارية الرائدة والأسرع نمواً',
+      en: 'Trusted by industry-leading innovators and fast-growing enterprises',
+      ar: 'موثوق به من قبل كبرى المؤسسات الرائدة والمبتكرة',
     },
   },
   partnerShowcase: {
     title: {
-      en: 'Your online growth partner',
-      ar: 'شريكك في النمو الرقمي',
+      en: 'Your Strategic AI & Digital Transformation Partner',
+      ar: 'شريكك الاستراتيجي في التحول الرقمي والذكاء الاصطناعي',
     },
     videoSpeaker: {
       en: 'Faris Al-Otaibi',
@@ -1299,8 +1319,8 @@ export const homePageContent: HomePageContent = {
     videoCoverImage: '/images/hero/hero-video-cover.png',
     videoUrl: '/videos/persici-showcase.mp4',
     quote: {
-      en: 'Working with Persici has been our best growth decision. Their team\'s strategy and execution gave us 3.4x growth in under 6 months. A true growth partner.',
-      ar: 'العمل مع برسيسي كان أفضل قرار نمو اتخذناه. استراتيجية فريقهم وتنفيذهم حققا لنا نمواً بمقدار 3.4 أضعاف في أقل من 6 أشهر. شريك نمو حقيقي.',
+      en: 'Partnering with Persici accelerated our entire digital roadmap. Their engineering rigour, AI automations, and scalable infrastructure drove a 3.4x growth leap in under 6 months.',
+      ar: 'كانت شراكتنا مع بيرسيكي نقطة تحول في خارطة طريقنا الرقمية. هندستهم البرمجية وأتمتة الذكاء الاصطناعي والبنية السحابية حققت لنا نمواً بمقدار 3.4 أضعاف في أقل من 6 أشهر.',
     },
     author: 'Marcus Lindqvist',
     role: {
@@ -1312,20 +1332,20 @@ export const homePageContent: HomePageContent = {
   },
   heritage: {
     badge: {
-      en: 'Growth Architecture',
-      ar: 'بنية النمو',
+      en: 'Digital Engineering & AI Innovation',
+      ar: 'الهندسة الرقمية وابتكار الذكاء الاصطناعي',
     },
     title: {
-      en: 'Rooted in excellence. Built for growth.',
-      ar: 'متجذرون في التميز. مصممون للنمو.',
+      en: 'Rooted in technological excellence. Built for enterprise scale.',
+      ar: 'متجذرون في التميز التقني. مصممون للتوسع المؤسسي.',
     },
     desc1: {
-      en: 'Persici is a specialized growth and digital agency founded on the principle that modern DTC & omnichannel brands need deep domain expertise, tailored high-performance teams, and absolute transparency in execution.',
-      ar: 'برسيسي هي وكالة نمو ورقمية متخصصة تأسست على مبدأ أن العلامات التجارية الحديثة تحتاج إلى خبرة عميقة وفرق عمل مخصصة وعالية الأداء مع شفافية مطلقة في التنفيذ.',
+      en: 'Persici is an advanced digital transformation, enterprise software, and AI engineering agency. We partner with visionary enterprises and high-growth organizations to architect resilient digital ecosystems, custom web and mobile applications, secure cloud infrastructure, and intelligent automation pipelines.',
+      ar: 'بيرسيكي هي وكالة متقدمة للتحول الرقمي وهندسة البرمجيات المؤسسية والذكاء الاصطناعي. نتشارك مع المؤسسات الرائدة لبناء منظومات رقمية مرنة، وتطبيقات ويب والجوال مخصصة، وبنية تحتية سحابية آمنة، ومسارات أتمتة ذكية.',
     },
     desc2: {
-      en: 'We act as your dedicated growth arm, taking full ownership of your customer acquisition, conversion optimization, retention loops, and data architecture to scale revenue sustainably.',
-      ar: 'نعمل كذراع النمو المخصص لك، ونتحمل المسؤولية الكاملة عن اكتساب العملاء وتحسين معدل التحويل وبنية البيانات لزيادة الإيرادات بشكل مستدام.',
+      en: 'While engineering robust software, applications, and AI infrastructure forms our foundational core, we seamlessly integrate strategic business consulting, UX product design, and high-impact digital marketing to ensure complete end-to-end digital excellence.',
+      ar: 'وبينما تمثل هندسة التكنولوجيا المتقدمة والتطبيقات وبنية الذكاء الاصطناعي جوهر عملنا، فإننا ندمج استشارات الأعمال وتصميم المنتجات والتسويق الرقمي الموجه لضمان نجاح رقمي شامل ومستدام.',
     },
     ctaPrimaryText: {
       en: 'Work with us',
@@ -1349,8 +1369,8 @@ export const homePageContent: HomePageContent = {
       ar: 'تقييم 4.9/5 بناءً على أكثر من 50 تقييماً',
     },
     bannerText: {
-      en: 'Ready to scale your eCommerce brand?',
-      ar: 'جاهز لتوسيع علامتك التجارية في التجارة الإلكترونية؟',
+      en: 'Ready to accelerate your enterprise AI & digital transformation?',
+      ar: 'جاهز لتسريع التحول الرقمي وحلول الذكاء الاصطناعي في مؤسستك؟',
     },
     bannerCtaText: {
       en: 'Book call',
@@ -1376,16 +1396,16 @@ export const homePageContent: HomePageContent = {
       ar: 'فريقك من المتخصصين',
     },
     title: {
-      en: 'Our approach to eCommerce growth',
-      ar: 'نهجنا في نمو التجارة الإلكترونية',
+      en: 'Our approach to AI & Digital Transformation',
+      ar: 'نهجنا في التحول الرقمي وحلول الذكاء الاصطناعي',
     },
     desc1: {
-      en: 'At Persici, we work as a dedicated growth partner, with a deep understanding of the regional market and a focus on ROI. We deliver tailored strategies - not templates. No freelancers, no shortcuts - just a small, senior team focused on long-term, scalable results.',
-      ar: 'في برسيسي، نعمل كشريك نمو مخصص، مع فهم عميق للسوق الإقليمي وتركيز على العائد على الاستثمار. نقدم استراتيجيات مخصصة - وليست قوالب جاهزة. فريق صغير وذو خبرة عالية يركز على نتائج قابلة للتوسع.',
+      en: 'At Persici, we engineer transformative digital solutions with deep domain expertise, modern cloud architectures, and custom AI integrations. We deliver production-grade software and tailored digital roadmaps - no shortcuts, no generic templates. A dedicated, senior engineering and strategy squad committed to long-term scalability and measurable ROI.',
+      ar: 'في بيرسيكي، نهندس حلولاً رقمية تحويلية مدفوعة بخبرة تقنية متعمقة، ومعماريات سحابية حديثة، وتكامل مخصص للذكاء الاصطناعي. نقدم برمجيات مؤسسية وخطط تحول رقمي مصممة بدقة — بلا حلول مختصرة ولا قوالب جاهزة. فريق هندسي واستراتيجي خبير ومركّز على تحقيق قابلية التوسع والعائد الاستثماري الملموس.',
     },
     desc2: {
-      en: 'We combine hands-on execution with clear communication: performance updates weekly, full WhatsApp access, and no surprises - only growth.',
-      ar: 'نجمع بين التنفيذ العملي والتواصل الواضح: تحديثات أداء أسبوعية، تواصل مباشر عبر واتساب، وبدون مفاجآت - فقط نمو.',
+      en: 'We combine agile sprint execution with clear communication: transparent technical governance, weekly milestone updates, direct WhatsApp access, and absolute focus on business impact.',
+      ar: 'نجمع بين التنفيذ الرشيق في دورات تطوير سريعة والتواصل الشفاف: حوكمة تقنية واضحة، تقارير إنجاز أسبوعية، تواصل مباشر عبر واتساب، وتركيز مطلق على إحداث الفارق في نتائج الأعمال.',
     },
     ctaPrimaryText: {
       en: 'Book call',
@@ -1410,8 +1430,8 @@ export const homePageContent: HomePageContent = {
       ar: 'كلمات من أولئك الذين نساعدهم على التوسع',
     },
     bannerText: {
-      en: 'Ready to scale your eCommerce brand?',
-      ar: 'جاهز لتوسيع علامتك التجارية في التجارة الإلكترونية؟',
+      en: 'Ready to engineer your next-generation digital ecosystem?',
+      ar: 'هل أنت مستعد لهندسة منظومتك الرقمية وتطبيقاتك الذكية؟',
     },
     bannerCtaText: {
       en: 'Book a discovery call',
@@ -1422,38 +1442,38 @@ export const homePageContent: HomePageContent = {
   },
   homeContact: {
     leftTitle: {
-      en: 'Ready to learn more?',
-      ar: 'جاهز لمعرفة المزيد؟',
+      en: 'Ready to accelerate your digital future?',
+      ar: 'جاهز لتسريع مستقبلك الرقمي؟',
     },
     points: [
       {
-        en: 'Discuss your unique business challenges',
-        ar: 'ناقش تحديات عملك الفريدة',
+        en: 'Modernize legacy systems and accelerate digital transformation',
+        ar: 'تحديث الأنظمة القديمة وتسريع مسار التحول الرقمي الشامل',
       },
       {
-        en: 'Explore custom growth solutions built for your industry',
-        ar: 'استكشف حلول النمو المخصصة لصناعتك',
+        en: 'Deploy custom enterprise AI models, automations, and data pipelines',
+        ar: 'نشر نماذج وأدوات الذكاء الاصطناعي المخصصة والأتمتة الذكية وهندسة البيانات',
       },
       {
-        en: 'Get proven performance media & CRO guidance',
-        ar: 'احصل على إرشادات مثبتة لإعلانات الأداء وتحسين معدل التحويل',
+        en: 'Architect scalable web/mobile applications and resilient cloud infrastructure',
+        ar: 'هندسة تطبيقات الويب والجوال القابلة للتوسع والبنية التحتية السحابية',
       },
       {
-        en: 'Identify the next step that fits your revenue goals',
-        ar: 'حدد الخطوة التالية التي تناسب أهداف إيراداتك',
+        en: 'Accelerate growth with integrated UX design, digital strategy, and performance media',
+        ar: 'تسريع النمو بتكامل تصميم تجربة المستخدم والاستراتيجية الرقمية وإعلانات الأداء',
       },
     ],
     trustedBy: {
-      en: 'Trusted by leading eCommerce brands in the region.',
-      ar: 'موثوق به من قِبل كبرى العلامات التجارية في المنطقة.',
+      en: 'Trusted by visionary leaders and high-growth enterprises.',
+      ar: 'موثوق بنا من قِبل قادة التحول والمؤسسات الرائدة في المنطقة.',
     },
     title: {
       en: 'Get in touch',
       ar: 'تواصل معنا',
     },
     subtitle: {
-      en: 'Submit the form below and one of our experts will reach out.',
-      ar: 'أرسل النموذج أدناه وسيتواصل معك أحد خبرائنا.',
+      en: 'Submit the form below and our digital transformation experts will reach out.',
+      ar: 'أرسل بياناتك وسيتواصل معك أحد خبرائنا في التحول الرقمي والتكنولوجيا.',
     },
   },
   discovery: {
@@ -1530,80 +1550,42 @@ export const contactPageContent: ContactPageContent = {
 // ============================================================================
 export const solutionsOfferingsList: SolutionOfferingItem[] = [
   {
-    slug: 'supply-chain',
+    slug: 'ai-integration',
     title: {
-      en: 'Supply Chain',
-      ar: 'سلسلة الإمداد',
+      en: 'AI Integration',
+      ar: 'دمج الذكاء الاصطناعي',
     },
     description: {
-      en: 'Data-driven inventory visibility, automated order routing, and localized fulfillment solutions reducing delivery delays and operational costs.',
-      ar: 'رؤية للمخزون مدفوعة بالبيانات، وتوجيه آلي للطلبات، وحلول شحن محلي تقلل التأخير وتكاليف التشغيل.',
+      en: 'Cutting development timelines from months to days with intelligent automated agents, generative workflows, and proprietary predictive growth models.',
+      ar: 'اختصار وقت التطوير من أشهر إلى أيام عبر وكلاء آليين أذكياء، وسير عمل توليدي ونماذج نمو تنبؤية مخصصة.',
     },
-    diagramType: 'matrix-intersect',
+    diagramType: 'flow-funnel',
     tag: {
-      en: 'Operations & Fulfillment',
-      ar: 'العمليات واللوجستيات',
+      en: 'GenAI & Automation',
+      ar: 'الذكاء الاصطناعي والأتمتة',
     },
-    icon: '/icons/solutions/Supply%20Chain%404x.png',
+    icon: '/icons/solutions/AI%404x.png',
     order: 1,
-    href: '/solutions/supply-chain',
+    href: '/solutions/ai-integration',
   },
   {
-    slug: 'marketing-communications',
+    slug: 'application-management',
     title: {
-      en: 'Marketing & Communications',
-      ar: 'التسويق والتواصل',
+      en: 'Application & Management',
+      ar: 'إدارة وتحديث التطبيقات',
     },
     description: {
-      en: 'Full-funnel digital marketing, data-backed acquisition across Meta and TikTok, and compelling creative storytelling that drives sustainable ROAS.',
-      ar: 'تسويق رقمي متكامل، واستحواذ مدعوم بالبيانات عبر ميتا وتيك توك، وسرد إبداعي يجذب العملاء ويحقق عائداً مستداماً.',
+      en: 'Mission-critical application maintenance, 24/7 uptime monitoring, SLA support, and legacy modernization keeping your enterprise reliable.',
+      ar: 'صيانة البرمجيات الحيوية، والمراقبة المستمرة على مدار الساعة، ودعم مستوى الخدمة وتحديث الأنظمة القديمة لضمان الموثوقية.',
     },
-    diagramType: 'orbital-radar',
+    diagramType: 'triad-mesh',
     tag: {
-      en: 'Performance Acquisition',
-      ar: 'إعلانات الأداء والاستحواذ',
+      en: 'DevOps & SLA Support',
+      ar: 'الدعم والموثوقية',
     },
-    icon: '/icons/solutions/Marketing%20%26%20Communicating%404x.png',
+    icon: '/icons/solutions/Application%20%26%20Management%404x.png',
     order: 2,
-    href: '/solutions/marketing-communications',
-  },
-  {
-    slug: 'ux-and-product-design',
-    title: {
-      en: 'UX and Product Design',
-      ar: 'تصميم تجربة وواجهة المستخدم',
-    },
-    description: {
-      en: 'Human-centered digital product architecture, intuitive user journeys, high-fidelity design systems, and rapid prototyping that drive conversion and adoption.',
-      ar: 'معمارية رقمية تركز على الإنسان، ومسارات مستخدم بديهية، وأنظمة تصميم تفاعلية ونماذج أولية سريعة تعزز التحويل والتبني.',
-    },
-    diagramType: 'ux-strategy-compass',
-    tag: {
-      en: 'UI/UX & Product Design',
-      ar: 'تجربة وواجهة المستخدم',
-    },
-    icon: '/icons/solutions/UX%20and%20Product%20Design%404x.png',
-    order: 3,
-    href: '/solutions/ux-and-product-design',
-  },
-  {
-    slug: 'ecommerce-growth',
-    title: {
-      en: 'E-Commerce Growth',
-      ar: 'نمو التجارة الإلكترونية',
-    },
-    description: {
-      en: 'End-to-end Shopify Plus scaling, continuous conversion rate optimization (CRO), and margin-engineered unit economics for high-velocity DTC brands.',
-      ar: 'توسيع متاجر شوبيفاي بلس، وتحسين مستمر لمعدل التحويل (CRO)، وهندسة الجدوى الاقتصادية للعلامات سريعة النمو.',
-    },
-    diagramType: 'grid-dots',
-    tag: {
-      en: 'Storefront & CRO',
-      ar: 'المتاجر والتحويل',
-    },
-    icon: '/icons/solutions/E-Commerce%20Growth%404x.png',
-    order: 4,
-    href: '/solutions/ecommerce-growth',
+    href: '/solutions/application-management',
   },
   {
     slug: 'digital-engineering',
@@ -1621,8 +1603,65 @@ export const solutionsOfferingsList: SolutionOfferingItem[] = [
       ar: 'السحابة والمعمارية',
     },
     icon: '/icons/solutions/Digital%20Engineering%404x.png',
-    order: 5,
+    order: 3,
     href: '/solutions/digital-engineering',
+  },
+  {
+    slug: 'ux-and-product-design',
+    title: {
+      en: 'UX and Product Design',
+      ar: 'تصميم تجربة وواجهة المستخدم',
+    },
+    description: {
+      en: 'Human-centered digital product architecture, intuitive user journeys, high-fidelity design systems, and rapid prototyping that drive conversion and adoption.',
+      ar: 'معمارية رقمية تركز على الإنسان، ومسارات مستخدم بديهية، وأنظمة تصميم تفاعلية ونماذج أولية سريعة تعزز التحويل والتبني.',
+    },
+    diagramType: 'ux-strategy-compass',
+    tag: {
+      en: 'UI/UX & Product Design',
+      ar: 'تجربة وواجهة المستخدم',
+    },
+    icon: '/icons/solutions/UX%20and%20Product%20Design%404x.png',
+    order: 4,
+    href: '/solutions/ux-and-product-design',
+  },
+  {
+    slug: 'ecommerce-growth',
+    title: {
+      en: 'E-Commerce Growth',
+      ar: 'نمو التجارة الإلكترونية',
+    },
+    description: {
+      en: 'End-to-end digital commerce scaling, continuous conversion rate optimization (CRO), and margin-engineered unit economics for high-velocity brands.',
+      ar: 'توسيع منصات التجارة الرقمية، وتحسين مستمر لمعدل التحويل (CRO)، وهندسة الجدوى الاقتصادية للعلامات سريعة النمو.',
+    },
+    diagramType: 'grid-dots',
+    tag: {
+      en: 'Storefront & CRO',
+      ar: 'المتاجر والتحويل',
+    },
+    icon: '/icons/solutions/E-Commerce%20Growth%404x.png',
+    order: 5,
+    href: '/solutions/ecommerce-growth',
+  },
+  {
+    slug: 'marketing-communications',
+    title: {
+      en: 'Marketing & Communications',
+      ar: 'التسويق والتواصل',
+    },
+    description: {
+      en: 'Full-funnel digital marketing, data-backed acquisition across Meta and TikTok, and compelling creative storytelling that drives sustainable brand performance.',
+      ar: 'تسويق رقمي متكامل، واستحواذ مدعوم بالبيانات عبر ميتا وتيك توك، وسرد إبداعي يجذب العملاء ويحقق عائداً مستداماً.',
+    },
+    diagramType: 'orbital-radar',
+    tag: {
+      en: 'Performance Acquisition',
+      ar: 'إعلانات الأداء والاستحواذ',
+    },
+    icon: '/icons/solutions/Marketing%20%26%20Communicating%404x.png',
+    order: 6,
+    href: '/solutions/marketing-communications',
   },
   {
     slug: 'customer-engagement',
@@ -1640,7 +1679,7 @@ export const solutionsOfferingsList: SolutionOfferingItem[] = [
       ar: 'الاحتفاظ ودورة العميل',
     },
     icon: '/icons/solutions/Customer%20Engagement%404x.png',
-    order: 6,
+    order: 7,
     href: '/solutions/customer-engagement',
   },
   {
@@ -1659,62 +1698,43 @@ export const solutionsOfferingsList: SolutionOfferingItem[] = [
       ar: 'الأتمتة والتخصيص',
     },
     icon: '/icons/solutions/CRM%20Management%404x.png',
-    order: 7,
+    order: 8,
     href: '/solutions/crm-management',
   },
   {
-    slug: 'application-management',
+    slug: 'supply-chain',
     title: {
-      en: 'Application & Management',
-      ar: 'إدارة وتحديث التطبيقات',
+      en: 'Supply Chain',
+      ar: 'سلسلة الإمداد',
     },
     description: {
-      en: 'Mission-critical application maintenance, 24/7 uptime monitoring, SLA support, and legacy modernization keeping your enterprise reliable.',
-      ar: 'صيانة البرمجيات الحيوية، والمراقبة المستمرة على مدار الساعة، ودعم مستوى الخدمة وتحديث الأنظمة القديمة لضمان الموثوقية.',
+      en: 'Data-driven inventory visibility, automated order routing, and localized fulfillment solutions reducing delivery delays and operational costs.',
+      ar: 'رؤية للمخزون مدفوعة بالبيانات، وتوجيه آلي للطلبات، وحلول شحن محلي تقلل التأخير وتكاليف التشغيل.',
     },
-    diagramType: 'triad-mesh',
+    diagramType: 'matrix-intersect',
     tag: {
-      en: 'DevOps & SLA Support',
-      ar: 'الدعم والموثوقية',
+      en: 'Operations & Fulfillment',
+      ar: 'العمليات واللوجستيات',
     },
-    icon: '/icons/solutions/Application%20%26%20Management%404x.png',
-    order: 8,
-    href: '/solutions/application-management',
-  },
-  {
-    slug: 'ai-integration',
-    title: {
-      en: 'AI Integration',
-      ar: 'دمج الذكاء الاصطناعي',
-    },
-    description: {
-      en: 'Cutting development timelines from months to days with intelligent automated agents, generative workflows, and proprietary predictive growth models.',
-      ar: 'اختصار وقت التطوير من أشهر إلى أيام عبر وكلاء آليين أذكياء، وسير عمل توليدي ونماذج نمو تنبؤية مخصصة.',
-    },
-    diagramType: 'flow-funnel',
-    tag: {
-      en: 'GenAI & Automation',
-      ar: 'الذكاء الاصطناعي والأتمتة',
-    },
-    icon: '/icons/solutions/AI%404x.png',
+    icon: '/icons/solutions/Supply%20Chain%404x.png',
     order: 9,
-    href: '/solutions/ai-integration',
+    href: '/solutions/supply-chain',
   },
 ];
 
 export const solutionsPageContent: SolutionsPageContent = {
   page: 'solutions',
   heroBadge: {
-    en: 'Persici Growth Architecture',
-    ar: 'بنية النمو المؤسسي في بيرسيسي',
+    en: 'AI & Enterprise Digital Transformation Architecture',
+    ar: 'بنية التحول الرقمي وهندسة الذكاء الاصطناعي',
   },
   heroTitle: {
-    en: 'Navigating the Hurdles of Modern Business Growth',
-    ar: 'تجاوز عقبات وتحديات نمو الأعمال الحديثة',
+    en: 'Engineering the Future of Enterprise Technology & Digital Systems',
+    ar: 'هندسة مستقبل التكنولوجيا المؤسسية والمنظومات الرقمية',
   },
   heroSubtitle: {
-    en: 'Every industry faces unique friction points on its way to scaling. We help ambitious direct-to-consumer and enterprise brands conquer the core digital and operational complexities holding them back.',
-    ar: 'تواجه كل صناعة نقاط احتكاك فريدة في طريقها نحو التوسع. نحن نساعد العلامات التجارية الطموحة على التغلب على التعقيدات الرقمية والتشغيلية التي تعيق تقدمها.',
+    en: 'From autonomous AI integration and mission-critical application engineering to cloud infrastructure and omnichannel growth—we architect the digital foundations that power modern business.',
+    ar: 'من تكامل الذكاء الاصطناعي وتطوير التطبيقات والبرمجيات المؤسسية إلى البنية السحابية ونمو الأعمال—نهندس الأسس الرقمية التي تقود المؤسسات الحديثة.',
   },
   heroCtaPrimary: {
     en: 'Explore Offerings',
@@ -1739,8 +1759,8 @@ export const solutionsPageContent: SolutionsPageContent = {
     ar: 'لماذا يُعد هذا محورياً للنمو؟',
   },
   whyItMattersText: {
-    en: 'Modern eCommerce brands and digital enterprises cannot scale with disconnected vendor tools and generic marketing retainers. Achieving sustainable, profitable scale requires full-stack alignment—where unit economics, storefront conversion engineering, predictive inventory, and real-time customer data operate as one synchronized engine.',
-    ar: 'لم تعد العلامات التجارية الحديثة قادرة على التوسع المستدام عبر أدوات متناثرة وحلول تسويقية عامة. يتطلب تحقيق نمو مربح مواءمة شاملة — حيث تعمل اقتصاديات الوحدة، وهندسة تحويل المتاجر، والتنبؤ بالمخزون، وبيانات العملاء الفورية كمحرك موحد متكامل.',
+    en: 'Modern enterprises cannot scale with disconnected vendor tools and fragmented technologies. Achieving sustainable scale requires unified engineering—where cloud infrastructure, custom software applications, autonomous AI workflows, and customer engagement operate as one synchronized engine.',
+    ar: 'لم تعد المؤسسات الحديثة قادرة على التوسع المستدام عبر أدوات متناثرة وتقنيات مجزأة. يتطلب تحقيق نمو مؤسسي متين مواءمة هندسية شاملة — حيث تعمل البنية التحتية السحابية، والبرمجيات المخصصة، ومسارات الذكاء الاصطناعي المستقلة، وتفاعل العملاء كمحرك موحد متكامل.',
   },
   whyItMattersImage: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1000&q=80',
   benefitsTitle: {

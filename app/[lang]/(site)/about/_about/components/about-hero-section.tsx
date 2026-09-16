@@ -20,7 +20,7 @@ export function AboutHeroSection({ data, lang }: AboutHeroSectionProps) {
   const secondaryCta = data.secondaryCta[lang as 'en' | 'ar'] || data.secondaryCta.en;
 
   return (
-    <section data-header-luminance="light" className="relative pt-32 pb-20 sm:pt-40 sm:pb-28 lg:pt-44 lg:pb-36 bg-gradient-to-b from-[#F9F8F6] via-[#FFFAFA] to-white overflow-hidden border-b border-black/[0.04]">
+    <section data-header-luminance="light" dir={isRtl ? 'rtl' : 'ltr'} className="relative pt-32 pb-20 sm:pt-40 sm:pb-28 lg:pt-44 lg:pb-36 bg-gradient-to-b from-[#F9F8F6] via-[#FFFAFA] to-white overflow-hidden border-b border-black/[0.04]">
       {/* Ambient background glow & 3D geometric abstract accent */}
       <div className="absolute top-0 right-0 -mr-20 -mt-20 w-[520px] h-[520px] rounded-full bg-persici-crimson/[0.06] blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-[420px] h-[420px] rounded-full bg-persici-blush/[0.08] blur-3xl pointer-events-none" />
@@ -70,14 +70,14 @@ export function AboutHeroSection({ data, lang }: AboutHeroSectionProps) {
         <div className="max-w-4xl relative z-10">
           {/* Eyebrow badge */}
           <FadeUp delay={0} duration={600} distance={16}>
-            <span className={`${badgePill} mb-6 tracking-wide uppercase text-[9.5px] font-mono font-semibold`}>
+            <span className={`${badgePill} mb-6 tracking-wide uppercase text-[9.5px] font-mono font-semibold rtl:tracking-normal rtl:normal-case rtl:font-primary`}>
               {badge}
             </span>
           </FadeUp>
 
           {/* Main Title H1 */}
           <FadeUp delay={100} duration={750} distance={24}>
-            <h1 className="font-primary text-4xl sm:text-6xl lg:text-7xl xl:text-[75px] font-medium tracking-tight text-persici-black leading-[1.08] rtl:leading-[1.18] mb-8">
+            <h1 className="font-primary text-4xl sm:text-6xl lg:text-7xl xl:text-[75px] font-medium tracking-tight rtl:tracking-normal text-persici-black leading-[1.08] rtl:leading-[1.25] rtl:sm:leading-[1.2] mb-8">
               {title}
             </h1>
           </FadeUp>

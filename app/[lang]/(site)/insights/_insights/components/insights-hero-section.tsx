@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React from 'react';
 import Image from 'next/image';
@@ -40,7 +40,7 @@ export function InsightsHeroSection({ lang }: InsightsHeroSectionProps) {
           <div className="lg:col-span-7 flex flex-col items-start text-start">
             {/* Badge */}
             <FadeUp delay={0} duration={750} distance={16}>
-              <div className="inline-flex items-center gap-2 rounded-full border border-persici-crimson/20 bg-persici-crimson/5 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-persici-crimson mb-6 backdrop-blur-xs">
+              <div className="inline-flex items-center gap-2 rounded-full border border-persici-crimson/20 bg-persici-crimson/5 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider rtl:tracking-normal rtl:normal-case text-persici-crimson mb-6 backdrop-blur-xs">
                 <TbSparkles className="h-3.5 w-3.5 shrink-0" />
                 <span>
                   {isRtl ? 'الرؤى والقيادة الفكرية' : 'Insights & Thought Leadership'}
@@ -50,7 +50,7 @@ export function InsightsHeroSection({ lang }: InsightsHeroSectionProps) {
 
             {/* Main Headline */}
             <FadeUp delay={120} duration={850} distance={24} blur={true}>
-              <h1 className="font-primary text-4xl sm:text-5xl lg:text-6xl font-medium tracking-tight text-slate-900 leading-[1.12]">
+              <h1 className="font-primary text-4xl sm:text-5xl lg:text-6xl font-medium tracking-tight rtl:tracking-normal text-slate-900 leading-[1.12] rtl:leading-[1.25]">
                 {isRtl ? (
                   <>
                     قيادة فكرية حائزة على{' '}

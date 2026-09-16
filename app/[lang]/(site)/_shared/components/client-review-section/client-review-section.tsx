@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React from 'react';
 import Image from 'next/image';
@@ -13,6 +13,7 @@ export interface ClientReviewSectionProps {
   quoteRole?: string | { en: string; ar: string };
   quoteAvatar?: string;
   avatar?: string;
+  avatarClassName?: string;
   badge?: string | { en: string; ar: string };
   lang: string;
   className?: string;
@@ -31,6 +32,7 @@ export function ClientReviewSection({
   quoteRole,
   quoteAvatar,
   avatar: propAvatar,
+  avatarClassName,
   badge,
   lang,
   className,
@@ -85,13 +87,17 @@ export function ClientReviewSection({
           {(author || role) && (
             <div className="mt-8 pt-4 text-left rtl:text-right flex items-center gap-3.5">
               {avatar && (
-                <div className="relative w-10 h-10 sm:w-11 sm:h-11 rounded-full overflow-hidden shrink-0 border border-slate-200/80 shadow-xs">
+                <div
+                  className={`relative rounded-full overflow-hidden shrink-0 border border-slate-200/80 shadow-xs ${
+                    avatarClassName || 'w-10 h-10 sm:w-11 sm:h-11'
+                  }`}
+                >
                   <Image
                     src={avatar}
                     alt={author || 'Author'}
                     fill
                     className="object-cover"
-                    sizes="44px"
+                    sizes="64px"
                   />
                 </div>
               )}

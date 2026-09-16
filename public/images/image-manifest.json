@@ -1,0 +1,40 @@
+{
+  "members/amro-sharaf.png": {
+    "type": "image",
+    "originalName": "amro-sharaf.png",
+    "sanitizedName": "amr-sharaf",
+    "r2Key": "members/amr-sharaf.webp",
+    "r2Url": "https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/members/amr-sharaf.webp",
+    "localWebpPath": "public/images/members/amr-sharaf.webp",
+    "originalSizeBytes": 4495549,
+    "optimizedSizeBytes": 87084,
+    "savingsPercent": "96.1%",
+    "width": 1000,
+    "height": 1000,
+    "crop": {
+      "left": 188,
+      "top": 20,
+      "width": 1160,
+      "height": 1160
+    }
+  },
+  "members/amr-sharaf.jpg": {
+    "type": "image",
+    "originalName": "amro-sharaf.png",
+    "sanitizedName": "amr-sharaf",
+    "r2Key": "members/amr-sharaf.webp",
+    "r2Url": "https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/members/amr-sharaf.webp",
+    "localWebpPath": "public/images/members/amr-sharaf.webp",
+    "originalSizeBytes": 4495549,
+    "optimizedSizeBytes": 87084,
+    "savingsPercent": "96.1%",
+    "width": 1000,
+    "height": 1000,
+    "crop": {
+      "left": 188,
+      "top": 20,
+      "width": 1160,
+      "height": 1160
+    }
+  }
+}

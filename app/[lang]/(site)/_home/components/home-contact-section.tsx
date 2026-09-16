@@ -1,8 +1,9 @@
-﻿'use client';
+'use client';
 
 import React, { useState, useRef } from 'react';
 import ReCAPTCHA from 'react-google-recaptcha';
 import type { Dictionary } from '@dictionaries';
+import { TbChevronDown } from 'react-icons/tb';
 import {
   sectionContainer,
   sectionPaddingY,
@@ -291,19 +292,24 @@ export function HomeContactSection({ lang, dict }: HomeContactSectionProps) {
                         <label className="block text-xs font-semibold text-foreground/80 mb-1">
                           {dict.homeContact?.country || 'Country'} *
                         </label>
-                        <select
-                          required
-                          value={formData.country}
-                          onChange={(e) => setFormData({ ...formData, country: e.target.value })}
-                          className="w-full rounded-xl border border-black/15 bg-white px-3.5 py-2.5 text-sm text-foreground outline-none transition-all focus:border-persici-crimson focus:ring-2 focus:ring-persici-crimson/20"
-                        >
-                          <option value="">{dict.homeContact?.countryPlaceholder || 'Select a country'}</option>
-                          {countries.map((c) => (
-                            <option key={c} value={c}>
-                              {c}
-                            </option>
-                          ))}
-                        </select>
+                        <div className="relative">
+                          <select
+                            required
+                            value={formData.country}
+                            onChange={(e) => setFormData({ ...formData, country: e.target.value })}
+                            className="w-full appearance-none rounded-xl border border-black/15 bg-white ps-3.5 pe-11 py-2.5 text-sm text-foreground outline-none transition-all focus:border-persici-crimson focus:ring-2 focus:ring-persici-crimson/20 cursor-pointer"
+                          >
+                            <option value="">{dict.homeContact?.countryPlaceholder || 'Select a country'}</option>
+                            {countries.map((c) => (
+                              <option key={c} value={c}>
+                                {c}
+                              </option>
+                            ))}
+                          </select>
+                          <div className="pointer-events-none absolute inset-y-0 end-0 flex items-center pe-4 text-foreground/50">
+                            <TbChevronDown className="h-4 w-4" />
+                          </div>
+                        </div>
                       </div>
                     </div>
 
@@ -326,18 +332,24 @@ export function HomeContactSection({ lang, dict }: HomeContactSectionProps) {
                         <label className="block text-xs font-semibold text-foreground/80 mb-1">
                           {dict.homeContact?.reason || 'Reason for contacting'}
                         </label>
-                        <select
-                          value={formData.reason}
-                          onChange={(e) => setFormData({ ...formData, reason: e.target.value })}
-                          className="w-full rounded-xl border border-black/15 bg-white px-3.5 py-2.5 text-sm text-foreground outline-none transition-all focus:border-persici-crimson focus:ring-2 focus:ring-persici-crimson/20"
-                        >
-                          <option value="">{dict.homeContact?.reasonPlaceholder || 'Select reasons'}</option>
-                          <option value="paidSocial">{dict.homeContact?.reasons?.paidSocial || 'Paid Social Scaling'}</option>
-                          <option value="googleAds">{dict.homeContact?.reasons?.googleAds || 'Google Ads & Search'}</option>
-                          <option value="shopifyCro">{dict.homeContact?.reasons?.shopifyCro || 'Shopify Plus & CRO'}</option>
-                          <option value="fullFunnel">{dict.homeContact?.reasons?.fullFunnel || 'Full-Funnel Partnership'}</option>
-                          <option value="consultation">{dict.homeContact?.reasons?.consultation || 'Strategic Consultation'}</option>
-                        </select>
+                        <div className="relative">
+                          <select
+                            value={formData.reason}
+                            onChange={(e) => setFormData({ ...formData, reason: e.target.value })}
+                            className="w-full appearance-none rounded-xl border border-black/15 bg-white ps-3.5 pe-11 py-2.5 text-sm text-foreground outline-none transition-all focus:border-persici-crimson focus:ring-2 focus:ring-persici-crimson/20 cursor-pointer"
+                          >
+                            <option value="">{dict.homeContact?.reasonPlaceholder || 'Select reasons'}</option>
+                            {dict.homeContact?.reasons &&
+                              Object.entries(dict.homeContact.reasons).map(([key, label]) => (
+                                <option key={key} value={key}>
+                                  {label as string}
+                                </option>
+                              ))}
+                          </select>
+                          <div className="pointer-events-none absolute inset-y-0 end-0 flex items-center pe-4 text-foreground/50">
+                            <TbChevronDown className="h-4 w-4" />
+                          </div>
+                        </div>
                       </div>
                     </div>
 

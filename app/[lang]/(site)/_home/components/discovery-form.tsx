@@ -1,6 +1,7 @@
-﻿'use client';
+'use client';
 
 import { useState } from 'react';
+import { TbChevronDown } from 'react-icons/tb';
 import type { Dictionary } from '@dictionaries';
 import { HomeButton } from '@shared/components/home-button';
 import { getHomeDiscoveryRevenueOptions } from '../services';
@@ -131,17 +132,22 @@ export function DiscoveryCallForm({ dict }: { dict: Dictionary }) {
           <label className="block text-xs font-medium text-foreground/80">
             {dict.discovery.form.revenue}
           </label>
-          <select
-            value={formData.revenue}
-            onChange={(e) => setFormData({ ...formData, revenue: e.target.value })}
-            className="mt-1 w-full rounded-xl border border-black/10 bg-black/[0.02] px-3.5 py-2.5 text-xs text-foreground outline-none transition-all focus:border-persici-crimson focus:bg-white focus:ring-2 focus:ring-persici-crimson/20"
-          >
-            {revenueOptions.map((opt) => (
-              <option key={opt.value} value={opt.value}>
-                {dict.discovery.form[opt.labelKey as keyof typeof dict.discovery.form] || opt.label}
-              </option>
-            ))}
-          </select>
+          <div className="relative mt-1">
+            <select
+              value={formData.revenue}
+              onChange={(e) => setFormData({ ...formData, revenue: e.target.value })}
+              className="w-full appearance-none rounded-xl border border-black/10 bg-black/[0.02] ps-3.5 pe-11 py-2.5 text-xs text-foreground outline-none transition-all focus:border-persici-crimson focus:bg-white focus:ring-2 focus:ring-persici-crimson/20 cursor-pointer"
+            >
+              {revenueOptions.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {dict.discovery.form[opt.labelKey as keyof typeof dict.discovery.form] || opt.label}
+                </option>
+              ))}
+            </select>
+            <div className="pointer-events-none absolute inset-y-0 end-0 flex items-center pe-4 text-foreground/50">
+              <TbChevronDown className="h-4 w-4" />
+            </div>
+          </div>
         </div>
 
         <HomeButton
