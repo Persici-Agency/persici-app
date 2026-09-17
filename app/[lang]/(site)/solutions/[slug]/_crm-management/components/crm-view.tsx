@@ -104,7 +104,7 @@ export function CrmManagementView({
         stories={data.clientStories}
         sectionBadge={isRtl ? 'قصص النجاح التسويقية المميزة' : 'Featured CRM Client Stories'}
         sectionTitle={isRtl ? 'عائد استثماري فائق وتجارب عملاء تضاعف ولاء العلامة' : 'Proven Marketing ROI & Compounding Customer Lifetime Value'}
-        sectionSubtitle={isRtl ? 'اكتشف كيف ساهمت استراتيجيات بيرسيكي في إدارة علاقات العملاء في مضاعفة تكرار الشراء وخفض تكاليف الاستحواذ.' : 'See how automated Braze Canvas journeys, WhatsApp Business API, and predictive RFM cohorts drive exponential enterprise growth.'}
+        sectionSubtitle={isRtl ? 'اكتشف كيف ساهمت استراتيجيات بيرسيشي في إدارة علاقات العملاء في مضاعفة تكرار الشراء وخفض تكاليف الاستحواذ.' : 'See how automated Braze Canvas journeys, WhatsApp Business API, and predictive RFM cohorts drive exponential enterprise growth.'}
         lang={lang}
       />
 

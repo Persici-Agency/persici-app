@@ -64,7 +64,7 @@ export function ClientStoriesHeroSection({ lang }: ClientStoriesHeroSectionProps
           <FadeUp delay={240} duration={800} distance={20}>
             <p className="mt-6 text-lg sm:text-xl text-slate-600 leading-relaxed max-w-3xl mx-auto">
               {isRtl
-                ? 'اكتشف كيف تشارك بيرسيكي المؤسسات الطموحة في دول الخليج والعالم لهندسة علامات استثنائية، وبناء منصات برمجية متطورة، وتحقيق قفزات نوعية في النمو والإيرادات.'
+                ? 'اكتشف كيف تشارك بيرسيشي المؤسسات الطموحة في دول الخليج والعالم لهندسة علامات استثنائية، وبناء منصات برمجية متطورة، وتحقيق قفزات نوعية في النمو والإيرادات.'
                 : 'Explore how Persici partners with forward-thinking enterprises across the GCC and beyond to engineer iconic brands, robust software platforms, and high-velocity digital growth.'}
             </p>
           </FadeUp>

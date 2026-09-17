@@ -148,7 +148,7 @@ export function RetailView({ lang, dict }: RetailViewProps) {
           }
           sectionSubtitle={
             isRtl
-              ? 'اكتشف كيف ساهمت معماريات بيرسيكي في القضاء على نفاد المخزون ومضاعفة مبيعات كبرى سلاسل المتاجر.'
+              ? 'اكتشف كيف ساهمت معماريات بيرسيشي في القضاء على نفاد المخزون ومضاعفة مبيعات كبرى سلاسل المتاجر.'
               : 'Explore how our composable commerce, mobile clienteling, and distributed order management engines drive retail profitability.'
           }
           lang={lang}

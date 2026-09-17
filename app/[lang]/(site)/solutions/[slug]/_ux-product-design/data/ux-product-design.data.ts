@@ -335,7 +335,7 @@ export const uxProductDesignData: UxProductDesignData = {
     },
     text: {
       en: 'Digital products rarely fail due to backend technology; they fail because users experience cognitive overload, unintuitive workflows, and compounding friction. Persici’s product design methodology replaces subjective guesswork with behavioral telemetry and rigorous validation. We align customer intent directly with commercial objectives, delivering digital products that command market adoption, reduce customer acquisition costs, and build enduring enterprise loyalty.',
-      ar: 'نادراً ما تفشل المنتجات الرقمية بسبب البنية التقنية، بل تفشل بسبب الإرهاق المعرفي، والمسارات غير البديهية، والاحتكاك التفاعلي. تستبدل منهجية بيرسيكي في تصميم المنتجات التخمين بالبيانات السلوكية والتحقق الميداني الصارم. نحن نوائم دوافع المستخدمين مع الأهداف التجارية للمؤسسة، لنبتكر تجارب تعزز معدلات التحويل، وتخفض تكلفة الاستحواذ، وتبني ولاءً راسخاً للعلامة.',
+      ar: 'نادراً ما تفشل المنتجات الرقمية بسبب البنية التقنية، بل تفشل بسبب الإرهاق المعرفي، والمسارات غير البديهية، والاحتكاك التفاعلي. تستبدل منهجية بيرسيشي في تصميم المنتجات التخمين بالبيانات السلوكية والتحقق الميداني الصارم. نحن نوائم دوافع المستخدمين مع الأهداف التجارية للمؤسسة، لنبتكر تجارب تعزز معدلات التحويل، وتخفض تكلفة الاستحواذ، وتبني ولاءً راسخاً للعلامة.',
     },
     image: 'https://images.unsplash.com/photo-1586717791821-3f44a563fa4c?auto=format&fit=crop&w=1400&q=85',
     metric1Val: '+280%',
@@ -353,7 +353,7 @@ export const uxProductDesignData: UxProductDesignData = {
   benefitsStrip: {
     title: {
       en: 'The Persici Product Design Advantage',
-      ar: 'المزايا الاستراتيجية لتصميم المنتجات مع بيرسيكي',
+      ar: 'المزايا الاستراتيجية لتصميم المنتجات مع بيرسيشي',
     },
     image: 'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=1600&q=85',
     benefits: [
@@ -775,7 +775,7 @@ export const uxProductDesignData: UxProductDesignData = {
   clientReview: {
     quote: {
       en: 'Persici completely transformed our digital product ecosystem. Their user research was eye-opening, uncovering bottlenecks we had overlooked for years. The living design system they engineered for our mobile and web applications cut our frontend engineering cycles in half and drove a 340% increase in checkout conversions. They don’t just design pretty screens; they engineer commercial impact.',
-      ar: 'أعادت بيرسيكي ابتكار منظومة منتجاتنا الرقمية بالكامل. كانت أبحاث المستخدمين بمثابة نقلة نوعية كشفت لنا عن نقاط احتكاك غفلنا عنها لسنوات. وقد ساهم نظام التصميم الحي الذي بنوه لتطبيقاتنا وموقعنا في خفض زمن التطوير البرمجي للنصف ورفع إتمام الشراء بنسبة 340%. هم لا يصممون شاشات جذابة فحسب، بل يصنعون أثراً تجارياً استثنائياً.',
+      ar: 'أعادت بيرسيشي ابتكار منظومة منتجاتنا الرقمية بالكامل. كانت أبحاث المستخدمين بمثابة نقلة نوعية كشفت لنا عن نقاط احتكاك غفلنا عنها لسنوات. وقد ساهم نظام التصميم الحي الذي بنوه لتطبيقاتنا وموقعنا في خفض زمن التطوير البرمجي للنصف ورفع إتمام الشراء بنسبة 340%. هم لا يصممون شاشات جذابة فحسب، بل يصنعون أثراً تجارياً استثنائياً.',
     },
     author: 'Tariq Al-Mansoor',
     role: {
@@ -800,7 +800,7 @@ export const uxProductDesignData: UxProductDesignData = {
     {
       question: {
         en: 'How does Persici approach UX research before designing UI screens?',
-        ar: 'كيف تنفذ بيرسيكي أبحاث تجربة المستخدم قبل البدء في تصميم الواجهات؟',
+        ar: 'كيف تنفذ بيرسيشي أبحاث تجربة المستخدم قبل البدء في تصميم الواجهات؟',
       },
       answer: {
         en: 'We begin with an intensive discovery phase: analyzing your current product telemetry (drop-offs, session replays, click heatmaps), conducting 1-on-1 qualitative interviews with target customers, and synthesizing findings into Opportunity Solution Trees and journey maps. We never design based on subjective opinion; every wireframe solves a verified human friction point.',
@@ -810,7 +810,7 @@ export const uxProductDesignData: UxProductDesignData = {
     {
       question: {
         en: 'What is included in a Persici living design system?',
-        ar: 'ماذا يتضمن نظام التصميم الحي (Living Design System) من بيرسيكي؟',
+        ar: 'ماذا يتضمن نظام التصميم الحي (Living Design System) من بيرسيشي؟',
       },
       answer: {
         en: 'A complete design system includes multi-tier design tokens (colors, semantic typography, responsive spacing, shadows, border radii), fully responsive atomic components with 100% interactive state coverage (hover, active, focus, disabled, loading, error), comprehensive dark and light modes, and seamless token synchronization with your frontend codebase via Tokens Studio and Storybook.',

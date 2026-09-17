@@ -33,7 +33,7 @@ export function IndustryDetailView({ industry, lang, dict }: IndustryDetailViewP
     {
       question: {
         en: `What specialized capabilities does Persici bring to ${title}?`,
-        ar: `ما هي القدرات المتخصصة التي تقدمها بيرسيكي لقطاع ${title}؟`,
+        ar: `ما هي القدرات المتخصصة التي تقدمها بيرسيشي لقطاع ${title}؟`,
       },
       answer: {
         en: `We combine deep industry domain knowledge with enterprise digital engineering, cloud data sovereignty, and human-centered design tailored specifically for ${title}.`,
@@ -165,7 +165,7 @@ export function IndustryDetailView({ industry, lang, dict }: IndustryDetailViewP
           sectionTitle={isRtl ? 'أثر تشغيلي استثنائي ونمو متسارع' : 'Proven Enterprise Impact & Operational Scalability'}
           sectionSubtitle={
             isRtl
-              ? 'اكتشف كيف ساهمت معماريات بيرسيكي في تسريع أداء المؤسسات والشركات الكبرى.'
+              ? 'اكتشف كيف ساهمت معماريات بيرسيشي في تسريع أداء المؤسسات والشركات الكبرى.'
               : 'Explore how our enterprise architectures power leading organizations across the region.'
           }
           lang={lang}
@@ -176,7 +176,7 @@ export function IndustryDetailView({ industry, lang, dict }: IndustryDetailViewP
       <ClientReviewSection
         quoteText={{
           en: `Persici engineered our digital platforms for ${title}, achieving exceptional reliability and accelerating our time-to-market by 4x.`,
-          ar: `طورت بيرسيكي منصاتنا الرقمية لقطاع ${title}، محققة موثوقية استثنائية وتسريعاً لإطلاق خدماتنا بمقدار 4 أضعاف.`,
+          ar: `طورت بيرسيشي منصاتنا الرقمية لقطاع ${title}، محققة موثوقية استثنائية وتسريعاً لإطلاق خدماتنا بمقدار 4 أضعاف.`,
         }}
         quoteAuthor="Nasser Al-Subaie"
         quoteRole={{

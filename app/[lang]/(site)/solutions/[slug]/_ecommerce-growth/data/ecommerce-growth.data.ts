@@ -167,7 +167,7 @@ export const ecommerceGrowthData: EcommerceGrowthData = {
       },
       caption: {
         en: 'Watch how Persici engineered a bespoke luxury storefront on Salla, driving a +340% sales surge and sub-second checkout for Logeria.',
-        ar: 'شاهد كيف صممت بيرسيكي متجراً فاخراً على منصة سلة، مما حقق نمواً بنسبة 340% في المبيعات وتجربة شراء في أجزاء من الثانية لمتجر لوجيريا.',
+        ar: 'شاهد كيف صممت بيرسيشي متجراً فاخراً على منصة سلة، مما حقق نمواً بنسبة 340% في المبيعات وتجربة شراء في أجزاء من الثانية لمتجر لوجيريا.',
       },
       partnerBadge: {
         en: 'Official Salla Enterprise Partner',
@@ -446,7 +446,7 @@ export const ecommerceGrowthData: EcommerceGrowthData = {
     },
     text: {
       en: 'At Persici, we go beyond building online stores. We create fully integrated digital commerce experiences that combine strategy, technology, creative execution, performance marketing, and data under one powerful growth ecosystem. From platform development and seamless user experience to paid media, analytics, and conversion optimization, we manage every stage of the customer journey. Our expertise across Shopify Plus, Salla, Zid, WordPress, Google, Meta, TikTok, and Snapchat enables us to build scalable solutions tailored to each brand’s market and business goals. By connecting technology, creativity, and performance, we help brands attract the right customers, increase conversions, reduce acquisition costs, and achieve sustainable revenue growth. Persici turns digital commerce into a scalable, continuously optimized engine for long-term business success.',
-      ar: 'في بيرسيكي، نتجاوز مجرد بناء متجر إلكتروني تقليدي. نحن نبتكر تجارب تجارة رقمية متكاملة تماماً تجمع بين الاستراتيجية، والتقنية المتقدمة، والتنفيذ الإبداعي، والتسويق بالأداء، والبيانات تحت مظلة منظومة نمو موحدة. من تطوير المنصات وتجربة المستخدم السلسة إلى الحملات الإعلانية، والتحليلات، وتحسين معدلات التحويل، ندير كل مرحلة من رحلة العميل. تمكننا خبراتنا عبر شوبيفاي بلس، وسلة، وزد، وووردبريس، وجوجل، وميتا، وتيك توك، وسناب شات من بناء حلول قابلة للتوسع مصممة خصيصاً لكل سوق وأهداف كل علامة تجارية.',
+      ar: 'في بيرسيشي، نتجاوز مجرد بناء متجر إلكتروني تقليدي. نحن نبتكر تجارب تجارة رقمية متكاملة تماماً تجمع بين الاستراتيجية، والتقنية المتقدمة، والتنفيذ الإبداعي، والتسويق بالأداء، والبيانات تحت مظلة منظومة نمو موحدة. من تطوير المنصات وتجربة المستخدم السلسة إلى الحملات الإعلانية، والتحليلات، وتحسين معدلات التحويل، ندير كل مرحلة من رحلة العميل. تمكننا خبراتنا عبر شوبيفاي بلس، وسلة، وزد، وووردبريس، وجوجل، وميتا، وتيك توك، وسناب شات من بناء حلول قابلة للتوسع مصممة خصيصاً لكل سوق وأهداف كل علامة تجارية.',
     },
     image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&q=85',
     metric1Val: '+340%',
@@ -464,7 +464,7 @@ export const ecommerceGrowthData: EcommerceGrowthData = {
   benefitsStrip: {
     title: {
       en: 'Strategic Benefits of Persici Commerce Architecture',
-      ar: 'المزايا الاستراتيجية لمعمارية التجارة الرقمية في بيرسيكي',
+      ar: 'المزايا الاستراتيجية لمعمارية التجارة الرقمية في بيرسيشي',
     },
     image: 'https://images.unsplash.com/photo-1556740738-b6a63e27c4df?auto=format&fit=crop&w=1600&q=85',
     benefits: [
@@ -782,7 +782,7 @@ export const ecommerceGrowthData: EcommerceGrowthData = {
   delivery: {
     title: {
       en: 'The Persici Commerce Growth Engine',
-      ar: 'محرك بيرسيكي لهندسة ونمو التجارة الرقمية',
+      ar: 'محرك بيرسيشي لهندسة ونمو التجارة الرقمية',
     },
     subtitle: {
       en: 'A battle-tested 4-phase retail acceleration engine that unites strategy, storefront speed, performance acquisition, and automated retention loops.',
@@ -902,7 +902,7 @@ export const ecommerceGrowthData: EcommerceGrowthData = {
   clientReview: {
     quote: {
       en: '"Persici engineered our digital store from scratch and completely transformed our retail trajectory. Their integration of sub-second checkout on Salla, paired with targeted performance media, drove a 340% sales surge in our very first quarter. They act like true business co-founders."',
-      ar: '"بنى فريق بيرسيكي متجرنا الرقمي من الصفر وغيّر مسار تجارتنا بالكامل. تحقيق سرعة الشراء الفورية على منصة سلة، وتزامنها مع حملات الأداء الموجهة، حقق لنا قفزة بنسبة 340% في المبيعات خلال أول ثلاثة أشهر. إنهم شركاء نمو حقيقيون بكل ما تعنيه الكلمة."',
+      ar: '"بنى فريق بيرسيشي متجرنا الرقمي من الصفر وغيّر مسار تجارتنا بالكامل. تحقيق سرعة الشراء الفورية على منصة سلة، وتزامنها مع حملات الأداء الموجهة، حقق لنا قفزة بنسبة 340% في المبيعات خلال أول ثلاثة أشهر. إنهم شركاء نمو حقيقيون بكل ما تعنيه الكلمة."',
     },
     author: 'Fahad Al-Subaie',
     role: {
@@ -947,7 +947,7 @@ export const ecommerceGrowthData: EcommerceGrowthData = {
     {
       question: {
         en: 'Can Persici integrate custom ERP, warehouse, and physical POS systems with our online store?',
-        ar: 'هل يمكن لبيرسيكي ربط أنظمة ERP وإدارة المستودعات ونقاط البيع الفعلية بالمتجر؟',
+        ar: 'هل يمكن لبيرسيشي ربط أنظمة ERP وإدارة المستودعات ونقاط البيع الفعلية بالمتجر؟',
       },
       answer: {
         en: 'Yes. We build custom bi-directional API sync pipelines connecting your e-commerce store with regional ERP solutions (such as Odoo, SAP, Oracle, and Microsoft Dynamics) and physical retail POS systems. Inventory counts, order status updates, customer records, and financial ledger data synchronize in real time.',

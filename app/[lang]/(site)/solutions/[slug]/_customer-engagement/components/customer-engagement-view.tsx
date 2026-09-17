@@ -107,7 +107,7 @@ export function CustomerEngagementView({
         stories={data.clientStories}
         sectionBadge={isRtl ? 'قصص النجاح المميزة' : 'Featured Client Stories'}
         sectionTitle={isRtl ? 'تجارب تفاعل استثنائية ونمو متسارع في ولاء العملاء' : 'Transformative Customer Engagement & Proven Retention Growth'}
-        sectionSubtitle={isRtl ? 'اكتشف كيف ساهمت استراتيجيات بيرسيكي في إشراك وتفاعل العملاء في مضاعفة تكرار الشراء وخفض معدلات التسرب لكبرى المنصات الإقليمية.' : 'See how data-driven personalization and durable retention ecosystems drive compounding lifetime value for leading digital brands.'}
+        sectionSubtitle={isRtl ? 'اكتشف كيف ساهمت استراتيجيات بيرسيشي في إشراك وتفاعل العملاء في مضاعفة تكرار الشراء وخفض معدلات التسرب لكبرى المنصات الإقليمية.' : 'See how data-driven personalization and durable retention ecosystems drive compounding lifetime value for leading digital brands.'}
         lang={lang}
       />
 

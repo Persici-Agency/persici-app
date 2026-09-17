@@ -26,16 +26,41 @@ const sizeStyles: Record<
   'xs' | 'sm' | 'md' | 'lg' | 'xl',
   { item: string; img: string; width: number; height: number }
 > = {
-  xs: { item: 'h-12 w-28 sm:w-32', img: 'max-h-8 sm:max-h-9 w-auto', width: 120, height: 40 },
-  sm: { item: 'h-16 w-36 sm:w-40', img: 'max-h-11 sm:max-h-12 w-auto', width: 150, height: 50 },
-  md: { item: 'h-20 sm:h-24 w-44 sm:w-52 lg:w-56', img: 'max-h-14 sm:max-h-16 lg:max-h-18 w-auto', width: 190, height: 70 },
-  lg: { item: 'h-24 sm:h-28 w-52 sm:w-60 lg:w-64', img: 'max-h-18 sm:max-h-20 lg:max-h-22 w-auto', width: 220, height: 85 },
-  xl: { item: 'h-28 sm:h-32 w-60 sm:w-72 lg:w-80', img: 'max-h-22 sm:max-h-24 lg:max-h-28 w-auto', width: 260, height: 100 },
+  xs: {
+    item: 'h-9 sm:h-10 w-18 sm:w-20',
+    img: 'max-h-5 sm:max-h-6 max-w-[60px] sm:max-w-[70px] w-auto h-auto',
+    width: 70,
+    height: 24,
+  },
+  sm: {
+    item: 'h-10 sm:h-12 w-22 sm:w-26',
+    img: 'max-h-7 sm:max-h-8 max-w-[80px] sm:max-w-[92px] w-auto h-auto',
+    width: 92,
+    height: 32,
+  },
+  md: {
+    item: 'h-12 sm:h-14 w-28 sm:w-32',
+    img: 'max-h-8 sm:max-h-9 max-w-[95px] sm:max-w-[110px] w-auto h-auto',
+    width: 110,
+    height: 36,
+  },
+  lg: {
+    item: 'h-16 sm:h-20 w-36 sm:w-44',
+    img: 'max-h-11 sm:max-h-13 max-w-[130px] sm:max-w-[150px] w-auto h-auto',
+    width: 150,
+    height: 50,
+  },
+  xl: {
+    item: 'h-20 sm:h-24 w-44 sm:w-52',
+    img: 'max-h-14 sm:max-h-16 max-w-[160px] sm:max-w-[190px] w-auto h-auto',
+    width: 190,
+    height: 64,
+  },
 };
 
 const gapStyles: Record<'xs' | 'sm' | 'md' | 'lg' | 'xl', string> = {
-  xs: 'gap-3 sm:gap-4 lg:gap-6 pr-3 sm:pr-4 lg:pr-6',
-  sm: 'gap-4 sm:gap-6 lg:gap-8 pr-4 sm:pr-6 lg:pr-8',
+  xs: 'gap-1.5 sm:gap-2 pr-1.5 sm:pr-2',
+  sm: 'gap-2.5 sm:gap-3 pr-2.5 sm:pr-3',
   md: 'gap-6 sm:gap-8 lg:gap-10 pr-6 sm:pr-8 lg:pr-10',
   lg: 'gap-8 sm:gap-10 lg:gap-14 pr-8 sm:pr-10 lg:pr-14',
   xl: 'gap-10 sm:gap-14 lg:gap-18 pr-10 sm:pr-14 lg:pr-18',
@@ -76,11 +101,11 @@ export function SwiperWrapper<T = unknown>({
   stopOnDrag = true,
   enableMomentum = true,
   friction = 0.94,
-  gap = 'md',
+  gap = 'xs',
   space,
   infiniteLoop = true,
   fadeMask = true,
-  fadeWidthClass = 'w-20 sm:w-36 md:w-52',
+  fadeWidthClass = 'w-16 sm:w-28 md:w-36',
   fadeGradientClass,
   className,
   trackClassName,
@@ -88,7 +113,7 @@ export function SwiperWrapper<T = unknown>({
   title,
   titleClassName,
   showTitle = true,
-  logoSize = 'md',
+  logoSize = 'sm',
   logoClassName,
 }: SwiperWrapperProps<T>) {
   const isLogoMode = !children && !(data && data.length > 0 && renderItem);
@@ -350,14 +375,14 @@ export function SwiperWrapper<T = unknown>({
         <div
           key={`logo-${loopIndex}-${client.name}-${idx}`}
           className={cn(
-            'group flex items-center justify-center transition-all duration-300 hover:scale-105',
+            'group flex shrink-0 items-center justify-center transition-all duration-300 hover:scale-105',
             !isNumericSize && currentSizeConfig?.item,
             logoClassName,
             itemClassName
           )}
           style={
             isNumericSize
-              ? { height: `${logoSize}px`, width: `${(logoSize as number) * 3}px` }
+              ? { height: `${logoSize}px`, width: `${(logoSize as number) * 2.5}px` }
               : undefined
           }
           title={client.name}
@@ -365,8 +390,8 @@ export function SwiperWrapper<T = unknown>({
           <Image
             src={client.src}
             alt={client.name}
-            width={currentSizeConfig?.width || 190}
-            height={currentSizeConfig?.height || 70}
+            width={currentSizeConfig?.width || 92}
+            height={currentSizeConfig?.height || 32}
             className={cn(
               'object-contain opacity-65 grayscale contrast-125 transition-all duration-300 group-hover:opacity-100 group-hover:grayscale-0',
               !isNumericSize && currentSizeConfig?.img

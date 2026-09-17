@@ -139,7 +139,7 @@ export const aboutPageData: AboutPageData = {
   hero: {
     badge: {
       en: 'About Persici',
-      ar: 'عن بيرسيكي',
+      ar: 'عن بيرسيشي',
     },
     title: {
       en: 'We Rebuild How Organizations Think, Move, and Grow',
@@ -172,7 +172,7 @@ export const aboutPageData: AboutPageData = {
     },
     description1: {
       en: 'At Persici, we believe true transformation happens at the intersection of strategic clarity, advanced technology, and human-centric design. We exist to help forward-thinking organizations convert market friction into exponential momentum.',
-      ar: 'في بيرسيكي، نؤمن بأن التحول الحقيقي ينبثق عند التقاء الوضوح الاستراتيجي، والتكنولوجيا المتطورة، والتصميم المتمحور حول الإنسان. وُجدنا لمساعدة المؤسسات الطموحة على تحويل تحديات السوق إلى قوة دافعة استثنائية.',
+      ar: 'في بيرسيشي، نؤمن بأن التحول الحقيقي ينبثق عند التقاء الوضوح الاستراتيجي، والتكنولوجيا المتطورة، والتصميم المتمحور حول الإنسان. وُجدنا لمساعدة المؤسسات الطموحة على تحويل تحديات السوق إلى قوة دافعة استثنائية.',
     },
     description2: {
       en: 'From digital customer experience reinvention to modern cloud engineering and enterprise AI integration, our multidisciplinary squads solve the toughest growth challenges with measurable business outcomes.',
@@ -311,7 +311,7 @@ export const aboutPageData: AboutPageData = {
         },
         description: {
           en: 'Founded as a boutique advisory bridging growth marketing, user experience, and measurable digital ROI for pioneering ventures.',
-          ar: 'انطلقت بيرسيكي كبيت استشاري يدمج بين تسويق النمو، تجربة المستخدم، والعائد الرقمي الملموس للشركات الرائدة.',
+          ar: 'انطلقت بيرسيشي كبيت استشاري يدمج بين تسويق النمو، تجربة المستخدم، والعائد الرقمي الملموس للشركات الرائدة.',
         },
         image: 'https://images.unsplash.com/photo-1531497865144-0464ef8fb9a9?auto=format&fit=crop&w=1000&q=80',
       },
@@ -405,9 +405,9 @@ export const aboutPageData: AboutPageData = {
     },
     role: {
       en: 'CEO, Persici Agency',
-      ar: 'الرئيس التنفيذي، وكالة بيرسيكي',
+      ar: 'الرئيس التنفيذي، وكالة بيرسيشي',
     },
-    avatar: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/members/amr-sharaf-v2.webp',
+    avatar: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/members/amr-sharaf-v3.webp',
   },
 
   culture: {
@@ -467,7 +467,7 @@ export const aboutPageData: AboutPageData = {
         id: 'c4',
         title: {
           en: 'Office Community Hub & Lounge',
-          ar: 'ردهة ومجتمع بيرسيكي التفاعلي',
+          ar: 'ردهة ومجتمع بيرسيشي التفاعلي',
         },
         caption: {
           en: 'Social Connection & Cafe Area',

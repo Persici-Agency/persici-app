@@ -104,7 +104,7 @@ export function AiIntegrationView({ lang, dict }: AiIntegrationViewProps) {
         stories={data.clientStories}
         sectionBadge={isRtl ? 'قصص النجاح المميزة' : 'Featured Client Stories'}
         sectionTitle={isRtl ? 'أثر تشغيلي استثنائي ونماذج ذكاء اصطناعي سيادية' : 'Proven Enterprise Impact & Sovereign AI Scalability'}
-        sectionSubtitle={isRtl ? 'اكتشف كيف ساهمت معماريات الذكاء الاصطناعي من بيرسيكي في تسريع أداء المؤسسات والشركات الخليجية الكبرى.' : 'See how our sovereign AI and RAG architectures automate knowledge operations for leading enterprises.'}
+        sectionSubtitle={isRtl ? 'اكتشف كيف ساهمت معماريات الذكاء الاصطناعي من بيرسيشي في تسريع أداء المؤسسات والشركات الخليجية الكبرى.' : 'See how our sovereign AI and RAG architectures automate knowledge operations for leading enterprises.'}
         lang={lang}
       />
 

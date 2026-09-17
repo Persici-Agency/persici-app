@@ -172,7 +172,7 @@ export function InsightAiOverview({ insight, lang }: InsightAiOverviewProps) {
                   {aiSource === 'gemini-live'
                     ? 'Google Gemini 2.5 Flash'
                     : isRtl
-                    ? 'ذكاء بيرسيكي التحليلي'
+                    ? 'ذكاء بيرسيشي التحليلي'
                     : 'Persici AI Synthesis'}
                 </span>
               </span>

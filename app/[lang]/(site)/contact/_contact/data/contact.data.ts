@@ -205,7 +205,7 @@ export const contactPageData: ContactPageData = {
       },
       description: {
         en: 'Collaborate with Persici across our global cloud, commerce, and AI ecosystem (Google Cloud, AWS, Shopify Plus, Meta).',
-        ar: 'تعاون مع بيرسيكي عبر منظومتنا العالمية السحابية والتجارية والذكاء الاصطناعي (Google Cloud, AWS, Shopify Plus, Meta).',
+        ar: 'تعاون مع بيرسيشي عبر منظومتنا العالمية السحابية والتجارية والذكاء الاصطناعي (Google Cloud, AWS, Shopify Plus, Meta).',
       },
       email: 'partners@persiciagency.com',
       sla: {
@@ -279,7 +279,7 @@ export const contactPageData: ContactPageData = {
       id: 'faq-2',
       question: {
         en: 'What engagement models does Persici offer?',
-        ar: 'ما هي نماذج التعاقد والشراكة التي تقدمها بيرسيكي؟',
+        ar: 'ما هي نماذج التعاقد والشراكة التي تقدمها بيرسيشي؟',
       },
       answer: {
         en: 'We structure engagements around client business velocity: Dedicated Agile Squads (ongoing monthly retainer for continuous product & growth engineering), Fixed-Scope Strategic Transformations, and Enterprise Milestone Deployments with clearly measured KPIs.',

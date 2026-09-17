@@ -29,11 +29,11 @@ export const sharedFeaturedClientStories: Record<string, FeaturedClientStoryItem
     },
     description: {
       en: 'Persici conceptualized, branded, and launched a bespoke luxury fragrance collection that honored Arabian artisanal heritage while commanding international shelf presence. We engineered the bottle geometry, luxury unboxing architecture, and a full-funnel digital acquisition strategy across GCC flagship retail and direct-to-consumer storefronts.',
-      ar: 'ابتكرت بيرسيكي هوية متكاملة لعلامة عطور خليجية فاخرة تجمع بين الأصالة الشرقية والمعايير العالمية. وصممنا الهيكل المعماري لزجاجة العطر، وتجربة فتح الصندوق الاستثنائية، واستراتيجية تسويق رقمي متكاملة عبر البوتيكات الخليجية والمتاجر الرقمية.',
+      ar: 'ابتكرت بيرسيشي هوية متكاملة لعلامة عطور خليجية فاخرة تجمع بين الأصالة الشرقية والمعايير العالمية. وصممنا الهيكل المعماري لزجاجة العطر، وتجربة فتح الصندوق الاستثنائية، واستراتيجية تسويق رقمي متكاملة عبر البوتيكات الخليجية والمتاجر الرقمية.',
     },
     summary: {
       en: 'Persici conceptualized, branded, and launched a bespoke luxury fragrance collection that honored Arabian artisanal heritage while commanding international shelf presence. We engineered the bottle geometry, luxury unboxing architecture, and a full-funnel digital acquisition strategy across GCC flagship retail and direct-to-consumer storefronts.',
-      ar: 'ابتكرت بيرسيكي هوية متكاملة لعلامة عطور خليجية فاخرة تجمع بين الأصالة الشرقية والمعايير العالمية. وصممنا الهيكل المعماري لزجاجة العطر، وتجربة فتح الصندوق الاستثنائية، واستراتيجية تسويق رقمي متكاملة عبر البوتيكات الخليجية والمتاجر الرقمية.',
+      ar: 'ابتكرت بيرسيشي هوية متكاملة لعلامة عطور خليجية فاخرة تجمع بين الأصالة الشرقية والمعايير العالمية. وصممنا الهيكل المعماري لزجاجة العطر، وتجربة فتح الصندوق الاستثنائية، واستراتيجية تسويق رقمي متكاملة عبر البوتيكات الخليجية والمتاجر الرقمية.',
     },
     client: 'Lahfaa Perfumes GCC',
     metrics: [
@@ -97,11 +97,11 @@ export const sharedFeaturedClientStories: Record<string, FeaturedClientStoryItem
     },
     description: {
       en: "To maintain leadership amidst competing leisure hubs, Persici delivered an evocative campaign combining high-energy lifestyle cinematography, digital street activations, and targeted tourism reach, showcasing The Beach as Dubai's ultimate outdoor dining and entertainment destination.",
-      ar: 'لترسيخ ريادة الوجهة بين المنافسين، طورت بيرسيكي حملة تسويقية تجمع بين الإنتاج السينمائي العصري، والتفاعل الميداني، والاستهداف السياحي الدولي لإبراز "ذا بيتش" كأرقى وجهة ترفيه ومطاعم شاطئية في دبي.',
+      ar: 'لترسيخ ريادة الوجهة بين المنافسين، طورت بيرسيشي حملة تسويقية تجمع بين الإنتاج السينمائي العصري، والتفاعل الميداني، والاستهداف السياحي الدولي لإبراز "ذا بيتش" كأرقى وجهة ترفيه ومطاعم شاطئية في دبي.',
     },
     summary: {
       en: "To maintain leadership amidst competing leisure hubs, Persici delivered an evocative campaign combining high-energy lifestyle cinematography, digital street activations, and targeted tourism reach, showcasing The Beach as Dubai's ultimate outdoor dining and entertainment destination.",
-      ar: 'لترسيخ ريادة الوجهة بين المنافسين، طورت بيرسيكي حملة تسويقية تجمع بين الإنتاج السينمائي العصري، والتفاعل الميداني، والاستهداف السياحي الدولي لإبراز "ذا بيتش" كأرقى وجهة ترفيه ومطاعم شاطئية في دبي.',
+      ar: 'لترسيخ ريادة الوجهة بين المنافسين، طورت بيرسيشي حملة تسويقية تجمع بين الإنتاج السينمائي العصري، والتفاعل الميداني، والاستهداف السياحي الدولي لإبراز "ذا بيتش" كأرقى وجهة ترفيه ومطاعم شاطئية في دبي.',
     },
     client: 'Meraas Holding (Dubai)',
     metrics: [
@@ -233,11 +233,11 @@ export const sharedFeaturedClientStories: Record<string, FeaturedClientStoryItem
     },
     description: {
       en: 'Persici engineered Hala Food’s complete go-to-market strategy, crafting an emotional brand story, packaging experience, performance marketing funnels, and retention programs that scaled the on-demand meal kit app to over 120,000 active subscribers.',
-      ar: 'صممت بيرسيكي استراتيجية دخول السوق الشاملة لهلا فود، بما شمل السرد العاطفي، وتصميم العبوات، ومسارات الإعلانات الموجهة، وبرامج الاحتفاظ التي وسعت قاعدة مستخدمي التطبيق لأكثر من 120 ألف مشترك نشط.',
+      ar: 'صممت بيرسيشي استراتيجية دخول السوق الشاملة لهلا فود، بما شمل السرد العاطفي، وتصميم العبوات، ومسارات الإعلانات الموجهة، وبرامج الاحتفاظ التي وسعت قاعدة مستخدمي التطبيق لأكثر من 120 ألف مشترك نشط.',
     },
     summary: {
       en: 'Persici engineered Hala Food’s complete go-to-market strategy, crafting an emotional brand story, packaging experience, performance marketing funnels, and retention programs that scaled the on-demand meal kit app to over 120,000 active subscribers.',
-      ar: 'صممت بيرسيكي استراتيجية دخول السوق الشاملة لهلا فود، بما شمل السرد العاطفي، وتصميم العبوات، ومسارات الإعلانات الموجهة، وبرامج الاحتفاظ التي وسعت قاعدة مستخدمي التطبيق لأكثر من 120 ألف مشترك نشط.',
+      ar: 'صممت بيرسيشي استراتيجية دخول السوق الشاملة لهلا فود، بما شمل السرد العاطفي، وتصميم العبوات، ومسارات الإعلانات الموجهة، وبرامج الاحتفاظ التي وسعت قاعدة مستخدمي التطبيق لأكثر من 120 ألف مشترك نشط.',
     },
     client: 'Hala Food KSA',
     metrics: [
@@ -301,11 +301,11 @@ export const sharedFeaturedClientStories: Record<string, FeaturedClientStoryItem
     },
     description: {
       en: 'For FinVibe, Persici developed a microsecond-latency trading ecosystem with real-time WebSocket order books, zero-trust cryptographic vaults, and dynamic portfolio telemetry complying with GCC central banking regulations.',
-      ar: 'طوّرت بيرسيكي لصالح فاين فايب بنية تحتية سحابية للتداول بزمن استجابة يقاس بالميكروثانية، ومزامنة لحظية لأوامر البيع والشراء، وخزائن تشفير بيومترية متوافقة تماماً مع لوائح المصارف المركزية في الخليج.',
+      ar: 'طوّرت بيرسيشي لصالح فاين فايب بنية تحتية سحابية للتداول بزمن استجابة يقاس بالميكروثانية، ومزامنة لحظية لأوامر البيع والشراء، وخزائن تشفير بيومترية متوافقة تماماً مع لوائح المصارف المركزية في الخليج.',
     },
     summary: {
       en: 'For FinVibe, Persici developed a microsecond-latency trading ecosystem with real-time WebSocket order books, zero-trust cryptographic vaults, and dynamic portfolio telemetry complying with GCC central banking regulations.',
-      ar: 'طوّرت بيرسيكي لصالح فاين فايب بنية تحتية سحابية للتداول بزمن استجابة يقاس بالميكروثانية، ومزامنة لحظية لأوامر البيع والشراء، وخزائن تشفير بيومترية متوافقة تماماً مع لوائح المصارف المركزية في الخليج.',
+      ar: 'طوّرت بيرسيشي لصالح فاين فايب بنية تحتية سحابية للتداول بزمن استجابة يقاس بالميكروثانية، ومزامنة لحظية لأوامر البيع والشراء، وخزائن تشفير بيومترية متوافقة تماماً مع لوائح المصارف المركزية في الخليج.',
     },
     client: 'FinVibe Technologies',
     metrics: [
@@ -430,11 +430,11 @@ export const sharedFeaturedClientStories: Record<string, FeaturedClientStoryItem
     },
     description: {
       en: 'Persici conceptualized and developed the end-to-end digital commerce architecture for ChopOn, turning high-value timepiece transactions into a frictionless experience. We engineered bank-grade escrow integration, real-time collector bidding sockets, verified provenance tracking, and an ultra-fast headless storefront catering to ultra-high-net-worth buyers across the GCC and Europe.',
-      ar: 'ابتكر فريق بيرسيكي وطوّر المعمارية الرقمية المتكاملة لمنصة ChopOn لتسهيل صفقات الساعات الفاخرة عالية القيمة. دمجنا نظام الضمان المالي البنكي، والمزايدة اللحظية لهواة الجمع، وتتبع أصالة القطع، مع متجر رقمي فائق السرعة يستهدف كبار المشترين في الخليج وأوروبا.',
+      ar: 'ابتكر فريق بيرسيشي وطوّر المعمارية الرقمية المتكاملة لمنصة ChopOn لتسهيل صفقات الساعات الفاخرة عالية القيمة. دمجنا نظام الضمان المالي البنكي، والمزايدة اللحظية لهواة الجمع، وتتبع أصالة القطع، مع متجر رقمي فائق السرعة يستهدف كبار المشترين في الخليج وأوروبا.',
     },
     summary: {
       en: 'Persici conceptualized and developed the end-to-end digital commerce architecture for ChopOn, turning high-value timepiece transactions into a frictionless experience. We engineered bank-grade escrow integration, real-time collector bidding sockets, verified provenance tracking, and an ultra-fast headless storefront catering to ultra-high-net-worth buyers across the GCC and Europe.',
-      ar: 'ابتكر فريق بيرسيكي وطوّر المعمارية الرقمية المتكاملة لمنصة ChopOn لتسهيل صفقات الساعات الفاخرة عالية القيمة. دمجنا نظام الضمان المالي البنكي، والمزايدة اللحظية لهواة الجمع، وتتبع أصالة القطع، مع متجر رقمي فائق السرعة يستهدف كبار المشترين في الخليج وأوروبا.',
+      ar: 'ابتكر فريق بيرسيشي وطوّر المعمارية الرقمية المتكاملة لمنصة ChopOn لتسهيل صفقات الساعات الفاخرة عالية القيمة. دمجنا نظام الضمان المالي البنكي، والمزايدة اللحظية لهواة الجمع، وتتبع أصالة القطع، مع متجر رقمي فائق السرعة يستهدف كبار المشترين في الخليج وأوروبا.',
     },
     client: 'ChopOn Global Ltd.',
     metrics: [
@@ -498,11 +498,11 @@ export const sharedFeaturedClientStories: Record<string, FeaturedClientStoryItem
     },
     description: {
       en: 'Persici rebuilt the digital sales engine for Protes Sports from the ground up. By deploying an advanced custom gear configuration engine, headless checkout integrations with Apple Pay and Tabby, and multi-channel performance media across Meta and TikTok, we scaled store conversion by 320% while slashing customer acquisition costs.',
-      ar: 'أعادت بيرسيكي بناء محرك المبيعات الرقمية لـ Protes Sports بالكامل. من خلال نشر محرك تخصيص المعدات المتطور، والتكامل مع أبل باي وتابي، وحملات أداء مدفوعة عبر ميتا وتيك توك، ضاعفنا معدل التحويل بنسبة 320% مع خفض تكاليف الاستحواذ.',
+      ar: 'أعادت بيرسيشي بناء محرك المبيعات الرقمية لـ Protes Sports بالكامل. من خلال نشر محرك تخصيص المعدات المتطور، والتكامل مع أبل باي وتابي، وحملات أداء مدفوعة عبر ميتا وتيك توك، ضاعفنا معدل التحويل بنسبة 320% مع خفض تكاليف الاستحواذ.',
     },
     summary: {
       en: 'Persici rebuilt the digital sales engine for Protes Sports from the ground up. By deploying an advanced custom gear configuration engine, headless checkout integrations with Apple Pay and Tabby, and multi-channel performance media across Meta and TikTok, we scaled store conversion by 320% while slashing customer acquisition costs.',
-      ar: 'أعادت بيرسيكي بناء محرك المبيعات الرقمية لـ Protes Sports بالكامل. من خلال نشر محرك تخصيص المعدات المتطور، والتكامل مع أبل باي وتابي، وحملات أداء مدفوعة عبر ميتا وتيك توك، ضاعفنا معدل التحويل بنسبة 320% مع خفض تكاليف الاستحواذ.',
+      ar: 'أعادت بيرسيشي بناء محرك المبيعات الرقمية لـ Protes Sports بالكامل. من خلال نشر محرك تخصيص المعدات المتطور، والتكامل مع أبل باي وتابي، وحملات أداء مدفوعة عبر ميتا وتيك توك، ضاعفنا معدل التحويل بنسبة 320% مع خفض تكاليف الاستحواذ.',
     },
     client: 'Protes Sports Athletic Co.',
     metrics: [
@@ -566,11 +566,11 @@ export const sharedFeaturedClientStories: Record<string, FeaturedClientStoryItem
     },
     description: {
       en: 'Persici engineered an enterprise B2B portal for Land Of Exotics, connecting certified breeders, sanctuaries, and accredited institutions worldwide. The platform delivers secure digital pedigree passports, multi-tiered wholesale price tiers, biometric document verification, and real-time transit telemetry across 14 GCC and international shipping hubs.',
-      ar: 'طورت بيرسيكي بوابة مؤسسية لمعاملات B2B لصالح Land Of Exotics، تربط المربين المعتمدين والمؤسسات الدولية. توفر المنصة جوازات رقمية موثقة للسلالات، وتسعيراً متدرجاً للجملة، وتحققاً رقمياً مع تتبع لحظي للشحنات عبر 14 مركزاً لوجستياً إقليمياً ودولياً.',
+      ar: 'طورت بيرسيشي بوابة مؤسسية لمعاملات B2B لصالح Land Of Exotics، تربط المربين المعتمدين والمؤسسات الدولية. توفر المنصة جوازات رقمية موثقة للسلالات، وتسعيراً متدرجاً للجملة، وتحققاً رقمياً مع تتبع لحظي للشحنات عبر 14 مركزاً لوجستياً إقليمياً ودولياً.',
     },
     summary: {
       en: 'Persici engineered an enterprise B2B portal for Land Of Exotics, connecting certified breeders, sanctuaries, and accredited institutions worldwide. The platform delivers secure digital pedigree passports, multi-tiered wholesale price tiers, biometric document verification, and real-time transit telemetry across 14 GCC and international shipping hubs.',
-      ar: 'طورت بيرسيكي بوابة مؤسسية لمعاملات B2B لصالح Land Of Exotics، تربط المربين المعتمدين والمؤسسات الدولية. توفر المنصة جوازات رقمية موثقة للسلالات، وتسعيراً متدرجاً للجملة، وتحققاً رقمياً مع تتبع لحظي للشحنات عبر 14 مركزاً لوجستياً إقليمياً ودولياً.',
+      ar: 'طورت بيرسيشي بوابة مؤسسية لمعاملات B2B لصالح Land Of Exotics، تربط المربين المعتمدين والمؤسسات الدولية. توفر المنصة جوازات رقمية موثقة للسلالات، وتسعيراً متدرجاً للجملة، وتحققاً رقمياً مع تتبع لحظي للشحنات عبر 14 مركزاً لوجستياً إقليمياً ودولياً.',
     },
     client: 'Land of Exotics International',
     metrics: [
@@ -634,11 +634,11 @@ export const sharedFeaturedClientStories: Record<string, FeaturedClientStoryItem
     },
     description: {
       en: 'Persici architected an on-premise private LLM deployment for a major regional investment group. By connecting hybrid dense vector retrieval with fine-tuned local models, we automated 82% of statutory compliance audits, accelerated investment due diligence from weeks to minutes, and guaranteed total data sovereignty under Saudi NDMO and UAE compliance frameworks.',
-      ar: 'صممت بيرسيكي منظومة ذكاء اصطناعي محلية خاصة لمجموعة استثمارية إقليمية كبرى. ومن خلال ربط البحث المتجهي بالنماذج المحلية المدربة، قمنا بأتمتة 82% من عمليات التدقيق النظامي وتسريع دراسات الجدوى من أسابيع إلى دقائق، مع ضمان السيادة التامة للبيانات وفق لوائح الهيئة السعودية للبيانات والذكاء الاصطناعي (سدايا).',
+      ar: 'صممت بيرسيشي منظومة ذكاء اصطناعي محلية خاصة لمجموعة استثمارية إقليمية كبرى. ومن خلال ربط البحث المتجهي بالنماذج المحلية المدربة، قمنا بأتمتة 82% من عمليات التدقيق النظامي وتسريع دراسات الجدوى من أسابيع إلى دقائق، مع ضمان السيادة التامة للبيانات وفق لوائح الهيئة السعودية للبيانات والذكاء الاصطناعي (سدايا).',
     },
     summary: {
       en: 'Persici architected an on-premise private LLM deployment for a major regional investment group. By connecting hybrid dense vector retrieval with fine-tuned local models, we automated 82% of statutory compliance audits, accelerated investment due diligence from weeks to minutes, and guaranteed total data sovereignty under Saudi NDMO and UAE compliance frameworks.',
-      ar: 'صممت بيرسيكي منظومة ذكاء اصطناعي محلية خاصة لمجموعة استثمارية إقليمية كبرى. ومن خلال ربط البحث المتجهي بالنماذج المحلية المدربة، قمنا بأتمتة 82% من عمليات التدقيق النظامي وتسريع دراسات الجدوى من أسابيع إلى دقائق، مع ضمان السيادة التامة للبيانات وفق لوائح الهيئة السعودية للبيانات والذكاء الاصطناعي (سدايا).',
+      ar: 'صممت بيرسيشي منظومة ذكاء اصطناعي محلية خاصة لمجموعة استثمارية إقليمية كبرى. ومن خلال ربط البحث المتجهي بالنماذج المحلية المدربة، قمنا بأتمتة 82% من عمليات التدقيق النظامي وتسريع دراسات الجدوى من أسابيع إلى دقائق، مع ضمان السيادة التامة للبيانات وفق لوائح الهيئة السعودية للبيانات والذكاء الاصطناعي (سدايا).',
     },
     client: 'Gulf Capital Group & Regional Sovereign Entities',
     metrics: [
@@ -702,11 +702,11 @@ export const sharedFeaturedClientStories: Record<string, FeaturedClientStoryItem
     },
     description: {
       en: 'Persici reimagined the end-to-end digital product experience for Lahfaa, combining high-fidelity user research, interactive fragrance customizer workflows, and a design-system-first mobile interface that boosted mobile checkout completion by 340%.',
-      ar: 'أعادت بيرسيكي ابتكار التجربة الرقمية الشاملة لعلامة لهفة، من خلال أبحاث متعمقة لسلوك المستخدمين، ومسارات تخصيص عطور تفاعلية، وواجهة جوال مبنية على نظام تصميم متطور رفعت معدل إتمام الشراء بنسبة 340%.',
+      ar: 'أعادت بيرسيشي ابتكار التجربة الرقمية الشاملة لعلامة لهفة، من خلال أبحاث متعمقة لسلوك المستخدمين، ومسارات تخصيص عطور تفاعلية، وواجهة جوال مبنية على نظام تصميم متطور رفعت معدل إتمام الشراء بنسبة 340%.',
     },
     summary: {
       en: 'Persici reimagined the end-to-end digital product experience for Lahfaa, combining high-fidelity user research, interactive fragrance customizer workflows, and a design-system-first mobile interface that boosted mobile checkout completion by 340%.',
-      ar: 'أعادت بيرسيكي ابتكار التجربة الرقمية الشاملة لعلامة لهفة، من خلال أبحاث متعمقة لسلوك المستخدمين، ومسارات تخصيص عطور تفاعلية، وواجهة جوال مبنية على نظام تصميم متطور رفعت معدل إتمام الشراء بنسبة 340%.',
+      ar: 'أعادت بيرسيشي ابتكار التجربة الرقمية الشاملة لعلامة لهفة، من خلال أبحاث متعمقة لسلوك المستخدمين، ومسارات تخصيص عطور تفاعلية، وواجهة جوال مبنية على نظام تصميم متطور رفعت معدل إتمام الشراء بنسبة 340%.',
     },
     client: 'Lahfaa Luxury Group GCC',
     metrics: [
@@ -790,7 +790,7 @@ export function getApplicationManagementFeaturedClientStories(): FeaturedClientS
       },
       description: {
         en: 'Persici engineered a dual-platform iOS & Android on-demand food delivery powerhouse for Hala Food with sub-second order dispatching, dynamic surge routing, and bilingual localized UX across the GCC.',
-        ar: 'طوّر فريق بيرسيكي تطبيقاً فائق التطور لمنصتي iOS و Android لصالح هلا فود، يتضمن توزيع الطلبات في أجزاء من الثانية، وتوجيهاً ذكياً للمسارات مع تجربة مستخدم معربة بالكامل لدول الخليج.',
+        ar: 'طوّر فريق بيرسيشي تطبيقاً فائق التطور لمنصتي iOS و Android لصالح هلا فود، يتضمن توزيع الطلبات في أجزاء من الثانية، وتوجيهاً ذكياً للمسارات مع تجربة مستخدم معربة بالكامل لدول الخليج.',
       },
       metrics: [
         { value: '+280%', label: { en: 'Conversion Rate Uplift', ar: 'ارتفاع معدل إتمام الطلبات' } },

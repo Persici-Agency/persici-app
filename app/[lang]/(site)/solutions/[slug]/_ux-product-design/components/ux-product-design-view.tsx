@@ -104,7 +104,7 @@ export function UxProductDesignView({ lang, dict }: UxProductDesignViewProps) {
         stories={data.clientStories}
         sectionBadge={isRtl ? 'قصص النجاح المميزة' : 'Featured Client Stories'}
         sectionTitle={isRtl ? 'تجارب رقمية استثنائية ونمو متسارع في التحويل' : 'Transformative Digital Products & Proven User Growth'}
-        sectionSubtitle={isRtl ? 'اكتشف كيف ساهمت منهجية بيرسيكي في تصميم المنتجات في مضاعفة تحويلات كبرى المنصات والعلامات الإقليمية.' : 'See how human-centered UX architecture and living design systems scale top regional and global digital brands.'}
+        sectionSubtitle={isRtl ? 'اكتشف كيف ساهمت منهجية بيرسيشي في تصميم المنتجات في مضاعفة تحويلات كبرى المنصات والعلامات الإقليمية.' : 'See how human-centered UX architecture and living design systems scale top regional and global digital brands.'}
         lang={lang}
       />
 

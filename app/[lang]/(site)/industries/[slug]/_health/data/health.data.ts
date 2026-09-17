@@ -424,7 +424,7 @@ export const healthData: HealthData = {
     },
     text: {
       en: 'Healthcare systems around the world face a critical trilemma: rising clinical costs, clinician burnout, and an aging population with surging chronic disease rates. Fragmented hospital databases and proprietary medical devices prevent doctors from seeing the full clinical picture, resulting in redundant tests, delayed diagnoses, and administrative fatigue. Persici collaborates with hospital networks, life sciences giants, and regional health authorities to build open, secure, and human-centered digital health platforms that elevate clinical outcomes and expand life-saving care access.',
-      ar: 'تواجه المنظومات الصحية حول العالم تحديات معقدة: ارتفاع التكاليف العلاجية، وإجهاد الكوادر الطبية، وتزايد الأمراض المزمنة. إن قواعد بيانات المستشفيات المنعزلة والأجهزة الطبية المغلقة تحرم الأطباء من الرؤية السريرية الشاملة، مما يؤدي إلى تكرار الفحوصات غير الضرورية، وتأخر التشخيص، واستنزاف الوقت الإداري. تتشارك بيرسيكي مع كبرى المستشفيات ومجموعات علوم الحياة والهيئات الصحية لبناء منصات طبية مفتوحة وآمنة ومتمحورة حول الإنسان ترفع كفاءة العلاج وتوسع سبل الرعاية المنقذة للحياة.',
+      ar: 'تواجه المنظومات الصحية حول العالم تحديات معقدة: ارتفاع التكاليف العلاجية، وإجهاد الكوادر الطبية، وتزايد الأمراض المزمنة. إن قواعد بيانات المستشفيات المنعزلة والأجهزة الطبية المغلقة تحرم الأطباء من الرؤية السريرية الشاملة، مما يؤدي إلى تكرار الفحوصات غير الضرورية، وتأخر التشخيص، واستنزاف الوقت الإداري. تتشارك بيرسيشي مع كبرى المستشفيات ومجموعات علوم الحياة والهيئات الصحية لبناء منصات طبية مفتوحة وآمنة ومتمحورة حول الإنسان ترفع كفاءة العلاج وتوسع سبل الرعاية المنقذة للحياة.',
     },
     image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1200&q=85',
   },
@@ -760,7 +760,7 @@ export const healthData: HealthData = {
   clientReview: {
     quote: {
       en: 'Persici engineered our virtual clinic platform and FHIR hospital interoperability gateway. We scaled to over 150,000 monthly telemedicine consultations while ensuring complete medical record confidentiality and zero latency for our clinicians.',
-      ar: 'طورت بيرسيكي منصة عياداتنا الافتراضية وبوابة الربط الصحي المعياري (FHIR) لمستشفياتنا. توسعنا لتقديم أكثر من 150,000 استشارة طبية عن بُعد شهرياً مع ضمان السرية التامة لسجلات المرضى وتوفير سرعة استجابة فائقة لأطبائنا.',
+      ar: 'طورت بيرسيشي منصة عياداتنا الافتراضية وبوابة الربط الصحي المعياري (FHIR) لمستشفياتنا. توسعنا لتقديم أكثر من 150,000 استشارة طبية عن بُعد شهرياً مع ضمان السرية التامة لسجلات المرضى وتوفير سرعة استجابة فائقة لأطبائنا.',
     },
     author: 'Dr. Tariq Al-Shammari',
     role: {

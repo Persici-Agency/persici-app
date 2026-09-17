@@ -98,7 +98,7 @@ export const marketingCommunicationsData: MarketingCommunicationsData = {
     },
     subtitle: {
       en: 'At Persici, we unite brand positioning, high-impact creative storytelling, omnichannel media execution, and real-time attribution under one unified strategic direction to turn audience attention into measurable market leadership.',
-      ar: 'في بيرسيكي، نوحد التموضع الاستراتيجي للعلامة التجارية، والسرد الإبداعي المؤثر، وإدارة الحملات متعددة القنوات، والتحليل اللحظي للأداء تحت مظلة واحدة لتحويل انتباه الجمهور إلى ريادة سوقية حقيقية.',
+      ar: 'في بيرسيشي، نوحد التموضع الاستراتيجي للعلامة التجارية، والسرد الإبداعي المؤثر، وإدارة الحملات متعددة القنوات، والتحليل اللحظي للأداء تحت مظلة واحدة لتحويل انتباه الجمهور إلى ريادة سوقية حقيقية.',
     },
     ctaText: {
       en: 'Schedule Strategy Session',
@@ -449,7 +449,7 @@ export const marketingCommunicationsData: MarketingCommunicationsData = {
   delivery: {
     title: {
       en: 'The Persici Full-Funnel Campaign Engine',
-      ar: 'محرك بيرسيكي المتكامل لإدارة الحملات والنمو',
+      ar: 'محرك بيرسيشي المتكامل لإدارة الحملات والنمو',
     },
     subtitle: {
       en: 'A rigorous four-stage framework that transforms abstract brand positioning into measurable market share and sustainable revenue.',
@@ -551,7 +551,7 @@ export const marketingCommunicationsData: MarketingCommunicationsData = {
   clientReview: {
     quote: {
       en: 'Persici transformed our fragrance house from an aspiring regional label into an established luxury symbol across the GCC. Their mastery of visual storytelling, packaging architecture, and full-funnel digital marketing produced an immediate 340% surge in brand equity and retail sell-through.',
-      ar: 'حولت بيرسيكي دار عطورنا من علامة إقليمية واعدة إلى رمز راسخ للفخامة في أنحاء الخليج. إن براعتهم في السرد البصري، وهندسة التغليف، والتسويق الرقمي المتكامل حققت قفزة فورية بنسبة 340% في القيمة السوقية ومبيعات التجزئة.',
+      ar: 'حولت بيرسيشي دار عطورنا من علامة إقليمية واعدة إلى رمز راسخ للفخامة في أنحاء الخليج. إن براعتهم في السرد البصري، وهندسة التغليف، والتسويق الرقمي المتكامل حققت قفزة فورية بنسبة 340% في القيمة السوقية ومبيعات التجزئة.',
     },
     author: 'Sultan Al-Qasimi',
     role: {
@@ -576,11 +576,11 @@ export const marketingCommunicationsData: MarketingCommunicationsData = {
     {
       question: {
         en: 'How does Persici approach marketing strategy differently from traditional ad agencies?',
-        ar: 'كيف تختلف استراتيجية بيرسيكي التسويقية عن الوكالات الإعلانية التقليدية؟',
+        ar: 'كيف تختلف استراتيجية بيرسيشي التسويقية عن الوكالات الإعلانية التقليدية؟',
       },
       answer: {
         en: 'Unlike traditional agencies that separate brand awareness from direct-response conversions, Persici unites full-funnel strategy, premium in-house cinema production, and first-party attribution modeling under one unified engagement. We don\'t just create pretty campaigns; we engineer commercial pipeline and measurable ROAS.',
-        ar: 'على عكس الوكالات التقليدية التي تفصل بين بناء الوعي بالعلامة والمبيعات المباشرة، توحد بيرسيكي بين الاستراتيجية الشاملة، والإنتاج السينمائي الاحترافي، والتحليل المالي المباشر. نحن لا نصنع إعلانات جميلة فحسب، بل نبني محركات نمو تجاري تحقق عائداً استثمارياً ملموساً.',
+        ar: 'على عكس الوكالات التقليدية التي تفصل بين بناء الوعي بالعلامة والمبيعات المباشرة، توحد بيرسيشي بين الاستراتيجية الشاملة، والإنتاج السينمائي الاحترافي، والتحليل المالي المباشر. نحن لا نصنع إعلانات جميلة فحسب، بل نبني محركات نمو تجاري تحقق عائداً استثمارياً ملموساً.',
       },
     },
     {
@@ -606,7 +606,7 @@ export const marketingCommunicationsData: MarketingCommunicationsData = {
     {
       question: {
         en: 'Can Persici handle turnkey video and photography production in-house?',
-        ar: 'هل تمتلك بيرسيكي استوديوهات وقدرات إنتاج فيديو وتصوير داخلي متكامل؟',
+        ar: 'هل تمتلك بيرسيشي استوديوهات وقدرات إنتاج فيديو وتصوير داخلي متكامل؟',
       },
       answer: {
         en: 'Yes. Our production team operates RED cinema cameras, DaVinci Resolve color grading suites, drone cinematography, and dedicated studio lighting rigs. We manage casting, art direction, shooting, editing, 3D motion graphics, and sound design from start to finish.',

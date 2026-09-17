@@ -105,21 +105,21 @@ export const footerPartnerBadges: PartnerBadge[] = [
 // 2. Client Logos
 // ============================================================================
 export const clientLogos: ClientLogo[] = [
-  { id: '1', name: '7awi', src: '/images/clients/7awi logo.png', order: 1, isActive: true },
-  { id: '2', name: 'Accor Live Limitless', src: '/images/clients/ALL - Accor Live Limitless logo.png', order: 2, isActive: true },
-  { id: '3', name: 'Alhokair Holding', src: '/images/clients/Alhokair Holding logo.png', order: 3, isActive: true },
-  { id: '4', name: 'Chop On UAE', src: '/images/clients/Chop On Uae logo.png', order: 4, isActive: true },
-  { id: '5', name: 'Hadiya', src: '/images/clients/Hadiya logo.png', order: 5, isActive: true },
-  { id: '6', name: 'Hala Food', src: '/images/clients/Hala Food logo.png', order: 6, isActive: true },
-  { id: '7', name: 'Hokair Group', src: '/images/clients/Hokair Group logo.png', order: 7, isActive: true },
-  { id: '8', name: 'Khazan', src: '/images/clients/Khazan logo.png', order: 8, isActive: true },
-  { id: '9', name: 'Lahfaa', src: '/images/clients/Lahfaa logo logo.png', order: 9, isActive: true },
-  { id: '10', name: 'Land of Exotics', src: '/images/clients/Land of Exotics logo.png', order: 10, isActive: true },
-  { id: '11', name: 'Mashreq', src: '/images/clients/Mashreq logo.png', order: 11, isActive: true },
-  { id: '12', name: 'Meraas', src: '/images/clients/Meraas logo.png', order: 12, isActive: true },
-  { id: '13', name: 'Metal Fuze', src: '/images/clients/Metal Fuze logo.png', order: 13, isActive: true },
-  { id: '14', name: 'Protes', src: '/images/clients/Protes logo.png', order: 14, isActive: true },
-  { id: '15', name: 'The Harmony', src: '/images/clients/The Harmony logo.png', order: 15, isActive: true },
+  { id: '1', name: '7awi', src: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/clients/7awi-logo.webp', order: 1, isActive: true },
+  { id: '2', name: 'Accor Live Limitless', src: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/clients/all-accor-live-limitless-logo.webp', order: 2, isActive: true },
+  { id: '3', name: 'Alhokair Holding', src: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/clients/alhokair-holding-logo.webp', order: 3, isActive: true },
+  { id: '4', name: 'Hadiya', src: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/clients/hadiya-logo.webp', order: 4, isActive: true },
+  { id: '5', name: 'Hala Food', src: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/clients/hala-food-logo.webp', order: 5, isActive: true },
+  { id: '6', name: 'Hokair Group', src: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/clients/hokair-group-logo.webp', order: 6, isActive: true },
+  { id: '7', name: 'Khazan', src: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/clients/khazan-logo.webp', order: 7, isActive: true },
+  { id: '8', name: 'Lahfaa', src: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/clients/lahfaa-logo.webp', order: 8, isActive: true },
+  { id: '9', name: 'Land of Exotics', src: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/clients/land-of-exotics-logo.webp', order: 9, isActive: true },
+  { id: '10', name: 'Mashreq', src: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/clients/mashreq-logo.webp', order: 10, isActive: true },
+  { id: '11', name: 'Meraas', src: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/clients/meraas-logo.webp', order: 11, isActive: true },
+  { id: '12', name: 'Metal Fuze', src: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/clients/metal-fuze-logo.webp', order: 12, isActive: true },
+  { id: '13', name: 'Protes', src: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/clients/protes-logo.webp', order: 13, isActive: true },
+  { id: '14', name: 'The Harmony', src: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/clients/the-harmony-logo.webp', order: 14, isActive: true },
+  { id: '15', name: 'Vayron', src: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/clients/vayron-logo.webp', order: 15, isActive: true },
 ];
 
 // ============================================================================
@@ -1320,7 +1320,7 @@ export const homePageContent: HomePageContent = {
     videoUrl: '/videos/persici-showcase.mp4',
     quote: {
       en: 'Partnering with Persici accelerated our entire digital roadmap. Their engineering rigour, AI automations, and scalable infrastructure drove a 3.4x growth leap in under 6 months.',
-      ar: 'كانت شراكتنا مع بيرسيكي نقطة تحول في خارطة طريقنا الرقمية. هندستهم البرمجية وأتمتة الذكاء الاصطناعي والبنية السحابية حققت لنا نمواً بمقدار 3.4 أضعاف في أقل من 6 أشهر.',
+      ar: 'كانت شراكتنا مع بيرسيشي نقطة تحول في خارطة طريقنا الرقمية. هندستهم البرمجية وأتمتة الذكاء الاصطناعي والبنية السحابية حققت لنا نمواً بمقدار 3.4 أضعاف في أقل من 6 أشهر.',
     },
     author: 'Marcus Lindqvist',
     role: {
@@ -1341,7 +1341,7 @@ export const homePageContent: HomePageContent = {
     },
     desc1: {
       en: 'Persici is an advanced digital transformation, enterprise software, and AI engineering agency. We partner with visionary enterprises and high-growth organizations to architect resilient digital ecosystems, custom web and mobile applications, secure cloud infrastructure, and intelligent automation pipelines.',
-      ar: 'بيرسيكي هي وكالة متقدمة للتحول الرقمي وهندسة البرمجيات المؤسسية والذكاء الاصطناعي. نتشارك مع المؤسسات الرائدة لبناء منظومات رقمية مرنة، وتطبيقات ويب والجوال مخصصة، وبنية تحتية سحابية آمنة، ومسارات أتمتة ذكية.',
+      ar: 'بيرسيشي هي وكالة متقدمة للتحول الرقمي وهندسة البرمجيات المؤسسية والذكاء الاصطناعي. نتشارك مع المؤسسات الرائدة لبناء منظومات رقمية مرنة، وتطبيقات ويب والجوال مخصصة، وبنية تحتية سحابية آمنة، ومسارات أتمتة ذكية.',
     },
     desc2: {
       en: 'While engineering robust software, applications, and AI infrastructure forms our foundational core, we seamlessly integrate strategic business consulting, UX product design, and high-impact digital marketing to ensure complete end-to-end digital excellence.',
@@ -1401,7 +1401,7 @@ export const homePageContent: HomePageContent = {
     },
     desc1: {
       en: 'At Persici, we engineer transformative digital solutions with deep domain expertise, modern cloud architectures, and custom AI integrations. We deliver production-grade software and tailored digital roadmaps - no shortcuts, no generic templates. A dedicated, senior engineering and strategy squad committed to long-term scalability and measurable ROI.',
-      ar: 'في بيرسيكي، نهندس حلولاً رقمية تحويلية مدفوعة بخبرة تقنية متعمقة، ومعماريات سحابية حديثة، وتكامل مخصص للذكاء الاصطناعي. نقدم برمجيات مؤسسية وخطط تحول رقمي مصممة بدقة — بلا حلول مختصرة ولا قوالب جاهزة. فريق هندسي واستراتيجي خبير ومركّز على تحقيق قابلية التوسع والعائد الاستثماري الملموس.',
+      ar: 'في بيرسيشي، نهندس حلولاً رقمية تحويلية مدفوعة بخبرة تقنية متعمقة، ومعماريات سحابية حديثة، وتكامل مخصص للذكاء الاصطناعي. نقدم برمجيات مؤسسية وخطط تحول رقمي مصممة بدقة — بلا حلول مختصرة ولا قوالب جاهزة. فريق هندسي واستراتيجي خبير ومركّز على تحقيق قابلية التوسع والعائد الاستثماري الملموس.',
     },
     desc2: {
       en: 'We combine agile sprint execution with clear communication: transparent technical governance, weekly milestone updates, direct WhatsApp access, and absolute focus on business impact.',
@@ -1809,7 +1809,7 @@ export const solutionsPageContent: SolutionsPageContent = {
   },
   deliverySubtitle: {
     en: 'Cut dev time from months to days with Persici AI development platform and modern digital engineering.',
-    ar: 'اختصر وقت التطوير والتنفيذ من أشهر إلى أيام عبر منصة بيرسيسي للذكاء الاصطناعي والهندسة الرقمية المتقدمة.',
+    ar: 'اختصر وقت التطوير والتنفيذ من أشهر إلى أيام عبر منصة بيرسيشي للذكاء الاصطناعي والهندسة الرقمية المتقدمة.',
   },
   deliveryImage: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1000&q=80',
   deliveryPillars: [
@@ -2013,7 +2013,7 @@ export const solutionsPageContent: SolutionsPageContent = {
   ],
   quoteText: {
     en: '"Working with Persici has been our best growth decision. Their team\'s strategy, conversion engineering, and execution gave us 3.4x growth in under 6 months. A true growth partner."',
-    ar: '"العمل مع بيرسيسي كان أفضل قرار لنمو أعمالنا. استراتيجيتهم وهندسة التحويل والتنفيذ المتقن حققت لنا نمواً بنسبة 3.4 أضعاف في أقل من 6 أشهر."',
+    ar: '"العمل مع بيرسيشي كان أفضل قرار لنمو أعمالنا. استراتيجيتهم وهندسة التحويل والتنفيذ المتقن حققت لنا نمواً بنسبة 3.4 أضعاف في أقل من 6 أشهر."',
   },
   quoteAuthor: 'Marcus Lindqvist',
   quoteRole: {
@@ -2042,7 +2042,7 @@ export const solutionsPageContent: SolutionsPageContent = {
     {
       question: {
         en: 'Can we engage Persici for a specific solution, or must it be full-funnel?',
-        ar: 'هل يمكننا التعاقد مع بيرسيسي لحل محدد أم يلزم التعاقد على كافة الخدمات؟',
+        ar: 'هل يمكننا التعاقد مع بيرسيشي لحل محدد أم يلزم التعاقد على كافة الخدمات؟',
       },
       answer: {
         en: 'Our engagement model is modular. You can start with a targeted solution such as Shopify Plus CRO engineering, CRM lifecycle setup, or AI integration, and expand into full-funnel growth as you see validated ROI.',
@@ -2326,7 +2326,7 @@ export const industriesPageContent: IndustriesPageContent = {
   ],
   quoteText: {
     en: "Persici's deep domain expertise allowed us to deploy sovereign, high-throughput digital platforms in a fraction of the time required by traditional consultancies.",
-    ar: 'مكنتنا خبرة بيرسيكي القطاعية العميقة من إطلاق منصات رقمية سيادية فائقة السرعة في وقت قياسي مقارنة بالاستشارات التقليدية.',
+    ar: 'مكنتنا خبرة بيرسيشي القطاعية العميقة من إطلاق منصات رقمية سيادية فائقة السرعة في وقت قياسي مقارنة بالاستشارات التقليدية.',
   },
   quoteAuthor: 'Faris Al-Otaibi',
   quoteRole: {
@@ -2345,7 +2345,7 @@ export const industriesPageContent: IndustriesPageContent = {
     {
       question: {
         en: 'How does Persici approach regulatory compliance in heavily regulated sectors?',
-        ar: 'كيف تتعامل بيرسيكي مع متطلبات الامتثال في القطاعات شديدة التنظيم؟',
+        ar: 'كيف تتعامل بيرسيشي مع متطلبات الامتثال في القطاعات شديدة التنظيم؟',
       },
       answer: {
         en: 'Our engineering blueprints embed compliance by design. We build with air-gapped data pipelines, local sovereign cloud infrastructure (AWS/Azure/GCP UAE and KSA data centers), and strict ISO/IEC and local regulatory adherence from sprint zero.',
@@ -2627,7 +2627,7 @@ export const howWeDoItPageContent: HowWeDoItPageContent = {
   ],
   quoteText: {
     en: 'Persici transformed our development methodology from the ground up. Their cross-functional pod delivered our core digital platform in 6 weeks instead of our projected 9 months, with flawless architectural stability.',
-    ar: 'أحدثت بيرسيكي تحولاً جذرياً في منهجية التطوير لدينا. نجح فريقهم المتكامل في إطلاق منصتنا الرقمية الأساسية في 6 أسابيع فقط بدلاً من 9 أشهر كانت متوقعة، وبأعلى معايير الاستقرار المعماري.',
+    ar: 'أحدثت بيرسيشي تحولاً جذرياً في منهجية التطوير لدينا. نجح فريقهم المتكامل في إطلاق منصتنا الرقمية الأساسية في 6 أسابيع فقط بدلاً من 9 أشهر كانت متوقعة، وبأعلى معايير الاستقرار المعماري.',
   },
   quoteAuthor: 'Tariq Al-Mansoor',
   quoteRole: {
@@ -2656,7 +2656,7 @@ export const howWeDoItPageContent: HowWeDoItPageContent = {
     {
       question: {
         en: 'How does Persici compress development time from months to days?',
-        ar: 'كيف تختصر بيرسيكي فترات التطوير من أشهر إلى أيام؟',
+        ar: 'كيف تختصر بيرسيشي فترات التطوير من أشهر إلى أيام؟',
       },
       answer: {
         en: 'By leveraging pre-built architectural building blocks, cloud-native API patterns, automated DevOps CI/CD pipelines, and dedicated cross-functional squads working in rapid agile sprints with daily validation.',

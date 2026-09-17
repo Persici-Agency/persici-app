@@ -559,3 +559,115 @@ Timestamp: ${new Date().toISOString()}
   }
 }
 
+/**
+ * Send System Authentication Code / Verification Email
+ * Used for future dashboard authentication, password reset, or OTP login.
+ */
+export async function sendSystemAuthCodeEmail({
+  to,
+  code,
+  purpose = 'Dashboard Access Verification',
+  recipientName = 'Team Member',
+}: {
+  to: string;
+  code: string;
+  purpose?: string;
+  recipientName?: string;
+}): Promise<{ success: boolean; simulated?: boolean; messageId?: string }> {
+  const config = getEmailConfig();
+  const transporter = getTransporter();
+
+  const subject = `[Persici Security] ${code} is your verification code for ${purpose}`;
+  const textContent = `Hello ${recipientName},\n\nYour single-use verification code for ${purpose} is:\n\n${code}\n\nThis code expires in 10 minutes. If you did not request this verification, please contact admin@persiciagency.com immediately.\n\nPersici Agency Security Team`;
+
+  const htmlContent = `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="utf-8">
+        <style>
+          body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #f7f7f9; margin: 0; padding: 24px; color: #1e293b; }
+          .container { max-width: 540px; margin: 0 auto; background: #ffffff; border-radius: 16px; overflow: hidden; border: 1px solid #e2e8f0; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+          .header { background: #0f0f11; padding: 24px 32px; border-bottom: 3px solid #D83427; text-align: center; }
+          .header h1 { color: #ffffff; margin: 0; font-size: 18px; font-weight: 700; letter-spacing: 0.5px; }
+          .body { padding: 32px; text-align: center; }
+          .code-box { background: #F9F8F6; border: 2px dashed #D83427; border-radius: 12px; padding: 20px; font-size: 32px; font-weight: 800; letter-spacing: 8px; color: #0f172a; margin: 24px 0; font-family: monospace; }
+          .footer { background: #f8fafc; padding: 16px 32px; font-size: 12px; color: #94a3b8; text-align: center; border-top: 1px solid #e2e8f0; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>Persici Agency &bull; Security Verification</h1>
+          </div>
+          <div class="body">
+            <p style="margin: 0; font-size: 15px; color: #475569;">Hello ${recipientName},</p>
+            <p style="font-size: 14px; color: #64748b; margin-top: 8px;">Use the verification code below to authorize <strong>${purpose}</strong>:</p>
+            <div class="code-box">${code}</div>
+            <p style="font-size: 13px; color: #94a3b8; margin: 0;">This code is strictly confidential and expires in 10 minutes.<br />If you did not request this, please notify <a href="mailto:admin@persiciagency.com" style="color: #D83427;">admin@persiciagency.com</a>.</p>
+          </div>
+          <div class="footer">
+            Persici Agency Administrative Security &bull; admin@persiciagency.com
+          </div>
+        </div>
+      </body>
+    </html>
+  `;
+
+  if (!transporter) {
+    console.log('[EmailService (DEV/SIMULATED)] Auth Code Email to:', to, 'Code:', code);
+    return { success: true, simulated: true };
+  }
+
+  try {
+    const info = await transporter.sendMail({
+      from: config.from,
+      to,
+      subject,
+      text: textContent,
+      html: htmlContent,
+    });
+    return { success: true, messageId: info.messageId };
+  } catch (error) {
+    console.error('[EmailService] Failed to send auth code email:', error);
+    return { success: false };
+  }
+}
+
+/**
+ * Send Generic System / Admin Email
+ */
+export async function sendGenericSystemEmail({
+  to,
+  subject,
+  html,
+  text,
+}: {
+  to: string;
+  subject: string;
+  html: string;
+  text?: string;
+}): Promise<{ success: boolean; simulated?: boolean; messageId?: string }> {
+  const config = getEmailConfig();
+  const transporter = getTransporter();
+
+  if (!transporter) {
+    console.log('[EmailService (DEV/SIMULATED)] Generic System Email to:', to, 'Subject:', subject);
+    return { success: true, simulated: true };
+  }
+
+  try {
+    const info = await transporter.sendMail({
+      from: config.from,
+      to,
+      subject,
+      text: text || '',
+      html,
+    });
+    return { success: true, messageId: info.messageId };
+  } catch (error) {
+    console.error('[EmailService] Failed to send generic system email:', error);
+    return { success: false };
+  }
+}
+

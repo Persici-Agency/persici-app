@@ -738,7 +738,7 @@ export const crmManagementData: CrmManagementData = {
   clientReview: {
     quote: {
       en: 'Persici completely modernized our customer lifecycle engine. Migrating from our legacy ESP to Braze and activating WhatsApp Business API transformed our business. Within 90 days, our cart abandonment recovery jumped by 240% and our repeat purchase frequency doubled. Their mastery of data extensions, liquid personalization, and dedicated IP deliverability is unmatched in the region.',
-      ar: 'أعادت بيرسيكي تحديث وتطوير منظومة دورة حياة العميل لدينا بالكامل. إن انتقالنا من المنصة القديمة إلى Braze وتفعيل واتساب للأعمال أحدث نقلة نوعية في نتائجنا. وخلال 90 يوماً فقط، قفزت نسبة استعادة السلات المتروكة بمقدار 240% وتضاعف معدل تكرار الشراء. إن تمكنهم من حوكمة البيانات، والتخصيص المتقدم، وضمان وصول الرسائل لا يضاهى في المنطقة.',
+      ar: 'أعادت بيرسيشي تحديث وتطوير منظومة دورة حياة العميل لدينا بالكامل. إن انتقالنا من المنصة القديمة إلى Braze وتفعيل واتساب للأعمال أحدث نقلة نوعية في نتائجنا. وخلال 90 يوماً فقط، قفزت نسبة استعادة السلات المتروكة بمقدار 240% وتضاعف معدل تكرار الشراء. إن تمكنهم من حوكمة البيانات، والتخصيص المتقدم، وضمان وصول الرسائل لا يضاهى في المنطقة.',
     },
     author: 'Laila Al-Khatib',
     role: {

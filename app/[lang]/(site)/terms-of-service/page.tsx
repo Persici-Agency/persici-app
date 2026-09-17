@@ -14,9 +14,9 @@ export async function generateMetadata({ params }: PageParams) {
   const isAr = lang === 'ar';
 
   return createMetadata({
-    title: isAr ? 'شروط الخدمة والتعامل التجاري | وكالة بيرسيكي' : 'Terms of Service & Commercial Agreement | Persici Agency',
+    title: isAr ? 'شروط الخدمة والتعامل التجاري | وكالة بيرسيشي' : 'Terms of Service & Commercial Agreement | Persici Agency',
     description: isAr
-      ? 'الشروط والأحكام التجارية العامة لوكالة بيرسيكي، متوافقة مع الأنظمة التجارية في الإمارات والسعودية والأردن.'
+      ? 'الشروط والأحكام التجارية العامة لوكالة بيرسيشي، متوافقة مع الأنظمة التجارية في الإمارات والسعودية والأردن.'
       : 'Standard Commercial Terms of Service of Persici Agency, governing software engineering, eCommerce acceleration, and advisory engagements across UAE, KSA, and Jordan.',
     locale: lang as Locale,
     path: '/terms-of-service',

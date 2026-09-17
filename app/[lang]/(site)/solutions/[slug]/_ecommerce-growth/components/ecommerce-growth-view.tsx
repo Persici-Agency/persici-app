@@ -115,7 +115,7 @@ export function EcommerceGrowthView({ lang, dict }: EcommerceGrowthViewProps) {
         stories={data.clientStories}
         sectionBadge={isRtl ? 'قصص النجاح المميزة' : 'Featured Client Stories'}
         sectionTitle={isRtl ? 'نتائج أعمال استثنائية ونمو متسارع في المبيعات' : 'Transformative E-Commerce Growth & Proven Scalability'}
-        sectionSubtitle={isRtl ? 'اكتشف كيف قادت استراتيجيات بيرسيكي كبرى المتاجر الخليجية إلى مضاعفة الإيرادات وهوامش الأرباح.' : 'See how our full-funnel commerce architecture scales top GCC and global retail brands.'}
+        sectionSubtitle={isRtl ? 'اكتشف كيف قادت استراتيجيات بيرسيشي كبرى المتاجر الخليجية إلى مضاعفة الإيرادات وهوامش الأرباح.' : 'See how our full-funnel commerce architecture scales top GCC and global retail brands.'}
         lang={lang}
       />
 

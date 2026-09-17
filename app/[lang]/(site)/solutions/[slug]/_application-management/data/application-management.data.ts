@@ -219,7 +219,7 @@ export const applicationManagementData: ApplicationManagementData = {
     },
     text: {
       en: 'In today\'s hyper-connected market, your mobile app is where customer trust is won or lost. High latency, clunky interfaces, or frequent crashes directly erode customer lifetime value. Persici architects resilient mobile solutions that unite speed, fluid motion, security, and continuous delivery to outperform market expectations.',
-      ar: 'في عالمنا الرقمي المتسارع، يُعد تطبيق الهاتف المساحة الأولى لبناء ثقة عملائك أو خسارتها. البطء في الاستجابة أو تعقيد الواجهات يؤدي فوراً إلى تراجع ولاء العملاء. في بيرسيكي نصمم ونطور تطبيقات تدمج بين السرعة الفائقة، والأمان المؤسسي، وسهولة الاستخدام لتتفوق على تطلعات السوق.',
+      ar: 'في عالمنا الرقمي المتسارع، يُعد تطبيق الهاتف المساحة الأولى لبناء ثقة عملائك أو خسارتها. البطء في الاستجابة أو تعقيد الواجهات يؤدي فوراً إلى تراجع ولاء العملاء. في بيرسيشي نصمم ونطور تطبيقات تدمج بين السرعة الفائقة، والأمان المؤسسي، وسهولة الاستخدام لتتفوق على تطلعات السوق.',
     },
     image: 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&w=1200&q=85',
     metric1Val: '99.98%',
@@ -435,7 +435,7 @@ export const applicationManagementData: ApplicationManagementData = {
   delivery: {
     title: {
       en: 'The Persici Mobile Delivery Architecture',
-      ar: 'معمارية بيرسيكي لتنفيذ وتسليم التطبيقات',
+      ar: 'معمارية بيرسيشي لتنفيذ وتسليم التطبيقات',
     },
     subtitle: {
       en: 'A battle-tested 4-phase agile engineering engine that cuts time-to-market without compromising code quality, security, or stability.',
@@ -527,7 +527,7 @@ export const applicationManagementData: ApplicationManagementData = {
   clientReview: {
     quote: {
       en: 'Persici delivered an application that didn\'t just meet our technical requirements — it fundamentally transformed our unit economics. Order completion speeds soared, user complaints dropped to near zero, and the platform has effortlessly supported 10x traffic spikes during peak campaigns.',
-      ar: 'قدّم لنا فريق بيرسيكي تطبيقاً لم يقتصر على تلبية المتطلبات التقنية فحسب، بل أحدث نقلة جوهرية في مؤشرات أعمالنا. ارتفعت سرعة إتمام الطلبات، وتلاشت شكاوى المستخدمين تقريباً، وتجاوز التطبيق بنجاح مضاعفة حركة الزوار بعشرة أضعاف خلال فترات الذروة.',
+      ar: 'قدّم لنا فريق بيرسيشي تطبيقاً لم يقتصر على تلبية المتطلبات التقنية فحسب، بل أحدث نقلة جوهرية في مؤشرات أعمالنا. ارتفعت سرعة إتمام الطلبات، وتلاشت شكاوى المستخدمين تقريباً، وتجاوز التطبيق بنجاح مضاعفة حركة الزوار بعشرة أضعاف خلال فترات الذروة.',
     },
     author: 'Fahad Al-Mutairi',
     role: {
@@ -572,7 +572,7 @@ export const applicationManagementData: ApplicationManagementData = {
     {
       question: {
         en: 'How does Persici handle App Store and Google Play Store review rejections?',
-        ar: 'كيف يتعامل فريق بيرسيكي مع متطلبات ومراجعات متاجر آبل وجوجل؟',
+        ar: 'كيف يتعامل فريق بيرسيشي مع متطلبات ومراجعات متاجر آبل وجوجل؟',
       },
       answer: {
         en: 'We adhere strictly to Apple\'s App Store Review Guidelines and Google Play Policy from day one of architecture. We handle the entire submission, metadata optimization, privacy declaration manifests, and reviewer test accounts. In the rare event of a reviewer query, our team addresses and resolves it within 24 to 48 hours.',
