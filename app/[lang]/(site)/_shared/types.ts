@@ -98,6 +98,8 @@ export interface SwiperWrapperProps<T = unknown> {
   showTitle?: boolean;
   logoSize?: LogoSize;
   logoClassName?: string;
+  logoWhiteAndBlackColor?: boolean;
+  hoverOnRealColor?: boolean;
 }
 
 export type ClientLogosMarqueeProps = SwiperWrapperProps<ClientLogo>;

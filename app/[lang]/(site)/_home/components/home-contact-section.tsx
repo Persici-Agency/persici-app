@@ -174,6 +174,8 @@ export function HomeContactSection({ lang, dict }: HomeContactSectionProps) {
                       fadeMask={true}
                       pauseOnHover={false}
                       className="py-1"
+                      logoWhiteAndBlackColor={false}
+                      hoverOnRealColor={false}
                     />
                   </div>
                 </div>
