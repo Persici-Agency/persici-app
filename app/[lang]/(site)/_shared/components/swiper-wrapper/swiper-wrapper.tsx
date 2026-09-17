@@ -27,43 +27,43 @@ const sizeStyles: Record<
   { item: string; img: string; width: number; height: number }
 > = {
   xs: {
-    item: 'h-9 sm:h-10 w-18 sm:w-20',
-    img: 'max-h-5 sm:max-h-6 max-w-[60px] sm:max-w-[70px] w-auto h-auto',
-    width: 70,
-    height: 24,
+    item: 'h-8 sm:h-9 w-auto',
+    img: 'h-6 sm:h-7 w-auto max-w-none',
+    width: 120,
+    height: 28,
   },
   sm: {
-    item: 'h-10 sm:h-12 w-22 sm:w-26',
-    img: 'max-h-7 sm:max-h-8 max-w-[80px] sm:max-w-[92px] w-auto h-auto',
-    width: 92,
-    height: 32,
-  },
-  md: {
-    item: 'h-12 sm:h-14 w-28 sm:w-32',
-    img: 'max-h-8 sm:max-h-9 max-w-[95px] sm:max-w-[110px] w-auto h-auto',
-    width: 110,
+    item: 'h-10 sm:h-12 w-auto',
+    img: 'h-7 sm:h-8 md:h-9 w-auto max-w-none',
+    width: 150,
     height: 36,
   },
+  md: {
+    item: 'h-12 sm:h-14 w-auto',
+    img: 'h-9 sm:h-10 md:h-11 w-auto max-w-none',
+    width: 180,
+    height: 44,
+  },
   lg: {
-    item: 'h-16 sm:h-20 w-36 sm:w-44',
-    img: 'max-h-11 sm:max-h-13 max-w-[130px] sm:max-w-[150px] w-auto h-auto',
-    width: 150,
-    height: 50,
+    item: 'h-16 sm:h-18 w-auto',
+    img: 'h-12 sm:h-14 md:h-16 w-auto max-w-none',
+    width: 220,
+    height: 56,
   },
   xl: {
-    item: 'h-20 sm:h-24 w-44 sm:w-52',
-    img: 'max-h-14 sm:max-h-16 max-w-[160px] sm:max-w-[190px] w-auto h-auto',
-    width: 190,
-    height: 64,
+    item: 'h-20 sm:h-22 w-auto',
+    img: 'h-16 sm:h-18 md:h-20 w-auto max-w-none',
+    width: 260,
+    height: 72,
   },
 };
 
 const gapStyles: Record<'xs' | 'sm' | 'md' | 'lg' | 'xl', string> = {
-  xs: 'gap-1.5 sm:gap-2 pr-1.5 sm:pr-2',
-  sm: 'gap-2.5 sm:gap-3 pr-2.5 sm:pr-3',
-  md: 'gap-6 sm:gap-8 lg:gap-10 pr-6 sm:pr-8 lg:pr-10',
-  lg: 'gap-8 sm:gap-10 lg:gap-14 pr-8 sm:pr-10 lg:pr-14',
-  xl: 'gap-10 sm:gap-14 lg:gap-18 pr-10 sm:pr-14 lg:pr-18',
+  xs: 'gap-6 sm:gap-8 md:gap-10 pr-6 sm:pr-8 md:pr-10',
+  sm: 'gap-8 sm:gap-10 md:gap-12 pr-8 sm:pr-10 md:pr-12',
+  md: 'gap-10 sm:gap-12 md:gap-16 pr-10 sm:pr-12 md:pr-16',
+  lg: 'gap-12 sm:gap-16 md:gap-20 pr-12 sm:pr-16 md:pr-20',
+  xl: 'gap-14 sm:gap-18 md:gap-24 pr-14 sm:pr-18 md:pr-24',
 };
 
 function getSpeedPixelsPerSecond(speed: SwiperSpeed = 'normal'): number {
@@ -382,7 +382,7 @@ export function SwiperWrapper<T = unknown>({
           )}
           style={
             isNumericSize
-              ? { height: `${logoSize}px`, width: `${(logoSize as number) * 2.5}px` }
+              ? { height: `${logoSize}px` }
               : undefined
           }
           title={client.name}
@@ -390,13 +390,13 @@ export function SwiperWrapper<T = unknown>({
           <Image
             src={client.src}
             alt={client.name}
-            width={currentSizeConfig?.width || 92}
-            height={currentSizeConfig?.height || 32}
+            width={currentSizeConfig?.width || 150}
+            height={currentSizeConfig?.height || 36}
             className={cn(
               'object-contain opacity-65 grayscale contrast-125 transition-all duration-300 group-hover:opacity-100 group-hover:grayscale-0',
               !isNumericSize && currentSizeConfig?.img
             )}
-            style={isNumericSize ? { maxHeight: `${logoSize}px`, width: 'auto' } : undefined}
+            style={isNumericSize ? { height: `${logoSize}px`, width: 'auto' } : undefined}
           />
         </div>
       ));
@@ -449,7 +449,7 @@ export function SwiperWrapper<T = unknown>({
             {/* Loop 1 (Primary measurement track) */}
             <div
               ref={loop1Ref}
-              className={cn('flex shrink-0 items-center justify-around', gapClass)}
+              className={cn('flex shrink-0 items-center', gapClass)}
               style={isNumericGap ? { gap: `${effectiveGap}px`, paddingRight: `${effectiveGap}px` } : undefined}
             >
               {renderTrackItems(1)}
@@ -457,7 +457,7 @@ export function SwiperWrapper<T = unknown>({
 
             {/* Loop 2 (Seamless loop replica) */}
             <div
-              className={cn('flex shrink-0 items-center justify-around', gapClass)}
+              className={cn('flex shrink-0 items-center', gapClass)}
               style={isNumericGap ? { gap: `${effectiveGap}px`, paddingRight: `${effectiveGap}px` } : undefined}
               aria-hidden="true"
             >
@@ -466,7 +466,7 @@ export function SwiperWrapper<T = unknown>({
 
             {/* Loop 3 (Extended buffer for wide monitors & RTL right-scroll) */}
             <div
-              className={cn('flex shrink-0 items-center justify-around', gapClass)}
+              className={cn('flex shrink-0 items-center', gapClass)}
               style={isNumericGap ? { gap: `${effectiveGap}px`, paddingRight: `${effectiveGap}px` } : undefined}
               aria-hidden="true"
             >
@@ -475,7 +475,7 @@ export function SwiperWrapper<T = unknown>({
 
             {/* Loop 4 (Extended buffer for ultra-wide monitors) */}
             <div
-              className={cn('flex shrink-0 items-center justify-around', gapClass)}
+              className={cn('flex shrink-0 items-center', gapClass)}
               style={isNumericGap ? { gap: `${effectiveGap}px`, paddingRight: `${effectiveGap}px` } : undefined}
               aria-hidden="true"
             >
