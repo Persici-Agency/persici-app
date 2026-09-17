@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { FeaturedClientStories, FaqSection, ClientReviewSection } from '@shared';
 import type { Dictionary } from '@dictionaries';
 import type { IndustryOfferingItem } from '@shared/types';
@@ -24,9 +24,10 @@ export function IndustryDetailView({ industry, lang, dict }: IndustryDetailViewP
   const tag = industry.tag[lang as 'en' | 'ar'] || industry.tag.en;
 
   const fallbackStories = getFeaturedStories([
-    'nissan-mobility',
-    'gulf-enterprise-copilot',
+    'khazan',
+    'chopon',
     'lahfaa-perfumes',
+    'meraas-the-beach',
   ]);
 
   const fallbackFaqs = [

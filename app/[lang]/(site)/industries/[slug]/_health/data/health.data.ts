@@ -641,7 +641,7 @@ export const healthData: HealthData = {
     },
   ],
 
-  clientStories: getFeaturedStories(['gulf-enterprise-copilot', 'protes-sports', 'hala-food']),
+  clientStories: getFeaturedStories(['hala-food-app', 'protes-sports', 'saudi-food-bank']),
 
   delivery: {
     title: {

@@ -29,6 +29,7 @@ import type {
   HowWeDoItPageContent,
   platformsType,
 } from './types';
+import { getSolutionsOverviewFeaturedClientStories } from './data/featured-client-stories.data';
 
 
 // ============================================================================
@@ -110,16 +111,16 @@ export const clientLogos: ClientLogo[] = [
   { id: '3', name: 'Land of Exotics', src: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/clients/land-of-exotics-logo.webp?v=2', order: 3, isActive: true },
   { id: '4', name: 'Hadiya', src: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/clients/hadiya-logo.webp?v=2', order: 4, isActive: true },
   { id: '5', name: 'Lahfaa', src: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/clients/lahfaa-logo.webp?v=2', order: 5, isActive: true },
-  { id: '6', name: 'Metal Fuze', src: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/clients/metal-fuze-logo.webp?v=2', order: 6, isActive: true },
-  { id: '7', name: 'Hala Food', src: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/clients/hala-food-logo.webp?v=2', order: 7, isActive: true },
-  { id: '8', name: 'Alhokair Holding', src: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/clients/alhokair-holding-logo.webp?v=2', order: 8, isActive: true },
-  { id: '9', name: 'Meraas', src: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/clients/meraas-logo.webp?v=2', order: 9, isActive: true },
-  { id: '10', name: 'Hokair Group', src: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/clients/hokair-group-logo.webp?v=2', order: 10, isActive: true },
-  { id: '11', name: 'Khazan', src: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/clients/khazan-logo.webp?v=2', order: 11, isActive: true },
-  { id: '12', name: 'The Harmony', src: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/clients/the-harmony-logo.webp?v=2', order: 12, isActive: true },
+  { id: '6', name: 'Hala Food', src: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/clients/hala-food-logo.webp?v=2', order: 6, isActive: true },
+  { id: '7', name: 'Metal Fuze', src: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/clients/metal-fuze-logo.webp?v=2', order: 7, isActive: true },
+  { id: '8', name: 'Khazan', src: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/clients/khazan-logo.webp?v=2', order: 8, isActive: true },
+  { id: '9', name: 'The Harmony', src: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/clients/the-harmony-logo.webp?v=2', order: 9, isActive: true },
+  { id: '10', name: 'Protes', src: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/clients/protes-logo.webp?v=2', order: 10, isActive: true },
+  { id: '11', name: 'Meraas', src: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/clients/meraas-logo.webp?v=2', order: 11, isActive: true },
+  { id: '12', name: 'Alhokair Holding', src: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/clients/alhokair-holding-logo.webp?v=2', order: 12, isActive: true },
   { id: '13', name: '7awi', src: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/clients/7awi-logo.webp?v=2', order: 13, isActive: true },
-  { id: '14', name: 'Protes', src: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/clients/protes-logo.webp?v=2', order: 14, isActive: true },
-  { id: '15', name: 'Vayron', src: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/clients/vayron-logo.webp?v=2', order: 15, isActive: true },
+  { id: '14', name: 'Hokair Group', src: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/clients/hokair-group-logo.webp?v=2', order: 14, isActive: true },
+  { id: '15', name: 'Vayron', src: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/clients/vayron-logo-dark.webp?v=1', order: 15, isActive: true },
 ];
 
 // ============================================================================
@@ -1849,168 +1850,35 @@ export const solutionsPageContent: SolutionsPageContent = {
     ar: 'قصة نجاح مميزة',
   },
   spotlightTitle: {
-    en: 'Lahfaa Perfumes: Luxury E-Commerce Redesign & GCC Expansion',
-    ar: 'عطور لهفة: إعادة تصميم المتجر الفاخر والتوسع في أسواق الخليج',
+    en: 'Lahfaa Perfumes: Luxury E-Commerce Architecture & GCC Expansion',
+    ar: 'عطور لهفة: إعادة هندسة المتجر الإلكتروني الفاخر والتوسع الخليجي',
   },
   spotlightDescription: {
-    en: 'Transformed an established luxury fragrance brand with headless Shopify Plus architecture, conversion engineering, and full-funnel performance marketing across UAE and Saudi Arabia.',
-    ar: 'إعادة تصميم متكاملة لدار عطور فاخرة عبر شوبيفاي بلس معمارية متطورة، وهندسة معدلات التحويل، وحملات أداء رقمية في الإمارات والسعودية.',
+    en: 'Persici rebuilt the digital storefront for Lahfaa Perfumes, reducing page loads to 1.8s, eliminating cart abandonment friction, and integrating automated regional shipping calculation across Saudi Arabia, UAE, and Kuwait.',
+    ar: 'أعادت بيرسيشي بناء المتجر الإلكتروني لدار عطور لهفة، مخفضة زمن تحميل الصفحات إلى 1.8 ثانية، ومحققة قفزة في إتمام الطلبات مع ربط آلي لشركات الشحن السريع في السعودية والإمارات والكويت.',
   },
   spotlightMetric1Val: '+340%',
   spotlightMetric1Label: {
     en: 'Revenue Growth',
     ar: 'نمو الإيرادات',
   },
-  spotlightMetric2Val: '4.2x',
+  spotlightMetric2Val: '1.8s',
   spotlightMetric2Label: {
-    en: 'Blended ROAS',
-    ar: 'العائد الإعلاني الإجمالي',
+    en: 'Page Load Speed',
+    ar: 'سرعة استجابة المتجر',
   },
   spotlightMetric3Val: '99.8%',
   spotlightMetric3Label: {
     en: 'Fulfillment Accuracy',
     ar: 'دقة تجهيز الطلبات',
   },
-  spotlightImage: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=800&q=80',
+  spotlightImage: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/client-stories/softwares-and-web-apps/Lahfaa/lahfaa-website-featured.webp',
   spotlightCtaText: {
-    en: 'Learn more',
-    ar: 'اعرف المزيد',
+    en: 'Explore Case Study',
+    ar: 'استكشف قصة النجاح',
   },
-  spotlightCtaHref: '/client-stories',
-  spotlightStories: [
-    {
-      id: 'nissan-mobility',
-      badge: {
-        en: 'Transportation & Mobility',
-        ar: 'قطاع السيارات والنقل الذكي',
-      },
-      title: {
-        en: 'Nissan Cuts IT Operational Costs 40% with AI-Powered Monitoring and Automation',
-        ar: 'نيسان تخفض تكاليف تشغيل تقنية المعلومات بنسبة 40% عبر الأتمتة والمراقبة الذكية',
-      },
-      description: {
-        en: 'Modernized enterprise observability across regional manufacturing clusters with automated incident remediation, zero-downtime microservices, and unified telemetry pipelines.',
-        ar: 'تحديث شامل لمنظومة المراقبة والتشغيل عبر المصانع الإقليمية مع حلول الاستجابة التنبؤية للأعطال والخدمات المصغرة دون أي انقطاع.',
-      },
-      metrics: [
-        {
-          value: '40%',
-          label: {
-            en: 'IT OpEx Reduction',
-            ar: 'خفض تكاليف التشغيل',
-          },
-        },
-        {
-          value: '62%',
-          label: {
-            en: 'Faster MTTR',
-            ar: 'تسريع حل الحوادث',
-          },
-        },
-        {
-          value: '99.9%',
-          label: {
-            en: 'System Uptime',
-            ar: 'جاهزية الأنظمة التشغيلية',
-          },
-        },
-      ],
-      image: 'https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=1200&q=80',
-      ctaText: {
-        en: 'Learn more',
-        ar: 'اعرف المزيد',
-      },
-      ctaHref: '/client-stories',
-    },
-    {
-      id: 'lahfaa-perfumes',
-      badge: {
-        en: 'Luxury Goods & E-Commerce',
-        ar: 'السلع الفاخرة والتجارة الإلكترونية',
-      },
-      title: {
-        en: 'Lahfaa Perfumes: Luxury E-Commerce Redesign & GCC Expansion',
-        ar: 'عطور لهفة: إعادة تصميم المتجر الفاخر والتوسع في أسواق الخليج',
-      },
-      description: {
-        en: 'Transformed an established luxury fragrance brand with headless Shopify Plus architecture, conversion engineering, and full-funnel performance marketing across UAE and Saudi Arabia.',
-        ar: 'إعادة تصميم متكاملة لدار عطور فاخرة عبر شوبيفاي بلس معمارية متطورة، وهندسة معدلات التحويل، وحملات أداء رقمية في الإمارات والسعودية.',
-      },
-      metrics: [
-        {
-          value: '+340%',
-          label: {
-            en: 'Revenue Growth',
-            ar: 'نمو الإيرادات',
-          },
-        },
-        {
-          value: '4.2x',
-          label: {
-            en: 'Blended ROAS',
-            ar: 'العائد الإعلاني الإجمالي',
-          },
-        },
-        {
-          value: '99.8%',
-          label: {
-            en: 'Fulfillment Accuracy',
-            ar: 'دقة تجهيز الطلبات',
-          },
-        },
-      ],
-      image: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1200&q=80',
-      ctaText: {
-        en: 'Learn more',
-        ar: 'اعرف المزيد',
-      },
-      ctaHref: '/client-stories',
-    },
-    {
-      id: 'veloce-fintech',
-      badge: {
-        en: 'Financial Services & FinTech',
-        ar: 'الخدمات المالية والتقنية المالية',
-      },
-      title: {
-        en: 'Veloce Global: Modernizing Cross-Border Enterprise Payment Rails',
-        ar: 'فيلوتشي العالمية: تحديث مسارات الدفع المالي العابر للحدود للمؤسسات',
-      },
-      description: {
-        en: 'Engineered next-generation settlement pipelines and automated fraud defense engines, processing millions in daily transactions with sub-second latency and bank-grade security.',
-        ar: 'بناء مسارات تسوية مالية فائقة السرعة وأنظمة حماية ذكية من الاحتيال لمعالجة ملايين المعاملات اليومية بأمان مصرفي متكامل.',
-      },
-      metrics: [
-        {
-          value: '<2.1s',
-          label: {
-            en: 'Settlement Time',
-            ar: 'وقت تسوية المعاملات',
-          },
-        },
-        {
-          value: '10M+',
-          label: {
-            en: 'Daily Volume',
-            ar: 'حجم المعاملات اليومية',
-          },
-        },
-        {
-          value: '99.99%',
-          label: {
-            en: 'Platform Availability',
-            ar: 'توافر المنصة المستمر',
-          },
-        },
-      ],
-      image: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=1200&q=80',
-      ctaText: {
-        en: 'Learn more',
-        ar: 'اعرف المزيد',
-      },
-      ctaHref: '/client-stories',
-    },
-  ],
+  spotlightCtaHref: '/client-stories/lahfaa-perfumes-luxury-ecommerce-redesign',
+  spotlightStories: getSolutionsOverviewFeaturedClientStories(),
   quoteText: {
     en: '"Working with Persici has been our best growth decision. Their team\'s strategy, conversion engineering, and execution gave us 3.4x growth in under 6 months. A true growth partner."',
     ar: '"العمل مع بيرسيشي كان أفضل قرار لنمو أعمالنا. استراتيجيتهم وهندسة التحويل والتنفيذ المتقن حققت لنا نمواً بنسبة 3.4 أضعاف في أقل من 6 أشهر."',

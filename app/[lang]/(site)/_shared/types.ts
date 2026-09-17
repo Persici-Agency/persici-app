@@ -97,6 +97,8 @@ export interface SwiperWrapperProps<T = unknown> {
   titleClassName?: string;
   showTitle?: boolean;
   logoSize?: LogoSize;
+  logoHeight?: number | string;
+  imageHeight?: number | string;
   logoClassName?: string;
   logoWhiteAndBlackColor?: boolean;
   hoverOnRealColor?: boolean;

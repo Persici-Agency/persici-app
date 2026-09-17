@@ -1,5 +1,5 @@
-﻿import React from 'react';
-import { FeaturedClientStories, FaqSection, ClientReviewSection } from '@shared';
+import React from 'react';
+import { FeaturedClientStories, FaqSection, ClientReviewSection, getFeaturedStories } from '@shared';
 import type { Dictionary } from '@dictionaries';
 import type { SolutionOfferingItem } from '@shared/types';
 import { sectionContainer, sectionPaddingY } from '@shared/constants';
@@ -108,20 +108,14 @@ export function SolutionDetailView({ solution, lang, dict }: SolutionDetailViewP
 
       {/* 3. Reusable Featured Spotlight Story */}
       <FeaturedClientStories
-        badge={isRtl ? 'نتائج مثبتة في الميدان' : 'Proven Track Record'}
-        title={isRtl ? 'نمو قابل للقياس وأثر مباشر على الأرباح' : 'Measurable Growth With Direct Bottom-Line Impact'}
-        description={
+        stories={getFeaturedStories(['chopon', 'metal-fuze', 'lahfaa-perfumes'])}
+        sectionBadge={isRtl ? 'قصص النجاح المميزة' : 'Featured Client Stories'}
+        sectionTitle={isRtl ? 'نتائج مثبتة وأثر ملموس في السوق' : 'Measurable Growth & Proven Enterprise Impact'}
+        sectionSubtitle={
           isRtl
-            ? 'نحن لا نكتفي بتقديم التوصيات، بل نقود التنفيذ الهندسي والتسويقي المتكامل لضمان تفوق علامتك التجارية.'
-            : 'We partner directly with founders and leadership teams to architect, deploy, and scale high-growth engines with uncompromising quality.'
+            ? 'اكتشف كيف ساهمت حلول بيرسيشي في تحقيق طفرات تشغيلية وتسويقية لكبرى المؤسسات.'
+            : 'Explore how Persici engineering and strategy delivered compounding ROI for leading enterprises.'
         }
-        metric1Val="+340%"
-        metric1Label={isRtl ? 'متوسط نمو الإيرادات' : 'Average Revenue Growth'}
-        metric2Val="4.2x"
-        metric2Label={isRtl ? 'العائد على الإنفاق' : 'Average Return on Spend'}
-        image="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80"
-        ctaText={isRtl ? 'احجز استشارة استراتيجية' : 'Book Strategy Consultation'}
-        ctaHref="#contactUs"
         lang={lang}
       />
 

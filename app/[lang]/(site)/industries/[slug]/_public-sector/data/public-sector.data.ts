@@ -641,7 +641,7 @@ export const publicSectorData: PublicSectorData = {
     },
   ],
 
-  clientStories: getFeaturedStories(['gulf-enterprise-copilot', 'nissan-mobility', 'finvibe-trading']),
+  clientStories: getFeaturedStories(['saudi-food-bank', 'meraas-residence', 'metal-fuze']),
 
   delivery: {
     title: {
