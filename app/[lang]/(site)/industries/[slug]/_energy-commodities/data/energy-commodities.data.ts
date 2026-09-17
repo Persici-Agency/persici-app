@@ -641,7 +641,7 @@ export const energyCommoditiesData: EnergyCommoditiesData = {
     },
   ],
 
-  clientStories: getFeaturedStories(['nissan-mobility', 'gulf-enterprise-copilot', 'finvibe-trading']),
+  clientStories: getFeaturedStories(['metal-fuze', 'aiwin', 'chopon']),
 
   delivery: {
     title: {

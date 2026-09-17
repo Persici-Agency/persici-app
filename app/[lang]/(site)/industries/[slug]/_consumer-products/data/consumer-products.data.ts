@@ -655,7 +655,7 @@ export const consumerProductsData: ConsumerProductsData = {
     },
   ],
 
-  clientStories: getFeaturedStories(['lahfaa-perfumes', 'chopon-luxury', 'protes-sports']),
+  clientStories: getFeaturedStories(['khazan', 'lahfaa-perfumes', 'hala-food', 'chopon']),
 
   delivery: {
     title: {

@@ -641,7 +641,7 @@ export const telecomMediaTechnologyData: TelecomMediaTechnologyData = {
     },
   ],
 
-  clientStories: getFeaturedStories(['gulf-enterprise-copilot', 'finvibe-trading', 'nissan-mobility']),
+  clientStories: getFeaturedStories(['meraas-the-beach', 'ola-al-fares', 'aiwin', 'meraas-la-mer']),
 
   delivery: {
     title: {

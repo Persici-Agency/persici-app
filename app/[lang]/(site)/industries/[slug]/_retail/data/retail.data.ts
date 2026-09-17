@@ -641,7 +641,7 @@ export const retailData: RetailData = {
     },
   ],
 
-  clientStories: getFeaturedStories(['chopon-luxury', 'lahfaa-perfumes', 'land-of-exotics']),
+  clientStories: getFeaturedStories(['chopon', 'lahfaa-ecommerce', 'protes-sports', 'land-of-exotics']),
 
   delivery: {
     title: {
