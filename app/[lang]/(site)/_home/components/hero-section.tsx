@@ -1,16 +1,17 @@
 import type { Dictionary } from '@dictionaries';
 import { HomeButton, SwiperWrapper, FadeUp, AvatarSocialProof } from '@shared/components';
 import { socialProofAvatars } from '@shared/data';
-import { heroHeading } from '@shared';
+import { cn, heroHeading } from '@shared';
 
 export type HeroSectionProps = {
   lang: string;
   dict: Dictionary;
+  className?: string;
 };
 
-export function HeroSection({ lang, dict }: HeroSectionProps) {
+export function HeroSection({ lang, dict, className }: HeroSectionProps) {
   return (
-    <section className="relative pt-30 pb-20 sm:pt-55 sm:pb-28">
+    <section className={cn('relative pt-30 pb-20 sm:pt-55 sm:pb-30', className)}>
       {/* Subtle Ambient Radial Glow */}
       <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 flex justify-center overflow-hidden">
         <div className="h-[480px] w-[800px] rounded-full bg-gradient-to-b from-persici-blush/25 via-persici-crimson/10 to-transparent blur-3xl opacity-70" />
@@ -63,6 +64,7 @@ export function HeroSection({ lang, dict }: HeroSectionProps) {
             title={dict.hero.trustedBy}
             logoWhiteAndBlackColor={false}
             hoverOnRealColor={false}
+            loopClassName="mt-20"
           />
         </div>
       </FadeUp>

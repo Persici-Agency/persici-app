@@ -102,6 +102,7 @@ export interface SwiperWrapperProps<T = unknown> {
   logoClassName?: string;
   logoWhiteAndBlackColor?: boolean;
   hoverOnRealColor?: boolean;
+  loopClassName?: string;
 }
 
 export type ClientLogosMarqueeProps = SwiperWrapperProps<ClientLogo>;

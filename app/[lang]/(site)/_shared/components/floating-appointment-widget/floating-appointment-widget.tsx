@@ -118,7 +118,7 @@ export function FloatingAppointmentWidget({ lang, dict }: FloatingAppointmentWid
       {/* Floating Action Button (FAB) */}
       <div className="fixed bottom-6 end-6 z-50 flex items-center gap-3 select-none">
         {/* Subtle tooltip preview when closed */}
-        {!isOpen && (
+        {/* {!isOpen && (
           <div
             onClick={() => setIsOpen(true)}
             className="hidden sm:flex items-center gap-2 rounded-full bg-white/95 backdrop-blur-md px-4 py-2 text-xs font-semibold text-foreground shadow-xl border border-black/10 cursor-pointer transition-all hover:scale-105"
@@ -126,7 +126,7 @@ export function FloatingAppointmentWidget({ lang, dict }: FloatingAppointmentWid
             <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
             <span>{dict.floatingAppointment?.cta || 'Schedule a call'}</span>
           </div>
-        )}
+        )} */}
 
         {/* Circular FAB Button */}
         <button

@@ -119,6 +119,7 @@ export function SwiperWrapper<T = unknown>({
   logoClassName,
   logoWhiteAndBlackColor = false,
   hoverOnRealColor = false,
+  loopClassName,
 }: SwiperWrapperProps<T>) {
   const isLogoMode = !children && !(data && data.length > 0 && renderItem);
   const effectiveLogos = isLogoMode ? (logos || getClientLogos()) : [];
@@ -407,9 +408,9 @@ export function SwiperWrapper<T = unknown>({
               'object-contain transition-all duration-300 w-auto max-w-none',
               logoWhiteAndBlackColor
                 ? cn(
-                    'opacity-65 grayscale contrast-125 group-hover:opacity-100',
-                    hoverOnRealColor && 'group-hover:grayscale-0'
-                  )
+                  'opacity-65 grayscale contrast-125 group-hover:opacity-100',
+                  hoverOnRealColor && 'group-hover:grayscale-0'
+                )
                 : 'opacity-90 group-hover:opacity-100',
               !isCustomHeight && currentSizeConfig?.img
             )}
@@ -457,7 +458,8 @@ export function SwiperWrapper<T = unknown>({
           className={cn(
             'relative w-full overflow-hidden touch-pan-y select-none',
             draggable ? (isDraggingState ? 'cursor-grabbing' : 'cursor-grab') : '',
-            fadeMask && '[mask-image:linear-gradient(to_right,transparent_0%,black_8%,black_92%,transparent_100%)]'
+            fadeMask && '[mask-image:linear-gradient(to_right,transparent_0%,black_8%,black_92%,transparent_100%)]',
+            loopClassName
           )}
         >
           <div
@@ -563,9 +565,9 @@ export function SwiperWrapper<T = unknown>({
                       'object-contain transition-all duration-300 w-auto max-w-none',
                       logoWhiteAndBlackColor
                         ? cn(
-                            'opacity-65 grayscale contrast-125 group-hover:opacity-100',
-                            hoverOnRealColor && 'group-hover:grayscale-0'
-                          )
+                          'opacity-65 grayscale contrast-125 group-hover:opacity-100',
+                          hoverOnRealColor && 'group-hover:grayscale-0'
+                        )
                         : 'opacity-90 group-hover:opacity-100 group-hover:grayscale-0',
                       !isCustomHeight && currentSizeConfig?.img
                     )}
