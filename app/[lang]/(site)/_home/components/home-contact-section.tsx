@@ -169,6 +169,7 @@ export function HomeContactSection({ lang, dict }: HomeContactSectionProps) {
                       showTitle={true}
                       titleClassName="text-center"
                       logoSize="sm"
+                      logoHeight={undefined}
                       speed="normal"
                       gap="xs"
                       fadeMask={true}

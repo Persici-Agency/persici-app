@@ -114,6 +114,8 @@ export function SwiperWrapper<T = unknown>({
   titleClassName,
   showTitle = true,
   logoSize = 'sm',
+  logoHeight,
+  imageHeight,
   logoClassName,
   logoWhiteAndBlackColor = false,
   hoverOnRealColor = false,
@@ -169,10 +171,17 @@ export function SwiperWrapper<T = unknown>({
     ? gapStyles[effectiveGap as keyof typeof gapStyles] || gapStyles.md
     : '';
 
-  const isNumericSize = typeof logoSize === 'number';
-  const currentSizeConfig = isNumericSize
-    ? null
-    : sizeStyles[logoSize as keyof typeof sizeStyles] || sizeStyles.md;
+  const effectiveLogoHeight = logoHeight ?? imageHeight ?? (typeof logoSize === 'number' ? logoSize : undefined);
+  const isCustomHeight = effectiveLogoHeight !== undefined && effectiveLogoHeight !== null;
+  const heightStyleValue = isCustomHeight
+    ? typeof effectiveLogoHeight === 'number'
+      ? `${effectiveLogoHeight}px`
+      : effectiveLogoHeight
+    : undefined;
+
+  const currentSizeConfig = !isCustomHeight
+    ? sizeStyles[logoSize as keyof typeof sizeStyles] || sizeStyles.sm
+    : null;
 
   // Calculate base speed in pixels/sec with RTL awareness
   const getBaseVelocity = useCallback((): number => {
@@ -378,13 +387,13 @@ export function SwiperWrapper<T = unknown>({
           key={`logo-${loopIndex}-${client.name}-${idx}`}
           className={cn(
             'group flex shrink-0 items-center justify-center transition-all duration-300 hover:scale-105',
-            !isNumericSize && currentSizeConfig?.item,
+            !isCustomHeight && currentSizeConfig?.item,
             logoClassName,
             itemClassName
           )}
           style={
-            isNumericSize
-              ? { height: `${logoSize}px` }
+            isCustomHeight
+              ? { height: heightStyleValue }
               : undefined
           }
           title={client.name}
@@ -392,19 +401,22 @@ export function SwiperWrapper<T = unknown>({
           <Image
             src={client.src}
             alt={client.name}
-            width={currentSizeConfig?.width || 150}
-            height={currentSizeConfig?.height || 36}
+            width={currentSizeConfig?.width || 200}
+            height={typeof effectiveLogoHeight === 'number' ? effectiveLogoHeight : (currentSizeConfig?.height || 45)}
             className={cn(
-              'object-contain transition-all duration-300',
+              'object-contain transition-all duration-300 w-auto max-w-none',
               logoWhiteAndBlackColor
                 ? cn(
                     'opacity-65 grayscale contrast-125 group-hover:opacity-100',
                     hoverOnRealColor && 'group-hover:grayscale-0'
                   )
                 : 'opacity-90 group-hover:opacity-100',
-              !isNumericSize && currentSizeConfig?.img
+              !isCustomHeight && currentSizeConfig?.img
             )}
-            style={isNumericSize ? { height: `${logoSize}px`, width: 'auto' } : undefined}
+            style={{
+              height: isCustomHeight ? heightStyleValue : undefined,
+              width: 'auto',
+            }}
           />
         </div>
       ));
@@ -535,23 +547,32 @@ export function SwiperWrapper<T = unknown>({
                   key={`logo-static-${client.name}-${idx}`}
                   className={cn(
                     'group flex items-center justify-center p-2 transition-all duration-300 hover:scale-105',
-                    !isNumericSize && currentSizeConfig?.item,
+                    !isCustomHeight && currentSizeConfig?.item,
                     logoClassName,
                     itemClassName
                   )}
-                  style={isNumericSize ? { height: `${logoSize}px` } : undefined}
+                  style={isCustomHeight ? { height: heightStyleValue } : undefined}
                   title={client.name}
                 >
                   <Image
                     src={client.src}
                     alt={client.name}
                     width={currentSizeConfig?.width || 190}
-                    height={currentSizeConfig?.height || 70}
+                    height={typeof effectiveLogoHeight === 'number' ? effectiveLogoHeight : (currentSizeConfig?.height || 70)}
                     className={cn(
-                      'object-contain opacity-65 grayscale contrast-125 transition-all duration-300 group-hover:opacity-100 group-hover:grayscale-0',
-                      !isNumericSize && currentSizeConfig?.img
+                      'object-contain transition-all duration-300 w-auto max-w-none',
+                      logoWhiteAndBlackColor
+                        ? cn(
+                            'opacity-65 grayscale contrast-125 group-hover:opacity-100',
+                            hoverOnRealColor && 'group-hover:grayscale-0'
+                          )
+                        : 'opacity-90 group-hover:opacity-100 group-hover:grayscale-0',
+                      !isCustomHeight && currentSizeConfig?.img
                     )}
-                    style={isNumericSize ? { maxHeight: `${logoSize}px`, width: 'auto' } : undefined}
+                    style={{
+                      height: isCustomHeight ? heightStyleValue : undefined,
+                      width: 'auto',
+                    }}
                   />
                 </div>
               ))}

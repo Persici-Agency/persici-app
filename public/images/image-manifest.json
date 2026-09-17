@@ -231,5 +231,18 @@
     "savingsPercent": "58%",
     "width": 257,
     "height": 282
+  },
+  "clients/vayron-logo-dark.png": {
+    "type": "image",
+    "originalName": "vayron-logo-dark.png",
+    "sanitizedName": "vayron-logo-dark",
+    "r2Key": "clients/vayron-logo-dark.webp",
+    "r2Url": "https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/clients/vayron-logo-dark.webp",
+    "localWebpPath": "public/images/clients/vayron-logo-dark.webp",
+    "originalSizeBytes": 47061,
+    "optimizedSizeBytes": 17726,
+    "savingsPercent": "62%",
+    "width": 237,
+    "height": 218
   }
 }

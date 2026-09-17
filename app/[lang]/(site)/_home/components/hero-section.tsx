@@ -57,8 +57,8 @@ export function HeroSection({ lang, dict }: HeroSectionProps) {
       <FadeUp delay={450} duration={800} distance={20}>
         <div className="mx-auto mt-16 max-w-7xl px-4 sm:px-6 lg:px-8">
           <SwiperWrapper
-            logoSize="sm"
-            gap="xs"
+            logoHeight={45}
+            gap="lg"
             pauseOnHover={false}
             title={dict.hero.trustedBy}
             logoWhiteAndBlackColor={false}
