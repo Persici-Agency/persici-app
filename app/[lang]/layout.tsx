@@ -12,11 +12,11 @@ export async function generateStaticParams() {
 
 export const metadata: Metadata = {
   title: {
-    default: 'Persici — Digital Agency',
+    default: 'Persici Specialized in AI Digital Transformation',
     template: '%s | Persici',
   },
   description:
-    'Persici is a digital agency specializing in strategy, design, engineering, and digital transformation.',
+    'Persici is a boutique studio specialized in AI and digital transformation.',
   icons: {
     icon: '/icon.png',
     apple: '/apple-icon.png',

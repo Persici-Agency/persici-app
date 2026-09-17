@@ -30,7 +30,7 @@ export function StoryRelatedStories({ relatedStories, lang }: StoryRelatedStorie
           </h2>
           <p className="mt-3 text-base text-slate-600">
             {isRtl
-              ? 'اكتشف كيف ساهمت بيرسيكي في تمكين علامات رائدة أخرى في مختلف القطاعات'
+              ? 'اكتشف كيف ساهمت بيرسيشي في تمكين علامات رائدة أخرى في مختلف القطاعات'
               : 'Discover how Persici has powered growth and transformation across key industries'}
           </p>
         </div>

@@ -14,6 +14,9 @@ export interface ClientReviewSectionProps {
   quoteAvatar?: string;
   avatar?: string;
   avatarClassName?: string;
+  avatarImageClassName?: string;
+  authorClassName?: string;
+  roleClassName?: string;
   badge?: string | { en: string; ar: string };
   lang: string;
   className?: string;
@@ -33,6 +36,9 @@ export function ClientReviewSection({
   quoteAvatar,
   avatar: propAvatar,
   avatarClassName,
+  avatarImageClassName,
+  authorClassName,
+  roleClassName,
   badge,
   lang,
   className,
@@ -85,7 +91,7 @@ export function ClientReviewSection({
 
           {/* Author Details with optional Avatar beside it */}
           {(author || role) && (
-            <div className="mt-8 pt-4 text-left rtl:text-right flex items-center gap-3.5">
+            <div className="mt-8 pt-4 text-left rtl:text-right flex items-center gap-4 sm:gap-5">
               {avatar && (
                 <div
                   className={`relative rounded-full overflow-hidden shrink-0 border border-slate-200/80 shadow-xs ${
@@ -96,20 +102,30 @@ export function ClientReviewSection({
                     src={avatar}
                     alt={author || 'Author'}
                     fill
-                    className="object-cover"
-                    sizes="64px"
+                    className={`object-cover ${avatarImageClassName || ''}`}
+                    sizes="(max-width: 640px) 72px, 96px"
                   />
                 </div>
               )}
               <div>
                 {author && (
-                  <div className="font-semibold text-slate-900 text-sm sm:text-[13px] flex items-center gap-1.5">
+                  <div
+                    className={
+                      authorClassName ||
+                      'font-semibold text-slate-900 text-sm sm:text-[13px] flex items-center gap-1.5'
+                    }
+                  >
                     <span className="text-slate-400 font-normal">—</span>
                     <span>{author}</span>
                   </div>
                 )}
                 {role && (
-                  <div className="text-xs sm:text-[12px] text-slate-500 mt-0.5">
+                  <div
+                    className={
+                      roleClassName ||
+                      'text-xs sm:text-[12px] text-slate-500 mt-0.5'
+                    }
+                  >
                     {role}
                   </div>
                 )}

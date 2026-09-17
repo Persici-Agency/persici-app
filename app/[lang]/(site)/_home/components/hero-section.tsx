@@ -56,7 +56,12 @@ export function HeroSection({ lang, dict }: HeroSectionProps) {
       {/* Animated Infinite Client Logos Marquee */}
       <FadeUp delay={450} duration={800} distance={20}>
         <div className="mx-auto mt-16 max-w-7xl px-4 sm:px-6 lg:px-8">
-          <SwiperWrapper gap={2} pauseOnHover={false} title={dict.hero.trustedBy} />
+          <SwiperWrapper
+            logoSize="sm"
+            gap="xs"
+            pauseOnHover={false}
+            title={dict.hero.trustedBy}
+          />
         </div>
       </FadeUp>
     </section>

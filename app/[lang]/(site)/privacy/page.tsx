@@ -14,9 +14,9 @@ export async function generateMetadata({ params }: PageParams) {
   const isAr = lang === 'ar';
 
   return createMetadata({
-    title: isAr ? 'سياسة الخصوصية وحوكمة البيانات | وكالة بيرسيكي' : 'Privacy Policy & Data Governance | Persici Agency',
+    title: isAr ? 'سياسة الخصوصية وحوكمة البيانات | وكالة بيرسيشي' : 'Privacy Policy & Data Governance | Persici Agency',
     description: isAr
-      ? 'سياسة الخصوصية الرسمية لوكالة بيرسيكي وفق المعايير الدولية والأنظمة السيادية في الإمارات والسعودية والأردن.'
+      ? 'سياسة الخصوصية الرسمية لوكالة بيرسيشي وفق المعايير الدولية والأنظمة السيادية في الإمارات والسعودية والأردن.'
       : 'Official Privacy Policy of Persici Agency pursuant to international GDPR/CCPA standards and statutory data protection laws in the UAE, Saudi Arabia, and Jordan.',
     locale: lang as Locale,
     path: '/privacy',

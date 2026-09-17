@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useRef } from 'react';
+import Image from 'next/image';
 import ReCAPTCHA from 'react-google-recaptcha';
 import type { Dictionary } from '@dictionaries';
 import { TbChevronDown } from 'react-icons/tb';
@@ -119,37 +120,20 @@ export function HomeContactSection({ lang, dict }: HomeContactSectionProps) {
     recaptchaRef.current?.reset();
   };
 
-  const videoRef = React.useRef<HTMLVideoElement>(null);
-
-  React.useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.defaultMuted = true;
-      videoRef.current.muted = true;
-      videoRef.current.play().catch(() => {
-        // Autoplay policy handled
-      });
-    }
-  }, []);
-
   return (
     <section className={`relative overflow-hidden bg-persici-black ${sectionPaddingY}`}>
-      {/* Background Video from Videos Folder */}
+      {/* Background Animated Backdrop from GIF */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
-        <video
-          ref={videoRef}
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="auto"
-          src="/Videos/AI%20Solutions%20for%20the%20Enterprise.mp4"
+        <Image
+          src="/images/footer/footer.gif"
+          alt=""
+          fill
+          unoptimized
+          priority
           className="absolute inset-0 h-full w-full object-cover"
-        >
-          <source src="/Videos/AI%20Solutions%20for%20the%20Enterprise.mp4" type="video/mp4" />
-          <source src="/Videos/AI Solutions for the Enterprise.mp4" type="video/mp4" />
-        </video>
+        />
         {/* Subtle Ambient Overlay for Depth & Contrast */}
-        <div className="absolute inset-0 backdrop-blur-[0.5px]" />
+        <div className="absolute inset-0 bg-black/15 backdrop-blur-[0.5px]" />
       </div>
 
       {/* Main Centered Contact Card (Structured with sectionContainer) */}
@@ -181,12 +165,12 @@ export function HomeContactSection({ lang, dict }: HomeContactSectionProps) {
                 <div className="mt-10 sm:mt-14 border-t border-black/10 pt-6">
                   <div className="w-full overflow-hidden">
                     <SwiperWrapper
-                      title={dict.homeContact?.trustedBy || 'Trusted by leading eCommerce brands in the region.'}
+                      title={dict.homeContact?.trustedBy || 'Trusted by visionary leaders and high-growth enterprises.'}
                       showTitle={true}
                       titleClassName="text-center"
-                      logoSize="xs"
+                      logoSize="sm"
                       speed="normal"
-                      gap={1}
+                      gap="xs"
                       fadeMask={true}
                       pauseOnHover={false}
                       className="py-1"

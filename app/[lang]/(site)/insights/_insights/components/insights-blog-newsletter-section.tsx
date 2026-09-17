@@ -122,7 +122,7 @@ export function InsightsBlogNewsletterSection({ lang }: InsightsBlogNewsletterSe
                 <p className="mt-4 text-xs text-slate-500 leading-relaxed">
                   {isRtl ? (
                     <>
-                      بإرسال هذا النموذج، فإنك توافق على تلقي النشرات المعرفية والاتصالات التسويقية من بيرسيكي. يمكنك إلغاء الاشتراك في أي وقت. للمزيد من التفاصيل، راجع{' '}
+                      بإرسال هذا النموذج، فإنك توافق على تلقي النشرات المعرفية والاتصالات التسويقية من بيرسيشي. يمكنك إلغاء الاشتراك في أي وقت. للمزيد من التفاصيل، راجع{' '}
                       <Link href={`/${lang}/privacy`} className="text-slate-700 underline hover:text-persici-crimson">
                         سياسة الخصوصية
                       </Link>

@@ -27,7 +27,7 @@ export const clientStoriesData: ClientStoryDetail[] = [
     },
     "executiveSummary": {
       "en": "Persici engineered a multi-episode cinematic marketing campaign for Khazan, humanizing the brand through relatable family narratives (\"The Dinner Princess\", \"The Weekend Hero\", \"The Playtime Pro\", \"The Selfie Queen\"), resulting in 14.2M+ video impressions and a +28% surge in retail sell-through.",
-      "ar": "طوّرت بيرسيكي حملة تسويقية سينمائية متعددة الحلقات لعلامة \"خزان\"، ركزت على إبراز الجانب الإنساني من خلال شخصيات عائلية قريبة من القلب، محققة أكثر من 14.2 مليون مشاهدة وارتفاعاً بنسبة +28% في المبيعات المباشرة."
+      "ar": "طوّرت بيرسيشي حملة تسويقية سينمائية متعددة الحلقات لعلامة \"خزان\"، ركزت على إبراز الجانب الإنساني من خلال شخصيات عائلية قريبة من القلب، محققة أكثر من 14.2 مليون مشاهدة وارتفاعاً بنسبة +28% في المبيعات المباشرة."
     },
     "client": "Khazan (Al-Wataniya)",
     "topic": {
@@ -98,7 +98,7 @@ export const clientStoriesData: ClientStoryDetail[] = [
         },
         {
           "en": "Persici was commissioned to architect a comprehensive brand revival campaign that shifted messaging from traditional product attributes to deep emotional connection, centering on the unforgettable moments families share around the dinner table.",
-          "ar": "كُلفت بيرسيكي بتصميم وتنفيذ حملة تسويقية شاملة تنقل رسالة العلامة من الحديث التقليدي عن مواصفات المنتج إلى بناء روابط عاطفية عميقة تتمحور حول أسعد اللحظات العائلية المشتركة."
+          "ar": "كُلفت بيرسيشي بتصميم وتنفيذ حملة تسويقية شاملة تنقل رسالة العلامة من الحديث التقليدي عن مواصفات المنتج إلى بناء روابط عاطفية عميقة تتمحور حول أسعد اللحظات العائلية المشتركة."
         }
       ]
     },
@@ -161,7 +161,7 @@ export const clientStoriesData: ClientStoryDetail[] = [
       "quote": {
         "text": {
           "en": "Persici turned our products into memories. They captured the spirit of the modern Arab family with warmth, humor, and breathtaking cinematic craft.",
-          "ar": "حولت بيرسيكي منتجاتنا إلى ذكريات حية. استطاعوا ببراعة التقاط روح العائلة العربية المعاصرة بأسلوب مبهج وجودة سينمائية عالمية."
+          "ar": "حولت بيرسيشي منتجاتنا إلى ذكريات حية. استطاعوا ببراعة التقاط روح العائلة العربية المعاصرة بأسلوب مبهج وجودة سينمائية عالمية."
         },
         "author": "Khazan Marketing Leadership",
         "role": {
@@ -296,7 +296,7 @@ export const clientStoriesData: ClientStoryDetail[] = [
     },
     "executiveSummary": {
       "en": "Persici engineered ChopOn UAE from architectural inception to cloud deployment, delivering sub-50ms query latency across certified timepiece registries, bank-grade escrow integration, and bespoke responsive interfaces tailored for VIP desktop, tablet, and mobile collectors.",
-      "ar": "قامت بيرسيكي بتصميم وتطوير منصة \"شوب أون\" الإماراتية بأحدث التقنيات البرمجية، متضمنة محرك بحث فائق السرعة، ونظام تحقق مشفر، وتجربة مستخدم فاخرة تتكيف بسلاسة مع شاشات الحواسيب والأجهزة اللوحية والهواتف الذكية."
+      "ar": "قامت بيرسيشي بتصميم وتطوير منصة \"شوب أون\" الإماراتية بأحدث التقنيات البرمجية، متضمنة محرك بحث فائق السرعة، ونظام تحقق مشفر، وتجربة مستخدم فاخرة تتكيف بسلاسة مع شاشات الحواسيب والأجهزة اللوحية والهواتف الذكية."
     },
     "client": "ChopOn UAE",
     "topic": {
@@ -402,7 +402,7 @@ export const clientStoriesData: ClientStoryDetail[] = [
       "paragraphs": [
         {
           "en": "Persici developed a bespoke platform leveraging modern React/Next.js architecture with server-side rendering for lightning-fast catalog discovery, coupled with PostgreSQL and encrypted digital document lockers for authentication paperwork.",
-          "ar": "طوّرت بيرسيكي منصة خاصة تعتمد على أحدث معايير Next.js مع معالجة البيانات عبر الخادم لتوفير أسرع تجربة تصفح ممكنة، مع قواعد بيانات مشفرة لحفظ وثائق التحقق والشهادات المعتمدة."
+          "ar": "طوّرت بيرسيشي منصة خاصة تعتمد على أحدث معايير Next.js مع معالجة البيانات عبر الخادم لتوفير أسرع تجربة تصفح ممكنة، مع قواعد بيانات مشفرة لحفظ وثائق التحقق والشهادات المعتمدة."
         }
       ]
     },
@@ -505,7 +505,7 @@ export const clientStoriesData: ClientStoryDetail[] = [
     },
     "executiveSummary": {
       "en": "Persici conceptualized, branded, and launched Lahfaa Perfumes with bespoke bottle geometry, tactile unboxing engineering, and a comprehensive sensory marketing framework that propelled the brand into 12+ premier GCC luxury boutiques with +340% brand recall surge.",
-      "ar": "صممت بيرسيكي الهوية الكاملة لدار عطور \"لهفة\" الخليجية، متضمنة الهيكل المعماري لزجاجة العطر، وتجربة فتح الصندوق الفاخرة، واستراتيجية تسويق حسي أثمرت عن انتشار العلامة في أكثر من 12 بوتيكاً فاخراً."
+      "ar": "صممت بيرسيشي الهوية الكاملة لدار عطور \"لهفة\" الخليجية، متضمنة الهيكل المعماري لزجاجة العطر، وتجربة فتح الصندوق الفاخرة، واستراتيجية تسويق حسي أثمرت عن انتشار العلامة في أكثر من 12 بوتيكاً فاخراً."
     },
     "client": "Lahfaa Perfumes",
     "topic": {
@@ -708,7 +708,7 @@ export const clientStoriesData: ClientStoryDetail[] = [
     },
     "executiveSummary": {
       "en": "Persici rebuilt the digital storefront for Lahfaa Perfumes, reducing page loads to 1.8s, eliminating cart abandonment friction, and integrating automated regional shipping calculation across Saudi Arabia, UAE, and Kuwait.",
-      "ar": "أعادت بيرسيكي بناء المتجر الإلكتروني لدار عطور لهفة، مخفضة زمن تحميل الصفحات إلى 1.8 ثانية، ومحققة قفزة في إتمام الطلبات مع ربط آلي لشركات الشحن السريع في السعودية والإمارات والكويت."
+      "ar": "أعادت بيرسيشي بناء المتجر الإلكتروني لدار عطور لهفة، مخفضة زمن تحميل الصفحات إلى 1.8 ثانية، ومحققة قفزة في إتمام الطلبات مع ربط آلي لشركات الشحن السريع في السعودية والإمارات والكويت."
     },
     "client": "Lahfaa Perfumes",
     "topic": {
@@ -800,7 +800,7 @@ export const clientStoriesData: ClientStoryDetail[] = [
       "paragraphs": [
         {
           "en": "Persici audited the database, refactored WooCommerce queries, integrated Redis object caching, and redesigned the customer journey with an elegant, tactile single-page checkout tailored for GCC shoppers.",
-          "ar": "قامت بيرسيكي بفحص وتطهير قاعدة البيانات، وإعادة بناء استعلامات ووكومرس، ودمج ذاكرة ريديس المؤقتة، مع تصميم مسار دفع عصري من صفحة واحدة صُمم خصيصاً للمتسوق الخليجي."
+          "ar": "قامت بيرسيشي بفحص وتطهير قاعدة البيانات، وإعادة بناء استعلامات ووكومرس، ودمج ذاكرة ريديس المؤقتة، مع تصميم مسار دفع عصري من صفحة واحدة صُمم خصيصاً للمتسوق الخليجي."
         }
       ]
     },
@@ -896,7 +896,7 @@ export const clientStoriesData: ClientStoryDetail[] = [
     },
     "executiveSummary": {
       "en": "Persici created the complete visual identity, packaging systems, and digital go-to-market campaign for Hala Food, establishing a recognizable household brand and generating 45K+ registered households across Riyadh and Dubai in month one.",
-      "ar": "صممت بيرسيكي منظومة الهوية البصرية المتكاملة وتغليف المنتجات وحملة التدشين الرقمية لعلامة \"هلا فود\"، مما أثمر عن تسجيل أكثر من 45 ألف أسرة في الرياض ودبي خلال الشهر الأول فقط."
+      "ar": "صممت بيرسيشي منظومة الهوية البصرية المتكاملة وتغليف المنتجات وحملة التدشين الرقمية لعلامة \"هلا فود\"، مما أثمر عن تسجيل أكثر من 45 ألف أسرة في الرياض ودبي خلال الشهر الأول فقط."
     },
     "client": "Hala Food",
     "topic": {
@@ -988,7 +988,7 @@ export const clientStoriesData: ClientStoryDetail[] = [
       "paragraphs": [
         {
           "en": "Persici crafted a vibrant brand identity anchored in warm saffron, fresh basil greens, and playful handcrafted typography, paired with fully recyclable temperature-controlled unboxing packaging.",
-          "ar": "صممت بيرسيكي هوية مشرقة مستوحاة من ألوان الزعفران والريحان الطازج، مع خطوط طباعية ودودة، وصناديق تغليف مبردة ومستدامة تحافظ على حرارة المكونات وتحترم البيئة."
+          "ar": "صممت بيرسيشي هوية مشرقة مستوحاة من ألوان الزعفران والريحان الطازج، مع خطوط طباعية ودودة، وصناديق تغليف مبردة ومستدامة تحافظ على حرارة المكونات وتحترم البيئة."
         }
       ]
     },
@@ -1072,7 +1072,7 @@ export const clientStoriesData: ClientStoryDetail[] = [
     },
     "executiveSummary": {
       "en": "Persici engineered the cross-platform mobile application for Hala Food using React Native, handling dynamic nutritional filters, recurring weekly subscription billing, and real-time cold-chain delivery tracking for 120K+ users.",
-      "ar": "قامت بيرسيكي بتطوير تطبيق الهاتف الذكي المتكامل لعلامة هلا فود باستخدام تقنية React Native، متضمناً تخصيص الوجبات، والفوترة المتكررة، والتتبع المباشر لمركبات التوصيل المبردة لأكثر من 120 ألف مستخدم."
+      "ar": "قامت بيرسيشي بتطوير تطبيق الهاتف الذكي المتكامل لعلامة هلا فود باستخدام تقنية React Native، متضمناً تخصيص الوجبات، والفوترة المتكررة، والتتبع المباشر لمركبات التوصيل المبردة لأكثر من 120 ألف مستخدم."
     },
     "client": "Hala Food",
     "topic": {
@@ -1307,7 +1307,7 @@ export const clientStoriesData: ClientStoryDetail[] = [
     },
     "executiveSummary": {
       "en": "Persici developed a high-performance web portal for Metal Fuze in alignment with Saudi Vision 2030 megaproject procurement standards, featuring custom CPT technical datasheets, interactive finish selectors, and direct B2B tender RFP pipelines.",
-      "ar": "طوّرت بيرسيكي بوابة رقمية مؤسسية لشركة ميتال فيوز تتوافق مع متطلبات مناقصات المشاريع الكبرى في رؤية السعودية 2030، مع تحميل فوري للمواصفات الهندسية ومسار رقمي سريع لطلبات عروض الأسعار."
+      "ar": "طوّرت بيرسيشي بوابة رقمية مؤسسية لشركة ميتال فيوز تتوافق مع متطلبات مناقصات المشاريع الكبرى في رؤية السعودية 2030، مع تحميل فوري للمواصفات الهندسية ومسار رقمي سريع لطلبات عروض الأسعار."
     },
     "client": "Metal Fuze",
     "topic": {
@@ -1399,7 +1399,7 @@ export const clientStoriesData: ClientStoryDetail[] = [
       "paragraphs": [
         {
           "en": "Persici engineered custom product taxonomies enabling instant filtering by metal grade, coating thickness, and architectural application, with one-click spec sheet downloads.",
-          "ar": "طورت بيرسيكي نظام تصنيف ذكي يتيح تصفية المنتجات حسب نوع المعدن، وسماكة الطلاء، ومجالات الاستخدام، مع إمكانية تحميل المواصفات الفنية بضغطة زر واحدة."
+          "ar": "طورت بيرسيشي نظام تصنيف ذكي يتيح تصفية المنتجات حسب نوع المعدن، وسماكة الطلاء، ومجالات الاستخدام، مع إمكانية تحميل المواصفات الفنية بضغطة زر واحدة."
         }
       ]
     },
@@ -1495,7 +1495,7 @@ export const clientStoriesData: ClientStoryDetail[] = [
     },
     "executiveSummary": {
       "en": "Persici engineered a visually arresting, high-trust digital platform for Land of Exotics, connecting royal sanctuaries and private GCC breeders with documented pedigree histories, resulting in +450% lead capture lift.",
-      "ar": "طورت بيرسيكي منصة رقمية فائقة التميز والموثوقية لمحمية \"أرض الغرائب\"، ربطت بين كبار المربين والمحميات الخاصة في الخليج مع سجلات نسب موثقة، محققة زيادة بنسبة +450% في الاستفسارات المؤكدة."
+      "ar": "طورت بيرسيشي منصة رقمية فائقة التميز والموثوقية لمحمية \"أرض الغرائب\"، ربطت بين كبار المربين والمحميات الخاصة في الخليج مع سجلات نسب موثقة، محققة زيادة بنسبة +450% في الاستفسارات المؤكدة."
     },
     "client": "Land of Exotics",
     "topic": {
@@ -1680,7 +1680,7 @@ export const clientStoriesData: ClientStoryDetail[] = [
     },
     "executiveSummary": {
       "en": "Persici was summoned to resolve catastrophic checkout crashes for PROTES Sports, diagnosing database memory locks, refactoring the PHP execution pipeline, and developing an automated one-click thermal shipping label printer that saved 3 hours per fulfillment shift.",
-      "ar": "تم استدعاء بيرسيكي لحل مشاكل انهيار المتجر الإلكتروني لـ \"بروتيس للرياضة\"، حيث تمت إعادة بناء الاستعلامات البرمجية، وتحسين إدارة الذاكرة، وابتكار طابعة بوالص شحن حرارية آلية وفرت 3 ساعات يومياً لفريق الشحن."
+      "ar": "تم استدعاء بيرسيشي لحل مشاكل انهيار المتجر الإلكتروني لـ \"بروتيس للرياضة\"، حيث تمت إعادة بناء الاستعلامات البرمجية، وتحسين إدارة الذاكرة، وابتكار طابعة بوالص شحن حرارية آلية وفرت 3 ساعات يومياً لفريق الشحن."
     },
     "client": "PROTES Sports",
     "topic": {
@@ -1772,7 +1772,7 @@ export const clientStoriesData: ClientStoryDetail[] = [
       "paragraphs": [
         {
           "en": "Persici upgraded server execution to 1024MB, pruned bloated tables, and programmed a custom PHP thermal print engine that speaks directly to warehouse label printers the millisecond a customer pays.",
-          "ar": "قامت بيرسيكي برفع طاقة الخوادم إلى 1024 ميجابايت، وضبط استعلامات البيانات، وبرمجة نظام متصل بطابعات المستودع الحرارية يطبع بوليصة الشحن تلقائياً بمجرد إتمام الدفع."
+          "ar": "قامت بيرسيشي برفع طاقة الخوادم إلى 1024 ميجابايت، وضبط استعلامات البيانات، وبرمجة نظام متصل بطابعات المستودع الحرارية يطبع بوليصة الشحن تلقائياً بمجرد إتمام الدفع."
         }
       ]
     },
@@ -1869,7 +1869,7 @@ export const clientStoriesData: ClientStoryDetail[] = [
     },
     "executiveSummary": {
       "en": "Persici produced a series of high-energy lifestyle films and photographic assets for Meraas' 'The Beach' opposite JBR, capturing coastal dining, seaside fitness, and beachfront leisure, driving a +42% boost in international visitor footfall.",
-      "ar": "أنتجت بيرسيكي سلسلة أفلام ومحتوى بصري عالي الحيوية لوجهة \"ذا بيتش\" قبالة جميرا بيتش ريزيدنس التابعة لمِراس، مبرزة تجارب المطاعم الشاطئية والرياضة والترفيه، مما ساهم في زيادة تدفق الزوار الدوليين بنسبة +42%."
+      "ar": "أنتجت بيرسيشي سلسلة أفلام ومحتوى بصري عالي الحيوية لوجهة \"ذا بيتش\" قبالة جميرا بيتش ريزيدنس التابعة لمِراس، مبرزة تجارب المطاعم الشاطئية والرياضة والترفيه، مما ساهم في زيادة تدفق الزوار الدوليين بنسبة +42%."
     },
     "client": "Meraas",
     "topic": {
@@ -1962,7 +1962,7 @@ export const clientStoriesData: ClientStoryDetail[] = [
       "paragraphs": [
         {
           "en": "Persici deployed cinema crews across multiple golden hours, combining aerial drone sweeps with intimate ground-level tracking shots to showcase the seamless transition from morning coastal serenity to vibrant nighttime dining.",
-          "ar": "قامت بيرسيكي بتنفيذ تصوير سينمائي احترافي جمع بين اللقطات الجوية بالدرون والحركة السلسة على الأرض، مبرزة التحول اليومي الساحر من هدوء الشاطئ الصباحي إلى حيوية المقاهي والمطاعم مساءً."
+          "ar": "قامت بيرسيشي بتنفيذ تصوير سينمائي احترافي جمع بين اللقطات الجوية بالدرون والحركة السلسة على الأرض، مبرزة التحول اليومي الساحر من هدوء الشاطئ الصباحي إلى حيوية المقاهي والمطاعم مساءً."
         }
       ]
     },
@@ -2027,7 +2027,7 @@ export const clientStoriesData: ClientStoryDetail[] = [
     },
     "executiveSummary": {
       "en": "Persici delivered an immersive media campaign for Meraas' 'Port de La Mer', framing its Mediterranean-inspired marina apartments and vibrant promenades for high-net-worth property investors and regional tourists.",
-      "ar": "قدمت بيرسيكي حملة إعلامية سينمائية متطورة لوجهة \"بورت دي لا مير\" لمِراس، سلطت الضوء على الشقق الفاخرة المطلة على المرسى المستوحاة من سواحل البحر المتوسط، محققة زيادة بنسبة +125% في الاستفسارات العقارية والسياحية."
+      "ar": "قدمت بيرسيشي حملة إعلامية سينمائية متطورة لوجهة \"بورت دي لا مير\" لمِراس، سلطت الضوء على الشقق الفاخرة المطلة على المرسى المستوحاة من سواحل البحر المتوسط، محققة زيادة بنسبة +125% في الاستفسارات العقارية والسياحية."
     },
     "client": "Meraas",
     "topic": {
@@ -2185,7 +2185,7 @@ export const clientStoriesData: ClientStoryDetail[] = [
     },
     "executiveSummary": {
       "en": "Persici developed a signature residential branding and film suite for Meraas, celebrating Dubai as the premier global haven for families, innovators, and investors, resulting in 100% Phase 1 sell-out and 3 international real estate creative awards.",
-      "ar": "طوّرت بيرسيكي هوية سكنية متكاملة وسلسلة أفلام ترويجية لمشاريع مِراس السكنية، تبرز دبي كوجهة مفضلة للعائلات والمبتكرين، مما أسفر عن بيع المرحلة الأولى بنسبة 100% وحصد 3 جوائز عقارية دولية."
+      "ar": "طوّرت بيرسيشي هوية سكنية متكاملة وسلسلة أفلام ترويجية لمشاريع مِراس السكنية، تبرز دبي كوجهة مفضلة للعائلات والمبتكرين، مما أسفر عن بيع المرحلة الأولى بنسبة 100% وحصد 3 جوائز عقارية دولية."
     },
     "client": "Meraas",
     "topic": {
@@ -2278,7 +2278,7 @@ export const clientStoriesData: ClientStoryDetail[] = [
       "paragraphs": [
         {
           "en": "Persici crafted a majestic brand film and comprehensive identity design system celebrating architectural finesse, natural greenery, and effortless connectivity across Meraas neighborhoods.",
-          "ar": "صممت بيرسيكي فيلماً سينمائياً ملحمياً ونظام هوية بصرية شاملاً يحتفي بالإبداع الهندسي، والمساحات الخضراء، وسهولة الوصول إلى كافة معالم دبي الحيوية."
+          "ar": "صممت بيرسيشي فيلماً سينمائياً ملحمياً ونظام هوية بصرية شاملاً يحتفي بالإبداع الهندسي، والمساحات الخضراء، وسهولة الوصول إلى كافة معالم دبي الحيوية."
         }
       ]
     },
@@ -2343,7 +2343,7 @@ export const clientStoriesData: ClientStoryDetail[] = [
     },
     "executiveSummary": {
       "en": "Persici developed a nationwide multimedia social awareness campaign for Saudi Food Bank (Eta'am), creating heartwarming educational films and school outreach content reaching 3.5M+ youth and lowering targeted school cafeteria food waste by 24%.",
-      "ar": "طورت بيرسيكي حملة توعوية وطنية متكاملة لبنك الطعام السعودي (إطعام)، تضمنت أفلاماً توعوية مؤثرة ومحتوى مدرسياً تفاعلياً وصل لأكثر من 3.5 مليون شاب وخفض الهدر الغذائي في المدارس المشاركة بنسبة 24%."
+      "ar": "طورت بيرسيشي حملة توعوية وطنية متكاملة لبنك الطعام السعودي (إطعام)، تضمنت أفلاماً توعوية مؤثرة ومحتوى مدرسياً تفاعلياً وصل لأكثر من 3.5 مليون شاب وخفض الهدر الغذائي في المدارس المشاركة بنسبة 24%."
     },
     "client": "Saudi Food Bank (Eta'am)",
     "topic": {
@@ -2436,7 +2436,7 @@ export const clientStoriesData: ClientStoryDetail[] = [
       "paragraphs": [
         {
           "en": "Persici created \"Nabeha Tdoom\" (We Want It to Last), introducing relatable characters who solve real-life school meal challenges through teamwork, sharing, and mindful portioning, packaged in cinematic live-action shorts.",
-          "ar": "ابتكرت بيرسيكي مبادرة \"نبيها تدوم\"، مقدمة شخصيات عفوية تواجه مواقف يومية في المدرسة والمنزل، وتعالج هدر الطعام بالتعاون والمشاركة وتقدير النعمة بأسلوب سينمائي دافئ وممتع."
+          "ar": "ابتكرت بيرسيشي مبادرة \"نبيها تدوم\"، مقدمة شخصيات عفوية تواجه مواقف يومية في المدرسة والمنزل، وتعالج هدر الطعام بالتعاون والمشاركة وتقدير النعمة بأسلوب سينمائي دافئ وممتع."
         }
       ]
     },
@@ -2570,7 +2570,7 @@ export const clientStoriesData: ClientStoryDetail[] = [
     },
     "executiveSummary": {
       "en": "Persici scripted, directed, and produced the official corporate introduction master film for AIWIN, creating an emotional bridge between foundational industrial heritage and future tech investments, achieving 2.4M+ high-net-worth views.",
-      "ar": "أعدت بيرسيكي وأخرجت الفيلم المؤسسي الرئيسي لمجموعة \"آيوين\"، بأسلوب سردي يربط بين التاريخ الصناعي العريق والاستثمارات التقنية المستقبلية، محققة أكثر من 2.4 مليون مشاهدة بين كبار المستثمرين والشركاء."
+      "ar": "أعدت بيرسيشي وأخرجت الفيلم المؤسسي الرئيسي لمجموعة \"آيوين\"، بأسلوب سردي يربط بين التاريخ الصناعي العريق والاستثمارات التقنية المستقبلية، محققة أكثر من 2.4 مليون مشاهدة بين كبار المستثمرين والشركاء."
     },
     "client": "AIWIN",
     "topic": {
@@ -2663,7 +2663,7 @@ export const clientStoriesData: ClientStoryDetail[] = [
       "paragraphs": [
         {
           "en": "Persici focused on human hands: the welder’s spark, the engineer’s drafting pencil, the executive’s handshake, set against monumental factory floors and clean tech laboratories, propelled by an original symphonic score.",
-          "ar": "ركزت بيرسيكي على الجهد البشري الصادق: شرارة اللحام، وتخطيط المهندسين، ومصافحة الشركاء، على خلفية المصانع الكبرى والمختبرات التقنية، مع موسيقى سيمفونية ملهمة تم تأليفها خصيصاً للعمل."
+          "ar": "ركزت بيرسيشي على الجهد البشري الصادق: شرارة اللحام، وتخطيط المهندسين، ومصافحة الشركاء، على خلفية المصانع الكبرى والمختبرات التقنية، مع موسيقى سيمفونية ملهمة تم تأليفها خصيصاً للعمل."
         }
       ]
     },
@@ -2728,7 +2728,7 @@ export const clientStoriesData: ClientStoryDetail[] = [
     },
     "executiveSummary": {
       "en": "Persici directed an exclusive cinematic portraiture session for prominent Arab media icon Ola Al-Fares, orchestrating lighting, wardrobe framing, and motion aesthetics that achieved 10M+ organic impressions across the Arab world.",
-      "ar": "أدارت بيرسيكي جلسة تصوير سينمائية حصرية للإعلامية العربية البارزة علا الفارس، متضمنة الإضاءة الدرامية، والتنسيق البصري الفاخر، وحركة الكاميرا التي حققت أكثر من 10 ملايين تفاعل في العالم العربي."
+      "ar": "أدارت بيرسيشي جلسة تصوير سينمائية حصرية للإعلامية العربية البارزة علا الفارس، متضمنة الإضاءة الدرامية، والتنسيق البصري الفاخر، وحركة الكاميرا التي حققت أكثر من 10 ملايين تفاعل في العالم العربي."
     },
     "client": "Ola Al-Fares",
     "topic": {
@@ -2821,7 +2821,7 @@ export const clientStoriesData: ClientStoryDetail[] = [
       "paragraphs": [
         {
           "en": "Persici crafted a studio lighting scheme that sculpted the subject with gentle rim light, shooting at 120 frames per second on cinema prime lenses to highlight fabric movement, eye contact, and emotional presence.",
-          "ar": "صممت بيرسيكي منظومة إضاءة استوديو نحتت ملامح المشهد بإتقان، مع التصوير بسرعة 120 إطاراً في الثانية بعدسات سينمائية فاخرة لإبراز حركة الأقمشة ونظرات العيون الواثقة."
+          "ar": "صممت بيرسيشي منظومة إضاءة استوديو نحتت ملامح المشهد بإتقان، مع التصوير بسرعة 120 إطاراً في الثانية بعدسات سينمائية فاخرة لإبراز حركة الأقمشة ونظرات العيون الواثقة."
         }
       ]
     },
@@ -2886,7 +2886,7 @@ export const clientStoriesData: ClientStoryDetail[] = [
     },
     "executiveSummary": {
       "en": "Persici collaborated with celebrated poet Amr Sharaf on \"Letters to Thalia\", marrying classical Arabic verse with avant-garde visual metaphors, earning 1.8M+ cultural views and invitations to international film and poetry festivals.",
-      "ar": "تعاونت بيرسيكي مع الشاعر عمرو شرف في إنتاج عمل \"رسائل إلى ثاليا\"، ممزوجاً بالقصيدة العربية الفصيحة والمشاهد التعبيرية المبتكرة، محققاً أكثر من 1.8 مليون مشاهدة واختياره في مهرجانات شعرية وفنية دولية."
+      "ar": "تعاونت بيرسيشي مع الشاعر عمرو شرف في إنتاج عمل \"رسائل إلى ثاليا\"، ممزوجاً بالقصيدة العربية الفصيحة والمشاهد التعبيرية المبتكرة، محققاً أكثر من 1.8 مليون مشاهدة واختياره في مهرجانات شعرية وفنية دولية."
     },
     "client": "Amr Sharaf",
     "topic": {
@@ -2979,7 +2979,7 @@ export const clientStoriesData: ClientStoryDetail[] = [
       "paragraphs": [
         {
           "en": "Persici utilized textured film lenses, dramatic chiaroscuro lighting, and fluid camera choreography, creating an intimate dreamscape that allowed the listener’s imagination to bloom alongside the visuals.",
-          "ar": "اعتمدت بيرسيكي على عدسات ذات طابع تناظري دافئ، وإضاءة درامية متباينة، مع حركة كاميرا انسيابية خلقت فضاءً حالمياً يتيح لخيال المتلقي أن يسبح مع معاني القصيدة."
+          "ar": "اعتمدت بيرسيشي على عدسات ذات طابع تناظري دافئ، وإضاءة درامية متباينة، مع حركة كاميرا انسيابية خلقت فضاءً حالمياً يتيح لخيال المتلقي أن يسبح مع معاني القصيدة."
         }
       ]
     },

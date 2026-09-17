@@ -424,7 +424,7 @@ export const publicSectorData: PublicSectorData = {
     },
     text: {
       en: 'Citizen expectations for public services have been irreversibly reshaped by consumer technology. Today, residents expect governmental interactions to be as intuitive, fast, and accessible as ordering on an app. Siloed bureaucratic agencies, fragmented legacy databases, and paper documentation create frustration and inflate operational overhead. Persici partners with ministries and regional authorities to engineer human-centered civic ecosystems that safeguard national data sovereignty while delivering seamless, world-class citizen experiences.',
-      ar: 'أعادت التكنولوجيا الاستهلاكية صياغة توقعات المواطنين تجاه الخدمات الحكومية. يتوقع المواطن والمقيم اليوم أن تكون معاملاته الحكومية بنفس السلاسة والسرعة التي يختبرها في التطبيقات الحديثة. إن البيروقراطية المجزأة والأنظمة القديمة تسبب هدر الوقت وتكبد ميزانيات ضخمة. تتشارك بيرسيكي مع الوزارات والهيئات الحكومية لهندسة منظومات رقمية تتمحور حول الإنسان، وتحمي السيادة الرقمية للبيانات، وتقدم خدمات مدنية بمقاييس عالمية رائدة.',
+      ar: 'أعادت التكنولوجيا الاستهلاكية صياغة توقعات المواطنين تجاه الخدمات الحكومية. يتوقع المواطن والمقيم اليوم أن تكون معاملاته الحكومية بنفس السلاسة والسرعة التي يختبرها في التطبيقات الحديثة. إن البيروقراطية المجزأة والأنظمة القديمة تسبب هدر الوقت وتكبد ميزانيات ضخمة. تتشارك بيرسيشي مع الوزارات والهيئات الحكومية لهندسة منظومات رقمية تتمحور حول الإنسان، وتحمي السيادة الرقمية للبيانات، وتقدم خدمات مدنية بمقاييس عالمية رائدة.',
     },
     image: 'https://images.unsplash.com/photo-1541872703-74c5e44368f9?auto=format&fit=crop&w=1200&q=85',
   },
@@ -760,7 +760,7 @@ export const publicSectorData: PublicSectorData = {
   clientReview: {
     quote: {
       en: 'Persici engineered our sovereign municipal services portal and automated permit engine. Our service cycle times dropped from five business days to less than two hours, achieving a 94% citizen satisfaction rating in our annual audit.',
-      ar: 'طورت بيرسيكي بوابة خدماتنا البلدية السيادية ومحرك إصدار التراخيص الآلي. انخفض وقت إنجاز المعاملات من خمسة أيام عمل إلى أقل من ساعتين، مع تحقيق نسبة رضا للمواطنين بلغت 94% في التدقيق السنوي.',
+      ar: 'طورت بيرسيشي بوابة خدماتنا البلدية السيادية ومحرك إصدار التراخيص الآلي. انخفض وقت إنجاز المعاملات من خمسة أيام عمل إلى أقل من ساعتين، مع تحقيق نسبة رضا للمواطنين بلغت 94% في التدقيق السنوي.',
     },
     author: 'Eng. Abdulaziz Al-Dosari',
     role: {

@@ -130,7 +130,7 @@ export const engineeringTechnologyData = {
   benefitsStrip: {
     title: {
       en: 'The Engineering Excellence Advantage',
-      ar: 'مزايا التميز الهندسي من بيرسيكي',
+      ar: 'مزايا التميز الهندسي من بيرسيشي',
     },
     image: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1400&q=85',
     benefits: [
@@ -223,7 +223,7 @@ export const engineeringTechnologyData = {
   quote: {
     text: {
       en: 'Persici’s engineers transformed our architecture from a monolithic legacy stack into a headless microservices system. Our page loads dropped under 1 second, and our server costs fell by 42%.',
-      ar: 'حوّل مهندسو بيرسيكي بنيتنا التقنية من نظام قديم متكلس إلى بنية خدمات مصغرة مرنة. انخفض زمن تحميل الصفحات إلى أقل من ثانية، وانخفضت تكاليف الخوادم لدينا بنسبة 42%.',
+      ar: 'حوّل مهندسو بيرسيشي بنيتنا التقنية من نظام قديم متكلس إلى بنية خدمات مصغرة مرنة. انخفض زمن تحميل الصفحات إلى أقل من ثانية، وانخفضت تكاليف الخوادم لدينا بنسبة 42%.',
     },
     author: 'Khaled Al-Mutawa',
     role: {

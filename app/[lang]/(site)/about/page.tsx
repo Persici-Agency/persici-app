@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: PageProps<'/[lang]/about'>) {
   const description = content.hero.subtitle[lang as 'en' | 'ar'] || content.hero.subtitle.en;
 
   return createMetadata({
-    title: isArabic ? `${title} | وكالة بيرسيكي` : `${title} | Persici Agency`,
+    title: isArabic ? `${title} | وكالة بيرسيشي` : `${title} | Persici Agency`,
     description,
     locale: lang as Locale,
     path: '/about',

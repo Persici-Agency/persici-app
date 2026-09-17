@@ -60,7 +60,7 @@ export function InsightFeedbackWidget({ lang }: InsightFeedbackWidgetProps) {
       </div>
 
       <div className="font-mono text-[9.5px] text-slate-400">
-        {isRtl ? 'بيرسيكي للبحوث والتحليلات' : 'Persici Research & Intelligence'}
+        {isRtl ? 'بيرسيشي للبحوث والتحليلات' : 'Persici Research & Intelligence'}
       </div>
     </div>
   );

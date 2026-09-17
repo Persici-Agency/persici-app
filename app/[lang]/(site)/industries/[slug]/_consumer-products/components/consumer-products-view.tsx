@@ -148,7 +148,7 @@ export function ConsumerProductsView({ lang, dict }: ConsumerProductsViewProps) 
           }
           sectionSubtitle={
             isRtl
-              ? 'تعرف على كيفية مساهمة معماريات بيرسيكي في مضاعفة المبيعات المباشرة وولاء المستهلكين لعلامات كبرى.'
+              ? 'تعرف على كيفية مساهمة معماريات بيرسيشي في مضاعفة المبيعات المباشرة وولاء المستهلكين لعلامات كبرى.'
               : 'Explore how our commerce, inventory, and retention architectures power sustained commercial growth for premier consumer enterprises.'
           }
           lang={lang}

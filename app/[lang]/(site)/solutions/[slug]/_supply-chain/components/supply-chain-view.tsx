@@ -107,7 +107,7 @@ export function SupplyChainView({
         stories={data.clientStories}
         sectionBadge={isRtl ? 'قصص النجاح اللوجستية المميزة' : 'Featured Supply Chain Stories'}
         sectionTitle={isRtl ? 'تحول لوجستي رائد وشبكات إمداد فائقة الصمود' : 'Transformative Supply Chain & High-Velocity Logistics'}
-        sectionSubtitle={isRtl ? 'اكتشف كيف ساهمت حلول بيرسيكي لسلاسل الإمداد في خفض تكاليف التشغيل ومضاعفة سرعة الوفاء بالطلبات.' : 'See how automated order routing, IoT cold-chains, and AI demand sensing power resilient logistics across the region.'}
+        sectionSubtitle={isRtl ? 'اكتشف كيف ساهمت حلول بيرسيشي لسلاسل الإمداد في خفض تكاليف التشغيل ومضاعفة سرعة الوفاء بالطلبات.' : 'See how automated order routing, IoT cold-chains, and AI demand sensing power resilient logistics across the region.'}
         lang={lang}
       />
 

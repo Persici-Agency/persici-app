@@ -13,7 +13,7 @@ export const digitalTransformationFrameworkData = {
     },
     subtitle: {
       en: 'Every organization’s path to transformation is unique. At Persici, each transformation we lead is powered by five core capabilities. When combined with the power of AI, they empower our partners to uncover and realize value at scale.',
-      ar: 'مسار التحول الرقمي فريد لكل مؤسسة. في بيرسيكي، يقود كل مشروع تحول خمس قدرات جوهرية موحدة بقوة الذكاء الاصطناعي لتمكين شركائنا من اكتشاف وتحقيق القيمة على نطاق واسع.',
+      ar: 'مسار التحول الرقمي فريد لكل مؤسسة. في بيرسيشي، يقود كل مشروع تحول خمس قدرات جوهرية موحدة بقوة الذكاء الاصطناعي لتمكين شركائنا من اكتشاف وتحقيق القيمة على نطاق واسع.',
     },
     tag: {
       en: 'Transformation Engine',

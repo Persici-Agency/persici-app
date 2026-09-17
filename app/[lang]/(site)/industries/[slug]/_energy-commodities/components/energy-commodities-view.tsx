@@ -148,7 +148,7 @@ export function EnergyCommoditiesView({ lang, dict }: EnergyCommoditiesViewProps
           }
           sectionSubtitle={
             isRtl
-              ? 'اكتشف كيف ساهمت معماريات بيرسيكي في استقرار شبكات الكهرباء وحماية هوامش تجارة السلع الإقليمية.'
+              ? 'اكتشف كيف ساهمت معماريات بيرسيشي في استقرار شبكات الكهرباء وحماية هوامش تجارة السلع الإقليمية.'
               : 'Explore how our SCADA telemetry, quantitative trading hubs, and IoT predictive platforms transform energy enterprises.'
           }
           lang={lang}

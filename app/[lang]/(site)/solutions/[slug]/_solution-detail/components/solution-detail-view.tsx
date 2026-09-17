@@ -130,7 +130,7 @@ export function SolutionDetailView({ solution, lang, dict }: SolutionDetailViewP
         badge={isRtl ? 'شهادة العميل' : 'Client Review'}
         quoteText={{
           en: `Partnering with Persici for our ${title} transformation allowed us to scale throughput while significantly cutting operational overhead. A truly transformative engagement.`,
-          ar: `شراكتنا مع بيرسيسي في تطبيق ${title} مكّنتنا من مضاعفة قدراتنا التشغيلية وخفض تكاليف التنفيذ بشكل ملموس. كانت تجربة فارقة بكل المقاييس.`,
+          ar: `شراكتنا مع بيرسيشي في تطبيق ${title} مكّنتنا من مضاعفة قدراتنا التشغيلية وخفض تكاليف التنفيذ بشكل ملموس. كانت تجربة فارقة بكل المقاييس.`,
         }}
         quoteAuthor="Elena Rostova"
         quoteRole={{

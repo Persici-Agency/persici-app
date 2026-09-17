@@ -738,7 +738,7 @@ export const supplyChainData: SupplyChainData = {
   clientReview: {
     quote: {
       en: 'Persici transformed our fragmented regional supply chain into an autonomous, predictive fulfillment powerhouse. Across 42 distribution centers and 380 retail stores in Saudi Arabia and the UAE, our stockouts dropped by 72% while same-day order throughput doubled. Their deep integration of robotics, WMS, and real-time Kafka telemetry set a new standard for Middle Eastern logistics.',
-      ar: 'حوّلت بيرسيكي سلسلة إمدادنا الإقليمية المفككة إلى منظومة وفاء ذاتية التشغيل وفائقة التنبؤ. وعبر 42 مركز توزيع و380 متجراً في السعودية والإمارات، انخفض نفاد المخزون لدينا بنسبة 72% وتضاعفت سرعة شحن طلبات اليوم نفسه. إن تكاملهم العميق بين الروبوتات وأنظمة WMS وتدفق البيانات اللحظي وضع معياراً جديداً للوجستيات في الشرق الأوسط.',
+      ar: 'حوّلت بيرسيشي سلسلة إمدادنا الإقليمية المفككة إلى منظومة وفاء ذاتية التشغيل وفائقة التنبؤ. وعبر 42 مركز توزيع و380 متجراً في السعودية والإمارات، انخفض نفاد المخزون لدينا بنسبة 72% وتضاعفت سرعة شحن طلبات اليوم نفسه. إن تكاملهم العميق بين الروبوتات وأنظمة WMS وتدفق البيانات اللحظي وضع معياراً جديداً للوجستيات في الشرق الأوسط.',
     },
     author: 'Eng. Sultan Al-Ghamdi',
     role: {

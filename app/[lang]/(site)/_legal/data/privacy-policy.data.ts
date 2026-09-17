@@ -8,7 +8,7 @@ export const privacyPolicyData: LegalDocumentData = {
   },
   subtitle: {
     en: 'Comprehensive transparency regarding how Persici Agency collects, processes, protects, and governs enterprise client telemetry and personal data across our global and regional jurisdictions.',
-    ar: 'شفافية شاملة حول كيفية قيام وكالة بيرسيكي بجمع ومعالجة وحماية وحوكمة بيانات العملاء المؤسسيين والبيانات الشخصية عبر نطاقاتنا القضائية العالمية والإقليمية.',
+    ar: 'شفافية شاملة حول كيفية قيام وكالة بيرسيشي بجمع ومعالجة وحماية وحوكمة بيانات العملاء المؤسسيين والبيانات الشخصية عبر نطاقاتنا القضائية العالمية والإقليمية.',
   },
   effectiveDate: {
     en: 'January 15, 2026',
@@ -21,7 +21,7 @@ export const privacyPolicyData: LegalDocumentData = {
       region: 'United Arab Emirates (Dubai)',
       legalName: {
         en: 'Persici Agency FZ-LLC',
-        ar: 'وكالة بيرسيكي ش.ذ.م.م - منطقة حرة',
+        ar: 'وكالة بيرسيشي ش.ذ.م.م - منطقة حرة',
       },
       address: {
         en: 'Dubai Internet City / Business Bay, Dubai, United Arab Emirates',
@@ -36,7 +36,7 @@ export const privacyPolicyData: LegalDocumentData = {
       region: 'Kingdom of Saudi Arabia (Riyadh)',
       legalName: {
         en: 'Persici Agency LLC',
-        ar: 'شركة وكالة بيرسيكي لتقنية المعلومات',
+        ar: 'شركة وكالة بيرسيشي لتقنية المعلومات',
       },
       address: {
         en: 'King Fahd Road, Al Olaya District, Riyadh, Kingdom of Saudi Arabia',
@@ -51,7 +51,7 @@ export const privacyPolicyData: LegalDocumentData = {
       region: 'Hashemite Kingdom of Jordan (Amman)',
       legalName: {
         en: 'Persici Digital Innovations Ltd.',
-        ar: 'شركة بيرسيكي للابتكارات الرقمية ذ.م.م',
+        ar: 'شركة بيرسيشي للابتكارات الرقمية ذ.م.م',
       },
       address: {
         en: 'King Hussein Business Park (KHBP), Amman, Jordan',
@@ -77,8 +77,8 @@ export const privacyPolicyData: LegalDocumentData = {
           'Whether you are visiting our website, engaging our professional services, applying for open careers, or utilizing our proprietary technology platforms, your data is handled with rigorous cryptographic safeguards and sovereign legal accountability.',
         ],
         ar: [
-          'تحكم سياسة الخصوصية هذه معالجة البيانات الشخصية والمؤسسية التي تجمعها وكالة بيرسيكي، بما في ذلك فروعها الإقليمية وشركاتها التابعة ("بيرسيكي"، "نحن"، أو "خاصتنا").',
-          'تدير بيرسيكي ممارسات في الهندسة البرمجية المتقدمة، وتسريع التجارة الرقمية، والاستشارات الاستراتيجية من خلال كيانات مسجلة في دبي (الإمارات العربية المتحدة)، الرياض (المملكة العربية السعودية)، وعمّان (الأردن).',
+          'تحكم سياسة الخصوصية هذه معالجة البيانات الشخصية والمؤسسية التي تجمعها وكالة بيرسيشي، بما في ذلك فروعها الإقليمية وشركاتها التابعة ("بيرسيشي"، "نحن"، أو "خاصتنا").',
+          'تدير بيرسيشي ممارسات في الهندسة البرمجية المتقدمة، وتسريع التجارة الرقمية، والاستشارات الاستراتيجية من خلال كيانات مسجلة في دبي (الإمارات العربية المتحدة)، الرياض (المملكة العربية السعودية)، وعمّان (الأردن).',
           'سواء كنت تزور موقعنا الإلكتروني، أو تستفيد من خدماتنا المهنية، أو تتقدم للوظائف، أو تستخدم منصاتنا التقنية، يتم التعامل مع بياناتك وفق أعلى معايير التشفير والمسؤولية القانونية السيادية.',
         ],
       },
@@ -95,7 +95,7 @@ export const privacyPolicyData: LegalDocumentData = {
           'Persici aligns its data architecture with premier international privacy standards while strictly observing the sovereign statutory laws of each country in which our regional branches reside:',
         ],
         ar: [
-          'توائم بيرسيكي بنيتها التحتية للبيانات مع أعلى المعايير الدولية للخصوصية، مع الالتزام التام بالقوانين السيادية لكل دولة يتواجد فيها فرع إقليمي لنا:',
+          'توائم بيرسيشي بنيتها التحتية للبيانات مع أعلى المعايير الدولية للخصوصية، مع الالتزام التام بالقوانين السيادية لكل دولة يتواجد فيها فرع إقليمي لنا:',
         ],
       },
       subsections: [
@@ -189,7 +189,7 @@ export const privacyPolicyData: LegalDocumentData = {
           '2. As a Data Processor / Service Provider: When engineering custom software, eCommerce pipelines, or analytics integrations on behalf of our enterprise clients, Persici acts strictly as a data processor. In such capacities, we process end-user telemetry strictly in accordance with client instructions and executed Data Processing Agreements (DPAs).',
         ],
         ar: [
-          'بموجب قوانين حماية البيانات المعمول بها، تعمل بيرسيكي بصفتين مختلفتين بحسب طبيعة التعامل:',
+          'بموجب قوانين حماية البيانات المعمول بها، تعمل بيرسيشي بصفتين مختلفتين بحسب طبيعة التعامل:',
           '١. بصفتنا مسؤولاً عن البيانات (Data Controller): نحدد أغراض ووسائل معالجة البيانات الشخصية المتعلقة بزوار موقعنا، وممثلي العملاء المؤسسيين المتعاقدين معنا مباشرة، والمتقدمين للوظائف.',
           '٢. بصفتنا معالجاً للبيانات (Data Processor): عند بناء وتطوير منصات برمجية أو حلول تجارة إلكترونية لصالح عملائنا، نعمل حصرياً كمعالج بيانات بناءً على تعليمات العميل وبموجب اتفاقية معالجة بيانات رسمية (DPA).',
         ],
@@ -233,7 +233,7 @@ export const privacyPolicyData: LegalDocumentData = {
           '• Legitimate Business Interests: Maintaining platform security, preventing distributed denial-of-service (DDoS) incidents, and optimizing website delivery.',
         ],
         ar: [
-          'لا تقوم بيرسيكي بمعالجة أي بيانات شخصية دون مسوغ قانوني معتمد صراحة في التشريعات المعمول بها:',
+          'لا تقوم بيرسيشي بمعالجة أي بيانات شخصية دون مسوغ قانوني معتمد صراحة في التشريعات المعمول بها:',
           '• تنفيذ العقود: المعالجة الضرورية لتقديم الحلول البرمجية، وإنجاز نطاقات العمل، والدعم الفني المستمر.',
           '• الموافقة الصريحة: عند موافقتك المسبقة على الاشتراك في النشرات، أو جلسات الاستكشاف، أو التقدم للوظائف.',
           '• الامتثال للالتزامات القانونية: الوفاء بمتطلبات السجلات التجارية، واللوائح الضريبية ومكافحة غسل الأموال في الإمارات والسعودية والأردن.',
@@ -254,7 +254,7 @@ export const privacyPolicyData: LegalDocumentData = {
           '• International Transfers: Where data is transmitted across borders for distributed team collaboration or global cloud infrastructure (e.g., Cloudflare R2, MongoDB Atlas), transfers are protected by Standard Contractual Clauses (SCCs), cryptographic encryption in transit (TLS 1.3), and zero-knowledge storage models.',
         ],
         ar: [
-          'تعد سيادة البيانات ومكان تخزينها ركيزة جوهرية في منهجية بيرسيكي الهندسية والتنظيمية.',
+          'تعد سيادة البيانات ومكان تخزينها ركيزة جوهرية في منهجية بيرسيشي الهندسية والتنظيمية.',
           '• المراكز السحابية الإقليمية: لعملائنا في المملكة العربية السعودية ودولة الإمارات، يتم نشر الأنظمة داخل مراكز بيانات سحابية محلية سيادية (مثل AWS في الإمارات، وGoogle Cloud في الدمام، أو Oracle Cloud في الرياض) التزاماً بلوائح توطين البيانات الصادرة عن سدايا والهيئات المعنية.',
           '• نقل البيانات الدولي: في الحالات التي تتطلب نقل بيانات عبر الحدود لإدارة المشاريع أو البنية التحتية السحابية الموزعة، يتم ذلك بموجب بنود تعاقدية معتمدة وتشفير كامل أثناء النقل (TLS 1.3).',
         ],
@@ -276,7 +276,7 @@ export const privacyPolicyData: LegalDocumentData = {
           '• Right to Lodge Complaints: Contact relevant supervisory authorities, including the UAE Data Office, SDAIA in Saudi Arabia, or the Personal Data Protection Board in Jordan.',
         ],
         ar: [
-          'بغض النظر عن موقعك الجغرافي، توفر بيرسيكي آليات واضحة لممارسة حقوقك النظامية كاملة:',
+          'بغض النظر عن موقعك الجغرافي، توفر بيرسيشي آليات واضحة لممارسة حقوقك النظامية كاملة:',
           '• حق الاطلاع والحصول على البيانات: طلب نسخة مقروءة آلياً من بياناتك الشخصية المسجلة لدينا.',
           '• حق التصحيح والتحديث: تعديل أي بيانات غير دقيقة أو غير مكتملة.',
           '• حق الإتلاف والمحو: طلب الحذف النهائي لبياناتك الشخصية متى انتفى الغرض من جمعها ولم يعد هناك مسوغ نظامي للاحتفاظ بها.',
@@ -300,7 +300,7 @@ export const privacyPolicyData: LegalDocumentData = {
           '• Incident Response: A formally tested Computer Security Incident Response Plan (CSIRP) guaranteeing notification to regulatory bodies and affected parties within 72 hours of a confirmed breach.',
         ],
         ar: [
-          'تطبق بيرسيكي منظومة دفاعية مؤسسية تشمل تدابير فنية وتنظيمية متقدمة لضمان سرية وسلامة البيانات:',
+          'تطبق بيرسيشي منظومة دفاعية مؤسسية تشمل تدابير فنية وتنظيمية متقدمة لضمان سرية وسلامة البيانات:',
           '• معايير التشفير: تشفير قواعد البيانات والتخزين السحابي بمعيار AES-256، واستخدام بروتوكول TLS 1.3 لكافة البيانات أثناء النقل.',
           '• إدارة الوصول: بنية شبكية قائمة على انعدام الثقة (Zero-Trust)، ومصادقة متعددة العوامل (MFA)، ومبدأ الامتيازات الأقل (RBAC).',
           '• سجلات المراجعة والمراقبة: سجلات تدقيق غير قابلة للتعديل ترصد العمليات الإدارية وسجلات الاستعلام الأمنية على مدار الساعة.',
@@ -325,7 +325,7 @@ export const privacyPolicyData: LegalDocumentData = {
           'يستخدم موقعنا الحد الأدنى من ملفات تعريف الارتباط لضمان الأمان اللحظي وتوجيه اللغة المناسبة:',
           '• ملفات تعريف الارتباط الأساسية: ضرورية لسلامة التصفح، والحماية من ثغرات CSRF، وحفظ خيار اللغة (العربية / الإنجليزية).',
           '• قياسات الأداء المجهلة: بيانات إحصائية مجمعة خالية من الهوية الشخصية تساعدنا في مراقبة سرعة التصفح وتحسين تجربة المستخدم.',
-          '• لا نبيع أو نشارك بيانات التتبع: لا تقوم بيرسيكي ببيع أو تأجير أي بيانات تتبع لوسطاء البيانات أو شبكات الإعلانات السلوكية.',
+          '• لا نبيع أو نشارك بيانات التتبع: لا تقوم بيرسيشي ببيع أو تأجير أي بيانات تتبع لوسطاء البيانات أو شبكات الإعلانات السلوكية.',
         ],
       },
     },

@@ -335,7 +335,7 @@ export const customerEngagementData: CustomerEngagementData = {
     },
     text: {
       en: 'In a cookieless, hyper-competitive digital landscape, acquiring a new customer costs up to 7x more than retaining an existing one. Generic blasts and disconnected touchpoints erode brand trust and trigger immediate unsubscribes. Persici transforms customer engagement into an authentic, data-driven conversation—delivering relevant value at the exact micro-moment of customer intent.',
-      ar: 'في سوق رقمي سريع التغير وبلا ملفات تعريف ارتباط خارجية، تبلغ تكلفة اكتساب عميل جديد 7 أضعاف تكلفة الحفاظ على عميل حالي. الرسائل العامة والتفاعلات المجزأة تقوض ثقة المستهلك وتؤدي إلى فقدان فوري للعملاء. تحول بيرسيكي تفاعل العملاء إلى حوار استراتيجي مدعوم بالبيانات، يمنح العميل القيمة التي ينتظرها في اللحظة المناسبة بالضبط.',
+      ar: 'في سوق رقمي سريع التغير وبلا ملفات تعريف ارتباط خارجية، تبلغ تكلفة اكتساب عميل جديد 7 أضعاف تكلفة الحفاظ على عميل حالي. الرسائل العامة والتفاعلات المجزأة تقوض ثقة المستهلك وتؤدي إلى فقدان فوري للعملاء. تحول بيرسيشي تفاعل العملاء إلى حوار استراتيجي مدعوم بالبيانات، يمنح العميل القيمة التي ينتظرها في اللحظة المناسبة بالضبط.',
     },
     image: 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=1200&q=80',
     metric1Val: '+340%',
@@ -353,7 +353,7 @@ export const customerEngagementData: CustomerEngagementData = {
   benefitsStrip: {
     title: {
       en: 'The Persici Customer Engagement Advantage',
-      ar: 'المزايا الاستراتيجية لهندسة تفاعل العملاء مع بيرسيكي',
+      ar: 'المزايا الاستراتيجية لهندسة تفاعل العملاء مع بيرسيشي',
     },
     image: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1600&q=85',
     benefits: [
@@ -768,7 +768,7 @@ export const customerEngagementData: CustomerEngagementData = {
   clientReview: {
     quote: {
       en: 'Persici rebuilt our entire retention engine from the data layer up. Within 4 months of launching our unified loyalty architecture and real-time CDP orchestration, our 60-day repeat purchase rate leaped by 320% while our unsubscribes dropped to near zero. They are absolute masters of modern customer engagement.',
-      ar: 'أعادت بيرسيكي بناء منظومة ولاء واحتفاظ العملاء بالكامل من طبقة البيانات وحتى التنفيذ. وخلال 4 أشهر فقط من إطلاق معمارية الولاء الموحدة وربط منصة الـ CDP، قفز معدل تكرار الشراء لدينا بنسبة 320% وانخفضت الإلغاءات إلى ما يقارب الصفر. إنهم رواد حقيقيون في هندسة تفاعل العملاء.',
+      ar: 'أعادت بيرسيشي بناء منظومة ولاء واحتفاظ العملاء بالكامل من طبقة البيانات وحتى التنفيذ. وخلال 4 أشهر فقط من إطلاق معمارية الولاء الموحدة وربط منصة الـ CDP، قفز معدل تكرار الشراء لدينا بنسبة 320% وانخفضت الإلغاءات إلى ما يقارب الصفر. إنهم رواد حقيقيون في هندسة تفاعل العملاء.',
     },
     author: 'Tariq Al-Mansoor',
     role: {

@@ -11,7 +11,7 @@ export async function generateMetadata({ params }: PageProps<'/[lang]/insights'>
 
   return createMetadata({
     title: isRtl
-      ? 'الرؤى والقيادة الفكرية والأبحاث الاستراتيجية | وكالة بيرسيكي'
+      ? 'الرؤى والقيادة الفكرية والأبحاث الاستراتيجية | وكالة بيرسيشي'
       : 'Insights & Thought Leadership | Persici Agency',
     description: isRtl
       ? 'استكشف أحدث الأبحاث والدراسات الميدانية، والمقالات المعرفية الموجهة لقادة التحول الرقمي ورواد الأعمال في الخليج والعالم.'

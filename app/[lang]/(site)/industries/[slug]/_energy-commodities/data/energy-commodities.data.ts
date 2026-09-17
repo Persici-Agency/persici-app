@@ -424,7 +424,7 @@ export const energyCommoditiesData: EnergyCommoditiesData = {
     },
     text: {
       en: 'The global energy and commodities landscape is undergoing the most monumental transition since the Industrial Revolution. Energy producers and trading houses must balance two equally urgent imperatives: ensuring uninterrupted, affordable energy security while aggressively decarbonizing operations to meet net-zero targets. Fragmented legacy SCADA silos, manual spreadsheet trading workflows, and disconnected supply chains leave enterprises vulnerable to extreme market shocks. Persici delivers sovereign digital architectures that unite field telemetry with quantitative trading intelligence, ensuring long-term profitability and global climate resilience.',
-      ar: 'يشهد قطاع الطاقة والسلع العالمي أهم مرحلة تحول منذ الثورة الصناعية. يتعين على منتجي الطاقة ومجموعات تجارة السلع تحقيق توازن دقيق بين أمرين متساويين في الأهمية: ضمان أمن الإمدادات بتكاليف تنافسية، وتسريع إزالة الكربون للوصول إلى الحياد الصفري. إن أنظمة SCADA المنعزلة، وإدارة الصفقات اليدوية، وسلاسل الإمداد المتباعدة تجعل الشركات عرضة لصدمات الأسواق الحادة. تقدم بيرسيكي معماريات رقمية سيادية تربط مستشعرات الحقول بمحركات التداول الكمي الذكية، مما يضمن الربحية المستدامة والصمود في مشهد الطاقة المتجدد.',
+      ar: 'يشهد قطاع الطاقة والسلع العالمي أهم مرحلة تحول منذ الثورة الصناعية. يتعين على منتجي الطاقة ومجموعات تجارة السلع تحقيق توازن دقيق بين أمرين متساويين في الأهمية: ضمان أمن الإمدادات بتكاليف تنافسية، وتسريع إزالة الكربون للوصول إلى الحياد الصفري. إن أنظمة SCADA المنعزلة، وإدارة الصفقات اليدوية، وسلاسل الإمداد المتباعدة تجعل الشركات عرضة لصدمات الأسواق الحادة. تقدم بيرسيشي معماريات رقمية سيادية تربط مستشعرات الحقول بمحركات التداول الكمي الذكية، مما يضمن الربحية المستدامة والصمود في مشهد الطاقة المتجدد.',
     },
     image: 'https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=1200&q=85',
   },
@@ -760,7 +760,7 @@ export const energyCommoditiesData: EnergyCommoditiesData = {
   clientReview: {
     quote: {
       en: 'Persici transformed our regional utility and renewable energy operations. By linking our solar farm SCADA data with an AI battery storage dispatch engine, we stabilized our peak grid frequencies and cut transmission curtailment losses by 38%.',
-      ar: 'أحدثت بيرسيكي نقلة نوعية في عمليات مرافقنا ومشاريع الطاقة المتجددة. بربط بيانات SCADA لمزارع الطاقة الشمسية بمحرك توجيه ذكي لبطاريات التخزين، نجحنا في تثبيت ترددات الشبكة في أوقات الذروة وخفضنا هدر الطاقة بنسبة 38%.',
+      ar: 'أحدثت بيرسيشي نقلة نوعية في عمليات مرافقنا ومشاريع الطاقة المتجددة. بربط بيانات SCADA لمزارع الطاقة الشمسية بمحرك توجيه ذكي لبطاريات التخزين، نجحنا في تثبيت ترددات الشبكة في أوقات الذروة وخفضنا هدر الطاقة بنسبة 38%.',
     },
     author: 'Eng. Mansoor Al-Harbi',
     role: {

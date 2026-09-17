@@ -107,7 +107,7 @@ export function InsightDetailHeaderSection({ insight, lang }: InsightDetailHeade
   const handleEmailShare = () => {
     const url = getShareUrl();
     const mailto = `mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(
-      (isRtl ? 'اقرأ هذه الرؤية من بيرسيكي:\n' : 'Check out this insight from Persici:\n') + url
+      (isRtl ? 'اقرأ هذه الرؤية من بيرسيشي:\n' : 'Check out this insight from Persici:\n') + url
     )}`;
     window.location.href = mailto;
     setDropdownOpen(false);
