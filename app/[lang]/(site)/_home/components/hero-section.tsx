@@ -61,6 +61,8 @@ export function HeroSection({ lang, dict }: HeroSectionProps) {
             gap="xs"
             pauseOnHover={false}
             title={dict.hero.trustedBy}
+            logoWhiteAndBlackColor={false}
+            hoverOnRealColor={false}
           />
         </div>
       </FadeUp>

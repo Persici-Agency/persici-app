@@ -115,6 +115,8 @@ export function SwiperWrapper<T = unknown>({
   showTitle = true,
   logoSize = 'sm',
   logoClassName,
+  logoWhiteAndBlackColor = false,
+  hoverOnRealColor = false,
 }: SwiperWrapperProps<T>) {
   const isLogoMode = !children && !(data && data.length > 0 && renderItem);
   const effectiveLogos = isLogoMode ? (logos || getClientLogos()) : [];
@@ -393,7 +395,13 @@ export function SwiperWrapper<T = unknown>({
             width={currentSizeConfig?.width || 150}
             height={currentSizeConfig?.height || 36}
             className={cn(
-              'object-contain opacity-65 grayscale contrast-125 transition-all duration-300 group-hover:opacity-100 group-hover:grayscale-0',
+              'object-contain transition-all duration-300',
+              logoWhiteAndBlackColor
+                ? cn(
+                    'opacity-65 grayscale contrast-125 group-hover:opacity-100',
+                    hoverOnRealColor && 'group-hover:grayscale-0'
+                  )
+                : 'opacity-90 group-hover:opacity-100',
               !isNumericSize && currentSizeConfig?.img
             )}
             style={isNumericSize ? { height: `${logoSize}px`, width: 'auto' } : undefined}
