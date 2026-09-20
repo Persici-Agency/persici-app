@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import Image from 'next/image';
@@ -42,10 +42,10 @@ export function EcommercePartnerShowcase({
       <div className={sectionContainer}>
         {/* Header Title & Subtitle */}
         <FadeUp delay={0} duration={700} distance={20} className="max-w-3xl mx-auto text-center mb-12 sm:mb-16">
-          <span className="inline-block px-4 py-1.5 rounded-full text-xs font-mono font-bold tracking-wider uppercase bg-red-50 text-persici-crimson border border-red-100 mb-4">
+          <span className="inline-block px-4 py-1.5 rounded-full text-xs font-mono font-semibold tracking-wider uppercase bg-red-50 text-persici-crimson border border-red-100 mb-4">
             {badge}
           </span>
-          <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900">
+          <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-slate-900">
             {title}
           </h2>
           <p className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed font-normal">
@@ -72,7 +72,7 @@ export function EcommercePartnerShowcase({
         {/* 8 Official Partners Grid (Logo-only, borderless, light shadow, grayscale to color on hover) */}
         <FadeUp delay={180} duration={700} distance={20} className="max-w-6xl mx-auto">
           <div className="text-center mb-8">
-            <span className="text-xs font-mono font-bold uppercase tracking-wider text-slate-500">
+            <span className="text-xs font-mono font-semibold uppercase tracking-wider text-slate-500">
               {isRtl ? 'الشركاء والمنصات التكنولوجية المعتمدة' : 'Certified Platform & Media Partners'}
             </span>
           </div>

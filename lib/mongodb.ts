@@ -25,6 +25,8 @@ export const COLLECTIONS = {
   TESTIMONIALS: 'testimonials',
   CONTACT_SUBMISSIONS: 'contact_submissions',
   DISCOVERY_SUBMISSIONS: 'discovery_submissions',
+  APPOINTMENTS: 'appointments',
+  JOB_APPLICATIONS: 'job_applications',
   MEDIA: 'media_items',
 } as const;
 

@@ -2,11 +2,18 @@ import type { Metadata } from 'next';
 import type { Locale } from './i18n';
 
 const siteConfig = {
-  name: 'Persici',
+  name: {
+    en: 'Persici',
+    ar: 'بيرسيشي',
+  },
   url: 'https://persici.com',
+  defaultTitle: {
+    en: 'Persici Specialized in AI Digital Transformation',
+    ar: 'بيرسيشي متخصصة في الذكاء الاصطناعي والتحول الرقمي',
+  },
   description: {
-    en: 'Persici is a digital agency specializing in strategy, design, engineering, and digital transformation.',
-    ar: 'بيرسيكي هي وكالة رقمية متخصصة في الاستراتيجية والتصميم والهندسة والتحول الرقمي.',
+    en: 'Persici is a boutique studio specialized in AI and digital transformation.',
+    ar: 'بيرسيشي هو استوديو بوتيك متخصص في الذكاء الاصطناعي والتحول الرقمي.',
   },
 };
 
@@ -25,15 +32,36 @@ export function createMetadata({
   path = '',
   noIndex = false,
 }: CreateMetadataOptions): Metadata {
-  const pageTitle = title
-    ? `${title} | ${siteConfig.name}`
-    : siteConfig.name;
+  const brandName = siteConfig.name[locale] || siteConfig.name.en;
+  const isHome = !path || path === '' || path === '/';
+
+  let pageTitle: string;
+  if (isHome) {
+    pageTitle = title || siteConfig.defaultTitle[locale];
+  } else if (title) {
+    // If title already includes brand name, don't duplicate it
+    if (
+      title.includes(brandName) ||
+      title.includes('Persici') ||
+      title.includes('بيرسيشي') ||
+      title.includes('بيرسيشي')
+    ) {
+      pageTitle = title;
+    } else {
+      pageTitle = `${title} | ${brandName}`;
+    }
+  } else {
+    pageTitle = siteConfig.defaultTitle[locale];
+  }
+
   const pageDescription =
     description || siteConfig.description[locale];
   const url = `${siteConfig.url}/${locale}${path}`;
 
   return {
-    title: pageTitle,
+    title: {
+      absolute: pageTitle,
+    },
     description: pageDescription,
     metadataBase: new URL(siteConfig.url),
     alternates: {
@@ -47,7 +75,7 @@ export function createMetadata({
       title: pageTitle,
       description: pageDescription,
       url,
-      siteName: siteConfig.name,
+      siteName: brandName,
       locale: locale === 'ar' ? 'ar_SA' : 'en_US',
       type: 'website',
     },

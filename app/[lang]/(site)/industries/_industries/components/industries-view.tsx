@@ -65,7 +65,7 @@ export function IndustriesView({ content, lang, dict }: IndustriesViewProps) {
         }
         sectionSubtitle={
           lang === 'ar'
-            ? 'اكتشف كيف ساهمت الحلول المخصصة لبيرسيكي في قيادة التحول وتنمية الأرباح لعملائنا.'
+            ? 'اكتشف كيف ساهمت الحلول المخصصة لبيرسيشي في قيادة التحول وتنمية الأرباح لعملائنا.'
             : 'Explore how our domain-aligned software engineering drives compounding enterprise scale.'
         }
         lang={lang}

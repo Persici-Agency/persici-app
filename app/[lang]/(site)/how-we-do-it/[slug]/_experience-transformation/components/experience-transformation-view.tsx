@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState } from 'react';
 import type { Dictionary } from '@dictionaries';
@@ -65,7 +65,7 @@ export function ExperienceTransformationView({
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-persici-crimson/10 border border-persici-crimson/20 text-persici-crimson text-xs font-semibold uppercase tracking-wider mb-4">
               {isAr ? 'مجالات تجربة المستخدم' : 'Experience Domains'}
             </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-primary font-bold text-slate-900 tracking-tight leading-tight mb-5">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-primary font-medium text-slate-900 tracking-tight leading-tight mb-5">
               {offeringsTitle}
             </h2>
             <p className="text-base sm:text-lg text-slate-600 font-secondary leading-relaxed">
@@ -155,7 +155,7 @@ export function ExperienceTransformationView({
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-persici-crimson/20 border border-persici-crimson/30 text-persici-crimson text-xs font-semibold uppercase tracking-wider mb-4">
                 {isAr ? 'منظومة أدوات التجربة' : 'Experience Architecture'}
               </div>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-primary font-bold text-white tracking-tight leading-tight mb-5">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-primary font-medium text-white tracking-tight leading-tight mb-5">
                 {isAr ? 'منظومة التصميم وأنظمة رموز الواجهات' : 'Design Systems & Experience Toolchains'}
               </h2>
               <p className="text-base sm:text-lg text-slate-300 font-secondary leading-relaxed">

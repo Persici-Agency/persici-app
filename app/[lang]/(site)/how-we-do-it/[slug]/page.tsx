@@ -33,7 +33,7 @@ export async function generateMetadata({ params }: PageProps) {
   if (slug === 'strategy-consulting') {
     const title = isAr ? 'الاستراتيجية والاستشارات' : 'Strategy & Consulting';
     const description = isAr
-      ? 'استشارات استراتيجية تقود نمواً قابلاً للتوسع وتحول الطموح التجاري إلى خارطة طريق نمو واضحة وقابلة للتنفيذ بواسطة بيرسيكي.'
+      ? 'استشارات استراتيجية تقود نمواً قابلاً للتوسع وتحول الطموح التجاري إلى خارطة طريق نمو واضحة وقابلة للتنفيذ بواسطة بيرسيشي.'
       : 'Strategic consulting that drives scalable growth: turning business ambition into clear, actionable growth roadmaps by Persici.';
     return createMetadata({
       title: `${title} — Persici Agency`,
@@ -72,7 +72,7 @@ export async function generateMetadata({ params }: PageProps) {
   if (slug === 'engineering-technology') {
     const title = isAr ? 'الهندسة والتكنولوجيا' : 'Engineering & Technology';
     const description = isAr
-      ? 'ريادة المشهد عبر الهندسة الرشيقة وبنى الخدمات المصغرة والأنظمة السحابية القابلة للتوسع وتسريع دورات تطوير البرمجيات بواسطة بيرسيكي.'
+      ? 'ريادة المشهد عبر الهندسة الرشيقة وبنى الخدمات المصغرة والأنظمة السحابية القابلة للتوسع وتسريع دورات تطوير البرمجيات بواسطة بيرسيشي.'
       : 'Lead the way with agile engineering, cloud-native scalability, microservices architectures, and rapid software delivery by Persici.';
     return createMetadata({
       title: `${title} — Persici Agency`,
@@ -85,7 +85,7 @@ export async function generateMetadata({ params }: PageProps) {
   if (slug === 'experience-transformation') {
     const title = isAr ? 'تحول تجربة المستخدم' : 'Experience Transformation';
     const description = isAr
-      ? 'الارتقاء بالتطلعات عبر تصميم مستقبلي متمحور حول الإنسان، وأنظمة تصميم موحدة، ورحلات عملاء متكاملة عبر كافة القنوات بواسطة بيرسيكي.'
+      ? 'الارتقاء بالتطلعات عبر تصميم مستقبلي متمحور حول الإنسان، وأنظمة تصميم موحدة، ورحلات عملاء متكاملة عبر كافة القنوات بواسطة بيرسيشي.'
       : 'Elevating expectations through future-ready, human-centered design, enterprise design systems, and omnichannel journey transformation by Persici.';
     return createMetadata({
       title: `${title} — Persici Agency`,

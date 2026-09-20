@@ -107,7 +107,7 @@ export function DigitalEngineeringView({
         stories={data.clientStories}
         sectionBadge={isRtl ? 'قصص النجاح المميزة' : 'Featured Client Stories'}
         sectionTitle={isRtl ? 'هندسة برمجية تحويلية وأنظمة سحابية فائقة الأداء' : 'Transformative Digital Engineering & Proven Scale'}
-        sectionSubtitle={isRtl ? 'اكتشف كيف ساهمت استراتيجيات بيرسيكي الهندسية في تحديث النظم الحيوية ومضاعفة سرعة التسليم للشركات الرائدة.' : 'See how event-driven distributed architectures and automated cloud platforms power mission-critical resilience across the region.'}
+        sectionSubtitle={isRtl ? 'اكتشف كيف ساهمت استراتيجيات بيرسيشي الهندسية في تحديث النظم الحيوية ومضاعفة سرعة التسليم للشركات الرائدة.' : 'See how event-driven distributed architectures and automated cloud platforms power mission-critical resilience across the region.'}
         lang={lang}
       />
 

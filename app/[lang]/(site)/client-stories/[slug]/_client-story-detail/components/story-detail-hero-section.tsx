@@ -37,7 +37,7 @@ export function StoryDetailHeroSection({ story, lang }: StoryDetailHeroSectionPr
           {/* Breadcrumbs */}
           <nav
             aria-label="Breadcrumb"
-            className="flex items-center gap-2 text-xs font-mono text-slate-500 mb-6 sm:mb-8"
+            className="flex items-center gap-2 text-xs font-mono rtl:font-primary text-slate-500 mb-6 sm:mb-8"
           >
             <Link
               href={`/${lang}`}
@@ -60,7 +60,7 @@ export function StoryDetailHeroSection({ story, lang }: StoryDetailHeroSectionPr
 
           {/* Badges */}
           <div className="flex flex-wrap items-center gap-2.5 mb-5 sm:mb-6">
-            <span className="inline-flex items-center rounded-full bg-persici-crimson/10 border border-persici-crimson/20 px-3.5 py-1 text-xs font-semibold uppercase tracking-wider text-persici-crimson">
+            <span className="inline-flex items-center rounded-full bg-persici-crimson/10 border border-persici-crimson/20 px-3.5 py-1 text-xs font-semibold uppercase tracking-wider rtl:tracking-normal rtl:normal-case text-persici-crimson">
               {category}
             </span>
             <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 border border-slate-200 px-3.5 py-1 text-xs font-medium text-slate-700">
@@ -70,7 +70,7 @@ export function StoryDetailHeroSection({ story, lang }: StoryDetailHeroSectionPr
           </div>
 
           {/* Headline */}
-          <h1 className="font-primary text-3xl font-black tracking-tight text-slate-900 sm:text-5xl lg:text-6xl sm:leading-[1.12]">
+          <h1 className="font-primary text-3xl font-medium tracking-tight rtl:tracking-normal text-slate-900 sm:text-5xl lg:text-6xl sm:leading-[1.12] rtl:leading-[1.25] rtl:sm:leading-[1.2]">
             {title}
           </h1>
 

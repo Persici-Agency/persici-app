@@ -111,7 +111,7 @@ export function MarketingCommunicationsView({ lang, dict }: MarketingCommunicati
         }
         sectionSubtitle={
           isRtl
-            ? 'اكتشف كيف ساهمت استراتيجيات بيرسيكي التسويقية في ترسيخ مكانة عملائنا ومضاعفة عوائدهم في السوق الخليجي.'
+            ? 'اكتشف كيف ساهمت استراتيجيات بيرسيشي التسويقية في ترسيخ مكانة عملائنا ومضاعفة عوائدهم في السوق الخليجي.'
             : 'Discover how we help ambitious brands cut through the market noise, build cultural resonance, and capture market share.'
         }
         lang={lang}

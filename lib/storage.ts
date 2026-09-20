@@ -212,3 +212,39 @@ export async function listFilesFromR2(prefix = '', maxKeys = 100): Promise<R2Fil
     lastModified: item.LastModified,
   }));
 }
+
+/**
+ * Uploads a document (PDF, DOC, DOCX) directly to Cloudflare R2 without image compression.
+ */
+export async function uploadDocumentToR2(
+  fileBuffer: Buffer,
+  originalFilename: string,
+  mimeType: string,
+  folder = 'resumes'
+): Promise<{ url: string; key: string; filename: string }> {
+  const s3 = getS3Client();
+  if (!s3) {
+    throw new Error('Cloudflare R2 is not configured. Please check your environment variables.');
+  }
+
+  const ext = path.extname(originalFilename);
+  const baseName = toSeoFilename(originalFilename);
+  const uniqueKey = `${folder}/${baseName}-${Date.now()}${ext}`;
+
+  const command = new PutObjectCommand({
+    Bucket: bucketName,
+    Key: uniqueKey,
+    Body: fileBuffer,
+    ContentType: mimeType,
+    CacheControl: 'private, max-age=31536000',
+  });
+
+  await s3.send(command);
+
+  return {
+    url: `${publicUrl}/${uniqueKey}`,
+    key: uniqueKey,
+    filename: path.basename(uniqueKey),
+  };
+}
+

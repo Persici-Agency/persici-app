@@ -26,19 +26,44 @@ const sizeStyles: Record<
   'xs' | 'sm' | 'md' | 'lg' | 'xl',
   { item: string; img: string; width: number; height: number }
 > = {
-  xs: { item: 'h-12 w-28 sm:w-32', img: 'max-h-8 sm:max-h-9 w-auto', width: 120, height: 40 },
-  sm: { item: 'h-16 w-36 sm:w-40', img: 'max-h-11 sm:max-h-12 w-auto', width: 150, height: 50 },
-  md: { item: 'h-20 sm:h-24 w-44 sm:w-52 lg:w-56', img: 'max-h-14 sm:max-h-16 lg:max-h-18 w-auto', width: 190, height: 70 },
-  lg: { item: 'h-24 sm:h-28 w-52 sm:w-60 lg:w-64', img: 'max-h-18 sm:max-h-20 lg:max-h-22 w-auto', width: 220, height: 85 },
-  xl: { item: 'h-28 sm:h-32 w-60 sm:w-72 lg:w-80', img: 'max-h-22 sm:max-h-24 lg:max-h-28 w-auto', width: 260, height: 100 },
+  xs: {
+    item: 'h-8 sm:h-9 w-auto',
+    img: 'h-6 sm:h-7 w-auto max-w-none',
+    width: 120,
+    height: 28,
+  },
+  sm: {
+    item: 'h-10 sm:h-12 w-auto',
+    img: 'h-7 sm:h-8 md:h-9 w-auto max-w-none',
+    width: 150,
+    height: 36,
+  },
+  md: {
+    item: 'h-12 sm:h-14 w-auto',
+    img: 'h-9 sm:h-10 md:h-11 w-auto max-w-none',
+    width: 180,
+    height: 44,
+  },
+  lg: {
+    item: 'h-16 sm:h-18 w-auto',
+    img: 'h-12 sm:h-14 md:h-16 w-auto max-w-none',
+    width: 220,
+    height: 56,
+  },
+  xl: {
+    item: 'h-20 sm:h-22 w-auto',
+    img: 'h-16 sm:h-18 md:h-20 w-auto max-w-none',
+    width: 260,
+    height: 72,
+  },
 };
 
 const gapStyles: Record<'xs' | 'sm' | 'md' | 'lg' | 'xl', string> = {
-  xs: 'gap-3 sm:gap-4 lg:gap-6 pr-3 sm:pr-4 lg:pr-6',
-  sm: 'gap-4 sm:gap-6 lg:gap-8 pr-4 sm:pr-6 lg:pr-8',
-  md: 'gap-6 sm:gap-8 lg:gap-10 pr-6 sm:pr-8 lg:pr-10',
-  lg: 'gap-8 sm:gap-10 lg:gap-14 pr-8 sm:pr-10 lg:pr-14',
-  xl: 'gap-10 sm:gap-14 lg:gap-18 pr-10 sm:pr-14 lg:pr-18',
+  xs: 'gap-6 sm:gap-8 md:gap-10 pr-6 sm:pr-8 md:pr-10',
+  sm: 'gap-8 sm:gap-10 md:gap-12 pr-8 sm:pr-10 md:pr-12',
+  md: 'gap-10 sm:gap-12 md:gap-16 pr-10 sm:pr-12 md:pr-16',
+  lg: 'gap-12 sm:gap-16 md:gap-20 pr-12 sm:pr-16 md:pr-20',
+  xl: 'gap-14 sm:gap-18 md:gap-24 pr-14 sm:pr-18 md:pr-24',
 };
 
 function getSpeedPixelsPerSecond(speed: SwiperSpeed = 'normal'): number {
@@ -76,11 +101,11 @@ export function SwiperWrapper<T = unknown>({
   stopOnDrag = true,
   enableMomentum = true,
   friction = 0.94,
-  gap = 'md',
+  gap = 'xs',
   space,
   infiniteLoop = true,
   fadeMask = true,
-  fadeWidthClass = 'w-20 sm:w-36 md:w-52',
+  fadeWidthClass = 'w-16 sm:w-28 md:w-36',
   fadeGradientClass,
   className,
   trackClassName,
@@ -88,8 +113,13 @@ export function SwiperWrapper<T = unknown>({
   title,
   titleClassName,
   showTitle = true,
-  logoSize = 'md',
+  logoSize = 'sm',
+  logoHeight,
+  imageHeight,
   logoClassName,
+  logoWhiteAndBlackColor = false,
+  hoverOnRealColor = false,
+  loopClassName,
 }: SwiperWrapperProps<T>) {
   const isLogoMode = !children && !(data && data.length > 0 && renderItem);
   const effectiveLogos = isLogoMode ? (logos || getClientLogos()) : [];
@@ -142,10 +172,17 @@ export function SwiperWrapper<T = unknown>({
     ? gapStyles[effectiveGap as keyof typeof gapStyles] || gapStyles.md
     : '';
 
-  const isNumericSize = typeof logoSize === 'number';
-  const currentSizeConfig = isNumericSize
-    ? null
-    : sizeStyles[logoSize as keyof typeof sizeStyles] || sizeStyles.md;
+  const effectiveLogoHeight = logoHeight ?? imageHeight ?? (typeof logoSize === 'number' ? logoSize : undefined);
+  const isCustomHeight = effectiveLogoHeight !== undefined && effectiveLogoHeight !== null;
+  const heightStyleValue = isCustomHeight
+    ? typeof effectiveLogoHeight === 'number'
+      ? `${effectiveLogoHeight}px`
+      : effectiveLogoHeight
+    : undefined;
+
+  const currentSizeConfig = !isCustomHeight
+    ? sizeStyles[logoSize as keyof typeof sizeStyles] || sizeStyles.sm
+    : null;
 
   // Calculate base speed in pixels/sec with RTL awareness
   const getBaseVelocity = useCallback((): number => {
@@ -350,14 +387,14 @@ export function SwiperWrapper<T = unknown>({
         <div
           key={`logo-${loopIndex}-${client.name}-${idx}`}
           className={cn(
-            'group flex items-center justify-center transition-all duration-300 hover:scale-105',
-            !isNumericSize && currentSizeConfig?.item,
+            'group flex shrink-0 items-center justify-center transition-all duration-300 hover:scale-105',
+            !isCustomHeight && currentSizeConfig?.item,
             logoClassName,
             itemClassName
           )}
           style={
-            isNumericSize
-              ? { height: `${logoSize}px`, width: `${(logoSize as number) * 3}px` }
+            isCustomHeight
+              ? { height: heightStyleValue }
               : undefined
           }
           title={client.name}
@@ -365,13 +402,22 @@ export function SwiperWrapper<T = unknown>({
           <Image
             src={client.src}
             alt={client.name}
-            width={currentSizeConfig?.width || 190}
-            height={currentSizeConfig?.height || 70}
+            width={currentSizeConfig?.width || 200}
+            height={typeof effectiveLogoHeight === 'number' ? effectiveLogoHeight : (currentSizeConfig?.height || 45)}
             className={cn(
-              'object-contain opacity-65 grayscale contrast-125 transition-all duration-300 group-hover:opacity-100 group-hover:grayscale-0',
-              !isNumericSize && currentSizeConfig?.img
+              'object-contain transition-all duration-300 w-auto max-w-none',
+              logoWhiteAndBlackColor
+                ? cn(
+                  'opacity-65 grayscale contrast-125 group-hover:opacity-100',
+                  hoverOnRealColor && 'group-hover:grayscale-0'
+                )
+                : 'opacity-90 group-hover:opacity-100',
+              !isCustomHeight && currentSizeConfig?.img
             )}
-            style={isNumericSize ? { maxHeight: `${logoSize}px`, width: 'auto' } : undefined}
+            style={{
+              height: isCustomHeight ? heightStyleValue : undefined,
+              width: 'auto',
+            }}
           />
         </div>
       ));
@@ -412,7 +458,8 @@ export function SwiperWrapper<T = unknown>({
           className={cn(
             'relative w-full overflow-hidden touch-pan-y select-none',
             draggable ? (isDraggingState ? 'cursor-grabbing' : 'cursor-grab') : '',
-            fadeMask && '[mask-image:linear-gradient(to_right,transparent_0%,black_8%,black_92%,transparent_100%)]'
+            fadeMask && '[mask-image:linear-gradient(to_right,transparent_0%,black_8%,black_92%,transparent_100%)]',
+            loopClassName
           )}
         >
           <div
@@ -424,7 +471,7 @@ export function SwiperWrapper<T = unknown>({
             {/* Loop 1 (Primary measurement track) */}
             <div
               ref={loop1Ref}
-              className={cn('flex shrink-0 items-center justify-around', gapClass)}
+              className={cn('flex shrink-0 items-center', gapClass)}
               style={isNumericGap ? { gap: `${effectiveGap}px`, paddingRight: `${effectiveGap}px` } : undefined}
             >
               {renderTrackItems(1)}
@@ -432,7 +479,7 @@ export function SwiperWrapper<T = unknown>({
 
             {/* Loop 2 (Seamless loop replica) */}
             <div
-              className={cn('flex shrink-0 items-center justify-around', gapClass)}
+              className={cn('flex shrink-0 items-center', gapClass)}
               style={isNumericGap ? { gap: `${effectiveGap}px`, paddingRight: `${effectiveGap}px` } : undefined}
               aria-hidden="true"
             >
@@ -441,7 +488,7 @@ export function SwiperWrapper<T = unknown>({
 
             {/* Loop 3 (Extended buffer for wide monitors & RTL right-scroll) */}
             <div
-              className={cn('flex shrink-0 items-center justify-around', gapClass)}
+              className={cn('flex shrink-0 items-center', gapClass)}
               style={isNumericGap ? { gap: `${effectiveGap}px`, paddingRight: `${effectiveGap}px` } : undefined}
               aria-hidden="true"
             >
@@ -450,7 +497,7 @@ export function SwiperWrapper<T = unknown>({
 
             {/* Loop 4 (Extended buffer for ultra-wide monitors) */}
             <div
-              className={cn('flex shrink-0 items-center justify-around', gapClass)}
+              className={cn('flex shrink-0 items-center', gapClass)}
               style={isNumericGap ? { gap: `${effectiveGap}px`, paddingRight: `${effectiveGap}px` } : undefined}
               aria-hidden="true"
             >
@@ -502,23 +549,32 @@ export function SwiperWrapper<T = unknown>({
                   key={`logo-static-${client.name}-${idx}`}
                   className={cn(
                     'group flex items-center justify-center p-2 transition-all duration-300 hover:scale-105',
-                    !isNumericSize && currentSizeConfig?.item,
+                    !isCustomHeight && currentSizeConfig?.item,
                     logoClassName,
                     itemClassName
                   )}
-                  style={isNumericSize ? { height: `${logoSize}px` } : undefined}
+                  style={isCustomHeight ? { height: heightStyleValue } : undefined}
                   title={client.name}
                 >
                   <Image
                     src={client.src}
                     alt={client.name}
                     width={currentSizeConfig?.width || 190}
-                    height={currentSizeConfig?.height || 70}
+                    height={typeof effectiveLogoHeight === 'number' ? effectiveLogoHeight : (currentSizeConfig?.height || 70)}
                     className={cn(
-                      'object-contain opacity-65 grayscale contrast-125 transition-all duration-300 group-hover:opacity-100 group-hover:grayscale-0',
-                      !isNumericSize && currentSizeConfig?.img
+                      'object-contain transition-all duration-300 w-auto max-w-none',
+                      logoWhiteAndBlackColor
+                        ? cn(
+                          'opacity-65 grayscale contrast-125 group-hover:opacity-100',
+                          hoverOnRealColor && 'group-hover:grayscale-0'
+                        )
+                        : 'opacity-90 group-hover:opacity-100 group-hover:grayscale-0',
+                      !isCustomHeight && currentSizeConfig?.img
                     )}
-                    style={isNumericSize ? { maxHeight: `${logoSize}px`, width: 'auto' } : undefined}
+                    style={{
+                      height: isCustomHeight ? heightStyleValue : undefined,
+                      width: 'auto',
+                    }}
                   />
                 </div>
               ))}

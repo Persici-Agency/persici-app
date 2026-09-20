@@ -1,17 +1,18 @@
-import type { Dictionary } from '@dictionaries';
+﻿import type { Dictionary } from '@dictionaries';
 import { VideoPreviewModal } from './video-modal';
 import { DarkTestimonialCard } from './dark-testimonial-card';
-import { sectionContainer, sectionPaddingY, FadeUp, sectionHeading, sectionPaddingBottom } from '@shared';
+import { sectionContainer, sectionPaddingY, FadeUp, sectionHeading, sectionPaddingBottom, cn } from '@shared';
 
 export type PartnerShowcaseSectionProps = {
   dict: Dictionary;
+  className?: string;
 };
 
-export function PartnerShowcaseSection({ dict }: PartnerShowcaseSectionProps) {
+export function PartnerShowcaseSection({ dict, className }: PartnerShowcaseSectionProps) {
   return (
-    <section className={`${sectionContainer} ${sectionPaddingBottom}`}>
+    <section className={cn(`${sectionContainer} ${sectionPaddingBottom}`, className)}>
       <FadeUp delay={0} duration={750} distance={20}>
-        <h2 className={sectionHeading + ` text-center font-bold`}>
+        <h2 className={sectionHeading + ` text-center font-medium`}>
           {dict.partnerShowcase.title}
         </h2>
       </FadeUp>

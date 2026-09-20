@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import type { SolutionsPageContent } from '@shared/types';
 import { sectionContainer } from '@shared/constants';
 import { FadeUp } from '@shared';
@@ -10,6 +11,12 @@ export interface ClientReviewSectionProps {
   quoteText?: string | { en: string; ar: string };
   quoteAuthor?: string;
   quoteRole?: string | { en: string; ar: string };
+  quoteAvatar?: string;
+  avatar?: string;
+  avatarClassName?: string;
+  avatarImageClassName?: string;
+  authorClassName?: string;
+  roleClassName?: string;
   badge?: string | { en: string; ar: string };
   lang: string;
   className?: string;
@@ -26,11 +33,19 @@ export function ClientReviewSection({
   quoteText,
   quoteAuthor,
   quoteRole,
+  quoteAvatar,
+  avatar: propAvatar,
+  avatarClassName,
+  avatarImageClassName,
+  authorClassName,
+  roleClassName,
   badge,
   lang,
   className,
 }: ClientReviewSectionProps) {
   const isRtl = lang === 'ar';
+
+  const avatar = quoteAvatar || propAvatar || '';
 
   const rawQuote =
     (typeof quoteText === 'string'
@@ -65,7 +80,7 @@ export function ClientReviewSection({
       <div className={sectionContainer}>
         <FadeUp delay={0} duration={800} distance={24} className="max-w-5xl mx-auto">
           {/* Subtitle / Eyebrow (No background, brand primary color distinct from heading) */}
-          <span className="text-xs font-bold uppercase tracking-widest text-persici-crimson block mb-6">
+          <span className="text-xs font-semibold uppercase tracking-widest text-persici-crimson block mb-6">
             {badgeText}
           </span>
 
@@ -74,19 +89,47 @@ export function ClientReviewSection({
             &ldquo;{cleanQuoteText}&rdquo;
           </blockquote>
 
-          {/* Author Details */}
+          {/* Author Details with optional Avatar beside it */}
           {(author || role) && (
-            <div className="mt-8 pt-4 text-left rtl:text-right">
-              {author && (
-                <div className="font-semibold text-slate-900 text-sm">
-                  {author}
+            <div className="mt-8 pt-4 text-left rtl:text-right flex items-center gap-4 sm:gap-5">
+              {avatar && (
+                <div
+                  className={`relative rounded-full overflow-hidden shrink-0 border border-slate-200/80 shadow-xs ${
+                    avatarClassName || 'w-10 h-10 sm:w-11 sm:h-11'
+                  }`}
+                >
+                  <Image
+                    src={avatar}
+                    alt={author || 'Author'}
+                    fill
+                    className={`object-cover ${avatarImageClassName || ''}`}
+                    sizes="(max-width: 640px) 72px, 96px"
+                  />
                 </div>
               )}
-              {role && (
-                <div className="text-xs text-slate-500 mt-1">
-                  {role}
-                </div>
-              )}
+              <div>
+                {author && (
+                  <div
+                    className={
+                      authorClassName ||
+                      'font-semibold text-slate-900 text-sm sm:text-[13px] flex items-center gap-1.5'
+                    }
+                  >
+                    <span className="text-slate-400 font-normal">—</span>
+                    <span>{author}</span>
+                  </div>
+                )}
+                {role && (
+                  <div
+                    className={
+                      roleClassName ||
+                      'text-xs sm:text-[12px] text-slate-500 mt-0.5'
+                    }
+                  >
+                    {role}
+                  </div>
+                )}
+              </div>
             </div>
           )}
         </FadeUp>

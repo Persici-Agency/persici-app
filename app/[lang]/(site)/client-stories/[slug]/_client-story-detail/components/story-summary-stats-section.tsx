@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState } from 'react';
 import Image from 'next/image';
@@ -71,7 +71,7 @@ export function StorySummaryStatsSection({ story, lang }: StorySummaryStatsSecti
                     const label = metric.label[lang as 'en' | 'ar'] || metric.label.en;
                     return (
                       <div key={idx} className="flex flex-col">
-                        <div className="font-primary text-3xl sm:text-4xl lg:text-[2.6rem] font-bold text-slate-900 tracking-tight leading-none">
+                        <div className="font-primary text-3xl sm:text-4xl lg:text-[2.6rem] font-semibold text-slate-900 tracking-tight leading-none">
                           <CountUp value={metric.value} />
                         </div>
                         <span className="mt-2 text-xs sm:text-sm font-normal text-slate-600 leading-snug max-w-[150px]">

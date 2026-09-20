@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import type { ClientStoryDetail } from '../../../_client-stories/types';
 import { ClientStoriesCard } from '../../../_client-stories/components/client-stories-card';
 import { ClientStoryMinimalCard } from '../../../_client-stories/components/client-story-minimal-card';
@@ -22,15 +22,15 @@ export function StoryRelatedStories({ relatedStories, lang }: StoryRelatedStorie
       <div className={sectionContainer}>
         {/* Heading */}
         <div className="max-w-2xl mb-10 sm:mb-12">
-          <span className="font-mono text-xs font-bold uppercase tracking-wider text-persici-crimson mb-2 block">
+          <span className="font-mono text-xs font-semibold uppercase tracking-wider text-persici-crimson mb-2 block">
             {isRtl ? 'مشاريع وأعمال مماثلة' : 'More Client Stories'}
           </span>
-          <h2 className="font-primary text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight">
+          <h2 className="font-primary text-2xl sm:text-3xl lg:text-4xl font-medium text-slate-900 tracking-tight">
             {isRtl ? 'قصص نجاح وشراكات أخرى ملهمة' : 'Related Client Stories'}
           </h2>
           <p className="mt-3 text-base text-slate-600">
             {isRtl
-              ? 'اكتشف كيف ساهمت بيرسيكي في تمكين علامات رائدة أخرى في مختلف القطاعات'
+              ? 'اكتشف كيف ساهمت بيرسيشي في تمكين علامات رائدة أخرى في مختلف القطاعات'
               : 'Discover how Persici has powered growth and transformation across key industries'}
           </p>
         </div>

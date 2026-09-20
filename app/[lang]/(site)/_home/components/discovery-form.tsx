@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { TbChevronDown } from 'react-icons/tb';
 import type { Dictionary } from '@dictionaries';
 import { HomeButton } from '@shared/components/home-button';
 import { getHomeDiscoveryRevenueOptions } from '../services';
@@ -36,7 +37,7 @@ export function DiscoveryCallForm({ dict }: { dict: Dictionary }) {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
           </svg>
         </div>
-        <h4 className="mt-4 font-primary text-xl font-bold text-foreground">
+        <h4 className="mt-4 font-primary text-xl font-medium text-foreground">
           {dict.discovery.form.successTitle}
         </h4>
         <p className="mt-2 text-sm text-foreground/70">
@@ -57,10 +58,10 @@ export function DiscoveryCallForm({ dict }: { dict: Dictionary }) {
     <div className="rounded-3xl border border-black/10 bg-white p-6 shadow-xl sm:p-8">
       <div className="mb-6 flex items-center justify-between border-b border-black/5 pb-4">
         <div>
-          <span className="inline-block rounded-full bg-persici-crimson/10 px-3 py-1 text-[11px] font-semibold text-persici-crimson">
+          <span className="inline-block rounded-full bg-persici-crimson/10 px-3 py-1 text-[9.5px] font-semibold text-persici-crimson">
             {dict.discovery.form.badge}
           </span>
-          <h3 className="mt-2 font-primary text-lg font-bold text-foreground">
+          <h3 className="mt-2 font-primary text-lg font-medium text-foreground">
             {dict.discovery.form.title}
           </h3>
           <p className="text-xs text-foreground/60">
@@ -131,17 +132,22 @@ export function DiscoveryCallForm({ dict }: { dict: Dictionary }) {
           <label className="block text-xs font-medium text-foreground/80">
             {dict.discovery.form.revenue}
           </label>
-          <select
-            value={formData.revenue}
-            onChange={(e) => setFormData({ ...formData, revenue: e.target.value })}
-            className="mt-1 w-full rounded-xl border border-black/10 bg-black/[0.02] px-3.5 py-2.5 text-xs text-foreground outline-none transition-all focus:border-persici-crimson focus:bg-white focus:ring-2 focus:ring-persici-crimson/20"
-          >
-            {revenueOptions.map((opt) => (
-              <option key={opt.value} value={opt.value}>
-                {dict.discovery.form[opt.labelKey as keyof typeof dict.discovery.form] || opt.label}
-              </option>
-            ))}
-          </select>
+          <div className="relative mt-1">
+            <select
+              value={formData.revenue}
+              onChange={(e) => setFormData({ ...formData, revenue: e.target.value })}
+              className="w-full appearance-none rounded-xl border border-black/10 bg-black/[0.02] ps-3.5 pe-11 py-2.5 text-xs text-foreground outline-none transition-all focus:border-persici-crimson focus:bg-white focus:ring-2 focus:ring-persici-crimson/20 cursor-pointer"
+            >
+              {revenueOptions.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {dict.discovery.form[opt.labelKey as keyof typeof dict.discovery.form] || opt.label}
+                </option>
+              ))}
+            </select>
+            <div className="pointer-events-none absolute inset-y-0 end-0 flex items-center pe-4 text-foreground/50">
+              <TbChevronDown className="h-4 w-4" />
+            </div>
+          </div>
         </div>
 
         <HomeButton

@@ -148,7 +148,7 @@ export function TelecomMediaTechnologyView({ lang, dict }: TelecomMediaTechnolog
           }
           sectionSubtitle={
             isRtl
-              ? 'اكتشف كيف ساهمت معماريات بيرسيكي في أتمتة عمليات المشتركين وتقديم حلول سحابية فائقة الموثوقية.'
+              ? 'اكتشف كيف ساهمت معماريات بيرسيشي في أتمتة عمليات المشتركين وتقديم حلول سحابية فائقة الموثوقية.'
               : 'Explore how our cloud-native platforms, AI copilots, and real-time streaming engines power leading operators.'
           }
           lang={lang}

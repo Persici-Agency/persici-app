@@ -209,7 +209,7 @@ export const experienceTransformationData = {
   quote: {
     text: {
       en: 'Persici rebuilt our customer onboarding and mobile app from scratch. Our CSAT score jumped from 72% to 94%, and mobile checkout conversion increased by 48% within 90 days.',
-      ar: 'أعادت بيرسيكي تصميم مسار انضمام العملاء وتطبيق الجوال كلياً. قفز مؤشر رضا العملاء (CSAT) من 72% إلى 94%، وارتفع معدل إتمام الشراء عبر الجوال بنسبة 48% خلال 90 يوماً.',
+      ar: 'أعادت بيرسيشي تصميم مسار انضمام العملاء وتطبيق الجوال كلياً. قفز مؤشر رضا العملاء (CSAT) من 72% إلى 94%، وارتفع معدل إتمام الشراء عبر الجوال بنسبة 48% خلال 90 يوماً.',
     },
     author: 'Reem Al-Hassan',
     role: {

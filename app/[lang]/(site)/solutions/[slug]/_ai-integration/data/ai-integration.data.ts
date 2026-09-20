@@ -335,7 +335,7 @@ export const aiIntegrationData: AiIntegrationData = {
     },
     text: {
       en: 'Most enterprise AI initiatives fail because they treat large language models as standalone chatbots rather than deep system integrations. At Persici, we engineer production AI as an architectural layer — grounding foundation models in your proprietary data pipelines, enforcing deterministic guardrails to eliminate hallucinations, and integrating directly with existing ERPs, CRMs, and core databases. Our solutions prioritize data sovereignty, local GCC cloud compliance (Saudi NDMO and UAE AI ethics), sub-second inference latency, and measurable ROI. Whether automating high-volume document workflows or building autonomous agentic loops, we turn artificial intelligence into a reliable, secure, and compounding growth engine.',
-      ar: 'تفشل معظم مبادرات الذكاء الاصطناعي في المؤسسات لأنها تتعامل مع النماذج كأدوات محادثة معزولة بدلاً من دمجها في صميم الأنظمة البرمجية. في بيرسيكي، نهندس الذكاء الاصطناعي كطبقة معمارية حيوية، ونربط النماذج ببيانات مؤسستك الخاصة، ونطبق حواجز حماية صارمة لمنع الهلوسة، مع التكامل المباشر مع قواعد البيانات وأنظمة ERP و CRM. نضع في مقدمة أولوياتنا سيادة البيانات، والامتثال للوائح الخليجية (سدايا وضوابط الإمارات)، مع تحقيق زمن استجابة سريع وعائد استثماري ملموس يضاعف الكفاءة التشغيلية.',
+      ar: 'تفشل معظم مبادرات الذكاء الاصطناعي في المؤسسات لأنها تتعامل مع النماذج كأدوات محادثة معزولة بدلاً من دمجها في صميم الأنظمة البرمجية. في بيرسيشي، نهندس الذكاء الاصطناعي كطبقة معمارية حيوية، ونربط النماذج ببيانات مؤسستك الخاصة، ونطبق حواجز حماية صارمة لمنع الهلوسة، مع التكامل المباشر مع قواعد البيانات وأنظمة ERP و CRM. نضع في مقدمة أولوياتنا سيادة البيانات، والامتثال للوائح الخليجية (سدايا وضوابط الإمارات)، مع تحقيق زمن استجابة سريع وعائد استثماري ملموس يضاعف الكفاءة التشغيلية.',
     },
     image: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1200&q=85',
     metric1Val: '85%+',
@@ -353,7 +353,7 @@ export const aiIntegrationData: AiIntegrationData = {
   benefitsStrip: {
     title: {
       en: 'Strategic Advantages of Persici AI Engineering',
-      ar: 'المزايا الاستراتيجية لمعمارية الذكاء الاصطناعي في بيرسيكي',
+      ar: 'المزايا الاستراتيجية لمعمارية الذكاء الاصطناعي في بيرسيشي',
     },
     image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1600&q=85',
     benefits: [
@@ -753,7 +753,7 @@ export const aiIntegrationData: AiIntegrationData = {
   clientReview: {
     quote: {
       en: 'Persici transformed our institutional research operations. Instead of waiting days for analysts to manually digest complex regulatory filings and financial disclosures, our teams now interact with a secure, sovereign AI copilot that synthesizes millions of data points in seconds with zero hallucination. It is by far the highest-ROI technology initiative we have executed this decade.',
-      ar: 'أحدثت بيرسيكي نقلة نوعية حقيقية في كفاءة أبحاثنا الاستثمارية. بدلاً من انتظار أيام لتحليل التقارير المالية والوثائق النظامية المعقدة، أصبح لدى فرقنا وكيل ذكاء اصطناعي سيادي وآمن يلخص ملايين المتغيرات في ثوانٍ معدودة بدقة مطلقة. إنها بلا شك المبادرة التقنية الأعلى عائداً على الاستثمار لمؤسستنا.',
+      ar: 'أحدثت بيرسيشي نقلة نوعية حقيقية في كفاءة أبحاثنا الاستثمارية. بدلاً من انتظار أيام لتحليل التقارير المالية والوثائق النظامية المعقدة، أصبح لدى فرقنا وكيل ذكاء اصطناعي سيادي وآمن يلخص ملايين المتغيرات في ثوانٍ معدودة بدقة مطلقة. إنها بلا شك المبادرة التقنية الأعلى عائداً على الاستثمار لمؤسستنا.',
     },
     author: 'Dr. Tariq Al-Mansoor',
     role: {
@@ -782,7 +782,7 @@ export const aiIntegrationData: AiIntegrationData = {
       },
       answer: {
         en: 'Never. All AI solutions designed by Persici enforce strict zero-data-retention agreements. For clients with high security or sovereignty mandates, we deploy entirely within your private VPC (AWS, Azure, Google Cloud GCC regions) or on air-gapped on-premise hardware using fine-tuned open-weight models (like LLaMA 3.1 or Mistral). Your proprietary data never leaves your perimeter and is strictly excluded from any public model training loops.',
-        ar: 'مستحيل تماماً. تلتزم بيرسيكي باتفاقيات صارمة لعدم الاحتفاظ بالبيانات. وللجهات ذات المتطلبات الأمنية والسيادية العالية، ننشر الحلول بالكامل داخل شبكاتك السحابية الخاصة (مراكز بيانات الخليج) أو على خوادم محلية معزولة باستخدام نماذج مفتوحة المصدر مدربة خصيصاً لك، مما يضمن بقاء بياناتك تحت سيطرتك الكاملة دون أي مشاركة مع أطراف خارجية.',
+        ar: 'مستحيل تماماً. تلتزم بيرسيشي باتفاقيات صارمة لعدم الاحتفاظ بالبيانات. وللجهات ذات المتطلبات الأمنية والسيادية العالية، ننشر الحلول بالكامل داخل شبكاتك السحابية الخاصة (مراكز بيانات الخليج) أو على خوادم محلية معزولة باستخدام نماذج مفتوحة المصدر مدربة خصيصاً لك، مما يضمن بقاء بياناتك تحت سيطرتك الكاملة دون أي مشاركة مع أطراف خارجية.',
       },
     },
     {

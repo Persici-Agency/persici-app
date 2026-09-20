@@ -17,7 +17,7 @@ export function HomeView({ lang, dict }: HomeViewProps) {
   return (
     <div className="relative overflow-hidden">
       {/* 1. Hero Section */}
-      <HeroSection lang={lang} dict={dict} />
+      <HeroSection lang={lang} dict={dict} className='' />
 
       {/* 2. Featured Showcase ("Your online growth partner") */}
       <PartnerShowcaseSection dict={dict} />

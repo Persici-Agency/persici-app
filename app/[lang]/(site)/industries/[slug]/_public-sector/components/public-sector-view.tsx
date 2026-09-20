@@ -148,7 +148,7 @@ export function PublicSectorView({ lang, dict }: PublicSectorViewProps) {
           }
           sectionSubtitle={
             isRtl
-              ? 'اكتشف كيف ساهمت معماريات بيرسيكي في تسريع المعاملات الحكومية وبناء بنية رقمية وطنية آمنة.'
+              ? 'اكتشف كيف ساهمت معماريات بيرسيشي في تسريع المعاملات الحكومية وبناء بنية رقمية وطنية آمنة.'
               : 'Explore how our sovereign cloud foundations, citizen portals, and automated workflow engines transform public services.'
           }
           lang={lang}

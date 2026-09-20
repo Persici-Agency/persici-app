@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
@@ -67,8 +67,8 @@ export function ClientStoryMinimalCard({
     if (!element) return;
 
     if (typeof IntersectionObserver === 'undefined') {
-      setIsVisible(true);
-      return;
+      const timer = setTimeout(() => setIsVisible(true), 0);
+      return () => clearTimeout(timer);
     }
 
     const observer = new IntersectionObserver(
@@ -177,7 +177,7 @@ export function ClientStoryMinimalCard({
         <div className="relative z-10 flex flex-col justify-between h-full">
           {/* Top Section: Title */}
           <div className="pt-1">
-            <h3 className="font-primary text-xl sm:text-2xl font-bold tracking-tight text-slate-900 group-hover:text-white transition-colors duration-300 leading-snug line-clamp-3">
+            <h3 className="font-primary text-xl sm:text-2xl font-medium tracking-tight text-slate-900 group-hover:text-white transition-colors duration-300 leading-snug line-clamp-3">
               {title}
             </h3>
           </div>
@@ -188,7 +188,7 @@ export function ClientStoryMinimalCard({
             <div className="w-full border-t border-slate-300/80 group-hover:border-white/25 transition-colors duration-300 mb-4 sm:mb-4.5" />
 
             {/* Bottom Row: Icon + "Client Story" on start, Full Date on end with space between */}
-            <div className="flex items-center justify-between font-mono text-xs sm:text-[13px] tracking-wide text-slate-700 group-hover:text-white transition-colors duration-300">
+            <div className="flex items-center justify-between font-mono text-xs sm:text-[12px] tracking-wide text-slate-700 group-hover:text-white transition-colors duration-300">
               {/* Start: Person Icon + "Client Story" */}
               <div className="flex items-center gap-2 font-medium">
                 <svg

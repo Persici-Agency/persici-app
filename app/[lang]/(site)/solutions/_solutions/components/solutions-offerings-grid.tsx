@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState } from 'react';
 import Link from 'next/link';
@@ -29,7 +29,7 @@ export function SolutionsOfferingsGrid({
       <div className={sectionContainer}>
         {/* Section Header with FadeUp */}
         <FadeUp delay={0} duration={700} distance={20} className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
-          <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900">
+          <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-slate-900">
             {title}
           </h2>
           <p className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed">
@@ -62,7 +62,7 @@ export function SolutionsOfferingsGrid({
                     {/* Top: Tag + Custom Icon from public/icons/solutions/ */}
                     <div>
                       <div className="flex items-center justify-between gap-2 mb-3">
-                        <span className="text-[10px] font-semibold tracking-wider uppercase text-slate-400">
+                        <span className="text-[9.5px] font-semibold tracking-wider uppercase text-slate-400">
                           {itemTag}
                         </span>
                         {item.icon && (
@@ -84,7 +84,7 @@ export function SolutionsOfferingsGrid({
                         )}
                       </div>
 
-                      <h3 className="font-primary text-base sm:text-lg font-bold text-slate-900 transition-colors group-hover:text-persici-crimson leading-snug">
+                      <h3 className="font-primary text-base sm:text-lg font-medium text-slate-900 transition-colors group-hover:text-persici-crimson leading-snug">
                         {itemTitle}
                       </h3>
                     </div>
@@ -102,14 +102,14 @@ export function SolutionsOfferingsGrid({
 
                     {/* Bottom: Description + Kinetic Link */}
                     <div>
-                      <p className="text-xs sm:text-[13px] leading-relaxed text-slate-600 line-clamp-3 mb-5">
+                      <p className="text-xs sm:text-[12px] leading-relaxed text-slate-600 line-clamp-3 mb-5">
                         {itemDesc}
                       </p>
 
                       <div className="pt-3 border-t border-persici-black/5">
                         <Link
                           href={detailHref}
-                          className="group/link inline-flex items-center gap-1.5 text-xs font-bold text-slate-900 transition-colors hover:text-persici-crimson"
+                          className="group/link inline-flex items-center gap-1.5 text-xs font-semibold text-slate-900 transition-colors hover:text-persici-crimson"
                         >
                           <span
                             className={`relative py-0.5 after:absolute after:bottom-0 after:h-[1.5px] after:w-full after:scale-x-0 after:bg-current after:transition-transform after:duration-300 after:ease-in-out group-hover/link:after:scale-x-100 ${

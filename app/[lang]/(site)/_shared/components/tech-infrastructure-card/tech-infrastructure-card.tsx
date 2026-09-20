@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 
@@ -33,10 +33,10 @@ export function TechInfrastructureCard({
         {/* Header */}
         {headerLayout === 'split' ? (
           <div className="flex items-center justify-between gap-3 mb-4">
-            <h3 className="font-primary text-xl sm:text-2xl font-bold text-white">
+            <h3 className="font-primary text-xl sm:text-2xl font-medium text-white">
               {title}
             </h3>
-            <span className="text-[11px] font-mono font-medium text-persici-crimson bg-persici-crimson/10 border border-persici-crimson/20 px-2.5 py-0.5 rounded-full shrink-0">
+            <span className="text-[9.5px] font-mono font-medium text-persici-crimson bg-persici-crimson/10 border border-persici-crimson/20 px-2.5 py-0.5 rounded-full shrink-0">
               {badge}
             </span>
           </div>
@@ -48,18 +48,18 @@ export function TechInfrastructureCard({
                   <Icon className="h-6 w-6" />
                 </div>
               ) : (
-                <span className="text-[11px] font-mono font-medium text-persici-crimson bg-persici-crimson/10 border border-persici-crimson/20 px-2.5 py-0.5 rounded-full">
+                <span className="text-[9.5px] font-mono font-medium text-persici-crimson bg-persici-crimson/10 border border-persici-crimson/20 px-2.5 py-0.5 rounded-full">
                   {badge}
                 </span>
               )}
               {Icon && (
-                <span className="text-[11px] font-mono font-medium text-persici-crimson bg-persici-crimson/10 border border-persici-crimson/20 px-2.5 py-0.5 rounded-full">
+                <span className="text-[9.5px] font-mono font-medium text-persici-crimson bg-persici-crimson/10 border border-persici-crimson/20 px-2.5 py-0.5 rounded-full">
                   {badge}
                 </span>
               )}
             </div>
 
-            <h3 className="font-primary text-xl sm:text-2xl font-bold text-white mb-3">
+            <h3 className="font-primary text-xl sm:text-2xl font-medium text-white mb-3">
               {title}
             </h3>
           </>
@@ -84,13 +84,13 @@ export function TechInfrastructureCard({
                   {tech.name}
                 </span>
                 {tech.badge && (
-                  <span className="text-[10px] font-mono text-slate-400 bg-white/[0.06] px-1.5 py-0.5 rounded">
+                  <span className="text-[9.5px] font-mono text-slate-400 bg-white/[0.06] px-1.5 py-0.5 rounded">
                     {tech.badge}
                   </span>
                 )}
               </div>
               {tech.category && (
-                <span className="text-[11px] text-slate-500 mt-1">
+                <span className="text-[9.5px] text-slate-500 mt-1">
                   {tech.category}
                 </span>
               )}
@@ -108,7 +108,7 @@ export function TechInfrastructureCard({
                 <span className="h-1.5 w-1.5 rounded-full bg-persici-crimson shrink-0" />
                 <span>{tech.name}</span>
                 {tech.badge && (
-                  <span className="text-[10px] font-mono text-persici-crimson/90 bg-persici-crimson/15 px-1.5 py-0.5 rounded">
+                  <span className="text-[9.5px] font-mono text-persici-crimson/90 bg-persici-crimson/15 px-1.5 py-0.5 rounded">
                     {tech.badge}
                   </span>
                 )}

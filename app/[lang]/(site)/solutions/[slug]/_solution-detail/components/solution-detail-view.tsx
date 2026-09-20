@@ -1,5 +1,5 @@
 import React from 'react';
-import { FeaturedClientStories, FaqSection, ClientReviewSection } from '@shared';
+import { FeaturedClientStories, FaqSection, ClientReviewSection, getFeaturedStories } from '@shared';
 import type { Dictionary } from '@dictionaries';
 import type { SolutionOfferingItem } from '@shared/types';
 import { sectionContainer, sectionPaddingY } from '@shared/constants';
@@ -39,7 +39,7 @@ export function SolutionDetailView({ solution, lang, dict }: SolutionDetailViewP
                 className="h-28 w-28 sm:h-36 sm:w-36 drop-shadow-md"
               />
             </div>
-            <h3 className="font-primary text-xl font-bold text-slate-900 mb-2">
+            <h3 className="font-primary text-xl font-medium text-slate-900 mb-2">
               {title} Architecture
             </h3>
             <p className="text-xs sm:text-sm text-slate-500 max-w-xs mx-auto">
@@ -56,7 +56,7 @@ export function SolutionDetailView({ solution, lang, dict }: SolutionDetailViewP
       <section className={`${sectionPaddingY} bg-white border-y border-slate-100`}>
         <div className={sectionContainer}>
           <div className="max-w-3xl mx-auto text-center mb-12 sm:mb-16">
-            <h2 className="font-primary text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900">
+            <h2 className="font-primary text-3xl sm:text-4xl font-medium tracking-tight text-slate-900">
               {isRtl ? 'القيمة التجارية ومحركات النمو' : 'Commercial Value & Growth Drivers'}
             </h2>
             <p className="mt-4 text-base sm:text-lg text-slate-600">
@@ -69,7 +69,7 @@ export function SolutionDetailView({ solution, lang, dict }: SolutionDetailViewP
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="rounded-2xl border border-slate-200/80 bg-slate-50/50 p-7">
               <div className="h-1 w-12 rounded-full bg-persici-crimson mb-4" />
-              <h3 className="font-primary text-lg font-bold text-slate-900 mb-2">
+              <h3 className="font-primary text-lg font-medium text-slate-900 mb-2">
                 {isRtl ? '01. كفاءة تشغيلية مثبتة' : '01. Validated Operational Velocity'}
               </h3>
               <p className="text-sm leading-relaxed text-slate-600">
@@ -81,7 +81,7 @@ export function SolutionDetailView({ solution, lang, dict }: SolutionDetailViewP
 
             <div className="rounded-2xl border border-slate-200/80 bg-slate-50/50 p-7">
               <div className="h-1 w-12 rounded-full bg-persici-blush mb-4" />
-              <h3 className="font-primary text-lg font-bold text-slate-900 mb-2">
+              <h3 className="font-primary text-lg font-medium text-slate-900 mb-2">
                 {isRtl ? '02. تحسين هوامش الربح' : '02. Margin & LTV Maximization'}
               </h3>
               <p className="text-sm leading-relaxed text-slate-600">
@@ -93,7 +93,7 @@ export function SolutionDetailView({ solution, lang, dict }: SolutionDetailViewP
 
             <div className="rounded-2xl border border-slate-200/80 bg-slate-50/50 p-7">
               <div className="h-1 w-12 rounded-full bg-persici-black mb-4" />
-              <h3 className="font-primary text-lg font-bold text-slate-900 mb-2">
+              <h3 className="font-primary text-lg font-medium text-slate-900 mb-2">
                 {isRtl ? '03. تكامل مؤسسي سلس' : '03. Seamless Enterprise Integration'}
               </h3>
               <p className="text-sm leading-relaxed text-slate-600">
@@ -108,20 +108,14 @@ export function SolutionDetailView({ solution, lang, dict }: SolutionDetailViewP
 
       {/* 3. Reusable Featured Spotlight Story */}
       <FeaturedClientStories
-        badge={isRtl ? 'نتائج مثبتة في الميدان' : 'Proven Track Record'}
-        title={isRtl ? 'نمو قابل للقياس وأثر مباشر على الأرباح' : 'Measurable Growth With Direct Bottom-Line Impact'}
-        description={
+        stories={getFeaturedStories(['chopon', 'metal-fuze', 'lahfaa-perfumes'])}
+        sectionBadge={isRtl ? 'قصص النجاح المميزة' : 'Featured Client Stories'}
+        sectionTitle={isRtl ? 'نتائج مثبتة وأثر ملموس في السوق' : 'Measurable Growth & Proven Enterprise Impact'}
+        sectionSubtitle={
           isRtl
-            ? 'نحن لا نكتفي بتقديم التوصيات، بل نقود التنفيذ الهندسي والتسويقي المتكامل لضمان تفوق علامتك التجارية.'
-            : 'We partner directly with founders and leadership teams to architect, deploy, and scale high-growth engines with uncompromising quality.'
+            ? 'اكتشف كيف ساهمت حلول بيرسيشي في تحقيق طفرات تشغيلية وتسويقية لكبرى المؤسسات.'
+            : 'Explore how Persici engineering and strategy delivered compounding ROI for leading enterprises.'
         }
-        metric1Val="+340%"
-        metric1Label={isRtl ? 'متوسط نمو الإيرادات' : 'Average Revenue Growth'}
-        metric2Val="4.2x"
-        metric2Label={isRtl ? 'العائد على الإنفاق' : 'Average Return on Spend'}
-        image="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80"
-        ctaText={isRtl ? 'احجز استشارة استراتيجية' : 'Book Strategy Consultation'}
-        ctaHref="#contactUs"
         lang={lang}
       />
 
@@ -130,7 +124,7 @@ export function SolutionDetailView({ solution, lang, dict }: SolutionDetailViewP
         badge={isRtl ? 'شهادة العميل' : 'Client Review'}
         quoteText={{
           en: `Partnering with Persici for our ${title} transformation allowed us to scale throughput while significantly cutting operational overhead. A truly transformative engagement.`,
-          ar: `شراكتنا مع بيرسيسي في تطبيق ${title} مكّنتنا من مضاعفة قدراتنا التشغيلية وخفض تكاليف التنفيذ بشكل ملموس. كانت تجربة فارقة بكل المقاييس.`,
+          ar: `شراكتنا مع بيرسيشي في تطبيق ${title} مكّنتنا من مضاعفة قدراتنا التشغيلية وخفض تكاليف التنفيذ بشكل ملموس. كانت تجربة فارقة بكل المقاييس.`,
         }}
         quoteAuthor="Elena Rostova"
         quoteRole={{

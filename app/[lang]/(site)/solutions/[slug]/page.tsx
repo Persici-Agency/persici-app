@@ -39,7 +39,7 @@ export async function generateMetadata({
     const isAr = lang === 'ar';
     const title = isAr ? 'التطبيقات والإدارة' : 'Application & Management';
     const description = isAr
-      ? 'خدمات تطوير وإدارة دورة حياة التطبيقات المؤسسية لمنصات iOS و Android والهجينة بواسطة فريق بيرسيكي.'
+      ? 'خدمات تطوير وإدارة دورة حياة التطبيقات المؤسسية لمنصات iOS و Android والهجينة بواسطة فريق بيرسيشي.'
       : 'End-to-end enterprise mobile application development, modern cross-platform engineering, and lifecycle management by Persici.';
     return createMetadata({
       title: `${title} — Persici Solutions`,
@@ -53,7 +53,7 @@ export async function generateMetadata({
     const isAr = lang === 'ar';
     const title = isAr ? 'التسويق والاتصال المؤسسي' : 'Marketing & Communications';
     const description = isAr
-      ? 'استراتيجيات تسويق واتصال مؤسسي متكاملة، وسرد إبداعي، وإدارة حملات موجهة بالأداء والبيانات بواسطة بيرسيكي.'
+      ? 'استراتيجيات تسويق واتصال مؤسسي متكاملة، وسرد إبداعي، وإدارة حملات موجهة بالأداء والبيانات بواسطة بيرسيشي.'
       : 'Integrated full-funnel marketing, brand communications, creative storytelling, and data-driven media buying by Persici.';
     return createMetadata({
       title: `${title} — Persici Solutions`,
@@ -67,7 +67,7 @@ export async function generateMetadata({
     const isAr = lang === 'ar';
     const title = isAr ? 'النمو في التجارة الإلكترونية' : 'E-Commerce Growth';
     const description = isAr
-      ? 'منظومات تجارة رقمية قابلة للتوسع، وهندسة متاجر فائقة السرعة والتحويل، وإعلانات أداء واستبقاء العملاء بواسطة بيرسيكي.'
+      ? 'منظومات تجارة رقمية قابلة للتوسع، وهندسة متاجر فائقة السرعة والتحويل، وإعلانات أداء واستبقاء العملاء بواسطة بيرسيشي.'
       : 'Scalable digital commerce ecosystems, high-converting storefront architecture, full-funnel media acquisition, and compounding retention by Persici.';
     return createMetadata({
       title: `${title} — Persici Solutions`,
@@ -81,7 +81,7 @@ export async function generateMetadata({
     const isAr = lang === 'ar';
     const title = isAr ? 'دمج الذكاء الاصطناعي والأتمتة' : 'AI Integration & Automation';
     const description = isAr
-      ? 'حلول الذكاء الاصطناعي المؤسسية، والوكلاء الأذكياء المستقلون، ومحركات استرجاع المعرفة السيادية (RAG) بواسطة بيرسيكي.'
+      ? 'حلول الذكاء الاصطناعي المؤسسية، والوكلاء الأذكياء المستقلون، ومحركات استرجاع المعرفة السيادية (RAG) بواسطة بيرسيشي.'
       : 'Enterprise generative AI integration, autonomous agentic workflows, sovereign RAG architectures, and predictive intelligence by Persici.';
     return createMetadata({
       title: `${title} — Persici Solutions`,
@@ -95,7 +95,7 @@ export async function generateMetadata({
     const isAr = lang === 'ar';
     const title = isAr ? 'تصميم تجربة وواجهة المستخدم' : 'UX and Product Design';
     const description = isAr
-      ? 'معمارية تجربة المستخدم، والأنظمة البصرية الحية، وتصميم الواجهات التفاعلية والنماذج الأولية بواسطة بيرسيكي.'
+      ? 'معمارية تجربة المستخدم، والأنظمة البصرية الحية، وتصميم الواجهات التفاعلية والنماذج الأولية بواسطة بيرسيشي.'
       : 'Human-centered digital product architecture, intuitive user journeys, living design systems, and rapid prototyping by Persici.';
     return createMetadata({
       title: `${title} — Persici Solutions`,
@@ -109,7 +109,7 @@ export async function generateMetadata({
     const isAr = lang === 'ar';
     const title = isAr ? 'إشراك العملاء وهندسة الولاء' : 'Customer Engagement & Loyalty';
     const description = isAr
-      ? 'هندسة تفاعل العملاء، ومنظومات الولاء المؤسسية، والتخصيص اللحظي، وأحدث منصات التقنيات التسويقية بواسطة بيرسيكي.'
+      ? 'هندسة تفاعل العملاء، ومنظومات الولاء المؤسسية، والتخصيص اللحظي، وأحدث منصات التقنيات التسويقية بواسطة بيرسيشي.'
       : 'Enterprise customer engagement, loyalty ecosystems, real-time hyper-personalization, and durable MarTech architectures by Persici.';
     return createMetadata({
       title: `${title} — Persici Solutions`,
@@ -123,7 +123,7 @@ export async function generateMetadata({
     const isAr = lang === 'ar';
     const title = isAr ? 'الهندسة الرقمية والبرمجيات' : 'Digital Engineering & Cloud-Native Systems';
     const description = isAr
-      ? 'هندسة برمجية رقمية متطورة، وأنظمة موزعة سحابية أصلية، ومسارات تدفق بيانات فورية وأتمتة DevOps بواسطة بيرسيكي.'
+      ? 'هندسة برمجية رقمية متطورة، وأنظمة موزعة سحابية أصلية، ومسارات تدفق بيانات فورية وأتمتة DevOps بواسطة بيرسيشي.'
       : 'Mission-critical digital engineering, cloud-native distributed microservices, real-time event streaming, and automated DevOps by Persici.';
     return createMetadata({
       title: `${title} — Persici Solutions`,
@@ -137,7 +137,7 @@ export async function generateMetadata({
     const isAr = lang === 'ar';
     const title = isAr ? 'سلاسل الإمداد والخدمات اللوجستية' : 'Supply Chain & Logistics Intelligence';
     const description = isAr
-      ? 'سلاسل إمداد ذكية، واستشعار تنبؤي للطلب، وإدارة الطلبات الموزعة، وأتمتة المستودعات بالروبوتات وتتبع الأساطيل اللحظي بواسطة بيرسيكي.'
+      ? 'سلاسل إمداد ذكية، واستشعار تنبؤي للطلب، وإدارة الطلبات الموزعة، وأتمتة المستودعات بالروبوتات وتتبع الأساطيل اللحظي بواسطة بيرسيشي.'
       : 'Intelligent supply chain, AI demand sensing, distributed order management (DOM), warehouse robotics, and real-time fleet telematics by Persici.';
     return createMetadata({
       title: `${title} — Persici Solutions`,
@@ -151,7 +151,7 @@ export async function generateMetadata({
     const isAr = lang === 'ar';
     const title = isAr ? 'إدارة علاقات العملاء (CRM)' : 'CRM Management (Braze & Salesforce)';
     const description = isAr
-      ? 'إدارة متطورة لعلاقات العملاء، وأتمتة دورة الحياة عبر Braze وSalesforce، ومحفزات سلوكية فورية وواتساب للأعمال بواسطة بيرسيكي.'
+      ? 'إدارة متطورة لعلاقات العملاء، وأتمتة دورة الحياة عبر Braze وSalesforce، ومحفزات سلوكية فورية وواتساب للأعمال بواسطة بيرسيشي.'
       : 'Enterprise CRM management, lifecycle journey orchestration across Braze and Salesforce, real-time behavioral automation, and WhatsApp API by Persici.';
     return createMetadata({
       title: `${title} — Persici Solutions`,

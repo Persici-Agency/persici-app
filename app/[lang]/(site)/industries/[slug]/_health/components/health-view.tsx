@@ -148,7 +148,7 @@ export function HealthView({ lang, dict }: HealthViewProps) {
           }
           sectionSubtitle={
             isRtl
-              ? 'اكتشف كيف ساهمت منصات بيرسيكي للطب الاتصالي والسجلات الطبية الموحدة في خدمة مئات الآلاف من المرضى.'
+              ? 'اكتشف كيف ساهمت منصات بيرسيشي للطب الاتصالي والسجلات الطبية الموحدة في خدمة مئات الآلاف من المرضى.'
               : 'Explore how our telehealth, FHIR interoperability, and clinical AI platforms transform regional healthcare systems.'
           }
           lang={lang}

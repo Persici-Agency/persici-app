@@ -428,7 +428,7 @@ export const consumerProductsData: ConsumerProductsData = {
     },
     text: {
       en: 'Modern consumers no longer buy products in isolation — they buy trust, convenience, and alignment with their values. In an era where 84% of consumers demand companies understand their unique needs, legacy consumer goods manufacturers face margin compression and distributor disintermediation. Persici helps consumer enterprises build sovereign digital capabilities, uniting back-office supply chain precision with high-converting customer experiences.',
-      ar: 'لم يعد المستهلك العصري يشتري منتجاً فحسب، بل يبحث عن الثقة والراحة والتوافق مع قيمه. في وقت يتوقع فيه 84% من المستهلكين أن تفهم الشركات احتياجاتهم الفردية، تواجه شركات السلع التقليدية ضغوطاً متزايدة على الهوامش وتحديات مع الموزعين. تساعد بيرسيكي المؤسسات الاستهلاكية على امتلاك قدرات رقمية سيادية، تجمع بين دقة الإمداد في الكواليس وتجارب الشراء الاستثنائية للعملاء.',
+      ar: 'لم يعد المستهلك العصري يشتري منتجاً فحسب، بل يبحث عن الثقة والراحة والتوافق مع قيمه. في وقت يتوقع فيه 84% من المستهلكين أن تفهم الشركات احتياجاتهم الفردية، تواجه شركات السلع التقليدية ضغوطاً متزايدة على الهوامش وتحديات مع الموزعين. تساعد بيرسيشي المؤسسات الاستهلاكية على امتلاك قدرات رقمية سيادية، تجمع بين دقة الإمداد في الكواليس وتجارب الشراء الاستثنائية للعملاء.',
     },
     image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=1200&q=85',
     metric1Val: '84%',
@@ -655,7 +655,7 @@ export const consumerProductsData: ConsumerProductsData = {
     },
   ],
 
-  clientStories: getFeaturedStories(['lahfaa-perfumes', 'chopon-luxury', 'protes-sports']),
+  clientStories: getFeaturedStories(['khazan', 'lahfaa-perfumes', 'hala-food', 'chopon']),
 
   delivery: {
     title: {
@@ -774,7 +774,7 @@ export const consumerProductsData: ConsumerProductsData = {
   clientReview: {
     quote: {
       en: 'Persici transformed our regional consumer fragrance enterprise. By connecting our retail outlets with a sovereign D2C mobile application and intelligent inventory orchestration, our repeat order velocity climbed 78% in the first two quarters.',
-      ar: 'أحدثت بيرسيكي نقلة نوعية في منظومة علاماتنا الاستهلاكية للعطور. بربط منافذ البيع بتطبيق تجارة مباشرة سيادي ونظام ذكي لإدارة وتوجيه المخزون، ارتفعت سرعة تكرار الطلبات بنسبة 78% في أول ربعين من العام.',
+      ar: 'أحدثت بيرسيشي نقلة نوعية في منظومة علاماتنا الاستهلاكية للعطور. بربط منافذ البيع بتطبيق تجارة مباشرة سيادي ونظام ذكي لإدارة وتوجيه المخزون، ارتفعت سرعة تكرار الطلبات بنسبة 78% في أول ربعين من العام.',
     },
     author: 'Faisal Al-Otaibi',
     role: {

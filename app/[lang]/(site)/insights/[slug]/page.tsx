@@ -1,18 +1,63 @@
-import { createMetadata } from '../../../_lib/metadata';
-import type { Locale } from '../../../_lib/i18n';
+import { notFound } from 'next/navigation';
+import { getDictionary, hasLocale } from '@dictionaries';
+import { createMetadata } from '@lib/metadata';
+import type { Locale } from '@lib/i18n';
+import { getAllInsights, getInsightBySlug } from '../_insights/data/insights.data';
 import { InsightDetailView } from './_insight-detail';
 
-export async function generateMetadata({ params }: PageProps<'/[lang]/insights/[slug]'>) {
+type PageProps = {
+  params: Promise<{
+    lang: string;
+    slug: string;
+  }>;
+};
+
+export async function generateStaticParams() {
+  const insights = getAllInsights();
+  const locales = ['en', 'ar'];
+  const params: { lang: string; slug: string }[] = [];
+
+  for (const lang of locales) {
+    for (const insight of insights) {
+      params.push({ lang, slug: insight.slug });
+    }
+  }
+
+  return params;
+}
+
+export async function generateMetadata({ params }: PageProps) {
   const { lang, slug } = await params;
+  if (!hasLocale(lang)) return {};
+
+  const insight = getInsightBySlug(slug);
+  if (!insight) return {};
+
+  const title = insight.title[lang as 'en' | 'ar'] || insight.title.en;
+  const description = insight.excerpt[lang as 'en' | 'ar'] || insight.excerpt.en;
+
   return createMetadata({
-    title: `Insight — ${slug}`,
+    title,
+    description,
     locale: lang as Locale,
     path: `/insights/${slug}`,
   });
 }
 
-export default async function InsightDetailPage({ params }: PageProps<'/[lang]/insights/[slug]'>) {
-  const { slug } = await params;
+export default async function InsightDetailPage({ params }: PageProps) {
+  const { lang, slug } = await params;
+  if (!hasLocale(lang)) notFound();
 
-  return <InsightDetailView slug={slug} />;
+  const insight = getInsightBySlug(slug);
+  if (!insight) notFound();
+
+  const dict = await getDictionary(lang);
+
+  return (
+    <InsightDetailView
+      insight={insight}
+      lang={lang}
+      dict={dict}
+    />
+  );
 }

@@ -5,6 +5,7 @@ import type { SolutionsPageContent, FeaturedClientStoryItem, StoryMetricItem } f
 import { sectionContainer, sectionPaddingY } from '@shared/constants';
 import { FeaturedClientStoryCard } from '../featured-client-story-card';
 import { FadeUp } from '../fade-up';
+import { getSolutionsOverviewFeaturedClientStories } from '../../data/featured-client-stories.data';
 
 export type { StoryMetricItem, FeaturedClientStoryItem };
 
@@ -239,21 +240,18 @@ export function FeaturedClientStories({
     }
   }, [resolvedBgType, backgroundCode]);
 
-  // Construct resolved stories array
+  // Construct resolved stories array (defaults to real featured client stories from the catalog)
   const resolvedStories: FeaturedClientStoryItem[] =
     stories && stories.length > 0
       ? stories
-      : [
+      : content?.spotlightStories && content.spotlightStories.length > 0
+      ? content.spotlightStories
+      : title
+      ? [
           {
             badge: badge || content?.spotlightBadge,
-            title: title || content?.spotlightTitle || {
-              en: 'Delivering Measurable Impact',
-              ar: 'تحقيق أثر ملموس وقابل للقياس',
-            },
-            description: description || content?.spotlightDescription || {
-              en: 'Engineering transformative solutions that scale customer experiences and compound business returns.',
-              ar: 'هندسة حلول تحويلية ترتقي بتجارب العملاء وتضاعف العوائد الاستثمارية للشركات.',
-            },
+            title: title,
+            description: description || content?.spotlightDescription,
             metrics:
               metrics ||
               extractStoryMetrics(
@@ -270,12 +268,13 @@ export function FeaturedClientStories({
               ),
             image: image || content?.spotlightImage,
             ctaText: ctaText || content?.spotlightCtaText || {
-              en: 'Explore Client Stories',
-              ar: 'استكشف قصص النجاح',
+              en: 'Explore Case Study',
+              ar: 'استكشف قصة النجاح',
             },
             ctaHref: ctaHref || content?.spotlightCtaHref || '/client-stories',
           },
-        ];
+        ]
+      : getSolutionsOverviewFeaturedClientStories();
 
   const isStacked = resolvedStories.length > 1;
 
@@ -483,13 +482,13 @@ export function FeaturedClientStories({
           <div className="max-w-3xl mx-auto text-center mb-12 sm:mb-16">
             {secBadge && (
               <FadeUp delay={0} duration={700} distance={16}>
-                <span className="text-xs sm:text-sm font-bold uppercase tracking-widest text-persici-crimson block mb-3">
+                <span className="text-xs sm:text-sm font-semibold uppercase tracking-widest text-persici-crimson block mb-3">
                   {secBadge}
                 </span>
               </FadeUp>
             )}
             <FadeUp delay={120} duration={850} distance={24} blur={true}>
-              <h2 className="font-primary text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900">
+              <h2 className="font-primary text-3xl sm:text-4xl font-medium tracking-tight text-slate-900">
                 {secTitle}
               </h2>
             </FadeUp>

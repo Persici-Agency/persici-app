@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import Image from 'next/image';
@@ -46,7 +46,7 @@ export function VideoPreviewModal({
             <div className="text-xs font-semibold text-white">
               {dict.partnerShowcase.videoSpeaker}
             </div>
-            <div className="text-[10px] text-white/70">
+            <div className="text-[9.5px] text-white/70">
               {dict.partnerShowcase.videoRole}
             </div>
           </div>
@@ -71,7 +71,7 @@ export function VideoPreviewModal({
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between pb-3">
-              <h4 className="font-primary text-sm font-semibold">
+              <h4 className="font-primary text-sm font-medium">
                 {dict.partnerShowcase.title}
               </h4>
               <button

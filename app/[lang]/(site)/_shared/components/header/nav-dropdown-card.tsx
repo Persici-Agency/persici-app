@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useRef } from 'react';
 import Link from 'next/link';
@@ -176,7 +176,7 @@ export function NavDropdownCard({
             <Link
               href={parentHref}
               onClick={onClose}
-              className="group/head inline-flex items-center gap-2 text-base font-bold text-slate-900 transition-colors hover:text-black mb-5 cursor-pointer"
+              className="group/head inline-flex items-center gap-2 text-base font-semibold text-slate-900 transition-colors hover:text-black mb-5 cursor-pointer"
             >
               <span
                 className={`relative py-0.5 after:absolute after:bottom-0 after:h-[1.5px] after:w-full after:scale-x-0 after:bg-current after:transition-transform after:duration-300 after:ease-in-out group-hover/head:after:scale-x-100 ${
@@ -208,7 +208,7 @@ export function NavDropdownCard({
                     key={item.key}
                     href={href}
                     onClick={onClose}
-                    className="group flex items-center gap-2.5 text-[14px] font-medium text-slate-800 transition-colors hover:text-black w-fit max-w-full"
+                    className="group flex items-center gap-2.5 text-[13px] font-medium text-slate-800 transition-colors hover:text-black w-fit max-w-full"
                     title={rawLabel}
                   >
                     {solutionIcon ? (
@@ -262,7 +262,7 @@ export function NavDropdownCard({
                     key={item.key}
                     href={href}
                     onClick={onClose}
-                    className="group flex items-center gap-2.5 text-[14px] font-medium text-slate-800 transition-colors hover:text-black w-fit max-w-full"
+                    className="group flex items-center gap-2.5 text-[13px] font-medium text-slate-800 transition-colors hover:text-black w-fit max-w-full"
                     title={rawLabel}
                   >
                     {solutionIcon ? (

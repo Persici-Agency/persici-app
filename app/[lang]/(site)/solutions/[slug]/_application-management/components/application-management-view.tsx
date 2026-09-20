@@ -111,7 +111,7 @@ export function ApplicationManagementView({ lang, dict }: ApplicationManagementV
         }
         sectionSubtitle={
           isRtl
-            ? 'اكتشف كيف ساهمت تطبيقات بيرسيكي في تسريع وتيرة النمو ومضاعفة الإيرادات لعملائنا.'
+            ? 'اكتشف كيف ساهمت تطبيقات بيرسيشي في تسريع وتيرة النمو ومضاعفة الإيرادات لعملائنا.'
             : 'Explore how our high-velocity mobile engineering drives customer retention and commercial scale.'
         }
         lang={lang}

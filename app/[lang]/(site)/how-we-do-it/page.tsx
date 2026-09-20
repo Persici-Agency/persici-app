@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: PageProps<'/[lang]/how-we-do-
   return createMetadata({
     title: `${dict.nav.howWeDoIt} — Persici Agency`,
     description: isAr
-      ? 'منهجية بيرسيكي لتنفيذ التحول الرقمي وتسريع النمو المؤسسي: ركائز الاستراتيجية، والمنتج، والتجربة، والهندسة، والبيانات والذكاء الاصطناعي.'
+      ? 'منهجية بيرسيشي لتنفيذ التحول الرقمي وتسريع النمو المؤسسي: ركائز الاستراتيجية، والمنتج، والتجربة، والهندسة، والبيانات والذكاء الاصطناعي.'
       : 'Persici delivery framework, agile engineering velocity, living products, and end-to-end digital transformation methodology.',
     locale: lang as Locale,
     path: '/how-we-do-it',

@@ -739,7 +739,7 @@ export const digitalEngineeringData: DigitalEngineeringData = {
   clientReview: {
     quote: {
       en: 'Persici modernized our critical core banking transaction switch into an ultra-low latency, event-driven Kubernetes architecture. We eliminated 99.8% of system outages while enabling our developers to release new microservices multiple times a day without fear. Their software engineering rigour is world-class.',
-      ar: 'أعادت بيرسيكي بناء وتحديث محول المعاملات المصرفية الأساسي لدينا بالكامل إلى معمارية كوبرنيتس فورية وموجهة بالأحداث. قضينا على 99.8% من انقطاعات الخدمة ومكّنا مطورينا من نشر خدمات مصغرة جديدة عدة مرات يومياً بكل ثقة وأمان. إن انضباطهم الهندسي ومعاييرهم البرمجية تضاهي الأفضل عالمياً.',
+      ar: 'أعادت بيرسيشي بناء وتحديث محول المعاملات المصرفية الأساسي لدينا بالكامل إلى معمارية كوبرنيتس فورية وموجهة بالأحداث. قضينا على 99.8% من انقطاعات الخدمة ومكّنا مطورينا من نشر خدمات مصغرة جديدة عدة مرات يومياً بكل ثقة وأمان. إن انضباطهم الهندسي ومعاييرهم البرمجية تضاهي الأفضل عالمياً.',
     },
     author: 'Dr. Tariq Al-Husseini',
     role: {

@@ -35,7 +35,7 @@ export function ClientStoriesHeroSection({ lang }: ClientStoriesHeroSectionProps
         <div className="mx-auto max-w-4xl text-center">
           {/* Badge */}
           <FadeUp delay={0} duration={750} distance={16}>
-            <div className="inline-flex items-center gap-2 rounded-full border border-persici-crimson/20 bg-persici-crimson/5 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-persici-crimson mb-6 sm:mb-8 backdrop-blur-xs">
+            <div className="inline-flex items-center gap-2 rounded-full border border-persici-crimson/20 bg-persici-crimson/5 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider rtl:tracking-normal rtl:normal-case text-persici-crimson mb-6 sm:mb-8 backdrop-blur-xs">
               <TbSparkles className="h-3.5 w-3.5 shrink-0" />
               <span>
                 {isRtl ? 'قصص نجاح عملائنا وشركائنا' : 'Client Stories & Impact'}
@@ -45,7 +45,7 @@ export function ClientStoriesHeroSection({ lang }: ClientStoriesHeroSectionProps
 
           {/* Main Title */}
           <FadeUp delay={120} duration={850} distance={24} blur={true}>
-            <h1 className="font-primary text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl lg:text-6xl sm:leading-[1.12]">
+            <h1 className="font-primary text-4xl font-medium tracking-tight rtl:tracking-normal text-slate-900 sm:text-5xl lg:text-6xl sm:leading-[1.12] rtl:leading-[1.25] rtl:sm:leading-[1.2]">
               {isRtl ? (
                 <>
                   أعمال تحولية تصنع الفارق{' '}
@@ -64,7 +64,7 @@ export function ClientStoriesHeroSection({ lang }: ClientStoriesHeroSectionProps
           <FadeUp delay={240} duration={800} distance={20}>
             <p className="mt-6 text-lg sm:text-xl text-slate-600 leading-relaxed max-w-3xl mx-auto">
               {isRtl
-                ? 'اكتشف كيف تشارك بيرسيكي المؤسسات الطموحة في دول الخليج والعالم لهندسة علامات استثنائية، وبناء منصات برمجية متطورة، وتحقيق قفزات نوعية في النمو والإيرادات.'
+                ? 'اكتشف كيف تشارك بيرسيشي المؤسسات الطموحة في دول الخليج والعالم لهندسة علامات استثنائية، وبناء منصات برمجية متطورة، وتحقيق قفزات نوعية في النمو والإيرادات.'
                 : 'Explore how Persici partners with forward-thinking enterprises across the GCC and beyond to engineer iconic brands, robust software platforms, and high-velocity digital growth.'}
             </p>
           </FadeUp>

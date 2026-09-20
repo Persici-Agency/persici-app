@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState } from 'react';
 import Link from 'next/link';
@@ -33,7 +33,7 @@ export function IndustriesOfferingsGrid({
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-persici-crimson/10 text-persici-crimson text-xs font-semibold uppercase tracking-wider mb-4">
             {isRtl ? 'القطاعات المتخصصة' : 'Target Industries'}
           </div>
-          <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900">
+          <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-slate-900">
             {title}
           </h2>
           <p className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed">
@@ -66,7 +66,7 @@ export function IndustriesOfferingsGrid({
                     {/* Top: Tag + Custom Dual-Tone SVG Icon */}
                     <div>
                       <div className="flex items-center justify-between gap-2 mb-4">
-                        <span className="text-[11px] font-bold tracking-wider uppercase text-persici-crimson bg-persici-crimson/5 px-2.5 py-1 rounded-md">
+                        <span className="text-[9.5px] font-semibold tracking-wider uppercase text-persici-crimson bg-persici-crimson/5 px-2.5 py-1 rounded-md">
                           {itemTag}
                         </span>
                         {item.icon && (
@@ -88,7 +88,7 @@ export function IndustriesOfferingsGrid({
                         )}
                       </div>
 
-                      <h3 className="font-primary text-lg sm:text-xl font-bold text-slate-900 transition-colors group-hover:text-persici-crimson leading-snug">
+                      <h3 className="font-primary text-lg sm:text-xl font-medium text-slate-900 transition-colors group-hover:text-persici-crimson leading-snug">
                         {itemTitle}
                       </h3>
                     </div>
@@ -106,14 +106,14 @@ export function IndustriesOfferingsGrid({
 
                     {/* Bottom: Description + Kinetic Link */}
                     <div>
-                      <p className="text-xs sm:text-[13px] leading-relaxed text-slate-600 line-clamp-3 mb-5 font-normal">
+                      <p className="text-xs sm:text-[12px] leading-relaxed text-slate-600 line-clamp-3 mb-5 font-normal">
                         {itemDesc}
                       </p>
 
                       <div className="pt-4 border-t border-persici-black/5">
                         <Link
                           href={detailHref}
-                          className="group/link inline-flex items-center gap-1.5 text-xs font-bold text-slate-900 transition-colors hover:text-persici-crimson"
+                          className="group/link inline-flex items-center gap-1.5 text-xs font-semibold text-slate-900 transition-colors hover:text-persici-crimson"
                         >
                           <span
                             className={`relative py-0.5 after:absolute after:bottom-0 after:h-[1.5px] after:w-full after:scale-x-0 after:bg-current after:transition-transform after:duration-300 after:ease-in-out group-hover/link:after:scale-x-100 ${

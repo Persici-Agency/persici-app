@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import Image from 'next/image';
@@ -53,12 +53,12 @@ export function PanoramicCard({
       {/* Floating Frosted Glassmorphic Badge (Refined border radius & decreased opacity matching reference media_1788984559145.png) */}
       <div className="relative z-10 max-w-md sm:max-w-lg w-full rounded-xl p-6 sm:p-7 bg-slate-600/28 backdrop-blur-xl border border-white/25 text-white shadow-lg transition-all duration-300 group-hover:bg-slate-600/38">
         {badge && (
-          <span className="inline-block text-[11px] font-mono font-semibold tracking-wider uppercase text-white/95 bg-white/20 border border-white/25 px-2.5 py-0.5 rounded-full mb-2.5">
+          <span className="inline-block text-[9.5px] font-mono font-semibold tracking-wider uppercase text-white/95 bg-white/20 border border-white/25 px-2.5 py-0.5 rounded-full mb-2.5">
             {badge}
           </span>
         )}
 
-        <h3 className="font-primary text-xl sm:text-2xl font-bold text-white mb-2 leading-tight drop-shadow-xs">
+        <h3 className="font-primary text-xl sm:text-2xl font-medium text-white mb-2 leading-tight drop-shadow-xs">
           {title}
         </h3>
 

@@ -36,7 +36,7 @@ export async function generateMetadata({ params }: PageProps) {
   if (slug === 'consumer-products') {
     const title = isAr ? 'المنتجات الاستهلاكية' : 'Consumer Products';
     const description = isAr
-      ? 'تجاوز تطلعات المستهلكين من خلال تجارب التجارة المباشرة (D2C)، وسلاسل الإمداد المرنة، وذكاء البيانات السيادية بواسطة بيرسيكي.'
+      ? 'تجاوز تطلعات المستهلكين من خلال تجارب التجارة المباشرة (D2C)، وسلاسل الإمداد المرنة، وذكاء البيانات السيادية بواسطة بيرسيشي.'
       : 'Exceed evolving customer expectations through seamless D2C experiences, agile supply chains, and sovereign data intelligence by Persici.';
     return createMetadata({
       title: `${title} — Persici Industries`,
@@ -49,7 +49,7 @@ export async function generateMetadata({ params }: PageProps) {
   if (slug === 'telecom-media-technology') {
     const title = isAr ? 'الاتصالات والإعلام والتقنية' : 'Telecommunications, Media & Technology';
     const description = isAr
-      ? 'إعادة ابتكار مشغلي الاتصالات ومنصات الإعلام بواجهات 5G البرمجية، وبث الوسائط فائق السرعة، والحد من مغادرة المشتركين بواسطة بيرسيكي.'
+      ? 'إعادة ابتكار مشغلي الاتصالات ومنصات الإعلام بواجهات 5G البرمجية، وبث الوسائط فائق السرعة، والحد من مغادرة المشتركين بواسطة بيرسيشي.'
       : 'Reinventing telecom carriers and media platforms with 5G programmable APIs, low-latency streaming, and AI churn prevention by Persici.';
     return createMetadata({
       title: `${title} — Persici Industries`,
@@ -62,7 +62,7 @@ export async function generateMetadata({ params }: PageProps) {
   if (slug === 'public-sector') {
     const title = isAr ? 'القطاع الحكومي والمؤسسات العامة' : 'Public Sector & Government';
     const description = isAr
-      ? 'منصات حكومية رقمية متمحورة حول المواطن، وشبكات تكامل البيانات بين الجهات، وبنية تحتية سحابية سيادية محكمة بواسطة بيرسيكي.'
+      ? 'منصات حكومية رقمية متمحورة حول المواطن، وشبكات تكامل البيانات بين الجهات، وبنية تحتية سحابية سيادية محكمة بواسطة بيرسيشي.'
       : 'Human-centered digital civic platforms, inter-agency data meshes, and sovereign cloud infrastructure for public entities by Persici.';
     return createMetadata({
       title: `${title} — Persici Industries`,
@@ -75,7 +75,7 @@ export async function generateMetadata({ params }: PageProps) {
   if (slug === 'retail') {
     const title = isAr ? 'تجارة التجزئة والتجارة الموحدة' : 'Retail & Unified Commerce';
     const description = isAr
-      ? 'ربط المتاجر الفعلية، والتجارة الإلكترونية بدون رأس، وإدارة الطلبات الموزعة في منظومة تجارة شاملة عالية الربحية بواسطة بيرسيكي.'
+      ? 'ربط المتاجر الفعلية، والتجارة الإلكترونية بدون رأس، وإدارة الطلبات الموزعة في منظومة تجارة شاملة عالية الربحية بواسطة بيرسيشي.'
       : 'Connecting physical stores, headless e-commerce, and distributed order management (DOM) into an omnichannel profit engine by Persici.';
     return createMetadata({
       title: `${title} — Persici Industries`,
@@ -88,7 +88,7 @@ export async function generateMetadata({ params }: PageProps) {
   if (slug === 'health') {
     const title = isAr ? 'الرعاية الصحية وعلوم الحياة' : 'Healthcare & Life Sciences';
     const description = isAr
-      ? 'منصات الطب الاتصالي المتصلة، والتوافقية السريرية بمعايير FHIR R4، وحلول بيانات المرضى السيادية المحمية بواسطة بيرسيكي.'
+      ? 'منصات الطب الاتصالي المتصلة، والتوافقية السريرية بمعايير FHIR R4، وحلول بيانات المرضى السيادية المحمية بواسطة بيرسيشي.'
       : 'Connected telehealth platforms, FHIR R4 clinical interoperability, and sovereign patient data solutions by Persici.';
     return createMetadata({
       title: `${title} — Persici Industries`,
@@ -101,7 +101,7 @@ export async function generateMetadata({ params }: PageProps) {
   if (slug === 'energy-commodities') {
     const title = isAr ? 'الطاقة وتجارة السلع' : 'Energy & Commodities';
     const description = isAr
-      ? 'تسريع تحول الطاقة بالشبكات الذكية المستقلة، وإدارة مخاطر تجارة السلع (ETRM)، والمحاسبة الآلية للانبعاثات الكربونية بواسطة بيرسيكي.'
+      ? 'تسريع تحول الطاقة بالشبكات الذكية المستقلة، وإدارة مخاطر تجارة السلع (ETRM)، والمحاسبة الآلية للانبعاثات الكربونية بواسطة بيرسيشي.'
       : 'Accelerating the energy transition with autonomous smart grids, quantitative ETRM risk management, and automated Scope 1-3 carbon tracking by Persici.';
     return createMetadata({
       title: `${title} — Persici Industries`,

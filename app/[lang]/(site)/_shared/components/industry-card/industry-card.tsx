@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import { TbCircleCheck } from 'react-icons/tb';
@@ -32,11 +32,11 @@ export function IndustryCard({
         {/* Monospace Number & Tag Badge */}
         <div className="flex items-center justify-between gap-3 mb-5 pb-3 border-b border-black/[0.04]">
           <div className="flex items-center gap-3">
-            <span className="font-mono text-xs sm:text-sm font-bold text-slate-400 group-hover:text-persici-crimson transition-colors tracking-widest">
+            <span className="font-mono text-xs sm:text-sm font-semibold text-slate-400 group-hover:text-persici-crimson transition-colors tracking-widest">
               {number}
             </span>
             {iconStyle === 'box' && (
-              <span className="text-[11px] font-semibold text-persici-crimson uppercase tracking-wider">
+              <span className="text-[9.5px] font-semibold text-persici-crimson uppercase tracking-wider">
                 {tag}
               </span>
             )}
@@ -47,7 +47,7 @@ export function IndustryCard({
               <Icon className="h-5 w-5" />
             </div>
           ) : (
-            <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-persici-crimson bg-persici-crimson/5 px-2.5 py-0.5 rounded-full">
+            <span className="inline-flex items-center gap-1.5 text-[9.5px] font-semibold text-persici-crimson bg-persici-crimson/5 px-2.5 py-0.5 rounded-full">
               {Icon && <Icon className="text-xs" />}
               {tag}
             </span>
@@ -55,7 +55,7 @@ export function IndustryCard({
         </div>
 
         {/* Title */}
-        <h3 className="font-primary text-xl sm:text-2xl font-bold text-slate-900 leading-snug mb-3 group-hover:text-persici-crimson transition-colors">
+        <h3 className="font-primary text-xl sm:text-2xl font-medium text-slate-900 leading-snug mb-3 group-hover:text-persici-crimson transition-colors">
           {title}
         </h3>
 

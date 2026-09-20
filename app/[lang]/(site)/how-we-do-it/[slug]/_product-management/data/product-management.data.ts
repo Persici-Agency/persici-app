@@ -209,7 +209,7 @@ export const productManagementData = {
   quote: {
     text: {
       en: 'Persici embedded product managers into our squads who completely changed how we work. Instead of arguing about opinions, we now make decisions based on user telemetry and ship features 3x faster.',
-      ar: 'أدمجت بيرسيكي قادة منتجات محترفين داخل فرقنا غيروا أسلوب العمل كلياً. بدلاً من الجدال حول الآراء الشخصية، أصبحنا نتخذ القرارات بناءً على سلوك المستخدمين ونطلق المزايا أسرع بثلاث مرات.',
+      ar: 'أدمجت بيرسيشي قادة منتجات محترفين داخل فرقنا غيروا أسلوب العمل كلياً. بدلاً من الجدال حول الآراء الشخصية، أصبحنا نتخذ القرارات بناءً على سلوك المستخدمين ونطلق المزايا أسرع بثلاث مرات.',
     },
     author: 'Majed Al-Ghamdi',
     role: {
@@ -222,7 +222,7 @@ export const productManagementData = {
     {
       question: {
         en: 'What is the role of a Persici product manager in our organization?',
-        ar: 'ما هو دور مدير المنتج من بيرسيكي داخل مؤسستنا؟',
+        ar: 'ما هو دور مدير المنتج من بيرسيشي داخل مؤسستنا؟',
       },
       answer: {
         en: 'Our product managers serve as the strategic nexus between business leadership, design, and engineering. They define the product vision, prioritize the roadmap based on ROI, run user testing, and ensure cross-functional execution.',

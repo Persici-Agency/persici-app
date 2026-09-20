@@ -13,7 +13,7 @@ export const strategyConsultingData = {
     },
     subtitle: {
       en: 'Persici combines market intelligence, digital strategy, and executional experience to help ambitious businesses navigate change and capture high-value market share.',
-      ar: 'تجمع بيرسيكي بين استخبارات السوق، والاستراتيجية الرقمية، والخبرة التنفيذية لمساعدة المؤسسات الطموحة على قيادة التغيير والاستحواذ على حصة سوقية مستدامة.',
+      ar: 'تجمع بيرسيشي بين استخبارات السوق، والاستراتيجية الرقمية، والخبرة التنفيذية لمساعدة المؤسسات الطموحة على قيادة التغيير والاستحواذ على حصة سوقية مستدامة.',
     },
     tag: {
       en: 'Strategy & Consulting',
@@ -130,7 +130,7 @@ export const strategyConsultingData = {
   benefitsStrip: {
     title: {
       en: 'Why Partner With Persici Advisory',
-      ar: 'لماذا تختار شراكة بيرسيكي للاستشارات الاستراتيجية',
+      ar: 'لماذا تختار شراكة بيرسيشي للاستشارات الاستراتيجية',
     },
     image: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=1400&q=85',
     benefits: [
@@ -278,7 +278,7 @@ export const strategyConsultingData = {
   quote: {
     text: {
       en: 'Persici gave our executive team clarity where there was noise. Their strategic roadmap aligned our digital products with revenue milestones, generating a 3.4x ROI in the first year.',
-      ar: 'منحت بيرسيكي قيادتنا التنفيذية وضوحاً تاماً في مرحلة حرجة. وحدت خارطة طريقهم منتجاتنا الرقمية مع محطات الإيرادات، محققة عائداً استثمارياً قدره 3.4x في العام الأول.',
+      ar: 'منحت بيرسيشي قيادتنا التنفيذية وضوحاً تاماً في مرحلة حرجة. وحدت خارطة طريقهم منتجاتنا الرقمية مع محطات الإيرادات، محققة عائداً استثمارياً قدره 3.4x في العام الأول.',
     },
     author: 'Faisal Al-Rasheed',
     role: {
@@ -291,11 +291,11 @@ export const strategyConsultingData = {
     {
       question: {
         en: 'How is Persici’s advisory different from traditional management consulting?',
-        ar: 'ما الذي يميز استشارات بيرسيكي عن شركات الاستشارات الإدارية التقليدية؟',
+        ar: 'ما الذي يميز استشارات بيرسيشي عن شركات الاستشارات الإدارية التقليدية؟',
       },
       answer: {
         en: 'Traditional firms leave you with theoretical slide decks. Persici pairs senior strategists directly with hands-on product managers and software engineers, ensuring every strategy is technically feasible and immediately built.',
-        ar: 'تكتفي الشركات التقليدية بتقديم شرائح عرض نظرية. بينما تجمع بيرسيكي بين كبار المستشارين الاستراتيجيين ومديري المنتجات ومهندسي البرمجيات لضمان جدوى كل استراتيجية وبنائها فورياً.',
+        ar: 'تكتفي الشركات التقليدية بتقديم شرائح عرض نظرية. بينما تجمع بيرسيشي بين كبار المستشارين الاستراتيجيين ومديري المنتجات ومهندسي البرمجيات لضمان جدوى كل استراتيجية وبنائها فورياً.',
       },
     },
     {

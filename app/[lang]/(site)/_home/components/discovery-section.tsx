@@ -1,4 +1,4 @@
-import Image from 'next/image';
+﻿import Image from 'next/image';
 import type { Dictionary } from '@dictionaries';
 import { DiscoveryCallForm } from './discovery-form';
 import { sectionContainer, sectionPaddingY, FadeUp, sectionHeading } from '@shared';
@@ -35,10 +35,10 @@ export function DiscoverySection({ dict }: DiscoverySectionProps) {
                 />
               </div>
               <div>
-                <div className="text-xs font-bold text-foreground">
+                <div className="text-xs font-semibold text-foreground">
                   {dict.discovery.quoteAuthor}
                 </div>
-                <div className="text-[11px] text-foreground/60">
+                <div className="text-[9.5px] text-foreground/60">
                   {dict.discovery.quoteRole}
                 </div>
               </div>

@@ -424,7 +424,7 @@ export const retailData: RetailData = {
     },
     text: {
       en: 'Retail is undergoing a structural transformation. Treating e-commerce and physical brick-and-mortar stores as separate, competing cost centers results in fragmented shopper data, inconsistent pricing, and costly inventory mismatches. Winning retailers are those that integrate online convenience with the tangible immediacy of the physical store. Persici helps enterprise retailers unify their core architecture, unlocking 360-degree customer identity, automated order fulfillment, and compounding store profitability.',
-      ar: 'يشهد قطاع التجزئة تحولاً هيكلياً عميقاً. إن التعامل مع المتاجر الإلكترونية والفروع التقليدية ككيانات منفصلة متنافسة يؤدي إلى تشتت بيانات العملاء، وتضارب الأسعار، وخسائر فادحة في المخزون. تجار التجزئة الناجحون هم من يدمجون سهولة الشراء الرقمي مع متعة وسرعة التجربة في المتجر الفعلي. تمكن بيرسيكي كبرى شركات التجزئة من توحيد بنيتها التقنية، وبناء هوية شاملة للمتسوقين، وأتمتة التوريد لمضاعفة ربحية المتاجر.',
+      ar: 'يشهد قطاع التجزئة تحولاً هيكلياً عميقاً. إن التعامل مع المتاجر الإلكترونية والفروع التقليدية ككيانات منفصلة متنافسة يؤدي إلى تشتت بيانات العملاء، وتضارب الأسعار، وخسائر فادحة في المخزون. تجار التجزئة الناجحون هم من يدمجون سهولة الشراء الرقمي مع متعة وسرعة التجربة في المتجر الفعلي. تمكن بيرسيشي كبرى شركات التجزئة من توحيد بنيتها التقنية، وبناء هوية شاملة للمتسوقين، وأتمتة التوريد لمضاعفة ربحية المتاجر.',
     },
     image: 'https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?auto=format&fit=crop&w=1200&q=85',
   },
@@ -641,7 +641,7 @@ export const retailData: RetailData = {
     },
   ],
 
-  clientStories: getFeaturedStories(['chopon-luxury', 'lahfaa-perfumes', 'land-of-exotics']),
+  clientStories: getFeaturedStories(['chopon', 'lahfaa-ecommerce', 'protes-sports', 'land-of-exotics']),
 
   delivery: {
     title: {
@@ -760,7 +760,7 @@ export const retailData: RetailData = {
   clientReview: {
     quote: {
       en: 'Persici unified our 45 physical retail locations with our high-growth e-commerce application. By introducing ship-from-store order routing and mobile POS for our associates, our store conversion jumped 31% and stockout cancellations completely disappeared.',
-      ar: 'قامت بيرسيكي بتوحيد 45 فرعاً فعلياً لدينا مع تطبيق المتجر الرقمي المتسارع. بفضل توجيه الشحن من أقرب فرع وأجهزة الدفع المتنقلة للبائعين، قفزت مبيعات الفروع بنسبة 31% واختفت مشكلة إلغاء الطلبات لنفاد المخزون تماماً.',
+      ar: 'قامت بيرسيشي بتوحيد 45 فرعاً فعلياً لدينا مع تطبيق المتجر الرقمي المتسارع. بفضل توجيه الشحن من أقرب فرع وأجهزة الدفع المتنقلة للبائعين، قفزت مبيعات الفروع بنسبة 31% واختفت مشكلة إلغاء الطلبات لنفاد المخزون تماماً.',
     },
     author: 'Khaled Bin Rashid',
     role: {

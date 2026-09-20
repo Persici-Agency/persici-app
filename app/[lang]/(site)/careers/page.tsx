@@ -7,10 +7,15 @@ import { CareersView } from './_careers';
 export async function generateMetadata({ params }: PageProps<'/[lang]/careers'>) {
   const { lang } = await params;
   if (!hasLocale(lang)) return {};
-  const dict = await getDictionary(lang);
+  const isAr = lang === 'ar';
+
   return createMetadata({
-    title: dict.careers.title,
-    description: dict.careers.description,
+    title: isAr
+      ? 'الوظائف وثقافة العمل — وكالة برسيسي'
+      : 'Careers & Culture — Persici Agency',
+    description: isAr
+      ? 'انضم إلى نخبة المهندسين ومبتكري النمو وصناع الهويات في برسيسي. استكشف الوظائف الشاغرة في دبي، الرياض، عمّان وعن بُعد.'
+      : 'Join our high-velocity collective of engineers, growth tacticians, and brand visionaries. Explore active openings across Dubai HQ, Riyadh, Amman, and remote.',
     locale: lang as Locale,
     path: '/careers',
   });

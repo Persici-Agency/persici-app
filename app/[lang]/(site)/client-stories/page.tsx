@@ -12,10 +12,10 @@ export async function generateMetadata({ params }: PageProps<'/[lang]/client-sto
 
   return createMetadata({
     title: isRtl
-      ? 'قصص نجاح العملاء والأعمال التحولية | وكالة بيرسيكي'
+      ? 'قصص نجاح العملاء والأعمال التحولية | وكالة بيرسيشي'
       : 'Client Stories & Transformative Case Studies | Persici Agency',
     description: isRtl
-      ? 'اكتشف كيف تشارك بيرسيكي المؤسسات الطموحة في دول الخليج والعالم لهندسة علامات استثنائية، وبناء منصات برمجية متطورة، وتحقيق قفزات نوعية في النمو والإيرادات.'
+      ? 'اكتشف كيف تشارك بيرسيشي المؤسسات الطموحة في دول الخليج والعالم لهندسة علامات استثنائية، وبناء منصات برمجية متطورة، وتحقيق قفزات نوعية في النمو والإيرادات.'
       : 'Explore how Persici partners with visionary enterprises across the GCC and globally to engineer transformative digital products, iconic brands, and high-impact growth engines.',
     locale: lang as Locale,
     path: '/client-stories',

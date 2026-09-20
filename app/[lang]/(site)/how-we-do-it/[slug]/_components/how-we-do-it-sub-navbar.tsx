@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { sectionContainer } from '@shared/constants';
@@ -201,7 +201,7 @@ export function HowWeDoItSubNavbar({
           <div className="shrink-0 flex items-center">
             <button
               onClick={() => handleScrollTo(ctaTargetId)}
-              className="px-4 py-1.5 rounded-full text-xs sm:text-sm font-bold bg-persici-black text-white hover:bg-persici-crimson transition-all duration-200 cursor-pointer shadow-xs whitespace-nowrap"
+              className="px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold bg-persici-black text-white hover:bg-persici-crimson transition-all duration-200 cursor-pointer shadow-xs whitespace-nowrap"
             >
               {ctaText[isRtl ? 'ar' : 'en'] || ctaText.en}
             </button>

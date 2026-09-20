@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 export default function Error({
   error,
@@ -9,7 +9,7 @@ export default function Error({
 }) {
   return (
     <div className="flex min-h-[60vh] flex-col items-center justify-center px-4 text-center">
-      <h1 className="font-primary text-4xl font-bold text-persici-crimson">
+      <h1 className="font-primary text-4xl font-medium text-persici-crimson">
         Something went wrong
       </h1>
       <p className="mt-4 text-foreground/60">

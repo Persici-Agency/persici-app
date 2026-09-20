@@ -424,7 +424,7 @@ export const telecomMediaTechnologyData: TelecomMediaTechnologyData = {
     },
     text: {
       en: 'The TMT industry sits at the epicenter of the global digital economy, yet faces severe margin pressure from capital-intensive 5G rollouts, rising customer acquisition costs, and aggressive streaming competition. Winning operators and tech brands are those that transcend dumb-pipe connectivity to become agile software platforms. Persici empowers TMT leaders with sovereign architectures, AI-driven subscriber operations, and media monetization pipelines that transform network investments into high-margin enterprise software revenue.',
-      ar: 'يقع قطاع الاتصالات والإعلام والتقنية في قلب الاقتصاد الرقمي العالمي، ولكنه يواجه ضغوطاً متزايدة على الهوامش بسبب النفقات الرأسمالية الضخمة لشبكات 5G، وارتفاع تكلفة استقطاب المشتركين، والمنافسة الشرسة في البث. المشغلون والشركات الرائدة هم من يتحولون من مجرد ناقل للبيانات إلى منصات برمجية رشيقة. تمكن بيرسيكي قادة القطاع بمعماريات سيادية، وعمليات ذكية للمشتركين، ومسارات عوائد رقمية تحول استثمارات الشبكات إلى أرباح تشغيلية مستدامة.',
+      ar: 'يقع قطاع الاتصالات والإعلام والتقنية في قلب الاقتصاد الرقمي العالمي، ولكنه يواجه ضغوطاً متزايدة على الهوامش بسبب النفقات الرأسمالية الضخمة لشبكات 5G، وارتفاع تكلفة استقطاب المشتركين، والمنافسة الشرسة في البث. المشغلون والشركات الرائدة هم من يتحولون من مجرد ناقل للبيانات إلى منصات برمجية رشيقة. تمكن بيرسيشي قادة القطاع بمعماريات سيادية، وعمليات ذكية للمشتركين، ومسارات عوائد رقمية تحول استثمارات الشبكات إلى أرباح تشغيلية مستدامة.',
     },
     image: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1200&q=85',
   },
@@ -641,7 +641,7 @@ export const telecomMediaTechnologyData: TelecomMediaTechnologyData = {
     },
   ],
 
-  clientStories: getFeaturedStories(['gulf-enterprise-copilot', 'finvibe-trading', 'nissan-mobility']),
+  clientStories: getFeaturedStories(['meraas-the-beach', 'ola-al-fares', 'aiwin', 'meraas-la-mer']),
 
   delivery: {
     title: {
@@ -760,7 +760,7 @@ export const telecomMediaTechnologyData: TelecomMediaTechnologyData = {
   clientReview: {
     quote: {
       en: 'Persici engineered our next-generation subscriber self-care platform and real-time retention telemetry. We reduced call center load by 64% within three months and eliminated customer onboarding latency down to seconds.',
-      ar: 'طورت بيرسيكي منصتنا المتطورة للخدمة الذاتية للمشتركين ونظام الرصد الفوري للاستبقاء. نجحنا في خفض ضغط مراكز الاتصال بنسبة 64% خلال ثلاثة أشهر، واختصرنا وقت انضمام المشترك وتفعيل خطه إلى ثوانٍ معدودة.',
+      ar: 'طورت بيرسيشي منصتنا المتطورة للخدمة الذاتية للمشتركين ونظام الرصد الفوري للاستبقاء. نجحنا في خفض ضغط مراكز الاتصال بنسبة 64% خلال ثلاثة أشهر، واختصرنا وقت انضمام المشترك وتفعيل خطه إلى ثوانٍ معدودة.',
     },
     author: 'Tariq Mansoor',
     role: {
@@ -825,11 +825,11 @@ export const telecomMediaTechnologyData: TelecomMediaTechnologyData = {
     {
       question: {
         en: 'What is GSMA Open Gateway, and how does Persici help operators implement it?',
-        ar: 'ما هو معيار GSMA Open Gateway وكيف تساعد بيرسيكي مشغلي الاتصالات في تطبيقه؟',
+        ar: 'ما هو معيار GSMA Open Gateway وكيف تساعد بيرسيشي مشغلي الاتصالات في تطبيقه؟',
       },
       answer: {
         en: 'GSMA Open Gateway is a global initiative transforming mobile networks into standardized software platforms. Persici builds carrier-grade API gateways exposing standard CAMARA APIs (such as SIM Swap, Quality on Demand, and Device Location) to enterprise developers, creating high-margin B2B API subscription revenue.',
-        ar: 'مبادرة GSMA Open Gateway هي حراك عالمي لتحويل شبكات الاتصالات إلى منصات برمجية موحدة. تبني بيرسيكي بوابات واجهات برمجة معتمدة تطرح واجهات CAMARA المعيارية (مثل التحقق من الشريحة، والجودة عند الطلب، وموقع الجهاز) لمطوري الشركات، مما يفتح مسار إيرادات اشتراكات B2B عالي الهامش.',
+        ar: 'مبادرة GSMA Open Gateway هي حراك عالمي لتحويل شبكات الاتصالات إلى منصات برمجية موحدة. تبني بيرسيشي بوابات واجهات برمجة معتمدة تطرح واجهات CAMARA المعيارية (مثل التحقق من الشريحة، والجودة عند الطلب، وموقع الجهاز) لمطوري الشركات، مما يفتح مسار إيرادات اشتراكات B2B عالي الهامش.',
       },
     },
     {

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Image from 'next/image';
@@ -177,7 +177,7 @@ export function VideoTestimonialsCarousel({
                 {/* Top Header: Category & Play Badge */}
                 <div className="absolute top-4 inset-x-4 flex items-center justify-between z-10">
                   {item.category && (
-                    <span className="rounded-full bg-black/60 px-3 py-1 text-[11px] font-semibold text-white/90 backdrop-blur-md border border-white/10">
+                    <span className="rounded-full bg-black/60 px-3 py-1 text-[9.5px] font-semibold text-white/90 backdrop-blur-md border border-white/10">
                       {item.category}
                     </span>
                   )}
@@ -196,13 +196,13 @@ export function VideoTestimonialsCarousel({
 
                   <div className="mt-4 flex items-center justify-between border-t border-white/15 pt-3">
                     <div>
-                      <div className="text-sm font-bold text-white font-primary">{item.name}</div>
+                      <div className="text-sm font-semibold text-white font-primary">{item.name}</div>
                       <div className="text-xs text-white/60">
                         {item.role}, <span className="font-medium text-persici-blush">{item.company}</span>
                       </div>
                     </div>
                     {item.duration && (
-                      <span className="text-[11px] font-mono text-white/50 bg-white/5 px-2 py-0.5 rounded border border-white/10">
+                      <span className="text-[9.5px] font-mono text-white/50 bg-white/5 px-2 py-0.5 rounded border border-white/10">
                         {item.duration}
                       </span>
                     )}
@@ -270,7 +270,7 @@ export function VideoTestimonialsCarousel({
               ) : (
                 <div className="flex h-full w-full items-center justify-center bg-neutral-900 text-white">
                   <div className="text-center p-6">
-                    <p className="text-lg font-bold">Video Preview</p>
+                    <p className="text-lg font-semibold">Video Preview</p>
                     <p className="text-sm text-white/60 mt-1">Full video testimonial coming soon.</p>
                   </div>
                 </div>
@@ -306,7 +306,7 @@ export function VideoTestimonialsCarousel({
                   />
                 </div>
                 <div>
-                  <div className="text-base font-bold text-white font-primary">
+                  <div className="text-base font-semibold text-white font-primary">
                     {activeModalItem.name}
                   </div>
                   <div className="text-xs sm:text-sm text-white/60">
