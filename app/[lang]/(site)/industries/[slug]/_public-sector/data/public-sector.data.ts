@@ -457,13 +457,6 @@ export const publicSectorData: PublicSectorData = {
           ar: 'إلغاء المراسلات اليدوية بين الجهات عبر التحقق الآلي من البيانات، مما يوفر آلاف الساعات التشغيلية سنوياً.',
         },
       },
-      {
-        title: { en: 'Paperless Fiscal Efficiency', ar: 'كفاءة مالية وبيئة حكومية خالية من الورق' },
-        description: {
-          en: 'Achieve complete digital transformation that drastically lowers paper, printing, and administrative overhead across all municipal offices.',
-          ar: 'تحقيق تحول رقمي شامل يخفض تكاليف الطباعة والمستندات الورقية والعبء الإداري في جميع الفروع والمكاتب.',
-        },
-      },
     ],
   },
 

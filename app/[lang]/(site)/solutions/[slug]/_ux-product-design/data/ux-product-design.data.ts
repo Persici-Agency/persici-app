@@ -390,17 +390,6 @@ export const uxProductDesignData: UxProductDesignData = {
         },
         accentColor: '#121212',
       },
-      {
-        title: {
-          en: 'Compounding Retention & NPS Lift',
-          ar: 'مضاعفة ولاء العملاء ومؤشر الترويج (NPS)',
-        },
-        description: {
-          en: 'Products crafted around genuine human needs transform casual visitors into passionate brand advocates who stay and compound value.',
-          ar: 'المنتجات المصممة حول الاحتياجات الإنسانية الحقيقية تحول المستخدمين العاديين إلى سفراء مخلصين للعلامة ومصدر للنمو المستدام.',
-        },
-        accentColor: '#D83427',
-      },
     ],
   },
 

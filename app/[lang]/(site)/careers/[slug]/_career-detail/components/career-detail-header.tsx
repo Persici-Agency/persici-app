@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React from 'react';
 import Link from 'next/link';
@@ -29,10 +29,10 @@ export function CareerDetailHeader({ job, lang }: CareerDetailHeaderProps) {
       <div className={sectionContainer}>
         {/* Breadcrumb Navigation */}
         <FadeUp delay={100} duration={600}>
-          <div className="flex items-center gap-2 text-xs text-foreground/60 mb-6 sm:mb-8 font-secondary">
+          <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-foreground/60 mb-6 sm:mb-8 font-secondary">
             <Link
               href={`/${lang}/careers`}
-              className="inline-flex items-center gap-1 hover:text-persici-crimson transition-colors font-medium"
+              className="inline-flex items-center gap-1 hover:text-persici-crimson transition-colors font-medium shrink-0"
             >
               {isAr ? (
                 <>
@@ -46,15 +46,15 @@ export function CareerDetailHeader({ job, lang }: CareerDetailHeaderProps) {
                 </>
               )}
             </Link>
-            <span>/</span>
-            <span className="text-foreground/80 font-medium">
+            <span className="text-slate-300 font-light select-none">/</span>
+            <span className="text-foreground/80 font-medium shrink-0">
               {job.department[isAr ? 'ar' : 'en']}
             </span>
-            <span>/</span>
-            <span className="text-persici-crimson font-semibold truncate max-w-[200px] sm:max-w-none">
+            <span className="text-slate-300 font-light select-none">/</span>
+            <span className="text-persici-crimson font-semibold">
               {job.title[isAr ? 'ar' : 'en']}
             </span>
-          </div>
+          </nav>
         </FadeUp>
 
         {/* Badges Row */}
