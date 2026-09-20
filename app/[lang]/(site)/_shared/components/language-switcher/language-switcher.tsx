@@ -1,105 +1,51 @@
-﻿'use client';
+'use client';
 
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-
-const locales = [
-  { code: 'en', label: 'EN' },
-  { code: 'ar', label: 'عربي' },
-] as const;
+import { TbGlobe } from 'react-icons/tb';
 
 export type LanguageSwitcherProps = {
   currentLang: string;
   variant?: 'navbar' | 'footer' | 'mobile';
   className?: string;
+  isDark?: boolean;
 };
 
 export function LanguageSwitcher({
   currentLang,
-  variant = 'navbar',
   className = '',
+  isDark = false,
 }: LanguageSwitcherProps) {
   const pathname = usePathname();
 
   function getLocalizedPath(targetLocale: string) {
+    if (!pathname) return `/${targetLocale}`;
     const segments = pathname.split('/');
     segments[1] = targetLocale;
-    return segments.join('/');
+    return segments.join('/') || `/${targetLocale}`;
   }
 
-  if (variant === 'footer') {
-    return (
-      <div
-        className={`inline-flex items-center gap-1 rounded-full border border-white/15 bg-white/[0.06] p-1 backdrop-blur-xs text-xs transition-colors hover:border-white/25 ${className}`}
-        aria-label="Language switcher"
-      >
-        <div className="flex items-center gap-1 px-1.5 text-white/60">
-          <svg
-            className="h-3.5 w-3.5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="1.8"
-              d="M12 21a9 9 0 100-18 9 9 0 000 18z"
-            />
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="1.8"
-              d="M3.6 9h16.8M3.6 15h16.8"
-            />
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="1.8"
-              d="M11.5 3a17 17 0 000 18M12.5 3a17 17 0 010 18"
-            />
-          </svg>
-        </div>
-        <div className="flex items-center gap-0.5">
-          {locales.map((locale) => {
-            const isActive = currentLang === locale.code;
-            return (
-              <Link
-                key={locale.code}
-                href={getLocalizedPath(locale.code)}
-                className={`rounded-full px-2.5 py-0.5 text-[9.5px] font-medium transition-all ${
-                  isActive
-                    ? 'bg-persici-crimson text-white shadow-xs'
-                    : 'text-white/60 hover:text-white'
-                }`}
-                aria-label={`Switch to ${locale.code === 'en' ? 'English' : 'Arabic'}`}
-              >
-                {locale.label}
-              </Link>
-            );
-          })}
-        </div>
-      </div>
-    );
-  }
+  const isCurrentArabic = currentLang === 'ar';
+  // When in English, switch target is 'ar' and button displays 'AR'.
+  // When in Arabic, switch target is 'en' and button displays 'EN'.
+  const targetLang = isCurrentArabic ? 'en' : 'ar';
+  const targetLabel = isCurrentArabic ? 'EN' : 'AR';
+  const targetPath = getLocalizedPath(targetLang);
 
   return (
-    <div className={`flex items-center gap-1 ${className}`}>
-      {locales.map((locale) => (
-        <Link
-          key={locale.code}
-          href={getLocalizedPath(locale.code)}
-          className={`rounded-md px-2 py-1 text-sm font-medium transition-colors ${
-            currentLang === locale.code
-              ? 'bg-persici-crimson text-white'
-              : 'text-foreground hover:bg-persici-crimson/10'
-          }`}
-          aria-label={`Switch to ${locale.code === 'en' ? 'English' : 'Arabic'}`}
-        >
-          {locale.label}
-        </Link>
-      ))}
-    </div>
+    <Link
+      href={targetPath}
+      prefetch={true}
+      className={`group inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-xs font-medium tracking-wider border-0 border-none outline-none focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 transition-all duration-200 select-none cursor-pointer ${
+        isDark
+          ? 'text-white/85 hover:text-white hover:bg-white/10 active:bg-white/15'
+          : 'text-slate-800 hover:text-persici-crimson hover:bg-black/5 active:bg-black/10'
+      } ${className}`}
+      aria-label={isCurrentArabic ? 'Switch to English' : 'التحويل إلى العربية (Switch to Arabic)'}
+      title={isCurrentArabic ? 'Switch to English' : 'التحويل إلى العربية'}
+    >
+      <TbGlobe className="h-4 w-4 shrink-0 transition-transform duration-300 group-hover:rotate-12" aria-hidden="true" />
+      <span className="uppercase text-[11px] sm:text-xs font-semibold leading-none">{targetLabel}</span>
+    </Link>
   );
 }
