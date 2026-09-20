@@ -457,13 +457,6 @@ export const telecomMediaTechnologyData: TelecomMediaTechnologyData = {
           ar: 'امتصاص حتى 68% من الاستفسارات الروتينية عبر مساعدي الذكاء الاصطناعي السيادية، ليتفرغ الموظفون لخدمة كبار العملاء.',
         },
       },
-      {
-        title: { en: 'Scalable Content Delivery', ar: 'بث وسائط فائق التوسع والموثوقية' },
-        description: {
-          en: 'Deliver peak sporting and live entertainment broadcasts with sub-second glass-to-glass latency and dynamic server-side ad yields.',
-          ar: 'بث الفعاليات الرياضية والترفيهية المباشرة بزمن استجابة أقل من ثانية، وتحقيق أعلى عوائد من الإعلانات الديناميكية.',
-        },
-      },
     ],
   },
 

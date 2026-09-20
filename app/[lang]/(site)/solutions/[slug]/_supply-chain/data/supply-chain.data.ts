@@ -375,16 +375,6 @@ export const supplyChainData: SupplyChainData = {
           ar: 'حساسات إنترنت الأشياء تبث بيانات درجات الحرارة والرطوبة فورياً لتنبيه السائقين استباقياً قبل تعرض البضائع للتلف أو مخالفة الأنظمة.',
         },
       },
-      {
-        title: {
-          en: 'Resilient Disruption Mitigation via Digital Twin War-Rooms',
-          ar: 'صمود فائق أمام الأزمات عبر غرف عمليات التوأم الرقمي والمحاكاة',
-        },
-        description: {
-          en: 'Automated playbooks immediately reroute freight, activate alternative suppliers, and reallocate stock whenever port strikes, bad weather, or customs halts strike.',
-          ar: 'سيناريوهات مؤتمتة تعيد توجيه الشحنات فوراً وتفعّل الموردين البدلاء وتعيد توزيع المخزون عند حدوث أي طارئ في الموانئ أو الجمارك.',
-        },
-      },
     ],
   },
 

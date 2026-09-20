@@ -37,22 +37,22 @@ export function StoryDetailHeroSection({ story, lang }: StoryDetailHeroSectionPr
           {/* Breadcrumbs */}
           <nav
             aria-label="Breadcrumb"
-            className="flex items-center gap-2 text-xs font-mono rtl:font-primary text-slate-500 mb-6 sm:mb-8"
+            className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs font-mono rtl:font-primary text-slate-500 mb-6 sm:mb-8"
           >
             <Link
               href={`/${lang}`}
-              className="hover:text-slate-900 transition-colors"
+              className="hover:text-slate-900 transition-colors shrink-0"
             >
               {isRtl ? 'الرئيسية' : 'Home'}
             </Link>
-            <ChevronIcon className="h-3 w-3 text-slate-400" />
+            <ChevronIcon className="h-3 w-3 text-slate-400 shrink-0" />
             <Link
               href={`/${lang}/client-stories`}
-              className="hover:text-slate-900 transition-colors"
+              className="hover:text-slate-900 transition-colors shrink-0"
             >
               {isRtl ? 'قصص العملاء' : 'Client Stories'}
             </Link>
-            <ChevronIcon className="h-3 w-3 text-slate-400" />
+            <ChevronIcon className="h-3 w-3 text-slate-400 shrink-0" />
             <span className="text-slate-800 font-semibold truncate max-w-[200px] sm:max-w-xs">
               {story.client}
             </span>

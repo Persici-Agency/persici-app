@@ -471,13 +471,6 @@ export const consumerProductsData: ConsumerProductsData = {
           ar: 'فهم عميق لاحتياجات العميل يرفع معدل تكرار الشراء بنسبة 38% عبر رحلات تسويقية سياقية بعد الشراء.',
         },
       },
-      {
-        title: { en: 'ESG Compliance & Traceability', ar: 'امتثال بيئي وتتبع شامل موثق' },
-        description: {
-          en: 'Turn sustainability compliance from a cost center into a brand differentiator that appeals to the fastest-growing demographic of conscious consumers.',
-          ar: 'تحويل متطلبات الاستدامة من تكلفة إضافية إلى ميزة تنافسية كبرى تجذب الشريحة الأسرع نمواً من المستهلكين.',
-        },
-      },
     ],
   },
 

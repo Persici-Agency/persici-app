@@ -457,13 +457,6 @@ export const energyCommoditiesData: EnergyCommoditiesData = {
           ar: 'جوازات السفر الرقمية الموثقة للوقود والسلع منخفضة الانبعاثات تتيح لمكاتب التداول بيع الشحنات بأسعار تفضيلية أعلى.',
         },
       },
-      {
-        title: { en: 'Zero Unplanned Downtime', ar: 'القضاء على التوقف غير المجدول' },
-        description: {
-          en: 'Machine learning vibration models detect critical compressor and turbine wear weeks ahead, saving millions in emergency repair costs.',
-          ar: 'نماذج التعلم الآلي ترصد تآكل التوربينات والضواغط قبل أسابيع من تعطلها، مما يوفر ملايين الدولارات في تكاليف الإصلاح الطارئ.',
-        },
-      },
     ],
   },
 

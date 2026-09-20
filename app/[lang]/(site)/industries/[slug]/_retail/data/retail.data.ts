@@ -457,13 +457,6 @@ export const retailData: RetailData = {
           ar: 'توجيه طلبات الشراء عبر الإنترنت للتنفيذ من أقرب فرع يقلص تكاليف الشحن بنسبة 35% ويتيح التوصيل في نفس اليوم.',
         },
       },
-      {
-        title: { en: 'Compounding Customer Lifetime Value', ar: 'مضاعفة القيمة التراكمية للمتسوق' },
-        description: {
-          en: 'Omnichannel loyalty members who shop both in-store and online demonstrate a 3.2x higher annual spend compared to single-channel shoppers.',
-          ar: 'أعضاء برامج الولاء الذين يتسوقون من الفروع والمتجر الرقمي معاً ينفقون سنوياً 3.2 ضعف إنفاق متسوق القناة الواحدة.',
-        },
-      },
     ],
   },
 

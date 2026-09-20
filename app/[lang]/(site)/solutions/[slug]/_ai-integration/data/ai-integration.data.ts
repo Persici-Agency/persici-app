@@ -390,17 +390,6 @@ export const aiIntegrationData: AiIntegrationData = {
         },
         accentColor: '#121212',
       },
-      {
-        title: {
-          en: 'Measurable Enterprise Operational ROI',
-          ar: 'عائد استثماري تشغيلي واضح وقابل للقياس',
-        },
-        description: {
-          en: 'Directly reduce back-office processing costs by 60%+, accelerate knowledge retrieval by 80%, and scale capacity without linear headcount expansion.',
-          ar: 'خفض مباشر لتكاليف المعالجة التشغيلية بنسبة تتجاوز 60% وتسريع استخراج المعرفة بنسبة 80% دون الحاجة لمضاعفة فرق العمل.',
-        },
-        accentColor: '#D83427',
-      },
     ],
   },
 

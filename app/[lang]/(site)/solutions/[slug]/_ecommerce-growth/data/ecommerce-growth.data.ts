@@ -501,17 +501,6 @@ export const ecommerceGrowthData: EcommerceGrowthData = {
         },
         accentColor: '#121212',
       },
-      {
-        title: {
-          en: 'Localized GCC Commerce Mastery',
-          ar: 'ريادة التجارة الموطنة للخليج',
-        },
-        description: {
-          en: 'Native integrations with Mada, Apple Pay, Tamara, Tabby, Salla Enterprise, Zid Pro, and localized regional courier APIs.',
-          ar: 'تكامل أصيل مع مدى، وأبل باي، وتمارا، وتابي، وسلة، وزد، والواجهات البرمجية لشركات الشحن الإقليمية.',
-        },
-        accentColor: '#D83427',
-      },
     ],
   },
 

@@ -375,18 +375,7 @@ export const digitalEngineeringData: DigitalEngineeringData = {
           ar: 'إدارة FinOps ومراقبة استهلاك الموارد، والتوسع التلقائي الدقيق، وحوسبة بدون خوادم تقضي على الهدر في الموارد عبر كافة البيئات السحابية.',
         },
       },
-      {
-        title: {
-          en: 'Zero-Trust Security & Sovereign Regulatory Compliance',
-          ar: 'أمان قائم على انعدام الثقة (Zero-Trust) وامتثال سيادي صارم',
-        },
-        description: {
-          en: 'End-to-end mutual TLS, continuous automated vulnerability scanning, immutable audit logs, and data sovereignty controls aligned with Saudi NCA and UAE cybersecurity directives.',
-          ar: 'تشفير mTLS متكامل، وفحص أمني استباقي مستمر، وسجلات تدقيق غير قابلة للتغيير، مع التزام تام بضوابط الهيئة الوطنية للأمن السيبراني (NCA) واللوائح الإقليمية.',
-        },
-      },
     ],
-
   },
 
   verticalsTitle: {

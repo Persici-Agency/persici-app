@@ -215,11 +215,11 @@ export function LegalPageView({ data, lang, dict }: LegalPageViewProps) {
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Breadcrumb Navigation */}
-        <nav className="mb-6 flex items-center gap-2 text-xs text-slate-500">
-          <Link href={`/${lang}`} className="hover:text-persici-crimson transition-colors">
+        <nav aria-label="Breadcrumb" className="mb-6 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-slate-500">
+          <Link href={`/${lang}`} className="hover:text-persici-crimson transition-colors shrink-0">
             {dict.nav.home}
           </Link>
-          <span>/</span>
+          <span className="text-slate-300 font-light select-none">/</span>
           <span className="text-slate-900 font-medium">
             {isAr ? data.title.ar : data.title.en}
           </span>
