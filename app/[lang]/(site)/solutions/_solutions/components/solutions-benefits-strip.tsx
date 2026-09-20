@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import type { SolutionBenefitItem } from '@shared/types';
 import { sectionContainer, sectionPaddingY } from '@shared/constants';
 import { ShapedImageContainer, FadeUp } from '@shared';
@@ -42,7 +42,7 @@ export function SolutionsBenefitsStrip({
 
         {/* 3-Column Horizontal Benefits Strip with Colored Top Accent Lines & Staggered Reveal */}
         <div className="mt-8 sm:mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
-          {benefits.map((item, idx) => {
+          {benefits.slice(0, 3).map((item, idx) => {
             const itemTitle = item.title[lang as 'en' | 'ar'] || item.title.en;
             const itemDesc = item.description[lang as 'en' | 'ar'] || item.description.en;
             const accentColor = item.accentColor || (idx === 0 ? '#D83427' : idx === 1 ? '#EF8C7D' : '#121212');

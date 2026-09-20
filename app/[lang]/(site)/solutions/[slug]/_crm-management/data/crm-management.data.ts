@@ -375,16 +375,6 @@ export const crmManagementData: CrmManagementData = {
           ar: 'أطر انتقال محكمة، وتوثيق صارم لمعايير SPF وDKIM وDMARC، وتنقية مستمرة للقوائم تضمن وصول رسائلك إلى صندوق الوارد وتفادي مجلد الرسائل غير المرغوب فيها.',
         },
       },
-      {
-        title: {
-          en: '100% Sovereign Privacy Compliance with Saudi PDPL & UAE Laws',
-          ar: 'امتثال سيادي بنسبة 100% لنظام حماية البيانات السعودي ولوائح الإمارات',
-        },
-        description: {
-          en: 'Built-in consent management, localized regional data governance, and automated opt-out synchronization protect your brand and eliminate regulatory penalties.',
-          ar: 'إدارة متكاملة لموافقات المستخدمين، وحوكمة إقليمية للبيانات، ومزامنة فورية لطلبات إلغاء الاشتراك تحمي علامتك التجارية وتمنع الغرامات التنظيمية.',
-        },
-      },
     ],
   },
 

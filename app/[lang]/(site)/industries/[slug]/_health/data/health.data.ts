@@ -457,13 +457,6 @@ export const healthData: HealthData = {
           ar: 'توافق كامل مع متطلبات HIPAA واللوائح التنظيمية لوزارات وهيئات الصحة الخليجية لترسيخ ثقة المرضى.',
         },
       },
-      {
-        title: { en: 'Frictionless Patient Experience', ar: 'تجربة مريض ميسرة بدون انتظار' },
-        description: {
-          en: 'Instant booking, mobile check-in, and home prescription delivery elevate patient satisfaction ratings above 93%.',
-          ar: 'حجز المواعيد الفوري، وتسجيل الدخول عبر التطبيق، وتوصيل الأدوية للمنزل يرفع رضا المرضى لأكثر من 93%.',
-        },
-      },
     ],
   },
 

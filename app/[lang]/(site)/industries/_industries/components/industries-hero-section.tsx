@@ -117,19 +117,19 @@ export function IndustriesHeroSection({
           }`}
         >
           {tagText && (
-            <div className="flex items-center gap-2.5 mb-5">
-              <span className="text-xs sm:text-sm font-semibold uppercase tracking-widest rtl:tracking-normal rtl:normal-case text-persici-crimson">
+            <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-x-2 gap-y-1 mb-5">
+              <span className="text-xs sm:text-sm font-semibold uppercase tracking-wider sm:tracking-widest rtl:tracking-normal rtl:normal-case text-persici-crimson">
                 {tagText}
               </span>
               {secTagText && (
-                <>
-                  <span className="text-slate-300 font-light">/</span>
-                  <span className="text-xs sm:text-sm font-semibold uppercase tracking-widest rtl:tracking-normal rtl:normal-case text-slate-400">
+                <span className="inline-flex items-center gap-2">
+                  <span className="text-slate-300 font-light select-none text-xs sm:text-sm" aria-hidden="true">/</span>
+                  <span className="text-xs sm:text-sm font-semibold uppercase tracking-wider sm:tracking-widest rtl:tracking-normal rtl:normal-case text-slate-500">
                     {secTagText}
                   </span>
-                </>
+                </span>
               )}
-            </div>
+            </nav>
           )}
 
           <h1 className="font-primary text-4xl sm:text-5xl lg:text-[48px] xl:text-[56px] font-medium tracking-tight rtl:tracking-normal text-slate-900 leading-[1.12] sm:leading-[1.1] rtl:leading-[1.25] rtl:sm:leading-[1.2]">

@@ -390,17 +390,6 @@ export const customerEngagementData: CustomerEngagementData = {
         },
         accentColor: '#121212',
       },
-      {
-        title: {
-          en: 'Cookieless Sovereignty',
-          ar: 'سيادة بيانات الطرف الأول',
-        },
-        description: {
-          en: 'Future-proof customer relationships with privacy-compliant first-party data assets that safeguard marketing reach against browser lockouts.',
-          ar: 'بناء أصول بيانات خاصة ومستدامة متوافقة مع أحدث معايير الخصوصية العالمية، تضمن استمرار الوصول للعملاء دون الاعتماد على الكوكيز.',
-        },
-        accentColor: '#D83427',
-      },
     ],
   },
 

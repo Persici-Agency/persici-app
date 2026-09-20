@@ -277,13 +277,6 @@ export const marketingCommunicationsData: MarketingCommunicationsData = {
           ar: 'صياغة ثنائية اللغة تتجاوز الترجمة الحرفية إلى عمق النبرة والمفاهيم الثقافية في السوق السعودي والإماراتي.',
         },
       },
-      {
-        title: { en: 'Closed-Loop Revenue Attribution', ar: 'إسناد مالي دقيق للإيرادات' },
-        description: {
-          en: 'Trace every dollar from top-of-funnel creative impressions to verified bottom-line bank deposits.',
-          ar: 'تتبع كل ريال أو درهم من أول ظهور إعلاني حتى إتمام المعاملة في الحسابات المصرفية بدقة متناهية.',
-        },
-      },
     ],
   },
 
