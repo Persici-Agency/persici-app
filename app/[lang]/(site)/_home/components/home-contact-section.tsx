@@ -142,8 +142,8 @@ export function HomeContactSection({ lang, dict }: HomeContactSectionProps) {
           <div className="relative mx-auto w-full rounded-3xl sm:rounded-[2.5rem] bg-white p-6 sm:p-10 lg:p-14 shadow-2xl border border-black/10 text-foreground">
             <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-14 items-start">
 
-              {/* Left Column: Ready to learn more? & Checklist */}
-              <div className="flex flex-col justify-between h-full lg:col-span-6 lg:pe-6">
+              {/* Left Column: Ready to learn more? & Checklist (Bottom in mobile/tablet, Left on desktop) */}
+              <div className="flex flex-col justify-between h-full order-2 lg:order-1 lg:col-span-6 lg:pe-6 border-t border-black/10 pt-8 sm:pt-10 lg:border-t-0 lg:pt-0">
                 <div>
                   <h3 className="font-primary text-2xl sm:text-3xl lg:text-4xl font-medium text-foreground tracking-tight">
                     {dict.homeContact?.leftTitle || 'Ready to learn more?'}
@@ -182,8 +182,8 @@ export function HomeContactSection({ lang, dict }: HomeContactSectionProps) {
                 </div>
               </div>
 
-              {/* Right Column: Get in touch Form */}
-              <div className="lg:col-span-6">
+              {/* Right Column: Get in touch Form (Top in mobile/tablet, Right on desktop) */}
+              <div className="order-1 lg:order-2 lg:col-span-6">
                 <div>
                   <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-medium text-foreground tracking-tight">
                     {dict.homeContact?.title || 'Get in touch'}

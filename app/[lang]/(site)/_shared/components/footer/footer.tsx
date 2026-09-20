@@ -3,7 +3,6 @@ import { Logo } from '@shared/components/logo';
 import { HomeButton } from '@shared/components/home-button';
 import type { Dictionary } from '@dictionaries';
 import { siteNavLinks } from '@shared/data';
-import { LanguageSwitcher } from '@shared/components/language-switcher';
 import type { FooterProps } from '@shared/types';
 
 export type { FooterProps };
@@ -19,9 +18,9 @@ export function Footer({ lang, dict }: FooterProps) {
       <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-persici-crimson/5 to-transparent" />
 
       <div className="relative mx-auto max-w-7xl px-4 pt-16 pb-12 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 gap-12 lg:grid-cols-12">
-          {/* Brand Col (4 cols) */}
-          <div className="lg:col-span-4">
+        <div className="grid grid-cols-1 gap-10 sm:gap-12 md:grid-cols-12 lg:grid-cols-12">
+          {/* Brand Col (4 cols on lg, 5 cols on md) */}
+          <div className="md:col-span-5 lg:col-span-4">
             <Logo lang={lang} variant="light" className="mb-4" />
             <p className="max-w-sm text-xs leading-relaxed text-white/60">
               {dict.footer.brandDesc}
@@ -37,76 +36,79 @@ export function Footer({ lang, dict }: FooterProps) {
             </div>
           </div>
 
-          {/* Quick Links (2 cols) */}
-          <div className="lg:col-span-2">
-            <h3 className="mb-4 text-xs font-medium uppercase tracking-wider text-white/40">
-              {dict.footer.quickLinks}
-            </h3>
-            <ul className="space-y-2.5">
-              <li>
-                <Link
-                  href={`/${lang}`}
-                  className="text-xs text-white/70 transition-colors hover:text-persici-blush"
-                >
-                  {dict.nav.home}
-                </Link>
-              </li>
-              {navLinks.map((link) => (
-                <li key={link.key}>
+          {/* Navigation Links & Legal Links (Beside each other across all breakpoints: mobile, tablet, desktop) */}
+          <div className="grid grid-cols-2 gap-6 sm:gap-10 md:col-span-7 lg:col-span-4">
+            {/* Quick Links */}
+            <div>
+              <h3 className="mb-4 text-xs font-medium uppercase tracking-wider text-white/40">
+                {dict.footer.quickLinks}
+              </h3>
+              <ul className="space-y-2.5">
+                <li>
                   <Link
-                    href={`/${lang}${link.href}`}
+                    href={`/${lang}`}
                     className="text-xs text-white/70 transition-colors hover:text-persici-blush"
                   >
-                    {dict.nav[link.key as keyof typeof dict.nav]}
+                    {dict.nav.home}
                   </Link>
                 </li>
-              ))}
-            </ul>
+                {navLinks.map((link) => (
+                  <li key={link.key}>
+                    <Link
+                      href={`/${lang}${link.href}`}
+                      className="text-xs text-white/70 transition-colors hover:text-persici-blush"
+                    >
+                      {dict.nav[link.key as keyof typeof dict.nav]}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Legal & Info */}
+            <div>
+              <h3 className="mb-4 text-xs font-medium uppercase tracking-wider text-white/40">
+                {dict.footer.legal}
+              </h3>
+              <ul className="space-y-2.5">
+                <li>
+                  <Link
+                    href={`/${lang}/contact`}
+                    className="text-xs text-white/70 transition-colors hover:text-persici-blush"
+                  >
+                    {dict.nav.contact}
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href={`/${lang}/privacy`}
+                    className="text-xs text-white/70 transition-colors hover:text-persici-blush"
+                  >
+                    {dict.footer.privacy}
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href={`/${lang}/terms`}
+                    className="text-xs text-white/70 transition-colors hover:text-persici-blush"
+                  >
+                    {dict.footer.terms}
+                  </Link>
+                </li>
+                <li className="pt-2">
+                  <a
+                    href="mailto:info@persiciagency.com"
+                    className="text-[11px] text-white/60 transition-colors hover:text-persici-blush break-all sm:break-normal"
+                  >
+                    info@persiciagency.com
+                  </a>
+                </li>
+              </ul>
+            </div>
           </div>
 
-          {/* Legal & Info (2 cols) */}
-          <div className="lg:col-span-2">
-            <h3 className="mb-4 text-xs font-medium uppercase tracking-wider text-white/40">
-              {dict.footer.legal}
-            </h3>
-            <ul className="space-y-2.5">
-              <li>
-                <Link
-                  href={`/${lang}/contact`}
-                  className="text-xs text-white/70 transition-colors hover:text-persici-blush"
-                >
-                  {dict.nav.contact}
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href={`/${lang}/privacy`}
-                  className="text-xs text-white/70 transition-colors hover:text-persici-blush"
-                >
-                  {dict.footer.privacy}
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href={`/${lang}/terms`}
-                  className="text-xs text-white/70 transition-colors hover:text-persici-blush"
-                >
-                  {dict.footer.terms}
-                </Link>
-              </li>
-              <li className="pt-2">
-                <a
-                  href="mailto:info@persiciagency.com"
-                  className="text-[11px] text-white/60 transition-colors hover:text-persici-blush"
-                >
-                  info@persiciagency.com
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          {/* Social Media (4 cols) */}
-          <div className="lg:col-span-4">
+          {/* Social Media (4 cols on lg, full width on md) */}
+          <div className="md:col-span-12 lg:col-span-4">
             <h3 className="mb-4 text-xs font-medium uppercase tracking-wider text-white/40">
               {dict.footer.socialTitle || (lang === 'ar' ? 'وسائل التواصل الاجتماعي' : 'Social Media')}
             </h3>
@@ -187,7 +189,6 @@ export function Footer({ lang, dict }: FooterProps) {
             © {currentYear} Persici. {dict.footer.rights}
           </p>
           <div className="flex flex-wrap items-center justify-center gap-6">
-            <LanguageSwitcher currentLang={lang} variant="footer" />
             <span className="text-xs text-white/40">
               {lang === 'ar' ? 'دبي • الرياض • عمّان' : 'Dubai • Riyadh • Amman'}
             </span>
