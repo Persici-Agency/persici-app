@@ -14,7 +14,7 @@ export async function generateStaticParams() {
 
 export const metadata: Metadata = {
   title: {
-    default: 'Persici Specialized in AI Digital Transformation',
+    default: 'Persici - Specialized in AI and Digital Transformation',
     template: '%s | Persici',
   },
   description:

@@ -107,10 +107,10 @@ export const footerPartnerBadges: PartnerBadge[] = [
 // ============================================================================
 export const clientLogos: ClientLogo[] = [
   { id: '1', name: 'Accor Live Limitless', src: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/clients/all-accor-live-limitless-logo.webp?v=2', order: 1, isActive: true },
-  { id: '2', name: 'Mashreq', src: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/clients/mashreq-logo.webp?v=2', order: 2, isActive: true },
+  { id: '2', name: 'Mashreq', src: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/clients/mashreq-logo.webp?v=3', order: 2, isActive: true },
   { id: '3', name: 'Land of Exotics', src: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/clients/land-of-exotics-logo.webp?v=2', order: 3, isActive: true },
   { id: '4', name: 'Hadiya', src: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/clients/hadiya-logo.webp?v=2', order: 4, isActive: true },
-  { id: '5', name: 'Lahfaa', src: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/clients/lahfaa-logo.webp?v=2', order: 5, isActive: true },
+  { id: '5', name: 'Lahfaa', src: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/clients/lahfaa-logo.webp?v=3', order: 5, isActive: true },
   { id: '6', name: 'Hala Food', src: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/clients/hala-food-logo.webp?v=2', order: 6, isActive: true },
   { id: '7', name: 'Metal Fuze', src: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/clients/metal-fuze-logo.webp?v=2', order: 7, isActive: true },
   { id: '8', name: 'Khazan', src: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/clients/khazan-logo.webp?v=2', order: 8, isActive: true },
@@ -120,7 +120,7 @@ export const clientLogos: ClientLogo[] = [
   { id: '12', name: 'Alhokair Holding', src: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/clients/alhokair-holding-logo.webp?v=2', order: 12, isActive: true },
   { id: '13', name: '7awi', src: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/clients/7awi-logo.webp?v=2', order: 13, isActive: true },
   { id: '14', name: 'Hokair Group', src: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/clients/hokair-group-logo.webp?v=2', order: 14, isActive: true },
-  { id: '15', name: 'Vayron', src: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/clients/vayron-logo-dark.webp?v=1', order: 15, isActive: true },
+  { id: '15', name: 'Vayron', src: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/clients/vayron-logo-dark.webp?v=3', order: 15, isActive: true },
 ];
 
 // ============================================================================
@@ -454,7 +454,7 @@ export const platforms: platformsType[] = [
   {
     id: 'salesforce',
     title: 'Salesforce',
-    icon: 'https://cdn.simpleicons.org/salesforce/00A1E0',
+    icon: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/icons/platforms/salesforce.svg',
     bg: 'bg-[#E6F6FC]',
     color: 'text-[#00A1E0]',
     iconColor: 'text-[#00A1E0]',
@@ -520,7 +520,18 @@ export const platforms: platformsType[] = [
   {
     id: 'adobe-creative-cloud',
     title: 'Adobe Creative Cloud',
-    icon: 'https://cdn.simpleicons.org/adobecreativecloud/DA1F26',
+    icon: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/icons/platforms/adobe-creative-cloud.svg',
+    bg: 'bg-[#FDF0F1]',
+    color: 'text-[#DA1F26]',
+    iconColor: 'text-[#DA1F26]',
+    isFeatured: false,
+    className: 'border-red-200',
+    iconClassName: 'text-[#DA1F26]',
+  },
+  {
+    id: 'adobe',
+    title: 'Adobe',
+    icon: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/icons/platforms/adobe-creative-cloud.svg',
     bg: 'bg-[#FDF0F1]',
     color: 'text-[#DA1F26]',
     iconColor: 'text-[#DA1F26]',
@@ -542,7 +553,7 @@ export const platforms: platformsType[] = [
   {
     id: 'canva',
     title: 'Canva',
-    icon: 'https://cdn.simpleicons.org/canva/00C4CC',
+    icon: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/icons/platforms/canva.svg',
     bg: 'bg-[#E6F9FA]',
     color: 'text-[#00C4CC]',
     iconColor: 'text-[#00C4CC]',
@@ -582,6 +593,17 @@ export const platforms: platformsType[] = [
     isFeatured: false,
     className: 'border-yellow-200',
     iconClassName: 'text-[#fcb900]',
+  },
+  {
+    id: 'python',
+    title: 'Python',
+    icon: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/icons/platforms/python.svg',
+    bg: 'bg-[#EAF2F8]',
+    color: 'text-[#3776AB]',
+    iconColor: 'text-[#3776AB]',
+    isFeatured: false,
+    className: 'border-sky-200',
+    iconClassName: 'text-[#3776AB]',
   },
   {
     id: 'nextjs',
@@ -784,7 +806,7 @@ export const growthServicesHome: GrowthServiceItem[] = [
     arDescription: 'التركيز على هندسة حلول رقمية قابلة للتوسع وآمنة ومتمحورة حول المستخدم من البداية. يشمل تطوير البرمجيات المخصصة للويب وتطبيقات الجوال، وتصميم تجربة وواجهة المستخدم، والبنية التحتية السحابية، وأتمتة الذكاء الاصطناعي لتحسين العمليات التشغيلية ودورات حياة المنتجات.',
     tagColor: 'text-persici-crimson',
     dotColor: 'bg-persici-crimson',
-    platforms: ['nextjs', 'react', 'angular', 'flutter', 'react-native', 'nodejs', 'php-laravel', 'wordpress', 'aws', 'docker', 'gcp', 'mongodb', 'figma', 'openai-api'],
+    platforms: ['python', 'nextjs', 'react', 'flutter', 'angular', 'nodejs', 'php-laravel', 'wordpress', 'aws', 'docker', 'gcp', 'mongodb', 'figma', 'openai-api'],
     width: 'full',
     order: 1,
   },
