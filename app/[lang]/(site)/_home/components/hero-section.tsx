@@ -64,7 +64,7 @@ export function HeroSection({ lang, dict, className }: HeroSectionProps) {
             title={dict.hero.trustedBy}
             logoWhiteAndBlackColor={false}
             hoverOnRealColor={false}
-            loopClassName="mt-20"
+            loopClassName="mt-10"
           />
         </div>
       </FadeUp>
