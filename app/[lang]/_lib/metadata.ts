@@ -8,8 +8,8 @@ const siteConfig = {
   },
   url: 'https://persici.com',
   defaultTitle: {
-    en: 'Persici Specialized in AI Digital Transformation',
-    ar: 'بيرسيشي متخصصة في الذكاء الاصطناعي والتحول الرقمي',
+    en: 'Persici - Specialized in AI and Digital Transformation',
+    ar: 'بيرسيشي - متخصصة في الذكاء الاصطناعي والتحول الرقمي',
   },
   description: {
     en: 'Persici is a boutique studio specialized in AI and digital transformation.',
