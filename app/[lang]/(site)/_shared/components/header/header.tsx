@@ -225,7 +225,7 @@ function isPointDark(x: number, y: number, headerEl: HTMLElement | null): boolea
   return false;
 }
 
-export function Header({ lang, dict }: HeaderProps) {
+export function Header({ lang, dict, navData }: HeaderProps) {
   const [openDropdownKey, setOpenDropdownKey] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileExpandedKeys, setMobileExpandedKeys] = useState<Record<string, boolean>>({});
@@ -398,10 +398,20 @@ export function Header({ lang, dict }: HeaderProps) {
     };
   }, [pathname, evaluateHeaderTheme]);
 
-  const navLinks = siteNavLinks.map((link) => ({
+  const rawLinks = (navData?.links && Array.isArray(navData.links) && navData.links.length > 0)
+    ? navData.links
+    : siteNavLinks;
+
+  const navLinks: NavLink[] = rawLinks.map((link: any): NavLink => ({
     ...link,
-    href: link.href === '/' ? `/${lang}` : `/${lang}${link.href}`,
+    href: link.href === '/' ? `/${lang}` : (link.href?.startsWith(`/${lang}`) ? link.href : `/${lang}${link.href || ''}`),
   }));
+
+  const ctaTitle = (navData?.ctaButton?.text?.[lang as 'en' | 'ar'] || (lang === 'ar' ? navData?.ctaButton?.text?.ar : navData?.ctaButton?.text?.en)) || dict.nav.bookCall;
+  const ctaHref = navData?.ctaButton?.href 
+    ? (navData.ctaButton.href.startsWith('/') ? `/${lang}${navData.ctaButton.href.replace(/^\/(en|ar)/, '')}` : navData.ctaButton.href) 
+    : `/${lang}/contact`;
+  const ctaVisible = navData?.ctaButton?.enabled !== false;
 
   const isActive = (href: string) => {
     if (href === `/${lang}` && pathname === `/${lang}`) return true;
@@ -576,49 +586,53 @@ export function Header({ lang, dict }: HeaderProps) {
           </div>
 
           {/* Mobile / Tablet CTA button (< lg) */}
-          <div className="lg:hidden flex items-center">
-            <HomeButton
-              href={`/${lang}/contact`}
-              title={dict.nav.bookCall}
-              onClick={() => setMobileMenuOpen(false)}
-              className={`inline-flex transition-all duration-300 !px-3 sm:!px-4 !py-1.5 sm:!py-2 !text-xs sm:!text-sm ${
-                isMobileHeaderWhite
-                  ? '!bg-persici-crimson !text-white hover:!bg-persici-crimson/90 shadow-xs'
-                  : isCtaDark
-                    ? '!bg-white !text-persici-black hover:!bg-white/90 shadow-md'
-                    : ''
-              }`}
-              iconClassName={`!h-5 !w-5 sm:!h-6 sm:!w-6 text-[10px] sm:text-xs ${
-                isMobileHeaderWhite
-                  ? '!bg-white !text-persici-crimson'
-                  : isCtaDark
-                    ? '!bg-persici-black !text-white'
-                    : ''
-              }`}
-              currentLang={lang}
-              isLangEffectIcon={true}
-            />
-          </div>
+          {ctaVisible && (
+            <div className="lg:hidden flex items-center">
+              <HomeButton
+                href={ctaHref}
+                title={ctaTitle}
+                onClick={() => setMobileMenuOpen(false)}
+                className={`inline-flex transition-all duration-300 !px-3 sm:!px-4 !py-1.5 sm:!py-2 !text-xs sm:!text-sm ${
+                  isMobileHeaderWhite
+                    ? '!bg-persici-crimson !text-white hover:!bg-persici-crimson/90 shadow-xs'
+                    : isCtaDark
+                      ? '!bg-white !text-persici-black hover:!bg-white/90 shadow-md'
+                      : ''
+                }`}
+                iconClassName={`!h-5 !w-5 sm:!h-6 sm:!w-6 text-[10px] sm:text-xs ${
+                  isMobileHeaderWhite
+                    ? '!bg-white !text-persici-crimson'
+                    : isCtaDark
+                      ? '!bg-persici-black !text-white'
+                      : ''
+                }`}
+                currentLang={lang}
+                isLangEffectIcon={true}
+              />
+            </div>
+          )}
 
           {/* Desktop CTA button (lg+) */}
-          <div className="hidden lg:flex items-center">
-            <HomeButton
-              href={`/${lang}/contact`}
-              title={dict.nav.bookCall}
-              className={`inline-flex transition-all duration-300 !px-3.5 xl:!px-6 !py-1.5 xl:!py-2 !text-xs xl:!text-sm ${
-                isCtaDark
-                  ? '!bg-white !text-persici-black hover:!bg-white/90 shadow-md'
-                  : ''
-              }`}
-              iconClassName={`!h-6 !w-6 xl:!h-8 xl:!w-8 text-[11px] xl:text-xs ${
-                isCtaDark
-                  ? '!bg-persici-black !text-white'
-                  : ''
-              }`}
-              currentLang={lang}
-              isLangEffectIcon={true}
-            />
-          </div>
+          {ctaVisible && (
+            <div className="hidden lg:flex items-center">
+              <HomeButton
+                href={ctaHref}
+                title={ctaTitle}
+                className={`inline-flex transition-all duration-300 !px-3.5 xl:!px-6 !py-1.5 xl:!py-2 !text-xs xl:!text-sm ${
+                  isCtaDark
+                    ? '!bg-white !text-persici-black hover:!bg-white/90 shadow-md'
+                    : ''
+                }`}
+                iconClassName={`!h-6 !w-6 xl:!h-8 xl:!w-8 text-[11px] xl:text-xs ${
+                  isCtaDark
+                    ? '!bg-persici-black !text-white'
+                    : ''
+                }`}
+                currentLang={lang}
+                isLangEffectIcon={true}
+              />
+            </div>
+          )}
         </div>
 
         {/* Floating Dropdown Mega-Menu Card (Desktop) */}

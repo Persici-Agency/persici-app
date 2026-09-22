@@ -2,7 +2,8 @@ import { notFound } from 'next/navigation';
 import { getDictionary, hasLocale } from '@dictionaries';
 import { createMetadata } from '@lib/metadata';
 import type { Locale } from '@lib/i18n';
-import { getAllInsights, getInsightBySlug } from '../_insights/data/insights.data';
+import { getAllInsights } from '../_insights/data/insights.data';
+import { getInsightBySlugFromDb } from '@/lib/insights-server';
 import { InsightDetailView } from './_insight-detail';
 
 type PageProps = {
@@ -30,7 +31,7 @@ export async function generateMetadata({ params }: PageProps) {
   const { lang, slug } = await params;
   if (!hasLocale(lang)) return {};
 
-  const insight = getInsightBySlug(slug);
+  const insight = await getInsightBySlugFromDb(slug);
   if (!insight) return {};
 
   const title = insight.title[lang as 'en' | 'ar'] || insight.title.en;
@@ -48,7 +49,7 @@ export default async function InsightDetailPage({ params }: PageProps) {
   const { lang, slug } = await params;
   if (!hasLocale(lang)) notFound();
 
-  const insight = getInsightBySlug(slug);
+  const insight = await getInsightBySlugFromDb(slug);
   if (!insight) notFound();
 
   const dict = await getDictionary(lang);

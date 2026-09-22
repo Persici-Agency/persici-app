@@ -16,11 +16,13 @@ export interface BaseMongoDocument {
 export type HeaderProps = {
   lang: string;
   dict: Dictionary;
+  navData?: any;
 };
 
 export type FooterProps = {
   lang: string;
   dict: Dictionary;
+  footerData?: any;
 };
 
 export type NavSubItem = {

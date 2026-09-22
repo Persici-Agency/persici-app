@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getDbInsights } from '@shared/services/db.service';
 import { getDb, COLLECTIONS } from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
+import { revalidatePath } from 'next/cache';
+import { revalidatePageContent } from '@/lib/revalidate';
 import type { InsightArticle } from '@shared/types';
 
 export const runtime = 'nodejs';
@@ -57,6 +59,14 @@ export async function POST(request: NextRequest) {
     };
 
     const res = await db.collection(COLLECTIONS.INSIGHTS).insertOne(newArticle as unknown as import('mongodb').Document);
+
+    // Revalidate public insights routes
+    revalidatePageContent('insights');
+    try {
+      revalidatePath('/[lang]/insights/[slug]', 'page');
+      revalidatePath(`/en/insights/${body.slug}`);
+      revalidatePath(`/ar/insights/${body.slug}`);
+    } catch {}
 
     return NextResponse.json(
       {
@@ -114,6 +124,15 @@ export async function PUT(request: NextRequest) {
       },
     });
 
+    revalidatePageContent('insights');
+    if (body.slug) {
+      try {
+        revalidatePath('/[lang]/insights/[slug]', 'page');
+        revalidatePath(`/en/insights/${body.slug}`);
+        revalidatePath(`/ar/insights/${body.slug}`);
+      } catch {}
+    }
+
     return NextResponse.json({
       success: true,
       message: 'Article updated successfully.',
@@ -126,3 +145,40 @@ export async function PUT(request: NextRequest) {
     );
   }
 }
+
+/**
+ * DELETE /api/insights
+ * Deletes an insight article.
+ */
+export async function DELETE(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const slug = searchParams.get('slug');
+    const id = searchParams.get('id');
+
+    if (!slug && !id) {
+      return NextResponse.json({ error: 'Slug or ID is required' }, { status: 400 });
+    }
+
+    const db = await getDb();
+    if (!db) return NextResponse.json({ error: 'Database unavailable' }, { status: 503 });
+
+    const filter = id && ObjectId.isValid(id) ? { _id: new ObjectId(id) } : { slug };
+    await db.collection(COLLECTIONS.INSIGHTS).deleteOne(filter);
+
+    revalidatePageContent('insights');
+    if (slug) {
+      try {
+        revalidatePath('/[lang]/insights/[slug]', 'page');
+        revalidatePath(`/en/insights/${slug}`);
+        revalidatePath(`/ar/insights/${slug}`);
+      } catch {}
+    }
+
+    return NextResponse.json({ success: true, message: 'Article deleted successfully.' });
+  } catch (error) {
+    console.error('[API /api/insights DELETE] Error:', error);
+    return NextResponse.json({ error: 'Failed to delete article' }, { status: 500 });
+  }
+}
+

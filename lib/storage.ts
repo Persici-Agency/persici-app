@@ -248,3 +248,72 @@ export async function uploadDocumentToR2(
   };
 }
 
+/**
+ * Uploads any non-image asset (Video, Document, Archive) directly to Cloudflare R2.
+ */
+export async function uploadGenericFileToR2(
+  fileBuffer: Buffer,
+  originalFilename: string,
+  mimeType: string,
+  folder = 'media'
+): Promise<UploadResult> {
+  const s3 = getS3Client();
+  if (!s3) {
+    throw new Error('Cloudflare R2 is not configured.');
+  }
+
+  const ext = path.extname(originalFilename);
+  const baseName = toSeoFilename(originalFilename);
+  const uniqueKey = `${folder}/${baseName}-${Date.now()}${ext}`;
+
+  const command = new PutObjectCommand({
+    Bucket: bucketName,
+    Key: uniqueKey,
+    Body: fileBuffer,
+    ContentType: mimeType || 'application/octet-stream',
+    CacheControl: 'public, max-age=31536000, immutable',
+  });
+
+  await s3.send(command);
+
+  return {
+    url: `${publicUrl}/${uniqueKey}`,
+    key: uniqueKey,
+    filename: path.basename(uniqueKey),
+    originalSize: fileBuffer.length,
+    optimizedSize: fileBuffer.length,
+    savingsPercentage: 0,
+    format: ext.replace(/^\./, '').toLowerCase(),
+  };
+}
+
+/**
+ * Uploads a WebP video thumbnail to Cloudflare R2.
+ */
+export async function uploadThumbnailToR2(
+  imageBuffer: Buffer,
+  videoKey: string
+): Promise<{ url: string; key: string }> {
+  const s3 = getS3Client();
+  if (!s3) throw new Error('Cloudflare R2 not configured.');
+
+  const videoBase = path.basename(videoKey, path.extname(videoKey));
+  const thumbKey = `thumbnails/${videoBase}-thumb-${Date.now()}.webp`;
+
+  const command = new PutObjectCommand({
+    Bucket: bucketName,
+    Key: thumbKey,
+    Body: imageBuffer,
+    ContentType: 'image/webp',
+    CacheControl: 'public, max-age=31536000, immutable',
+  });
+
+  await s3.send(command);
+
+  return {
+    url: `${publicUrl}/${thumbKey}`,
+    key: thumbKey,
+  };
+}
+
+

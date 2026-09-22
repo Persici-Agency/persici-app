@@ -384,9 +384,18 @@
     "title": "Dashboard",
     "overview": "Overview",
     "content": "Content",
-    "projects": "Projects",
-    "services": "Services",
-    "media": "Media Library",
-    "settings": "Settings"
+    "projects": "Portfolio Projects",
+    "services": "Growth Services",
+    "media": "Media Library (R2)",
+    "settings": "System Settings",
+    "sitePages": "Site Pages CMS",
+    "navigation": "Navigation & Footer",
+    "careersAts": "Careers ATS (HR)",
+    "leads": "Leads & Media Buying",
+    "users": "Team & RBAC Users",
+    "liveSite": "Live Site",
+    "signOut": "Sign Out",
+    "collapse": "Collapse sidebar (Ctrl+B)",
+    "expand": "Expand sidebar (Ctrl+B)"
   }
 }

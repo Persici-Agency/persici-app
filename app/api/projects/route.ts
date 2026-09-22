@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getDbProjects } from '@shared/services/db.service';
 import { getDb, COLLECTIONS } from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
+import { getSessionUser } from '@/lib/auth/jwt';
+import { isRoleAllowed } from '@/lib/auth/rbac';
+import { revalidatePageContent } from '@/lib/revalidate';
+import { revalidatePath } from 'next/cache';
 import type { ProjectItem } from '@shared/types';
 
 export const runtime = 'nodejs';
@@ -21,7 +25,7 @@ export async function GET() {
   } catch (error) {
     console.error('[API /api/projects GET] Error:', error);
     return NextResponse.json(
-      { error: 'Failed to retrieve projects', details: String(error) },
+      { error: 'Failed to retrieve projects' },
       { status: 500 }
     );
   }
@@ -30,9 +34,18 @@ export async function GET() {
 /**
  * POST /api/projects
  * Creates a new case study / project in MongoDB.
+ * PROTECTED: Requires 'admin', 'editor', or 'author' role.
  */
 export async function POST(request: NextRequest) {
   try {
+    const user = await getSessionUser();
+    if (!user || !isRoleAllowed(user.role, ['admin', 'editor', 'author'])) {
+      return NextResponse.json(
+        { error: 'Unauthorized. An authenticated author/editor session is required.' },
+        { status: 403 }
+      );
+    }
+
     const body = (await request.json().catch(() => null)) as Partial<ProjectItem> | null;
 
     if (!body || !body.title || !body.slug) {
@@ -58,6 +71,16 @@ export async function POST(request: NextRequest) {
 
     const res = await db.collection(COLLECTIONS.PROJECTS).insertOne(newProject as unknown as import('mongodb').Document);
 
+    revalidatePageContent('work');
+    revalidatePageContent('client-stories');
+    if (body.slug) {
+      try {
+        revalidatePath('/[lang]/client-stories/[slug]', 'page');
+        revalidatePath(`/en/client-stories/${body.slug}`);
+        revalidatePath(`/ar/client-stories/${body.slug}`);
+      } catch {}
+    }
+
     return NextResponse.json(
       {
         success: true,
@@ -69,7 +92,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('[API /api/projects POST] Error:', error);
     return NextResponse.json(
-      { error: 'Failed to create project', details: String(error) },
+      { error: 'Failed to create project' },
       { status: 500 }
     );
   }
@@ -78,9 +101,18 @@ export async function POST(request: NextRequest) {
 /**
  * PUT /api/projects
  * Updates an existing project.
+ * PROTECTED: Requires 'admin', 'editor', or 'author' role.
  */
 export async function PUT(request: NextRequest) {
   try {
+    const user = await getSessionUser();
+    if (!user || !isRoleAllowed(user.role, ['admin', 'editor', 'author'])) {
+      return NextResponse.json(
+        { error: 'Unauthorized. An authenticated author/editor session is required.' },
+        { status: 403 }
+      );
+    }
+
     const body = await request.json().catch(() => null);
     if (!body || (!body.id && !body._id && !body.slug)) {
       return NextResponse.json(
@@ -114,6 +146,16 @@ export async function PUT(request: NextRequest) {
       },
     });
 
+    revalidatePageContent('work');
+    revalidatePageContent('client-stories');
+    if (body.slug) {
+      try {
+        revalidatePath('/[lang]/client-stories/[slug]', 'page');
+        revalidatePath(`/en/client-stories/${body.slug}`);
+        revalidatePath(`/ar/client-stories/${body.slug}`);
+      } catch {}
+    }
+
     return NextResponse.json({
       success: true,
       message: 'Project updated successfully.',
@@ -121,8 +163,54 @@ export async function PUT(request: NextRequest) {
   } catch (error) {
     console.error('[API /api/projects PUT] Error:', error);
     return NextResponse.json(
-      { error: 'Failed to update project', details: String(error) },
+      { error: 'Failed to update project' },
       { status: 500 }
     );
+  }
+}
+
+/**
+ * DELETE /api/projects
+ * Removes a project case study.
+ * PROTECTED: Requires 'admin' or 'editor' role.
+ */
+export async function DELETE(request: NextRequest) {
+  try {
+    const user = await getSessionUser();
+    if (!user || !isRoleAllowed(user.role, ['admin', 'editor'])) {
+      return NextResponse.json(
+        { error: 'Unauthorized. Only Admins and Editors can delete projects.' },
+        { status: 403 }
+      );
+    }
+
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+    const slug = searchParams.get('slug');
+
+    if (!id && !slug) {
+      return NextResponse.json({ error: 'Missing project id or slug' }, { status: 400 });
+    }
+
+    const db = await getDb();
+    if (!db) return NextResponse.json({ error: 'Database unavailable' }, { status: 503 });
+
+    const filter = id && ObjectId.isValid(id) ? { _id: new ObjectId(id) } : { slug: slug! };
+    await db.collection(COLLECTIONS.PROJECTS).deleteOne(filter);
+
+    revalidatePageContent('work');
+    revalidatePageContent('client-stories');
+    if (slug) {
+      try {
+        revalidatePath('/[lang]/client-stories/[slug]', 'page');
+        revalidatePath(`/en/client-stories/${slug}`);
+        revalidatePath(`/ar/client-stories/${slug}`);
+      } catch {}
+    }
+
+    return NextResponse.json({ success: true, message: 'Project deleted successfully' });
+  } catch (error) {
+    console.error('[API /api/projects DELETE] Error:', error);
+    return NextResponse.json({ error: 'Failed to delete project' }, { status: 500 });
   }
 }

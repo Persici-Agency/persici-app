@@ -2,6 +2,7 @@ import { getDictionary, hasLocale } from '@dictionaries';
 import { notFound } from 'next/navigation';
 import { createMetadata } from '@lib/metadata';
 import type { Locale } from '@lib/i18n';
+import { getAllCareersFromDb } from '@/lib/careers-server';
 import { CareersView } from './_careers';
 
 export async function generateMetadata({ params }: PageProps<'/[lang]/careers'>) {
@@ -25,6 +26,7 @@ export default async function CareersPage({ params }: PageProps<'/[lang]/careers
   const { lang } = await params;
   if (!hasLocale(lang)) notFound();
   const dict = await getDictionary(lang);
+  const openings = await getAllCareersFromDb(true);
 
-  return <CareersView lang={lang} dict={dict} />;
+  return <CareersView lang={lang} dict={dict} initialOpenings={openings} />;
 }

@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React from 'react';
 import Image from 'next/image';
@@ -50,15 +50,19 @@ export function ContactOfficesSection({
         {/* 3-Column Office Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
           {offices.map((office, idx) => {
-            const city = office.city[isAr ? 'ar' : 'en'] || office.city.en;
-            const country = office.country[isAr ? 'ar' : 'en'] || office.country.en;
-            const badge = office.badge ? (office.badge[isAr ? 'ar' : 'en'] || office.badge.en) : undefined;
-            const address = office.address[isAr ? 'ar' : 'en'] || office.address.en;
-            const hours = office.hours[isAr ? 'ar' : 'en'] || office.hours.en;
+            const city = typeof office.city === 'object' && office.city ? (office.city[isAr ? 'ar' : 'en'] || office.city.en || '') : (office.city || '');
+            const country = typeof office.country === 'object' && office.country ? (office.country[isAr ? 'ar' : 'en'] || office.country.en || '') : (office.country || '');
+            const badge = office.badge ? (typeof office.badge === 'object' ? (office.badge[isAr ? 'ar' : 'en'] || office.badge.en) : office.badge) : undefined;
+            const address = typeof office.address === 'object' && office.address ? (office.address[isAr ? 'ar' : 'en'] || office.address.en || '') : (office.address || '');
+            const hours = typeof office.hours === 'object' && office.hours ? (office.hours[isAr ? 'ar' : 'en'] || office.hours.en || '') : (office.hours || '');
+            const image = office.image || '/images/contact/dubai-office.webp';
+            const phone = office.phone || '+971 4 000 0000';
+            const email = office.email || 'dubai@persiciagency.com';
+            const mapsUrl = office.mapsUrl || 'https://maps.google.com';
 
             return (
               <FadeUp
-                key={office.id}
+                key={office.id || idx}
                 delay={100 + idx * 100}
                 duration={750}
                 distance={20}
@@ -68,7 +72,7 @@ export function ContactOfficesSection({
                   {/* Card Top: Photography Chassis with Pill Badge */}
                   <div className="relative w-full h-52 sm:h-56 overflow-hidden bg-slate-100">
                     <Image
-                      src={office.image}
+                      src={image}
                       alt={`${city}, ${country}`}
                       fill
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -124,23 +128,23 @@ export function ContactOfficesSection({
                       {/* Phone & Direct Email */}
                       <div className="pt-2 border-t border-slate-100 space-y-2">
                         <a
-                          href={`tel:${office.phone.replace(/\s+/g, '')}`}
+                          href={`tel:${phone.replace(/\s+/g, '')}`}
                           className="flex items-center gap-3 text-xs sm:text-sm font-medium text-slate-700 hover:text-persici-crimson transition-colors"
                         >
                           <svg className="w-4 h-4 text-slate-400 group-hover:text-persici-crimson transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                           </svg>
-                          <span dir="ltr">{office.phone}</span>
+                          <span dir="ltr">{phone}</span>
                         </a>
 
                         <a
-                          href={`mailto:${office.email}`}
+                          href={`mailto:${email}`}
                           className="flex items-center gap-3 text-xs sm:text-sm font-medium text-slate-700 hover:text-persici-crimson transition-colors"
                         >
                           <svg className="w-4 h-4 text-slate-400 group-hover:text-persici-crimson transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                           </svg>
-                          <span>{office.email}</span>
+                          <span>{email}</span>
                         </a>
                       </div>
                     </div>
@@ -148,7 +152,7 @@ export function ContactOfficesSection({
                     {/* Directions Link */}
                     <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between">
                       <a
-                        href={office.mapsUrl}
+                        href={mapsUrl}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-1.5 text-xs font-semibold text-persici-crimson hover:text-persici-black transition-colors"

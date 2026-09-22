@@ -2,18 +2,42 @@ import { NextRequest, NextResponse } from 'next/server';
 import { saveAppointmentSubmission } from '@shared/services/db.service';
 import { getDb, COLLECTIONS } from '@/lib/mongodb';
 import { sendAppointmentNotification } from '@/lib/email';
+import { getSessionUser } from '@/lib/auth/jwt';
+import { isRoleAllowed } from '@/lib/auth/rbac';
 import type { AppointmentFormData } from '@shared/types';
 
 export const runtime = 'nodejs';
 
+const appointmentIps = new Map<string, { count: number; timestamp: number }>();
+function checkRateLimit(ip: string): boolean {
+  const now = Date.now();
+  const record = appointmentIps.get(ip);
+  if (!record || now - record.timestamp > 10 * 60 * 1000) {
+    appointmentIps.set(ip, { count: 1, timestamp: now });
+    return true;
+  }
+  if (record.count >= 6) return false;
+  record.count += 1;
+  return true;
+}
+
 /**
  * GET /api/appointment
  * Retrieves appointment bookings for the dashboard.
+ * PROTECTED: Requires 'admin' or 'media buying' role.
  */
 export async function GET(request: NextRequest) {
   try {
+    const user = await getSessionUser();
+    if (!user || !isRoleAllowed(user.role, ['admin', 'media buying'])) {
+      return NextResponse.json(
+        { error: 'Unauthorized. An authenticated administrative session is required.' },
+        { status: 401 }
+      );
+    }
+
     const { searchParams } = new URL(request.url);
-    const limit = parseInt(searchParams.get('limit') || '50', 10);
+    const limit = Math.min(parseInt(searchParams.get('limit') || '50', 10), 200);
 
     const db = await getDb();
     if (!db) {
@@ -21,7 +45,7 @@ export async function GET(request: NextRequest) {
         success: true,
         count: 0,
         appointments: [],
-        note: 'MongoDB not connected. Connect MongoDB to view saved appointments.',
+        note: 'MongoDB not connected.',
       });
     }
 
@@ -43,7 +67,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('[API /api/appointment GET] Error:', error);
     return NextResponse.json(
-      { error: 'Failed to retrieve appointments', details: String(error) },
+      { error: 'Failed to retrieve appointments' },
       { status: 500 }
     );
   }
@@ -55,6 +79,14 @@ export async function GET(request: NextRequest) {
  */
 export async function POST(request: NextRequest) {
   try {
+    const ip = request.headers.get('x-forwarded-for') || '127.0.0.1';
+    if (!checkRateLimit(ip)) {
+      return NextResponse.json(
+        { error: 'Too many requests. Please wait before booking another session.' },
+        { status: 429 }
+      );
+    }
+
     const body = (await request.json().catch(() => null)) as AppointmentFormData | null;
 
     if (!body || !body.email || !body.name) {
@@ -73,19 +105,19 @@ export async function POST(request: NextRequest) {
     }
 
     const appointmentData: AppointmentFormData = {
-      name: body.name.trim(),
-      email: body.email.trim(),
-      website: body.website?.trim() || '',
-      revenue: body.revenue?.trim() || '',
-      selectedDate: body.selectedDate?.trim() || '',
-      selectedTime: body.selectedTime?.trim() || '',
-      phone: body.phone?.trim() || '',
-      notes: body.notes?.trim() || '',
+      name: body.name.trim().slice(0, 100),
+      email: body.email.trim().toLowerCase().slice(0, 150),
+      website: (body.website || '').trim().slice(0, 200),
+      revenue: (body.revenue || '').trim().slice(0, 50),
+      selectedDate: (body.selectedDate || '').trim().slice(0, 50),
+      selectedTime: (body.selectedTime || '').trim().slice(0, 50),
+      phone: (body.phone || '').trim().slice(0, 50),
+      notes: (body.notes || '').trim().slice(0, 2000),
     };
 
     const result = await saveAppointmentSubmission(appointmentData);
 
-    // Dispatch Hostinger email notification explicitly flagged as an appointment from the pop-up
+    // Dispatch Hostinger email notification
     try {
       await sendAppointmentNotification(appointmentData);
     } catch (emailErr) {
@@ -103,7 +135,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('[API /api/appointment POST] Error:', error);
     return NextResponse.json(
-      { error: 'Internal server error while processing your appointment.', details: String(error) },
+      { error: 'Internal server error while processing your appointment.' },
       { status: 500 }
     );
   }

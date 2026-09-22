@@ -7,10 +7,11 @@ import type { FooterProps } from '@shared/types';
 
 export type { FooterProps };
 
-export function Footer({ lang, dict }: FooterProps) {
+export function Footer({ lang, dict, footerData }: FooterProps) {
   const currentYear = new Date().getFullYear();
 
   const navLinks = siteNavLinks.filter((l) => l.key !== 'home');
+  const brandDesc = footerData?.tagline?.[lang as 'en' | 'ar'] || (lang === 'ar' ? footerData?.tagline?.ar : footerData?.tagline?.en) || dict.footer.brandDesc;
 
   return (
     <footer className="relative border-t border-white/10 bg-persici-black text-white">
@@ -23,7 +24,7 @@ export function Footer({ lang, dict }: FooterProps) {
           <div className="md:col-span-5 lg:col-span-4">
             <Logo lang={lang} variant="light" className="mb-4" />
             <p className="max-w-sm text-xs leading-relaxed text-white/60">
-              {dict.footer.brandDesc}
+              {brandDesc}
             </p>
             <div className="mt-6">
               <HomeButton

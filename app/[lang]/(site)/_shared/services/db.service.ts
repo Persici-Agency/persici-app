@@ -18,6 +18,8 @@ import {
   reviewsList,
 } from '@shared/data';
 import { aboutPageData, type AboutPageData } from '@/app/[lang]/(site)/about/_about/data/about.data';
+import { contactPageData, type ContactPageData } from '@/app/[lang]/(site)/contact/_contact/data/contact.data';
+export type { ContactPageData };
 import type {
   HomePageContent,
   ServicesPageContent,
@@ -109,8 +111,12 @@ export async function getWorkPageData(): Promise<WorkPageContent> {
   return getPageContent<WorkPageContent>('work', workPageContent);
 }
 
-export async function getContactPageData(): Promise<ContactPageContent> {
-  return getPageContent<ContactPageContent>('contact', contactPageContent);
+export async function getContactPageData(): Promise<ContactPageData> {
+  const data = await getPageContent<ContactPageData>('contact', contactPageData);
+  if (!data.offices || !Array.isArray(data.offices) || data.offices.length === 0 || !data.offices[0]?.country) {
+    data.offices = contactPageData.offices;
+  }
+  return data;
 }
 
 export async function getSolutionsPageData(): Promise<SolutionsPageContent> {

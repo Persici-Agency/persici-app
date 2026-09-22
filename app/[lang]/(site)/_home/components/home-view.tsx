@@ -11,13 +11,16 @@ import { HomeContactSection } from './home-contact-section';
 export type HomeViewProps = {
   lang: string;
   dict: Dictionary;
+  content?: any;
 };
 
-export function HomeView({ lang, dict }: HomeViewProps) {
+export function HomeView({ lang, dict, content }: HomeViewProps) {
+  const videoTestimonials = content?.videoTestimonials || content?.clientVideos?.videos;
+
   return (
     <div className="relative overflow-hidden">
       {/* 1. Hero Section */}
-      <HeroSection lang={lang} dict={dict} className='' />
+      <HeroSection lang={lang} dict={dict} content={content} className='' />
 
       {/* 2. Featured Showcase ("Your online growth partner") */}
       <PartnerShowcaseSection dict={dict} />
@@ -29,7 +32,7 @@ export function HomeView({ lang, dict }: HomeViewProps) {
       <GrowthServicesSection lang={lang} dict={dict} />
 
       {/* 5. Meet Clients We Scale (Dark Video Testimonials Carousel) */}
-      <ClientsVideoSection dict={dict} />
+      <ClientsVideoSection dict={dict} testimonials={videoTestimonials} />
 
       {/* 6. Our Approach to eCommerce Growth */}
       <ApproachSection lang={lang} dict={dict} />

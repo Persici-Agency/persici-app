@@ -540,5 +540,26 @@ html.industry-subnav-sticky header.fixed {
   pointer-events: none;
 }
 
+/* Global interactive controls: ensure hand cursor on all buttons, tabs, links, and triggers */
+button,
+[role="button"],
+[role="tab"],
+select,
+summary,
+a,
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+input[type="checkbox"],
+input[type="radio"] {
+  cursor: pointer;
+}
+
+button:disabled,
+[role="button"][aria-disabled="true"],
+input:disabled {
+  cursor: not-allowed;
+}
+
 
 

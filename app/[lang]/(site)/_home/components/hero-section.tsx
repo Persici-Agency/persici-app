@@ -6,10 +6,36 @@ import { cn, heroHeading } from '@shared';
 export type HeroSectionProps = {
   lang: string;
   dict: Dictionary;
+  content?: any;
   className?: string;
 };
 
-export function HeroSection({ lang, dict, className }: HeroSectionProps) {
+export function HeroSection({ lang, dict, content, className }: HeroSectionProps) {
+  const isAr = lang === 'ar';
+
+  const title = (isAr ? content?.heroTitleAr : content?.heroTitle) ||
+    content?.hero?.title?.[isAr ? 'ar' : 'en'] ||
+    dict.hero.title;
+
+  const subtitle = (isAr ? content?.heroDescriptionAr : (content?.heroDescriptionEn || content?.heroDescription)) ||
+    content?.hero?.subtitle?.[isAr ? 'ar' : 'en'] ||
+    dict.hero.subtitle;
+
+  const ctaLabel = (isAr ? content?.heroCtaLabelAr : content?.heroCtaLabelEn) ||
+    content?.hero?.cta?.[isAr ? 'ar' : 'en'] ||
+    dict.hero.cta;
+
+  const ctaHref = content?.heroCtaHref || `/${lang}/contact`;
+
+  const ratingLabel = (isAr ? content?.heroScoreTextAr : content?.heroScoreTextEn) ||
+    content?.hero?.ratingLabel?.[isAr ? 'ar' : 'en'] ||
+    dict.hero.ratingLabel;
+
+  const trustedBy = (isAr ? content?.partnersTitleAr : content?.partnersTitleEn) ||
+    dict.hero.trustedBy;
+
+  const customLogos = content?.clientLogos && content.clientLogos.length > 0 ? content.clientLogos : undefined;
+
   return (
     <section className={cn('relative pt-30 pb-20 sm:pt-55 sm:pb-30', className)}>
       {/* Subtle Ambient Radial Glow */}
@@ -21,14 +47,14 @@ export function HeroSection({ lang, dict, className }: HeroSectionProps) {
         {/* Main Headline */}
         <FadeUp delay={0} duration={800} distance={28} blur={true}>
           <h1 className={heroHeading}>
-            {dict.hero.title}
+            {title}
           </h1>
         </FadeUp>
 
         {/* Subtitle */}
         <FadeUp delay={150} duration={800} distance={24}>
           <p className="mx-auto mt-6 max-w-2xl text-sm leading-relaxed text-foreground/75 sm:text-base lg:text-lg">
-            {dict.hero.subtitle}
+            {subtitle}
           </p>
         </FadeUp>
 
@@ -36,8 +62,8 @@ export function HeroSection({ lang, dict, className }: HeroSectionProps) {
         <FadeUp delay={300} duration={800} distance={20}>
           <div className="mt-8 flex flex-col items-center justify-center gap-6 sm:flex-row sm:gap-8">
             <HomeButton
-              href={`/${lang}/contact`}
-              title={dict.hero.cta}
+              href={ctaHref}
+              title={ctaLabel}
               className="bg-persici-crimson text-white"
               currentLang={lang}
               isLangEffectIcon={true}
@@ -45,8 +71,8 @@ export function HeroSection({ lang, dict, className }: HeroSectionProps) {
 
             {/* Rating / Avatar Social Proof */}
             <AvatarSocialProof
-              avatars={socialProofAvatars}
-              ratingLabel={dict.hero.ratingLabel}
+              avatars={content?.heroAvatars || socialProofAvatars}
+              ratingLabel={ratingLabel}
               size="lg"
               starsClassName="text-xl"
             />
@@ -61,7 +87,8 @@ export function HeroSection({ lang, dict, className }: HeroSectionProps) {
             logoHeight={45}
             gap="lg"
             pauseOnHover={false}
-            title={dict.hero.trustedBy}
+            title={trustedBy}
+            logos={customLogos}
             logoWhiteAndBlackColor={false}
             hoverOnRealColor={false}
             loopClassName="mt-10"
