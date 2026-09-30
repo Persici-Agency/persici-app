@@ -1,6 +1,6 @@
 import { getDictionary, hasLocale } from '@dictionaries';
 import { notFound } from 'next/navigation';
-import { getSessionUser } from '@/lib/auth/jwt';
+import { getSessionUser, hasGateAccess } from '@/lib/auth/jwt';
 import { DashboardSidebar, DashboardHeader } from '@dashboard-shared/components';
 
 export default async function DashboardLayout({
@@ -12,8 +12,16 @@ export default async function DashboardLayout({
 }) {
   const { lang } = await params;
   if (!hasLocale(lang)) notFound();
-  const dict = await getDictionary(lang);
+
   const user = await getSessionUser();
+  const isGate = await hasGateAccess();
+
+  // Stealth Fortress: If neither a signed-in user NOR an authorized passkey holder, return 404!
+  if (!user && !isGate) {
+    notFound();
+  }
+
+  const dict = await getDictionary(lang);
 
   const isRtl = lang === 'ar';
   const dir = isRtl ? 'rtl' : 'ltr';

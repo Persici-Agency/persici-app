@@ -4,6 +4,8 @@ import { getDb, COLLECTIONS } from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
 import { revalidatePath } from 'next/cache';
 import { revalidatePageContent } from '@/lib/revalidate';
+import { getSessionUser } from '@/lib/auth/jwt';
+import { isRoleAllowed } from '@/lib/auth/rbac';
 import type { InsightArticle } from '@shared/types';
 
 export const runtime = 'nodejs';
@@ -35,6 +37,14 @@ export async function GET() {
  */
 export async function POST(request: NextRequest) {
   try {
+    const user = await getSessionUser();
+    if (!user || !isRoleAllowed(user.role, ['admin', 'editor', 'author'])) {
+      return NextResponse.json(
+        { error: 'Unauthorized. Author, Editor, or Admin access required.' },
+        { status: 403 }
+      );
+    }
+
     const body = (await request.json().catch(() => null)) as Partial<InsightArticle> | null;
 
     if (!body || !body.title || !body.slug) {
@@ -91,6 +101,14 @@ export async function POST(request: NextRequest) {
  */
 export async function PUT(request: NextRequest) {
   try {
+    const user = await getSessionUser();
+    if (!user || !isRoleAllowed(user.role, ['admin', 'editor', 'author'])) {
+      return NextResponse.json(
+        { error: 'Unauthorized. Author, Editor, or Admin access required.' },
+        { status: 403 }
+      );
+    }
+
     const body = await request.json().catch(() => null);
     if (!body || (!body.id && !body._id && !body.slug)) {
       return NextResponse.json(
@@ -152,6 +170,14 @@ export async function PUT(request: NextRequest) {
  */
 export async function DELETE(request: NextRequest) {
   try {
+    const user = await getSessionUser();
+    if (!user || !isRoleAllowed(user.role, ['admin', 'editor'])) {
+      return NextResponse.json(
+        { error: 'Unauthorized. Editor or Admin access required.' },
+        { status: 403 }
+      );
+    }
+
     const { searchParams } = new URL(request.url);
     const slug = searchParams.get('slug');
     const id = searchParams.get('id');

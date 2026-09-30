@@ -533,6 +533,19 @@ html[lang="ar"] .font-secondary {
   will-change: transform, opacity;
 }
 
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 20s linear infinite;
+}
+
 /* Industry sub-navbar sticky coordination: hide main fixed header */
 html.industry-subnav-sticky header.fixed {
   transform: translateY(-100%);

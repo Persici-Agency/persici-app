@@ -16,11 +16,13 @@ import {
   insightsArticles,
   clientLogos,
   reviewsList,
+  defaultSharedContactData,
 } from '@shared/data';
 import { aboutPageData, type AboutPageData } from '@/app/[lang]/(site)/about/_about/data/about.data';
 import { contactPageData, type ContactPageData } from '@/app/[lang]/(site)/contact/_contact/data/contact.data';
 export type { ContactPageData };
 import type {
+  SharedContactContent,
   HomePageContent,
   ServicesPageContent,
   WorkPageContent,
@@ -117,6 +119,10 @@ export async function getContactPageData(): Promise<ContactPageData> {
     data.offices = contactPageData.offices;
   }
   return data;
+}
+
+export async function getSharedContactData(): Promise<SharedContactContent> {
+  return getPageContent<SharedContactContent>('shared-contact', defaultSharedContactData);
 }
 
 export async function getSolutionsPageData(): Promise<SolutionsPageContent> {

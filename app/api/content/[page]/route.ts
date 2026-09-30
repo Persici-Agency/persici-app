@@ -11,6 +11,7 @@ import {
   solutionsPageContent,
   industriesPageContent,
   howWeDoItPageContent,
+  defaultSharedContactData,
 } from '@shared/data';
 import { aboutPageData } from '@/app/[lang]/(site)/about/_about/data/about.data';
 import { contactPageData } from '@/app/[lang]/(site)/contact/_contact/data/contact.data';
@@ -26,6 +27,8 @@ const FALLBACK_PAGES: Record<string, object> = {
   industries: industriesPageContent,
   'how-we-do-it': howWeDoItPageContent,
   about: aboutPageData,
+  'shared-contact': defaultSharedContactData,
+  'contact-section': defaultSharedContactData,
 };
 
 /**

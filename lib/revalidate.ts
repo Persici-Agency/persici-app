@@ -8,10 +8,11 @@ import { revalidatePath } from 'next/cache';
  */
 export function revalidatePageContent(slug?: string): { success: boolean } {
   try {
-    if (!slug || slug === 'home') {
+    if (!slug || slug === 'home' || slug === 'shared-contact' || slug === 'contact-section') {
       revalidatePath('/[lang]', 'page');
       revalidatePath('/en');
       revalidatePath('/ar');
+      revalidatePath('/[lang]', 'layout');
     } else {
       revalidatePath(`/[lang]/${slug}`, 'page');
       revalidatePath(`/en/${slug}`);

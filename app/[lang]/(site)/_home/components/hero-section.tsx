@@ -13,28 +13,54 @@ export type HeroSectionProps = {
 export function HeroSection({ lang, dict, content, className }: HeroSectionProps) {
   const isAr = lang === 'ar';
 
-  const title = (isAr ? content?.heroTitleAr : content?.heroTitle) ||
+  const title =
+    content?.title?.[lang] ||
+    (isAr ? content?.heroTitleAr : content?.heroTitle) ||
     content?.hero?.title?.[isAr ? 'ar' : 'en'] ||
     dict.hero.title;
 
-  const subtitle = (isAr ? content?.heroDescriptionAr : (content?.heroDescriptionEn || content?.heroDescription)) ||
+  const subtitle =
+    content?.subtitle?.[lang] ||
+    (isAr ? content?.heroDescriptionAr : (content?.heroDescriptionEn || content?.heroDescription)) ||
     content?.hero?.subtitle?.[isAr ? 'ar' : 'en'] ||
     dict.hero.subtitle;
 
-  const ctaLabel = (isAr ? content?.heroCtaLabelAr : content?.heroCtaLabelEn) ||
+  const ctaLabel =
+    content?.ctaText?.[lang] ||
+    content?.cta?.[lang] ||
+    (isAr ? content?.heroCtaLabelAr : content?.heroCtaLabelEn) ||
     content?.hero?.cta?.[isAr ? 'ar' : 'en'] ||
     dict.hero.cta;
 
-  const ctaHref = content?.heroCtaHref || `/${lang}/contact`;
+  const rawCtaHref = content?.ctaHref || content?.heroCtaHref || '/contact';
+  const ctaHref = rawCtaHref.startsWith(`/${lang}`)
+    ? rawCtaHref
+    : rawCtaHref.startsWith('/')
+    ? `/${lang}${rawCtaHref}`
+    : rawCtaHref;
 
-  const ratingLabel = (isAr ? content?.heroScoreTextAr : content?.heroScoreTextEn) ||
+  const ctaEnabled = content?.heroCtaEnabled !== false && content?.ctaEnabled !== false;
+
+  const ratingLabel =
+    content?.ratingLabel?.[lang] ||
+    (isAr ? content?.heroScoreTextAr : content?.heroScoreTextEn) ||
     content?.hero?.ratingLabel?.[isAr ? 'ar' : 'en'] ||
     dict.hero.ratingLabel;
 
-  const trustedBy = (isAr ? content?.partnersTitleAr : content?.partnersTitleEn) ||
+  const trustedBy =
+    content?.trustedByTitle?.[lang] ||
+    content?.trustedBy?.[lang] ||
+    (isAr ? content?.partnersTitleAr : content?.partnersTitleEn) ||
     dict.hero.trustedBy;
 
-  const customLogos = content?.clientLogos && content.clientLogos.length > 0 ? content.clientLogos : undefined;
+  const customLogos =
+    (content?.clientLogos && content.clientLogos.length > 0)
+      ? content.clientLogos
+      : (content?.hero?.clientLogos && content.hero.clientLogos.length > 0)
+      ? content.hero.clientLogos
+      : undefined;
+
+  const avatars = content?.heroAvatars || content?.avatars || socialProofAvatars;
 
   return (
     <section className={cn('relative pt-30 pb-20 sm:pt-55 sm:pb-30', className)}>
@@ -61,17 +87,19 @@ export function HeroSection({ lang, dict, content, className }: HeroSectionProps
         {/* CTA & Rating Row */}
         <FadeUp delay={300} duration={800} distance={20}>
           <div className="mt-8 flex flex-col items-center justify-center gap-6 sm:flex-row sm:gap-8">
-            <HomeButton
-              href={ctaHref}
-              title={ctaLabel}
-              className="bg-persici-crimson text-white"
-              currentLang={lang}
-              isLangEffectIcon={true}
-            />
+            {ctaEnabled && (
+              <HomeButton
+                href={ctaHref}
+                title={ctaLabel}
+                className="bg-persici-crimson text-white"
+                currentLang={lang}
+                isLangEffectIcon={true}
+              />
+            )}
 
             {/* Rating / Avatar Social Proof */}
             <AvatarSocialProof
-              avatars={content?.heroAvatars || socialProofAvatars}
+              avatars={avatars}
               ratingLabel={ratingLabel}
               size="lg"
               starsClassName="text-xl"

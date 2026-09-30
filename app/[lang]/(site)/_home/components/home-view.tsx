@@ -20,28 +20,33 @@ export function HomeView({ lang, dict, content }: HomeViewProps) {
   return (
     <div className="relative overflow-hidden">
       {/* 1. Hero Section */}
-      <HeroSection lang={lang} dict={dict} content={content} className='' />
+      <HeroSection lang={lang} dict={dict} content={content?.hero || content} className="" />
 
       {/* 2. Featured Showcase ("Your online growth partner") */}
-      <PartnerShowcaseSection dict={dict} />
+      <PartnerShowcaseSection lang={lang} dict={dict} content={content?.partnerShowcase} />
 
       {/* 3. Heritage & Agency Story ("Rooted in excellence. Built for growth.") */}
-      <HeritageSection lang={lang} dict={dict} />
+      <HeritageSection lang={lang} dict={dict} content={content?.heritage} />
 
       {/* 4. Our Growth Services (Paid Social, Google Ads, Shopify & CRO) */}
-      <GrowthServicesSection lang={lang} dict={dict} />
+      <GrowthServicesSection lang={lang} dict={dict} content={content?.growthServices} />
 
       {/* 5. Meet Clients We Scale (Dark Video Testimonials Carousel) */}
-      <ClientsVideoSection dict={dict} testimonials={videoTestimonials} />
+      <ClientsVideoSection
+        lang={lang}
+        dict={dict}
+        content={content?.clientVideos}
+        testimonials={videoTestimonials}
+      />
 
       {/* 6. Our Approach to eCommerce Growth */}
-      <ApproachSection lang={lang} dict={dict} />
+      <ApproachSection lang={lang} dict={dict} content={content?.approach} />
 
       {/* 7. Words from Those We Scale (Reviews Wall) */}
-      <ReviewsSection lang={lang} dict={dict} />
+      <ReviewsSection lang={lang} dict={dict} content={content?.reviews} />
 
       {/* 8. Contact Us / Get In Touch Section (with Animated Crimson Wave Background) */}
-      <HomeContactSection lang={lang} dict={dict} />
+      <HomeContactSection lang={lang} dict={dict} content={content?.homeContact} />
     </div>
   );
 }

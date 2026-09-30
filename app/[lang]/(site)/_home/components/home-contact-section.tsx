@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import ReCAPTCHA from 'react-google-recaptcha';
 import type { Dictionary } from '@dictionaries';
@@ -12,17 +12,52 @@ import {
   SwiperWrapper,
   HomeButton,
 } from '@shared';
+import { defaultSharedContactData } from '@shared/data';
 
 export type HomeContactSectionProps = {
   lang: string;
   dict: Dictionary;
+  content?: any;
 };
 
-export function HomeContactSection({ lang, dict }: HomeContactSectionProps) {
-  const [isVerifiedHuman, setIsVerifiedHuman] = useState(false);
+export function HomeContactSection({ lang, dict, content }: HomeContactSectionProps) {
+  const isAr = lang === 'ar';
+  const [sharedData, setSharedData] = useState<any>(content || null);
+
+  useEffect(() => {
+    // If content wasn't provided or only has legacy fields, fetch the central shared contact document
+    if (!content || !content.reasons || !content.countries) {
+      fetch('/api/content/shared-contact')
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+          if (data && typeof data === 'object') {
+            setSharedData(data);
+          }
+        })
+        .catch(() => {});
+    }
+  }, [content]);
+
+  const activeContent = sharedData || content || defaultSharedContactData;
+
+  const captchaEnabled = activeContent?.captchaEnabled !== false;
+  const captchaSiteKey =
+    activeContent?.captchaSiteKey ||
+    process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY ||
+    '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI';
+  const showLogosSwiper = activeContent?.showLogosSwiper !== false;
+
+  const [isVerifiedHuman, setIsVerifiedHuman] = useState(!captchaEnabled);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [consent, setConsent] = useState(true);
+
+  // Update verification status when captchaEnabled toggles
+  useEffect(() => {
+    if (!captchaEnabled) {
+      setIsVerifiedHuman(true);
+    }
+  }, [captchaEnabled]);
 
   const recaptchaRef = useRef<ReCAPTCHA>(null);
 
@@ -37,27 +72,95 @@ export function HomeContactSection({ lang, dict }: HomeContactSectionProps) {
     message: '',
   });
 
-  const points = [
+  const defaultPoints = [
     dict.homeContact?.point1 || 'Discuss your unique business challenges',
     dict.homeContact?.point2 || 'Explore custom growth solutions built for your industry',
     dict.homeContact?.point3 || 'Get proven performance media & CRO guidance',
     dict.homeContact?.point4 || 'Identify the next step that fits your revenue goals',
   ];
 
-  const countries = [
-    'United Arab Emirates',
-    'Saudi Arabia',
-    'Qatar',
-    'Kuwait',
-    'Bahrain',
-    'Oman',
-    'Egypt',
-    'United Kingdom',
-    'United States',
-    'Germany',
-    'France',
-    'Other',
-  ];
+  const rawPoints = activeContent?.points || defaultSharedContactData.points;
+  const points: string[] =
+    Array.isArray(rawPoints) && rawPoints.length > 0
+      ? rawPoints.map((p: any) =>
+          typeof p === 'string'
+            ? p
+            : (p?.[lang] || (isAr ? p?.ar : p?.en) || '')
+        )
+      : defaultPoints;
+
+  const leftTitle =
+    activeContent?.leftTitle?.[lang] ||
+    (isAr
+      ? (activeContent?.leftTitleAr || activeContent?.leftTitle?.ar || activeContent?.homeContactLeftTitleAr)
+      : (activeContent?.leftTitleEn || activeContent?.leftTitle?.en || activeContent?.homeContactLeftTitleEn)) ||
+    (typeof activeContent?.leftTitle === 'string' ? activeContent.leftTitle : '') ||
+    dict.homeContact?.leftTitle ||
+    defaultSharedContactData.leftTitle[isAr ? 'ar' : 'en'];
+
+  const title =
+    activeContent?.title?.[lang] ||
+    (isAr
+      ? (activeContent?.titleAr || activeContent?.title?.ar || activeContent?.homeContactTitleAr)
+      : (activeContent?.titleEn || activeContent?.title?.en || activeContent?.homeContactTitleEn)) ||
+    (typeof activeContent?.title === 'string' ? activeContent.title : '') ||
+    dict.homeContact?.title ||
+    defaultSharedContactData.title[isAr ? 'ar' : 'en'];
+
+  const subtitle =
+    activeContent?.subtitle?.[lang] ||
+    (isAr
+      ? (activeContent?.subtitleAr || activeContent?.subtitle?.ar || activeContent?.homeContactSubtitleAr)
+      : (activeContent?.subtitleEn || activeContent?.subtitle?.en || activeContent?.homeContactSubtitleEn)) ||
+    (typeof activeContent?.subtitle === 'string' ? activeContent.subtitle : '') ||
+    dict.homeContact?.subtitle ||
+    defaultSharedContactData.subtitle[isAr ? 'ar' : 'en'];
+
+  const trustedBy =
+    activeContent?.trustedBy?.[lang] ||
+    (isAr
+      ? (activeContent?.trustedByAr || activeContent?.trustedBy?.ar)
+      : (activeContent?.trustedByEn || activeContent?.trustedBy?.en)) ||
+    (typeof activeContent?.trustedBy === 'string' ? activeContent.trustedBy : '') ||
+    dict.homeContact?.trustedBy ||
+    defaultSharedContactData.trustedBy[isAr ? 'ar' : 'en'];
+
+  const bgImage = activeContent?.bgImage || defaultSharedContactData.bgImage || '/images/footer/footer.gif';
+
+  const rawCountries = activeContent?.countries || defaultSharedContactData.countries;
+  const countries: string[] = Array.isArray(rawCountries) && rawCountries.length > 0
+    ? rawCountries.map((c: any) =>
+        typeof c === 'string'
+          ? c
+          : (c?.[lang] || (isAr ? c?.ar : c?.en) || '')
+      )
+    : defaultSharedContactData.countries;
+
+  const rawReasons = activeContent?.reasons || defaultSharedContactData.reasons;
+  const reasonsList: { key: string; label: string }[] = Array.isArray(rawReasons) && rawReasons.length > 0
+    ? rawReasons.map((r: any) => ({
+        key: typeof r === 'string' ? r : (r.id || r.key || r.labelEn || ''),
+        label:
+          typeof r === 'string'
+            ? r
+            : (isAr ? (r.labelAr || r.ar) : (r.labelEn || r.en || r.label)) || r.id || '',
+      }))
+    : defaultSharedContactData.reasons.map((r: any) => ({
+        key: r.id,
+        label: isAr ? r.labelAr : r.labelEn,
+      }));
+
+  const successTitle =
+    activeContent?.successTitle?.[lang] ||
+    (isAr ? activeContent?.successTitle?.ar : activeContent?.successTitle?.en) ||
+    dict.homeContact?.successTitle ||
+    defaultSharedContactData.successTitle[isAr ? 'ar' : 'en'];
+
+  const successMsg =
+    activeContent?.successMessage?.[lang] ||
+    (isAr ? activeContent?.successMessage?.ar : activeContent?.successMessage?.en) ||
+    dict.homeContact?.successMsg ||
+    defaultSharedContactData.successMessage[isAr ? 'ar' : 'en'];
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -67,7 +170,7 @@ export function HomeContactSection({ lang, dict }: HomeContactSectionProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isVerifiedHuman) return;
+    if (captchaEnabled && !isVerifiedHuman) return;
 
     setIsSubmitting(true);
     setErrorMessage(null);
@@ -115,7 +218,7 @@ export function HomeContactSection({ lang, dict }: HomeContactSectionProps) {
       reason: '',
       message: '',
     });
-    setIsVerifiedHuman(false);
+    setIsVerifiedHuman(!captchaEnabled);
     setIsSubmitted(false);
     recaptchaRef.current?.reset();
   };
@@ -125,7 +228,7 @@ export function HomeContactSection({ lang, dict }: HomeContactSectionProps) {
       {/* Background Animated Backdrop from GIF */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
         <Image
-          src="/images/footer/footer.gif"
+          src={bgImage}
           alt=""
           fill
           unoptimized
@@ -146,7 +249,7 @@ export function HomeContactSection({ lang, dict }: HomeContactSectionProps) {
               <div className="flex flex-col justify-between h-full order-2 lg:order-1 lg:col-span-6 lg:pe-6 border-t border-black/10 pt-8 sm:pt-10 lg:border-t-0 lg:pt-0">
                 <div>
                   <h3 className="font-primary text-2xl sm:text-3xl lg:text-4xl font-medium text-foreground tracking-tight">
-                    {dict.homeContact?.leftTitle || 'Ready to learn more?'}
+                    {leftTitle}
                   </h3>
 
                   <ul className="mt-8 space-y-4 sm:space-y-5">
@@ -162,34 +265,36 @@ export function HomeContactSection({ lang, dict }: HomeContactSectionProps) {
                 </div>
 
                 {/* Bottom Trust Row with SwiperWrapper */}
-                <div className="mt-10 sm:mt-14 border-t border-black/10 pt-6">
-                  <div className="w-full overflow-hidden">
-                    <SwiperWrapper
-                      title={dict.homeContact?.trustedBy || 'Trusted by visionary leaders and high-growth enterprises.'}
-                      showTitle={true}
-                      titleClassName="text-center"
-                      logoSize="sm"
-                      logoHeight={undefined}
-                      speed="normal"
-                      gap="xs"
-                      fadeMask={true}
-                      pauseOnHover={false}
-                      className="py-1"
-                      logoWhiteAndBlackColor={false}
-                      hoverOnRealColor={false}
-                    />
+                {showLogosSwiper && (
+                  <div className="mt-10 sm:mt-14 border-t border-black/10 pt-6">
+                    <div className="w-full overflow-hidden">
+                      <SwiperWrapper
+                        title={trustedBy}
+                        showTitle={true}
+                        titleClassName="text-center"
+                        logoSize="sm"
+                        logoHeight={undefined}
+                        speed="normal"
+                        gap="xs"
+                        fadeMask={true}
+                        pauseOnHover={false}
+                        className="py-1"
+                        logoWhiteAndBlackColor={false}
+                        hoverOnRealColor={false}
+                      />
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
 
               {/* Right Column: Get in touch Form (Top in mobile/tablet, Right on desktop) */}
               <div className="order-1 lg:order-2 lg:col-span-6">
                 <div>
                   <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-medium text-foreground tracking-tight">
-                    {dict.homeContact?.title || 'Get in touch'}
+                    {title}
                   </h2>
                   <p className="mt-3 text-sm sm:text-base leading-relaxed text-foreground/75">
-                    {dict.homeContact?.subtitle || 'Submit the form below and one of our experts will reach out.'}
+                    {subtitle}
                   </p>
                   <span className="mt-3 block text-xs text-foreground/50">
                     {dict.homeContact?.requiredNote || '* Required field'}
@@ -202,18 +307,17 @@ export function HomeContactSection({ lang, dict }: HomeContactSectionProps) {
                       ✓
                     </div>
                     <h4 className="font-primary text-xl font-medium text-foreground mt-4">
-                      {dict.homeContact?.successTitle || 'Thank you for reaching out!'}
+                      {successTitle}
                     </h4>
                     <p className="mt-2 text-sm text-foreground/75 max-w-md mx-auto leading-relaxed">
-                      {dict.homeContact?.successMsg ||
-                        'We have received your message. One of our senior growth strategists will review your inquiry and connect with you within 24 hours.'}
+                      {successMsg}
                     </p>
                     <button
                       type="button"
                       onClick={handleReset}
                       className="mt-6 inline-flex items-center gap-2 rounded-full border border-black/15 bg-white px-6 py-2.5 text-xs font-semibold text-foreground hover:bg-black/5 transition-all shadow-xs cursor-pointer"
                     >
-                      {dict.homeContact?.reset || 'Send another inquiry'}
+                      {dict.homeContact?.reset || (isAr ? 'إرسال استفسار آخر' : 'Send another inquiry')}
                     </button>
                   </div>
                 ) : (
@@ -325,13 +429,12 @@ export function HomeContactSection({ lang, dict }: HomeContactSectionProps) {
                             onChange={(e) => setFormData({ ...formData, reason: e.target.value })}
                             className="w-full appearance-none rounded-xl border border-black/15 bg-white ps-3.5 pe-11 py-2.5 text-sm text-foreground outline-none transition-all focus:border-persici-crimson focus:ring-2 focus:ring-persici-crimson/20 cursor-pointer"
                           >
-                            <option value="">{dict.homeContact?.reasonPlaceholder || 'Select reasons'}</option>
-                            {dict.homeContact?.reasons &&
-                              Object.entries(dict.homeContact.reasons).map(([key, label]) => (
-                                <option key={key} value={key}>
-                                  {label as string}
-                                </option>
-                              ))}
+                            <option value="">{dict.homeContact?.reasonPlaceholder || (isAr ? 'اختر سبب التواصل' : 'Select reasons')}</option>
+                            {reasonsList.map((r) => (
+                              <option key={r.key} value={r.key}>
+                                {r.label}
+                              </option>
+                            ))}
                           </select>
                           <div className="pointer-events-none absolute inset-y-0 end-0 flex items-center pe-4 text-foreground/50">
                             <TbChevronDown className="h-4 w-4" />
@@ -354,20 +457,22 @@ export function HomeContactSection({ lang, dict }: HomeContactSectionProps) {
                       />
                     </div>
 
-                    {/* Google reCAPTCHA v2 Widget */}
-                    <div className="pt-2">
-                      <div className="inline-block overflow-hidden rounded-sm border border-black/10 shadow-2xs">
-                        <ReCAPTCHA
-                          ref={recaptchaRef}
-                          sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'}
-                          onChange={handleCaptchaChange}
-                          onExpired={() => handleCaptchaChange(null)}
-                          onErrored={() => handleCaptchaChange(null)}
-                          hl={lang}
-                          theme="light"
-                        />
+                    {/* Google reCAPTCHA v2 Widget (Rendered only if captchaEnabled is true) */}
+                    {captchaEnabled && (
+                      <div className="pt-2">
+                        <div className="inline-block overflow-hidden rounded-sm border border-black/10 shadow-2xs">
+                          <ReCAPTCHA
+                            ref={recaptchaRef}
+                            sitekey={captchaSiteKey}
+                            onChange={handleCaptchaChange}
+                            onExpired={() => handleCaptchaChange(null)}
+                            onErrored={() => handleCaptchaChange(null)}
+                            hl={lang}
+                            theme="light"
+                          />
+                        </div>
                       </div>
-                    </div>
+                    )}
 
                     {/* Error Banner */}
                     {errorMessage && (
@@ -394,7 +499,7 @@ export function HomeContactSection({ lang, dict }: HomeContactSectionProps) {
                       <HomeButton
                         type="submit"
                         title={isSubmitting ? (dict.homeContact?.submitting || 'Sending...') : (dict.homeContact?.submit || 'Submit')}
-                        disabled={!isVerifiedHuman}
+                        disabled={captchaEnabled ? !isVerifiedHuman : false}
                         loading={isSubmitting}
                         currentLang={lang}
                         isLangEffectIcon={true}

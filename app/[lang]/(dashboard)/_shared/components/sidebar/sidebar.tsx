@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { Logo } from '../logo';
 import type { DashboardSidebarProps } from '../../types';
 import {
@@ -25,12 +25,21 @@ import {
   TbLayoutSidebarLeftExpand,
   TbLayoutSidebarRightCollapse,
   TbLayoutSidebarRightExpand,
+  TbForms,
 } from 'react-icons/tb';
 
 export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
   const pathname = usePathname();
   const role = user?.role || 'editor';
   const isRtl = lang === 'ar';
+  const searchParams = useSearchParams();
+  const passkey = searchParams?.get('passkey') || searchParams?.get('key') || '';
+
+  const getHref = (href: string) => {
+    if (!passkey) return href;
+    const sep = href.includes('?') ? '&' : '?';
+    return `${href}${sep}passkey=${encodeURIComponent(passkey)}`;
+  };
 
   // Collapse state with localStorage persistence
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -162,6 +171,7 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
     navigation: isRtl ? 'القوائم والتذييل' : 'Nav & Footer',
     headerBuilder: isRtl ? 'مُنشئ القائمة العلوية' : 'Header Menu Builder',
     footerBuilder: isRtl ? 'مُنشئ تذييل الموقع' : 'Footer Columns Builder',
+    sharedContact: isRtl ? 'القسم العام للتواصل' : 'Shared Contact Form',
     media: isRtl ? 'مكتبة الوسائط (R2)' : 'Media Library (R2)',
     careersAts: isRtl ? 'نظام التوظيف ATS' : 'Careers ATS (HR)',
     candidatePipeline: isRtl ? 'طلبات التوظيف والمتقدمين' : 'Candidate Pipeline',
@@ -247,7 +257,7 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
         {/* 1. Overview */}
         <div className="relative group">
           <Link
-            href={`/${lang}/dashboard`}
+            href={getHref(`/${lang}/dashboard`)}
             className={`flex items-center ${
               isCollapsed ? 'justify-center p-3' : 'gap-3 px-3.5 py-2.5'
             } rounded-xl text-sm font-medium transition-all ${
@@ -295,7 +305,7 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
             {!isCollapsed && openSections.pages && (
               <div className="mt-1 ps-3 space-y-1 border-s border-white/10 ms-4">
                 <Link
-                  href={`/${lang}/dashboard/pages/home`}
+                  href={getHref(`/${lang}/dashboard/pages/home`)}
                   className={`block px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                     isActive('/dashboard/pages/home')
                       ? 'bg-white/15 text-white font-semibold'
@@ -305,7 +315,7 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
                   {t.home}
                 </Link>
                 <Link
-                  href={`/${lang}/dashboard/pages/about`}
+                  href={getHref(`/${lang}/dashboard/pages/about`)}
                   className={`block px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                     isActive('/dashboard/pages/about')
                       ? 'bg-white/15 text-white font-semibold'
@@ -315,7 +325,7 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
                   {t.about}
                 </Link>
                 <Link
-                  href={`/${lang}/dashboard/pages/contact`}
+                  href={getHref(`/${lang}/dashboard/pages/contact`)}
                   className={`block px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                     isActive('/dashboard/pages/contact')
                       ? 'bg-white/15 text-white font-semibold'
@@ -325,7 +335,7 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
                   {t.contact}
                 </Link>
                 <Link
-                  href={`/${lang}/dashboard/pages/client-stories`}
+                  href={getHref(`/${lang}/dashboard/pages/client-stories`)}
                   className={`block px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                     isActive('/dashboard/pages/client-stories')
                       ? 'bg-white/15 text-white font-semibold'
@@ -335,7 +345,7 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
                   {t.clientStories}
                 </Link>
                 <Link
-                  href={`/${lang}/dashboard/pages/careers`}
+                  href={getHref(`/${lang}/dashboard/pages/careers`)}
                   className={`block px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                     isActive('/dashboard/pages/careers')
                       ? 'bg-white/15 text-white font-semibold'
@@ -367,34 +377,34 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
 
                   {openSections.solutions && (
                     <div className="mt-1 ps-2.5 space-y-1 border-s border-white/10 ms-2 text-[11px]">
-                      <Link href={`/${lang}/dashboard/pages/solutions`} className="block px-2.5 py-1 text-white/50 hover:text-white">
+                      <Link href={getHref(`/${lang}/dashboard/pages/solutions`)} className="block px-2.5 py-1 text-white/50 hover:text-white">
                         &bull; {t.solutionsHub}
                       </Link>
-                      <Link href={`/${lang}/dashboard/pages/solutions-ai-integration`} className="block px-2.5 py-1 text-white/50 hover:text-white">
+                      <Link href={getHref(`/${lang}/dashboard/pages/solutions-ai-integration`)} className="block px-2.5 py-1 text-white/50 hover:text-white">
                         &bull; {t.aiIntegration}
                       </Link>
-                      <Link href={`/${lang}/dashboard/pages/solutions-application-management`} className="block px-2.5 py-1 text-white/50 hover:text-white">
+                      <Link href={getHref(`/${lang}/dashboard/pages/solutions-application-management`)} className="block px-2.5 py-1 text-white/50 hover:text-white">
                         &bull; {t.appManagement}
                       </Link>
-                      <Link href={`/${lang}/dashboard/pages/solutions-digital-engineering`} className="block px-2.5 py-1 text-white/50 hover:text-white">
+                      <Link href={getHref(`/${lang}/dashboard/pages/solutions-digital-engineering`)} className="block px-2.5 py-1 text-white/50 hover:text-white">
                         &bull; {t.digitalEngineering}
                       </Link>
-                      <Link href={`/${lang}/dashboard/pages/solutions-ux-and-product-design`} className="block px-2.5 py-1 text-white/50 hover:text-white">
+                      <Link href={getHref(`/${lang}/dashboard/pages/solutions-ux-and-product-design`)} className="block px-2.5 py-1 text-white/50 hover:text-white">
                         &bull; {t.uxDesign}
                       </Link>
-                      <Link href={`/${lang}/dashboard/pages/solutions-ecommerce-growth`} className="block px-2.5 py-1 text-white/50 hover:text-white">
+                      <Link href={getHref(`/${lang}/dashboard/pages/solutions-ecommerce-growth`)} className="block px-2.5 py-1 text-white/50 hover:text-white">
                         &bull; {t.ecommerce}
                       </Link>
-                      <Link href={`/${lang}/dashboard/pages/solutions-marketing-communications`} className="block px-2.5 py-1 text-white/50 hover:text-white">
+                      <Link href={getHref(`/${lang}/dashboard/pages/solutions-marketing-communications`)} className="block px-2.5 py-1 text-white/50 hover:text-white">
                         &bull; {t.marketingComms}
                       </Link>
-                      <Link href={`/${lang}/dashboard/pages/solutions-customer-engagement`} className="block px-2.5 py-1 text-white/50 hover:text-white">
+                      <Link href={getHref(`/${lang}/dashboard/pages/solutions-customer-engagement`)} className="block px-2.5 py-1 text-white/50 hover:text-white">
                         &bull; {t.customerEngagement}
                       </Link>
-                      <Link href={`/${lang}/dashboard/pages/solutions-crm-management`} className="block px-2.5 py-1 text-white/50 hover:text-white">
+                      <Link href={getHref(`/${lang}/dashboard/pages/solutions-crm-management`)} className="block px-2.5 py-1 text-white/50 hover:text-white">
                         &bull; {t.crmManagement}
                       </Link>
-                      <Link href={`/${lang}/dashboard/pages/solutions-supply-chain`} className="block px-2.5 py-1 text-white/50 hover:text-white">
+                      <Link href={getHref(`/${lang}/dashboard/pages/solutions-supply-chain`)} className="block px-2.5 py-1 text-white/50 hover:text-white">
                         &bull; {t.supplyChain}
                       </Link>
                     </div>
@@ -423,25 +433,25 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
 
                   {openSections.industries && (
                     <div className="mt-1 ps-2.5 space-y-1 border-s border-white/10 ms-2 text-[11px]">
-                      <Link href={`/${lang}/dashboard/pages/industries`} className="block px-2.5 py-1 text-white/50 hover:text-white">
+                      <Link href={getHref(`/${lang}/dashboard/pages/industries`)} className="block px-2.5 py-1 text-white/50 hover:text-white">
                         &bull; {t.industriesHub}
                       </Link>
-                      <Link href={`/${lang}/dashboard/pages/industries-consumer-products`} className="block px-2.5 py-1 text-white/50 hover:text-white">
+                      <Link href={getHref(`/${lang}/dashboard/pages/industries-consumer-products`)} className="block px-2.5 py-1 text-white/50 hover:text-white">
                         &bull; {t.consumerProducts}
                       </Link>
-                      <Link href={`/${lang}/dashboard/pages/industries-energy-commodities`} className="block px-2.5 py-1 text-white/50 hover:text-white">
+                      <Link href={getHref(`/${lang}/dashboard/pages/industries-energy-commodities`)} className="block px-2.5 py-1 text-white/50 hover:text-white">
                         &bull; {t.energyCommodities}
                       </Link>
-                      <Link href={`/${lang}/dashboard/pages/industries-health`} className="block px-2.5 py-1 text-white/50 hover:text-white">
+                      <Link href={getHref(`/${lang}/dashboard/pages/industries-health`)} className="block px-2.5 py-1 text-white/50 hover:text-white">
                         &bull; {t.health}
                       </Link>
-                      <Link href={`/${lang}/dashboard/pages/industries-public-sector`} className="block px-2.5 py-1 text-white/50 hover:text-white">
+                      <Link href={getHref(`/${lang}/dashboard/pages/industries-public-sector`)} className="block px-2.5 py-1 text-white/50 hover:text-white">
                         &bull; {t.publicSector}
                       </Link>
-                      <Link href={`/${lang}/dashboard/pages/industries-financial-services`} className="block px-2.5 py-1 text-white/50 hover:text-white">
+                      <Link href={getHref(`/${lang}/dashboard/pages/industries-financial-services`)} className="block px-2.5 py-1 text-white/50 hover:text-white">
                         &bull; {t.financialServices}
                       </Link>
-                      <Link href={`/${lang}/dashboard/pages/industries-technology-media`} className="block px-2.5 py-1 text-white/50 hover:text-white">
+                      <Link href={getHref(`/${lang}/dashboard/pages/industries-technology-media`)} className="block px-2.5 py-1 text-white/50 hover:text-white">
                         &bull; {t.techMedia}
                       </Link>
                     </div>
@@ -470,22 +480,22 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
 
                   {openSections.howWeDoIt && (
                     <div className="mt-1 ps-2.5 space-y-1 border-s border-white/10 ms-2 text-[11px]">
-                      <Link href={`/${lang}/dashboard/pages/how-we-do-it`} className="block px-2.5 py-1 text-white/50 hover:text-white">
+                      <Link href={getHref(`/${lang}/dashboard/pages/how-we-do-it`)} className="block px-2.5 py-1 text-white/50 hover:text-white">
                         &bull; {t.howWeDoItHub}
                       </Link>
-                      <Link href={`/${lang}/dashboard/pages/how-we-do-it-framework`} className="block px-2.5 py-1 text-white/50 hover:text-white">
+                      <Link href={getHref(`/${lang}/dashboard/pages/how-we-do-it-framework`)} className="block px-2.5 py-1 text-white/50 hover:text-white">
                         &bull; {t.framework}
                       </Link>
-                      <Link href={`/${lang}/dashboard/pages/how-we-do-it-engineering`} className="block px-2.5 py-1 text-white/50 hover:text-white">
+                      <Link href={getHref(`/${lang}/dashboard/pages/how-we-do-it-engineering`)} className="block px-2.5 py-1 text-white/50 hover:text-white">
                         &bull; {t.engineering}
                       </Link>
-                      <Link href={`/${lang}/dashboard/pages/how-we-do-it-experience`} className="block px-2.5 py-1 text-white/50 hover:text-white">
+                      <Link href={getHref(`/${lang}/dashboard/pages/how-we-do-it-experience`)} className="block px-2.5 py-1 text-white/50 hover:text-white">
                         &bull; {t.experience}
                       </Link>
-                      <Link href={`/${lang}/dashboard/pages/how-we-do-it-product`} className="block px-2.5 py-1 text-white/50 hover:text-white">
+                      <Link href={getHref(`/${lang}/dashboard/pages/how-we-do-it-product`)} className="block px-2.5 py-1 text-white/50 hover:text-white">
                         &bull; {t.productMgmt}
                       </Link>
-                      <Link href={`/${lang}/dashboard/pages/how-we-do-it-strategy`} className="block px-2.5 py-1 text-white/50 hover:text-white">
+                      <Link href={getHref(`/${lang}/dashboard/pages/how-we-do-it-strategy`)} className="block px-2.5 py-1 text-white/50 hover:text-white">
                         &bull; {t.strategyConsulting}
                       </Link>
                     </div>
@@ -529,7 +539,7 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
             {!isCollapsed && openSections.navigation && (
               <div className="mt-1 ps-3 space-y-1 border-s border-white/10 ms-4">
                 <Link
-                  href={`/${lang}/dashboard/navigation/header`}
+                  href={getHref(`/${lang}/dashboard/navigation/header`)}
                   className={`block px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                     isActive('/dashboard/navigation/header')
                       ? 'bg-white/15 text-white font-semibold'
@@ -539,7 +549,7 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
                   {t.headerBuilder}
                 </Link>
                 <Link
-                  href={`/${lang}/dashboard/navigation/footer`}
+                  href={getHref(`/${lang}/dashboard/navigation/footer`)}
                   className={`block px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                     isActive('/dashboard/navigation/footer')
                       ? 'bg-white/15 text-white font-semibold'
@@ -548,17 +558,49 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
                 >
                   {t.footerBuilder}
                 </Link>
+                <Link
+                  href={getHref(`/${lang}/dashboard/shared-contact`)}
+                  className={`block px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                    isActive('/dashboard/shared-contact')
+                      ? 'bg-white/15 text-white font-semibold'
+                      : 'text-white/60 hover:text-white'
+                  }`}
+                >
+                  {t.sharedContact}
+                </Link>
               </div>
             )}
           </div>
         )}
 
-        {/* 4. Media Browser */}
+        {/* 4. Standalone Global Shared Contact Section Tab */}
+        {canSeePages && (
+          <div className="pt-2">
+            <div className="relative group">
+              <Link
+                href={getHref(`/${lang}/dashboard/shared-contact`)}
+                className={`flex items-center ${
+                  isCollapsed ? 'justify-center p-3' : 'gap-3 px-3.5 py-2.5'
+                } rounded-xl text-sm font-medium transition-all ${
+                  isActive('/dashboard/shared-contact')
+                    ? 'bg-persici-crimson text-white shadow-lg shadow-persici-crimson/25'
+                    : 'text-white/70 hover:bg-white/5 hover:text-white'
+                }`}
+              >
+                <TbForms className="w-5 h-5 shrink-0" />
+                {!isCollapsed && <span>{t.sharedContact}</span>}
+              </Link>
+              {isCollapsed && <div className={tooltipClass}>{t.sharedContact}</div>}
+            </div>
+          </div>
+        )}
+
+        {/* 5. Media Browser */}
         {canSeeMedia && (
           <div className="pt-2">
             <div className="relative group">
               <Link
-                href={`/${lang}/dashboard/media`}
+                href={getHref(`/${lang}/dashboard/media`)}
                 className={`flex items-center ${
                   isCollapsed ? 'justify-center p-3' : 'gap-3 px-3.5 py-2.5'
                 } rounded-xl text-sm font-medium transition-all ${
@@ -608,7 +650,7 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
             {!isCollapsed && openSections.careers && (
               <div className="mt-1 ps-3 space-y-1 border-s border-amber-500/20 ms-4">
                 <Link
-                  href={`/${lang}/dashboard/careers/applicants`}
+                  href={getHref(`/${lang}/dashboard/careers/applicants`)}
                   className={`block px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                     isActive('/dashboard/careers/applicants')
                       ? 'bg-amber-500/20 text-amber-200 font-semibold'
@@ -618,7 +660,7 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
                   {t.candidatePipeline}
                 </Link>
                 <Link
-                  href={`/${lang}/dashboard/careers/openings`}
+                  href={getHref(`/${lang}/dashboard/careers/openings`)}
                   className={`block px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                     isActive('/dashboard/careers/openings')
                       ? 'bg-amber-500/20 text-amber-200 font-semibold'
@@ -628,7 +670,7 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
                   {t.activeOpenings}
                 </Link>
                 <Link
-                  href={`/${lang}/dashboard/careers/communications`}
+                  href={getHref(`/${lang}/dashboard/careers/communications`)}
                   className={`block px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                     isActive('/dashboard/careers/communications')
                       ? 'bg-amber-500/20 text-amber-200 font-semibold'
@@ -675,7 +717,7 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
             {!isCollapsed && openSections.leads && (
               <div className="mt-1 ps-3 space-y-1 border-s border-purple-500/20 ms-4">
                 <Link
-                  href={`/${lang}/dashboard/leads/contact`}
+                  href={getHref(`/${lang}/dashboard/leads/contact`)}
                   className={`block px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                     isActive('/dashboard/leads/contact')
                       ? 'bg-purple-500/20 text-purple-200 font-semibold'
@@ -685,7 +727,7 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
                   {t.contactInquiries}
                 </Link>
                 <Link
-                  href={`/${lang}/dashboard/leads/appointments`}
+                  href={getHref(`/${lang}/dashboard/leads/appointments`)}
                   className={`block px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                     isActive('/dashboard/leads/appointments')
                       ? 'bg-purple-500/20 text-purple-200 font-semibold'
@@ -695,7 +737,7 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
                   {t.appointments}
                 </Link>
                 <Link
-                  href={`/${lang}/dashboard/leads/discovery`}
+                  href={getHref(`/${lang}/dashboard/leads/discovery`)}
                   className={`block px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                     isActive('/dashboard/leads/discovery')
                       ? 'bg-purple-500/20 text-purple-200 font-semibold'
@@ -705,7 +747,7 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
                   {t.discovery}
                 </Link>
                 <Link
-                  href={`/${lang}/dashboard/leads/analytics`}
+                  href={getHref(`/${lang}/dashboard/leads/analytics`)}
                   className={`block px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                     isActive('/dashboard/leads/analytics')
                       ? 'bg-purple-500/20 text-purple-200 font-semibold'
@@ -752,7 +794,7 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
             {!isCollapsed && openSections.content && (
               <div className="mt-1 ps-3 space-y-1 border-s border-white/10 ms-4">
                 <Link
-                  href={`/${lang}/dashboard/content/insights`}
+                  href={getHref(`/${lang}/dashboard/content/insights`)}
                   className={`block px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                     isActive('/dashboard/content/insights')
                       ? 'bg-white/15 text-white font-semibold'
@@ -762,7 +804,7 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
                   {t.insights}
                 </Link>
                 <Link
-                  href={`/${lang}/dashboard/content/projects`}
+                  href={getHref(`/${lang}/dashboard/content/projects`)}
                   className={`block px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                     isActive('/dashboard/content/projects')
                       ? 'bg-white/15 text-white font-semibold'
@@ -772,7 +814,7 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
                   {t.projects}
                 </Link>
                 <Link
-                  href={`/${lang}/dashboard/content/reviews`}
+                  href={getHref(`/${lang}/dashboard/content/reviews`)}
                   className={`block px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                     isActive('/dashboard/content/reviews')
                       ? 'bg-white/15 text-white font-semibold'
@@ -791,7 +833,7 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
           <div className="pt-2">
             <div className="relative group">
               <Link
-                href={`/${lang}/dashboard/users`}
+                href={getHref(`/${lang}/dashboard/users`)}
                 className={`flex items-center ${
                   isCollapsed ? 'justify-center p-3' : 'gap-3 px-3.5 py-2.5'
                 } rounded-xl text-sm font-medium transition-all ${
@@ -813,7 +855,7 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
           <div className="pt-2">
             <div className="relative group">
               <Link
-                href={`/${lang}/dashboard/settings`}
+                href={getHref(`/${lang}/dashboard/settings`)}
                 className={`flex items-center ${
                   isCollapsed ? 'justify-center p-3' : 'gap-3 px-3.5 py-2.5'
                 } rounded-xl text-sm font-medium transition-all ${

@@ -182,6 +182,7 @@ export type DarkTestimonialCardProps = {
   autoPlayInterval?: number;
   className?: string;
   testimonials?: TestimonialItem[];
+  lang?: string;
 };
 
 // 4. Video Testimonials Carousel
@@ -943,4 +944,33 @@ export interface HowWeDoItPageContent extends BaseMongoDocument {
   faqsTitle: LocalizedString;
   faqsSubtitle: LocalizedString;
   faqs: SolutionFaqItem[];
+}
+
+export interface SharedContactContent extends BaseMongoDocument {
+  page?: 'shared-contact';
+  leftTitle: LocalizedString;
+  title: LocalizedString;
+  subtitle: LocalizedString;
+  trustedBy: LocalizedString;
+  bgImage: string;
+  showLogosSwiper: boolean;
+  captchaEnabled: boolean;
+  captchaSiteKey?: string;
+  successTitle?: LocalizedString;
+  successMessage?: LocalizedString;
+  points: LocalizedString[];
+  countries: string[];
+  reasons: {
+    id: string;
+    labelEn: string;
+    labelAr: string;
+  }[];
+  fields?: {
+    id: string;
+    name: string;
+    labelEn: string;
+    labelAr: string;
+    type: 'text' | 'email' | 'select' | 'textarea' | 'number';
+    required: boolean;
+  }[];
 }

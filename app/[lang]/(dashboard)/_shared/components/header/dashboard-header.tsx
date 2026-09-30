@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import type { DashboardHeaderProps } from '../../types';
 import {
@@ -14,13 +14,16 @@ import {
 export function DashboardHeader({ lang = 'en', user, dict }: DashboardHeaderProps) {
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const passkey = searchParams?.get('passkey') || searchParams?.get('key') || '';
   const [loggingOut, setLoggingOut] = useState(false);
 
   const handleLogout = async () => {
     setLoggingOut(true);
     try {
       await fetch('/api/auth/logout', { method: 'POST' });
-      router.push(`/${lang}/dashboard/login`);
+      const dest = passkey ? `/${lang}/dashboard/login?passkey=${encodeURIComponent(passkey)}` : `/${lang}`;
+      router.push(dest);
       router.refresh();
     } catch (err) {
       console.error('Logout error:', err);
@@ -49,10 +52,14 @@ export function DashboardHeader({ lang = 'en', user, dict }: DashboardHeaderProp
   const oppositeLang = lang === 'ar' ? 'en' : 'ar';
   const oppositeLangLabel = lang === 'ar' ? 'English' : 'العربية';
 
-  // Preserve current subpath when switching language
-  const targetHref = pathname.startsWith(`/${lang}`)
+  // Preserve current subpath and passkey when switching language
+  let targetHref = pathname.startsWith(`/${lang}`)
     ? pathname.replace(`/${lang}`, `/${oppositeLang}`)
     : `/${oppositeLang}${pathname}`;
+
+  if (passkey) {
+    targetHref += `?passkey=${encodeURIComponent(passkey)}`;
+  }
 
   return (
     <header className="h-20 bg-white border-b border-slate-200/80 px-4 sm:px-8 flex items-center justify-between sticky top-0 z-30 shadow-xs">

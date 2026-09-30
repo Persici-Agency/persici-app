@@ -10,7 +10,8 @@ export default function DashboardLoginPage() {
   const searchParams = useSearchParams();
   const params = useParams();
   const lang = (params?.lang as string) || 'en';
-  const from = searchParams.get('from') || `/${lang}/dashboard`;
+  const passkey = searchParams.get('passkey') || searchParams.get('key') || '';
+  const rawFrom = searchParams.get('from') || `/${lang}/dashboard`;
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -41,8 +42,22 @@ export default function DashboardLoginPage() {
         throw new Error(data.error || 'Authentication failed.');
       }
 
-      // Successful login
-      router.push(from);
+      // Successful login - preserve passkey parameter so gate clearance is uninterrupted
+      let destination = rawFrom;
+      if (passkey) {
+        try {
+          const destUrl = new URL(destination, window.location.origin);
+          if (!destUrl.searchParams.has('passkey')) {
+            destUrl.searchParams.set('passkey', passkey);
+          }
+          destination = destUrl.pathname + destUrl.search;
+        } catch {
+          const sep = destination.includes('?') ? '&' : '?';
+          destination = `${destination}${sep}passkey=${encodeURIComponent(passkey)}`;
+        }
+      }
+
+      router.push(destination);
       router.refresh();
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Login failed. Please verify your credentials.');
