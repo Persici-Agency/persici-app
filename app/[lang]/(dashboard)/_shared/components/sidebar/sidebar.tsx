@@ -48,7 +48,10 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
     try {
       const saved = localStorage.getItem('persici_sidebar_collapsed');
       if (saved !== null) {
-        setIsCollapsed(saved === 'true');
+        const val = saved === 'true';
+        queueMicrotask(() => {
+          setIsCollapsed(val);
+        });
       }
     } catch {
       // Ignore in restricted environments
@@ -172,7 +175,7 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
     headerBuilder: isRtl ? 'مُنشئ القائمة العلوية' : 'Header Menu Builder',
     footerBuilder: isRtl ? 'مُنشئ تذييل الموقع' : 'Footer Columns Builder',
     sharedContact: isRtl ? 'القسم العام للتواصل' : 'Shared Contact Form',
-    media: isRtl ? 'مكتبة الوسائط (R2)' : 'Media Library (R2)',
+    media: isRtl ? 'مكتبة التخزين (R2)' : 'Storage Library (R2)',
     careersAts: isRtl ? 'نظام التوظيف ATS' : 'Careers ATS (HR)',
     candidatePipeline: isRtl ? 'طلبات التوظيف والمتقدمين' : 'Candidate Pipeline',
     activeOpenings: isRtl ? 'الوظائف الشاغرة النشطة' : 'Active Job Postings',

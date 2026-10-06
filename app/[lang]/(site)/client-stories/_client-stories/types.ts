@@ -79,6 +79,7 @@ export interface ClientStoryDetail {
   services: LocalizedString[];
   region: LocalizedString;
   date: string;
+  link?: string;
 
   // High-res Featured Media
   heroImage: string;

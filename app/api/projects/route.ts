@@ -1,22 +1,30 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getDbProjects } from '@shared/services/db.service';
+import { getAllProjectsFromDb, ensureProjectsSeeded } from '@/lib/projects-server';
 import { getDb, COLLECTIONS } from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
 import { getSessionUser } from '@/lib/auth/jwt';
 import { isRoleAllowed } from '@/lib/auth/rbac';
 import { revalidatePageContent } from '@/lib/revalidate';
 import { revalidatePath } from 'next/cache';
-import type { ProjectItem } from '@shared/types';
 
 export const runtime = 'nodejs';
 
 /**
  * GET /api/projects
  * Returns list of projects/case studies.
+ * Supports optional ?seed=true to force-sync default stories.
  */
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    const projects = await getDbProjects();
+    const { searchParams } = new URL(request.url);
+    if (searchParams.get('seed') === 'true') {
+      const user = await getSessionUser();
+      if (user && isRoleAllowed(user.role, ['admin', 'editor'])) {
+        await ensureProjectsSeeded(true);
+      }
+    }
+
+    const projects = await getAllProjectsFromDb(false);
     return NextResponse.json({
       success: true,
       count: projects.length,
@@ -46,7 +54,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const body = (await request.json().catch(() => null)) as Partial<ProjectItem> | null;
+    const body = (await request.json().catch(() => null)) as Record<string, unknown> | null;
 
     if (!body || !body.title || !body.slug) {
       return NextResponse.json(
@@ -65,6 +73,8 @@ export async function POST(request: NextRequest) {
 
     const newProject = {
       ...body,
+      id: body.id || body.slug,
+      isActive: body.isActive !== undefined ? body.isActive : true,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -129,7 +139,7 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    const filter = body._id
+    const filter = body._id && ObjectId.isValid(body._id)
       ? { _id: new ObjectId(body._id) }
       : body.id && ObjectId.isValid(body.id)
       ? { _id: new ObjectId(body.id) }
@@ -139,12 +149,16 @@ export async function PUT(request: NextRequest) {
     void id;
     void _id;
 
-    await db.collection(COLLECTIONS.PROJECTS).updateOne(filter, {
-      $set: {
-        ...updateFields,
-        updatedAt: new Date(),
+    await db.collection(COLLECTIONS.PROJECTS).updateOne(
+      filter,
+      {
+        $set: {
+          ...updateFields,
+          updatedAt: new Date(),
+        },
       },
-    });
+      { upsert: true }
+    );
 
     revalidatePageContent('work');
     revalidatePageContent('client-stories');

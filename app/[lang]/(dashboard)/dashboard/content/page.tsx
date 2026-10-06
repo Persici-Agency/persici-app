@@ -62,17 +62,17 @@ export default function ContentHubPage() {
       ctaLabel: isRtl ? 'إدارة التقييمات' : 'Manage Reviews Wall',
     },
     {
-      title: isRtl ? 'مكتبة الوسائط السحابية (Media Library & R2)' : 'Cloudflare R2 Media Library',
+      title: isRtl ? 'مكتبة التخزين السحابية (Storage Library & R2)' : 'Cloudflare R2 Storage Library',
       desc: isRtl
-        ? 'رفع وإدارة الصور، وفيديوهات العملاء بجودة عالية، وتوليد الصور المصغرة للمقالات والمشاريع.'
-        : 'High-speed object storage for video reels, high-resolution photography, client logos, and posters.',
+        ? 'رفع وإدارة الصور، والمستندات، وفيديوهات العملاء بجودة عالية، وتوليد الروابط المباشرة للمقالات والمشاريع.'
+        : 'High-speed object storage for video reels, high-resolution photography, PDFs, archives, and asset links.',
       icon: TbPhoto,
       color: 'bg-blue-600 text-white',
       accentBorder: 'border-blue-500/20 hover:border-blue-500',
       badge: isRtl ? 'التخزين السحابي' : 'Storage Engine',
       href: `/${lang}/dashboard/media`,
       liveHref: null,
-      ctaLabel: isRtl ? 'فتح مكتبة الوسائط' : 'Open Media Library',
+      ctaLabel: isRtl ? 'فتح مكتبة التخزين' : 'Open Storage Library',
     },
     {
       title: isRtl ? 'الوظائف ونظام التوظيف (Career Postings & ATS)' : 'Careers & Talent Acquisition',

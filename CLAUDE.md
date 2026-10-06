@@ -52,6 +52,11 @@
     - Service 1 ("Technology & AI Digital Transformation"): **Python** is first, followed by Next.js, React, Flutter, Angular (replacing React Native), Node.js, PHP (Laravel), WordPress, AWS, Docker, GCP, MongoDB, Figma, OpenAI API.
     - Platform vector icons (Salesforce, Adobe, Canva, Python) are mirrored locally and on Cloudflare R2, with resilient React Icon fallbacks.
 
+11. **Mandatory `.doc/` Documentation Synchronization Protocol**:
+    - Every AI agent or developer who implements features, modifies API routes, updates schemas, or alters UI components **MUST synchronously update the `.doc/` documentation ecosystem** before concluding.
+    - If modifications affect an existing subsystem, update the corresponding `.doc/reference-*.md` file(s).
+    - If a major new subsystem or feature domain is introduced, create a new authoritative reference file `.doc/reference-<domain>.md` and register it in `.doc/instructions.md` and `CLAUDE.md`.
+
 ---
 
 ## 3. Master Documentation Directory (`.doc/`)
@@ -60,8 +65,10 @@ Consult the authoritative master documentation in `.doc/` for in-depth specifica
 
 | Master Reference File | Scope & Authority |
 | :--- | :--- |
-| [`.doc/instructions.md`](file:///i:/Projects/persici-app/.doc/instructions.md) | Master coding standards, component architecture, styling tokens & verification gates. |
+| [`.doc/instructions.md`](file:///i:/Projects/persici-app/.doc/instructions.md) | Master coding standards, component architecture, styling tokens, verification gates & AI documentation protocol. |
 | [`.doc/reference-home-navbar-core-architecture.md`](file:///i:/Projects/persici-app/.doc/reference-home-navbar-core-architecture.md) | Global header, floating navbar, luminance engine, homepage sections & footer. |
+| [`.doc/reference-homepage-dynamic-cms-and-security.md`](file:///i:/Projects/persici-app/.doc/reference-homepage-dynamic-cms-and-security.md) | 100% Dynamic Homepage CMS, page editor (`/dashboard/pages/home`), RBAC security & cache revalidation. |
+| [`.doc/reference-portfolio-cms-and-editor-architecture.md`](file:///i:/Projects/persici-app/.doc/reference-portfolio-cms-and-editor-architecture.md) | Admin portfolio CMS & deep story editor (`/dashboard/content/projects`), ToC rail, 4 showcase templates & R2 media picker. |
 | [`.doc/reference-media-and-r2-asset-pipeline.md`](file:///i:/Projects/persici-app/.doc/reference-media-and-r2-asset-pipeline.md) | Cloudflare R2 object storage, Sharp WebP compression, platform icons & client logos. |
 | [`.doc/reference-solutions-pages-reference.md`](file:///i:/Projects/persici-app/.doc/reference-solutions-pages-reference.md) | Solutions Hub (`/solutions`) & 9 dedicated Solution Feature Pages (`/solutions/[slug]`). |
 | [`.doc/reference-industries-architecture-knowledge.md`](file:///i:/Projects/persici-app/.doc/reference-industries-architecture-knowledge.md) | Industries Hub (`/industries`) & 6 dedicated Industry Feature Pages (`/industries/[slug]`). |
@@ -71,6 +78,7 @@ Consult the authoritative master documentation in `.doc/` for in-depth specifica
 | [`.doc/reference-careers-and-recruitment-architecture.md`](file:///i:/Projects/persici-app/.doc/reference-careers-and-recruitment-architecture.md) | Careers Hub (`/careers`), job detail pages, application dossier form & R2 CV uploads. |
 | [`.doc/reference-contact-and-email-system.md`](file:///i:/Projects/persici-app/.doc/reference-contact-and-email-system.md) | Contact Us (`/contact`), global growth hubs, appointment pop-up & Hostinger mail. |
 | [`.doc/reference-dashboard-and-cms-architecture.md`](file:///i:/Projects/persici-app/.doc/reference-dashboard-and-cms-architecture.md) | Admin dashboard (`/dashboard`), CMS content editor, media manager & diagnostics. |
+| [`.doc/reference-shared-contact-and-homepage-advanced-controls.md`](file:///i:/Projects/persici-app/.doc/reference-shared-contact-and-homepage-advanced-controls.md) | Shared contact system, homepage advanced controls, dynamic form fields & reCAPTCHA. |
 | [`.doc/reference-about-page-architecture.md`](file:///i:/Projects/persici-app/.doc/reference-about-page-architecture.md) | About Us (`/about`), agency heritage, 10 view sections, 3D origami & milestones. |
 | [`.doc/reference-legal-and-compliance-architecture.md`](file:///i:/Projects/persici-app/.doc/reference-legal-and-compliance-architecture.md) | Privacy policy (`/privacy`), Terms (`/terms`), GDPR/CCPA & UAE/KSA/Jordan compliance. |
 
@@ -81,5 +89,5 @@ Always verify changes before concluding tasks:
 ```bash
 npx tsc --noEmit        # TypeScript verification (must be 0 errors)
 npm run lint            # ESLint validation
-npm run build           # Full production build (must pre-render 154+ pages cleanly)
+npm run build           # Full production build (must pre-render 194+ pages cleanly)
 ```

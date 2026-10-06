@@ -4,6 +4,8 @@ import {
   PutObjectCommand,
   DeleteObjectCommand,
   ListObjectsV2Command,
+  CopyObjectCommand,
+  HeadObjectCommand,
 } from '@aws-sdk/client-s3';
 import sharp from 'sharp';
 import path from 'node:path';
@@ -163,6 +165,87 @@ export async function uploadOptimizedImageToR2(
 }
 
 /**
+ * Checks if an object key exists in Cloudflare R2.
+ */
+export async function checkFileExistsInR2(key: string): Promise<boolean> {
+  const s3 = getS3Client();
+  if (!s3) return false;
+
+  const cleanKey = key.replace(new RegExp(`^${publicUrl}/?`), '').replace(/^\/+/, '');
+  try {
+    const command = new HeadObjectCommand({
+      Bucket: bucketName,
+      Key: cleanKey,
+    });
+    await s3.send(command);
+    return true;
+  } catch (err: unknown) {
+    const errorObj = err as { $metadata?: { httpStatusCode?: number }; name?: string };
+    if (errorObj?.$metadata?.httpStatusCode === 404 || errorObj?.name === 'NotFound') {
+      return false;
+    }
+    return false;
+  }
+}
+
+export interface RenameResult {
+  success: boolean;
+  oldKey: string;
+  newKey: string;
+  newUrl: string;
+  newFilename: string;
+}
+
+/**
+ * Renames (moves) an object in Cloudflare R2 by copying to newKey and deleting oldKey.
+ */
+export async function renameFileInR2(oldKey: string, newKey: string): Promise<RenameResult> {
+  const s3 = getS3Client();
+  if (!s3) {
+    throw new Error('Cloudflare R2 is not configured.');
+  }
+
+  const cleanOldKey = oldKey.replace(new RegExp(`^${publicUrl}/?`), '').replace(/^\/+/, '');
+  const cleanNewKey = newKey.replace(new RegExp(`^${publicUrl}/?`), '').replace(/^\/+/, '');
+
+  if (cleanOldKey === cleanNewKey) {
+    return {
+      success: true,
+      oldKey: cleanOldKey,
+      newKey: cleanNewKey,
+      newUrl: `${publicUrl}/${cleanNewKey}`,
+      newFilename: path.basename(cleanNewKey),
+    };
+  }
+
+  // S3 CopySource requires encodeURI for keys with spaces/symbols
+  const copySource = `${bucketName}/${encodeURI(cleanOldKey)}`;
+  const copyCommand = new CopyObjectCommand({
+    Bucket: bucketName,
+    CopySource: copySource,
+    Key: cleanNewKey,
+  });
+
+  await s3.send(copyCommand);
+
+  // Delete original key
+  const deleteCommand = new DeleteObjectCommand({
+    Bucket: bucketName,
+    Key: cleanOldKey,
+  });
+
+  await s3.send(deleteCommand);
+
+  return {
+    success: true,
+    oldKey: cleanOldKey,
+    newKey: cleanNewKey,
+    newUrl: `${publicUrl}/${cleanNewKey}`,
+    newFilename: path.basename(cleanNewKey),
+  };
+}
+
+/**
  * Deletes a file from Cloudflare R2 by its storage key.
  */
 export async function deleteFileFromR2(key: string): Promise<{ success: boolean; key: string }> {
@@ -191,26 +274,44 @@ export interface R2FileItem {
 
 /**
  * Lists files in Cloudflare R2 with optional prefix (folder).
+ * Traverses pages up to maxKeys limit (default: 500) so entire bucket / folder contents show up.
  */
-export async function listFilesFromR2(prefix = '', maxKeys = 100): Promise<R2FileItem[]> {
+export async function listFilesFromR2(prefix = '', maxKeys = 500): Promise<R2FileItem[]> {
   const s3 = getS3Client();
   if (!s3) return [];
 
-  const command = new ListObjectsV2Command({
-    Bucket: bucketName,
-    Prefix: prefix,
-    MaxKeys: maxKeys,
-  });
+  const allItems: R2FileItem[] = [];
+  let continuationToken: string | undefined = undefined;
 
-  const response = await s3.send(command);
-  if (!response.Contents) return [];
+  do {
+    const pageSize = Math.min(Math.max(1, maxKeys - allItems.length), 300);
+    const command: ListObjectsV2Command = new ListObjectsV2Command({
+      Bucket: bucketName,
+      Prefix: prefix || undefined,
+      MaxKeys: pageSize,
+      ContinuationToken: continuationToken,
+    });
 
-  return response.Contents.filter((item) => Boolean(item.Key)).map((item) => ({
-    key: item.Key!,
-    url: `${publicUrl}/${item.Key}`,
-    size: item.Size || 0,
-    lastModified: item.LastModified,
-  }));
+    const response = await s3.send(command);
+    if (response.Contents) {
+      for (const item of response.Contents) {
+        if (item.Key && !item.Key.endsWith('/')) {
+          allItems.push({
+            key: item.Key,
+            url: `${publicUrl}/${item.Key}`,
+            size: item.Size || 0,
+            lastModified: item.LastModified,
+          });
+        }
+      }
+    }
+
+    continuationToken = response.IsTruncated && response.NextContinuationToken
+      ? response.NextContinuationToken
+      : undefined;
+  } while (continuationToken && allItems.length < maxKeys);
+
+  return allItems;
 }
 
 /**

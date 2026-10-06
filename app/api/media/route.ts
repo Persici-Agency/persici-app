@@ -5,6 +5,9 @@ import {
   uploadThumbnailToR2,
   deleteFileFromR2,
   listFilesFromR2,
+  renameFileInR2,
+  checkFileExistsInR2,
+  toSeoFilename,
   isR2Configured,
 } from '@/lib/storage';
 import { getDb, COLLECTIONS } from '@/lib/mongodb';
@@ -14,19 +17,21 @@ import path from 'node:path';
 
 export const runtime = 'nodejs';
 
-export type MediaType = 'image' | 'video' | 'document' | 'archive' | 'other';
+export type MediaType = 'image' | 'video' | 'document' | 'audio' | 'archive' | 'other';
 
 export function detectMediaType(keyOrFilename: string, mime?: string): MediaType {
   if (mime) {
     if (mime.startsWith('image/')) return 'image';
     if (mime.startsWith('video/')) return 'video';
+    if (mime.startsWith('audio/')) return 'audio';
     if (
       mime.includes('pdf') ||
       mime.includes('word') ||
       mime.includes('officedocument') ||
       mime.includes('text') ||
       mime.includes('sheet') ||
-      mime.includes('presentation')
+      mime.includes('presentation') ||
+      mime.includes('document')
     ) {
       return 'document';
     }
@@ -36,16 +41,19 @@ export function detectMediaType(keyOrFilename: string, mime?: string): MediaType
   }
 
   const ext = path.extname(keyOrFilename).toLowerCase().replace(/^\./, '');
-  if (['jpg', 'jpeg', 'png', 'webp', 'avif', 'svg', 'gif', 'bmp', 'ico'].includes(ext)) {
+  if (['jpg', 'jpeg', 'png', 'webp', 'avif', 'svg', 'gif', 'bmp', 'ico', 'tif', 'tiff'].includes(ext)) {
     return 'image';
   }
-  if (['mp4', 'webm', 'mov', 'avi', 'mkv', 'ogv', 'm4v'].includes(ext)) {
+  if (['mp4', 'webm', 'mov', 'avi', 'mkv', 'ogv', 'm4v', '3gp'].includes(ext)) {
     return 'video';
   }
-  if (['pdf', 'doc', 'docx', 'txt', 'csv', 'xls', 'xlsx', 'ppt', 'pptx', 'rtf'].includes(ext)) {
+  if (['mp3', 'wav', 'ogg', 'aac', 'm4a', 'flac', 'wma', 'aiff'].includes(ext)) {
+    return 'audio';
+  }
+  if (['pdf', 'doc', 'docx', 'txt', 'csv', 'xls', 'xlsx', 'ppt', 'pptx', 'rtf', 'odt', 'ods', 'odp'].includes(ext)) {
     return 'document';
   }
-  if (['zip', 'rar', '7z', 'tar', 'gz', 'bz2'].includes(ext)) {
+  if (['zip', 'rar', '7z', 'tar', 'gz', 'bz2', 'xz'].includes(ext)) {
     return 'archive';
   }
   return 'other';
@@ -54,14 +62,16 @@ export function detectMediaType(keyOrFilename: string, mime?: string): MediaType
 /**
  * GET /api/media
  * Lists media items from Cloudflare R2 merged with MongoDB records.
- * Supports query params: `folder`, `type` (all | image | video | document | archive), `limit`.
+ * Supports query params: `folder`, `type` (all | image | video | document | audio | archive), `sort`, `search`, `limit`.
  */
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const folder = searchParams.get('folder') || '';
     const typeFilter = (searchParams.get('type') || 'all').toLowerCase();
-    const limit = Math.min(parseInt(searchParams.get('limit') || '150', 10), 300);
+    const sort = searchParams.get('sort') || 'newest';
+    const search = (searchParams.get('search') || '').toLowerCase().trim();
+    const limit = Math.min(parseInt(searchParams.get('limit') || '500', 10), 1000);
 
     // If requesting resumes folder, require authenticated Admin or HR session
     if (folder.startsWith('resumes')) {
@@ -91,8 +101,23 @@ export async function GET(request: NextRequest) {
       ? allR2Items
       : allR2Items.filter((i) => !i.key.startsWith('resumes/'));
 
-    // Fetch MongoDB records to enrich items with custom thumbnails, alt text, and metadata
-    let dbMap: Record<string, Record<string, any>> = {};
+    // Fetch MongoDB records to enrich items with custom thumbnails, alt text, title, caption, folder, etc.
+    interface MediaDbRecord {
+      key?: string;
+      filename?: string;
+      mediaType?: MediaType;
+      format?: string;
+      thumbnailUrl?: string | null;
+      alt?: string;
+      title?: string;
+      caption?: string;
+      folder?: string;
+      uploadedBy?: string;
+      width?: number;
+      height?: number;
+    }
+
+    const dbMap: Record<string, MediaDbRecord> = {};
     const db = await getDb();
     if (db) {
       try {
@@ -105,7 +130,7 @@ export async function GET(request: NextRequest) {
 
         for (const rec of records) {
           if (rec.key) {
-            dbMap[rec.key] = rec;
+            dbMap[rec.key] = rec as unknown as MediaDbRecord;
           }
         }
       } catch (dbErr) {
@@ -118,16 +143,23 @@ export async function GET(request: NextRequest) {
       const meta = dbMap[item.key] || {};
       const detected = detectMediaType(item.key);
       const ext = path.extname(item.key).toLowerCase().replace(/^\./, '');
+      const filename = path.basename(item.key);
+      const itemFolder = item.key.includes('/') ? item.key.substring(0, item.key.lastIndexOf('/')) : '';
 
       return {
         key: item.key,
         url: item.url,
+        filename: (meta.filename || filename) as string,
         size: item.size,
         lastModified: item.lastModified,
         mediaType: meta.mediaType || detected,
         format: meta.format || ext || 'file',
         thumbnailUrl: meta.thumbnailUrl || (detected === 'image' ? item.url : null),
-        alt: meta.alt || '',
+        alt: (meta.alt || '') as string,
+        title: (meta.title || '') as string,
+        caption: (meta.caption || '') as string,
+        folder: (meta.folder || itemFolder) as string,
+        uploadedBy: (meta.uploadedBy || '') as string,
         width: meta.width || undefined,
         height: meta.height || undefined,
       };
@@ -137,6 +169,43 @@ export async function GET(request: NextRequest) {
     if (typeFilter && typeFilter !== 'all') {
       items = items.filter((item) => item.mediaType === typeFilter);
     }
+
+    // Apply search filter if requested
+    if (search) {
+      items = items.filter((item) =>
+        item.key.toLowerCase().includes(search) ||
+        item.filename.toLowerCase().includes(search) ||
+        item.alt.toLowerCase().includes(search) ||
+        item.title.toLowerCase().includes(search)
+      );
+    }
+
+    // Apply sorting
+    items.sort((a, b) => {
+      if (sort === 'newest') {
+        const dateA = a.lastModified ? new Date(a.lastModified).getTime() : 0;
+        const dateB = b.lastModified ? new Date(b.lastModified).getTime() : 0;
+        return dateB - dateA;
+      }
+      if (sort === 'oldest') {
+        const dateA = a.lastModified ? new Date(a.lastModified).getTime() : 0;
+        const dateB = b.lastModified ? new Date(b.lastModified).getTime() : 0;
+        return dateA - dateB;
+      }
+      if (sort === 'size-desc') {
+        return (b.size || 0) - (a.size || 0);
+      }
+      if (sort === 'size-asc') {
+        return (a.size || 0) - (b.size || 0);
+      }
+      if (sort === 'name-asc') {
+        return a.filename.localeCompare(b.filename);
+      }
+      if (sort === 'name-desc') {
+        return b.filename.localeCompare(a.filename);
+      }
+      return 0;
+    });
 
     return NextResponse.json({
       configured: true,
@@ -180,6 +249,8 @@ export async function POST(request: NextRequest) {
     const file = formData.get('file') as File | null;
     const folder = (formData.get('folder') as string) || 'general';
     const alt = (formData.get('alt') as string) || '';
+    const title = (formData.get('title') as string) || '';
+    const caption = (formData.get('caption') as string) || '';
     const thumbnailFile = formData.get('thumbnail') as File | null;
     const thumbnailDataUrl = formData.get('thumbnailDataUrl') as string | null;
 
@@ -207,7 +278,7 @@ export async function POST(request: NextRequest) {
       // Process image through Sharp to convert to high-efficiency WebP
       uploadResult = await uploadOptimizedImageToR2(fileBuffer, file.name, folder);
     } else {
-      // Direct stream upload for videos, documents, SVG, archives
+      // Direct stream upload for videos, documents, audio, SVG, archives
       uploadResult = await uploadGenericFileToR2(
         fileBuffer,
         file.name,
@@ -244,6 +315,8 @@ export async function POST(request: NextRequest) {
             mediaType,
             thumbnailUrl,
             alt,
+            title,
+            caption,
             folder,
             uploadedBy: user.email,
             updatedAt: new Date(),
@@ -265,6 +338,9 @@ export async function POST(request: NextRequest) {
           mediaType,
           thumbnailUrl,
           alt,
+          title,
+          caption,
+          folder,
         },
       },
       { status: 201 }
@@ -280,8 +356,12 @@ export async function POST(request: NextRequest) {
 
 /**
  * PUT /api/media
- * Updates media item metadata (thumbnailUrl, alt, folder) in MongoDB.
- * Also supports capturing/uploading a new video thumbnail via `thumbnailDataUrl` (base64).
+ * Supports:
+ * 1. Renaming file & slug in Cloudflare R2 + MongoDB:
+ *    { action: 'rename', key: string, newSlug?: string, newName?: string, targetFolder?: string }
+ * 2. Updating media item metadata (title, caption, alt, folder, thumbnailUrl):
+ *    { key: string, title?: string, caption?: string, alt?: string, folder?: string }
+ * 3. Capturing/uploading a new video thumbnail via `thumbnailDataUrl` (base64) or `thumbnailFile`.
  */
 export async function PUT(request: NextRequest) {
   try {
@@ -295,28 +375,46 @@ export async function PUT(request: NextRequest) {
 
     let key = '';
     let alt: string | undefined;
+    let title: string | undefined;
+    let caption: string | undefined;
     let folder: string | undefined;
     let thumbnailUrl: string | undefined;
     let thumbnailDataUrl: string | undefined;
+    let action: string | undefined;
+    let newSlug: string | undefined;
+    let newName: string | undefined;
+    let targetFolder: string | undefined;
 
     const contentType = request.headers.get('content-type') || '';
     if (contentType.includes('application/json')) {
       const body = await request.json();
-      key = body.key;
+      key = body.key || body.oldKey || '';
       alt = body.alt;
+      title = body.title;
+      caption = body.caption;
       folder = body.folder;
       thumbnailUrl = body.thumbnailUrl;
       thumbnailDataUrl = body.thumbnailDataUrl;
+      action = body.action;
+      newSlug = body.newSlug;
+      newName = body.newName;
+      targetFolder = body.targetFolder;
     } else if (contentType.includes('multipart/form-data')) {
       const formData = await request.formData();
-      key = (formData.get('key') as string) || '';
+      key = (formData.get('key') as string) || (formData.get('oldKey') as string) || '';
       alt = (formData.get('alt') as string) || undefined;
+      title = (formData.get('title') as string) || undefined;
+      caption = (formData.get('caption') as string) || undefined;
       folder = (formData.get('folder') as string) || undefined;
       thumbnailUrl = (formData.get('thumbnailUrl') as string) || undefined;
       thumbnailDataUrl = (formData.get('thumbnailDataUrl') as string) || undefined;
+      action = (formData.get('action') as string) || undefined;
+      newSlug = (formData.get('newSlug') as string) || undefined;
+      newName = (formData.get('newName') as string) || undefined;
+      targetFolder = (formData.get('targetFolder') as string) || undefined;
 
       const thumbFile = formData.get('thumbnailFile') as File | null;
-      if (thumbFile) {
+      if (thumbFile && key) {
         const ab = await thumbFile.arrayBuffer();
         const buf = Buffer.from(ab);
         const thumbRes = await uploadThumbnailToR2(buf, key);
@@ -328,11 +426,102 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: 'Missing asset key.' }, { status: 400 });
     }
 
+    const cleanOldKey = key.replace(/^\/+/, '');
+
+    // -------------------------------------------------------------
+    // ACTION 1: RENAME FILE / SLUG IN CLOUDFLARE R2 AND DATABASE
+    // -------------------------------------------------------------
+    if (action === 'rename' || newSlug || newName) {
+      const candidateName = (newSlug || newName || '').trim();
+      if (!candidateName) {
+        return NextResponse.json({ error: 'New name or slug is required for renaming.' }, { status: 400 });
+      }
+
+      const oldFolder = cleanOldKey.includes('/')
+        ? cleanOldKey.substring(0, cleanOldKey.lastIndexOf('/'))
+        : '';
+      const oldExt = path.extname(cleanOldKey); // includes dot e.g. .webp
+      const activeFolder = targetFolder !== undefined ? targetFolder.replace(/^\/+|\/+$/g, '') : (folder !== undefined ? folder : oldFolder);
+
+      // Parse candidate name
+      const inputExt = path.extname(candidateName);
+      const effectiveExt = (inputExt ? inputExt : oldExt).toLowerCase();
+      const rawBase = inputExt ? path.basename(candidateName, inputExt) : candidateName;
+      const cleanSlug = toSeoFilename(rawBase);
+
+      let targetKey = activeFolder ? `${activeFolder}/${cleanSlug}${effectiveExt}` : `${cleanSlug}${effectiveExt}`;
+
+      if (targetKey === cleanOldKey) {
+        return NextResponse.json({
+          success: true,
+          message: 'Filename is already identical.',
+          oldKey: cleanOldKey,
+          newKey: cleanOldKey,
+          newUrl: `${(process.env.CLOUDFLARE_R2_PUBLIC_URL || '').replace(/\/$/, '')}/${cleanOldKey}`,
+          newFilename: path.basename(cleanOldKey),
+        });
+      }
+
+      // Check collision in R2
+      const exists = await checkFileExistsInR2(targetKey);
+      if (exists) {
+        targetKey = activeFolder
+          ? `${activeFolder}/${cleanSlug}-${Date.now()}${effectiveExt}`
+          : `${cleanSlug}-${Date.now()}${effectiveExt}`;
+      }
+
+      // Execute rename in Cloudflare R2
+      const renameRes = await renameFileInR2(cleanOldKey, targetKey);
+
+      // Synchronize in MongoDB
+      const db = await getDb();
+      if (db) {
+        await db.collection(COLLECTIONS.MEDIA).updateOne(
+          { key: cleanOldKey },
+          {
+            $set: {
+              key: renameRes.newKey,
+              url: renameRes.newUrl,
+              filename: renameRes.newFilename,
+              folder: activeFolder,
+              ...(alt !== undefined ? { alt } : {}),
+              ...(title !== undefined ? { title } : {}),
+              ...(caption !== undefined ? { caption } : {}),
+              updatedAt: new Date(),
+              updatedBy: user.email,
+            },
+          },
+          { upsert: true }
+        );
+      }
+
+      return NextResponse.json({
+        success: true,
+        message: 'Asset successfully renamed in Cloudflare R2 and database.',
+        oldKey: renameRes.oldKey,
+        newKey: renameRes.newKey,
+        newUrl: renameRes.newUrl,
+        filename: renameRes.newFilename,
+        media: {
+          key: renameRes.newKey,
+          url: renameRes.newUrl,
+          filename: renameRes.newFilename,
+          folder: activeFolder,
+          alt,
+          title,
+          caption,
+        },
+      });
+    }
+
+    // -------------------------------------------------------------
+    // ACTION 2: METADATA & THUMBNAIL UPDATES
+    // -------------------------------------------------------------
     // If client supplied a captured frame in base64 data URL, upload to R2 thumbnail folder
     if (thumbnailDataUrl && thumbnailDataUrl.includes('base64,')) {
       const base64Data = thumbnailDataUrl.split('base64,')[1];
       const thumbBuf = Buffer.from(base64Data, 'base64');
-      const thumbRes = await uploadThumbnailToR2(thumbBuf, key);
+      const thumbRes = await uploadThumbnailToR2(thumbBuf, cleanOldKey);
       thumbnailUrl = thumbRes.url;
     }
 
@@ -344,24 +533,31 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    const updateFields: Record<string, any> = {
+    const updateFields: Record<string, unknown> = {
       updatedAt: new Date(),
+      updatedBy: user.email,
     };
     if (thumbnailUrl !== undefined) updateFields.thumbnailUrl = thumbnailUrl;
     if (alt !== undefined) updateFields.alt = alt;
+    if (title !== undefined) updateFields.title = title;
+    if (caption !== undefined) updateFields.caption = caption;
     if (folder !== undefined) updateFields.folder = folder;
 
     await db.collection(COLLECTIONS.MEDIA).updateOne(
-      { key },
+      { key: cleanOldKey },
       { $set: updateFields },
       { upsert: true }
     );
 
     return NextResponse.json({
       success: true,
-      message: 'Media item updated successfully.',
-      key,
+      message: 'Media metadata updated successfully.',
+      key: cleanOldKey,
       thumbnailUrl,
+      alt,
+      title,
+      caption,
+      folder,
     });
   } catch (error) {
     console.error('[API /api/media PUT] Error:', error);

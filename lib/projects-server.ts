@@ -8,16 +8,83 @@ import {
 } from '@/app/[lang]/(site)/client-stories/_client-stories/data/client-stories.data';
 import type { ClientStoryDetail } from '@/app/[lang]/(site)/client-stories/_client-stories/types';
 
+import type { Document } from 'mongodb';
+
+/**
+ * Maps raw MongoDB document to fully typed ClientStoryDetail with fallbacks.
+ */
+function mapDocToClientStory(d: Document | Record<string, unknown>): ClientStoryDetail {
+  const slug = String(d.slug || '');
+  const fallback = getClientStoryBySlug(slug);
+  return {
+    id: d.id || String(d._id),
+    slug: d.slug,
+    templateType: d.templateType || fallback?.templateType || 'marketing-video-showcase',
+    category: d.category || fallback?.category || { en: 'Growth & Multi-Channel', ar: 'الحملات ونمو العلامة' },
+    categorySlug: d.categorySlug || fallback?.categorySlug || 'marketing',
+    featured: Boolean(d.featured !== undefined ? d.featured : fallback?.featured),
+    featuredOrder: d.featuredOrder ?? fallback?.featuredOrder ?? 1,
+    title: d.title || fallback?.title || { en: '', ar: '' },
+    leadSubtitle: d.leadSubtitle || d.subtitle || fallback?.leadSubtitle || { en: '', ar: '' },
+    executiveSummary: d.executiveSummary || d.summary || fallback?.executiveSummary || { en: '', ar: '' },
+    client: d.client || fallback?.client || 'Persici Enterprise Partner',
+    topic: d.topic || fallback?.topic || { en: 'Brand Transformation', ar: 'تحول العلامة التجارية' },
+    services: d.services || fallback?.services || [],
+    region: d.region || fallback?.region || { en: 'GCC & MENA', ar: 'الخليج والشرق الأوسط' },
+    date: d.date || fallback?.date || '2025',
+    link: d.link || fallback?.link,
+    heroImage: d.heroImage || d.featuredImage || fallback?.heroImage || '/images/hero/hero-poster.webp',
+    heroVideo: d.heroVideo || d.videoUrl || fallback?.heroVideo,
+    heroVideoPoster: d.heroVideoPoster || fallback?.heroVideoPoster,
+    metrics: d.metrics && d.metrics.length > 0 ? d.metrics : (fallback?.metrics || []),
+
+    // Core Narrative Sections
+    intro: d.intro || fallback?.intro || {
+      id: 'intro',
+      title: { en: 'Project Overview', ar: 'نظرة عامة على المشروع' },
+      paragraphs: [{ en: d.executiveSummary?.en || d.summary?.en || '', ar: d.executiveSummary?.ar || d.summary?.ar || '' }],
+    },
+    problem: d.problem || fallback?.problem || {
+      id: 'the-problem',
+      title: { en: 'The Challenge', ar: 'التحدي والمشكلة' },
+      paragraphs: [{ en: d.challenge?.en || '', ar: d.challenge?.ar || '' }],
+    },
+    solution: d.solution && typeof d.solution === 'object' && 'title' in d.solution
+      ? d.solution
+      : fallback?.solution || {
+          id: 'the-solution',
+          title: { en: 'The Solution', ar: 'الحل والنهج المتبع' },
+          paragraphs: [{ en: typeof d.solution === 'object' && 'en' in d.solution ? d.solution.en : '', ar: typeof d.solution === 'object' && 'ar' in d.solution ? d.solution.ar : '' }],
+        },
+    impact: d.impact || fallback?.impact || {
+      id: 'the-impact',
+      title: { en: 'The Impact', ar: 'الأثر والنتائج' },
+      paragraphs: [{ en: d.results?.en || '', ar: d.results?.ar || '' }],
+    },
+
+    // Adaptive Media Showcase
+    mediaShowcase: d.mediaShowcase || fallback?.mediaShowcase || {
+      title: { en: 'Deliverables & Production', ar: 'معرض المخرجات والإنتاج' },
+      description: { en: '', ar: '' },
+    },
+
+    relatedSlugs: d.relatedSlugs || fallback?.relatedSlugs || [],
+  };
+}
+
 /**
  * Ensures initial default client stories are seeded into MongoDB Atlas if collection is empty.
  */
-async function ensureProjectsSeeded() {
+export async function ensureProjectsSeeded(force = false) {
   try {
     const db = await getDb();
     if (!db) return;
 
     const count = await db.collection(COLLECTIONS.PROJECTS).countDocuments();
-    if (count === 0 && clientStoriesData.length > 0) {
+    if ((count === 0 || force) && clientStoriesData.length > 0) {
+      if (force && count > 0) {
+        await db.collection(COLLECTIONS.PROJECTS).deleteMany({});
+      }
       const docs = clientStoriesData.map((project) => ({
         ...project,
         isActive: true,
@@ -47,30 +114,7 @@ export async function getAllProjectsFromDb(onlyActive = true): Promise<ClientSto
       return getAllClientStories();
     }
 
-    return docs.map((d) => ({
-      id: d.id || String(d._id),
-      slug: d.slug,
-      templateType: d.templateType || 'marketing-video-showcase',
-      category: d.category || { en: 'Growth & Multi-Channel', ar: 'الحملات ونمو العلامة' },
-      categorySlug: d.categorySlug || 'marketing',
-      featured: Boolean(d.featured),
-      featuredOrder: d.featuredOrder || 1,
-      title: d.title,
-      leadSubtitle: d.leadSubtitle || d.subtitle || { en: '', ar: '' },
-      executiveSummary: d.executiveSummary || d.summary || { en: '', ar: '' },
-      client: d.client || 'Persici Enterprise Partner',
-      topic: d.topic || { en: 'Brand Transformation', ar: 'تحول العلامة التجارية' },
-      services: d.services || [],
-      region: d.region || { en: 'GCC & MENA', ar: 'الخليج والشرق الأوسط' },
-      date: d.date || '2025',
-      heroImage: d.heroImage || d.featuredImage || '/images/hero/hero-poster.webp',
-      heroVideo: d.heroVideo || d.videoUrl,
-      metrics: d.metrics || [],
-      challenge: d.challenge || { en: '', ar: '' },
-      solution: d.solution || { en: '', ar: '' },
-      results: d.results || { en: '', ar: '' },
-      testimonial: d.testimonial,
-    })) as unknown as ClientStoryDetail[];
+    return docs.map(mapDocToClientStory);
   } catch (err) {
     console.warn('[Projects DB] Failed to fetch from DB, falling back to static:', err);
     return getAllClientStories();
@@ -91,30 +135,7 @@ export async function getProjectBySlugFromDb(slug: string): Promise<ClientStoryD
       return getClientStoryBySlug(slug) || null;
     }
 
-    return {
-      id: doc.id || String(doc._id),
-      slug: doc.slug,
-      templateType: doc.templateType || 'marketing-video-showcase',
-      category: doc.category || { en: 'Growth & Multi-Channel', ar: 'الحملات ونمو العلامة' },
-      categorySlug: doc.categorySlug || 'marketing',
-      featured: Boolean(doc.featured),
-      featuredOrder: doc.featuredOrder || 1,
-      title: doc.title,
-      leadSubtitle: doc.leadSubtitle || doc.subtitle || { en: '', ar: '' },
-      executiveSummary: doc.executiveSummary || doc.summary || { en: '', ar: '' },
-      client: doc.client || 'Persici Enterprise Partner',
-      topic: doc.topic || { en: 'Brand Transformation', ar: 'تحول العلامة التجارية' },
-      services: doc.services || [],
-      region: doc.region || { en: 'GCC & MENA', ar: 'الخليج والشرق الأوسط' },
-      date: doc.date || '2025',
-      heroImage: doc.heroImage || doc.featuredImage || '/images/hero/hero-poster.webp',
-      heroVideo: doc.heroVideo || doc.videoUrl,
-      metrics: doc.metrics || [],
-      challenge: doc.challenge || { en: '', ar: '' },
-      solution: doc.solution || { en: '', ar: '' },
-      results: doc.results || { en: '', ar: '' },
-      testimonial: doc.testimonial,
-    } as unknown as ClientStoryDetail;
+    return mapDocToClientStory(doc);
   } catch (err) {
     console.warn('[Projects DB] Failed to fetch project by slug, falling back to static:', err);
     return getClientStoryBySlug(slug) || null;

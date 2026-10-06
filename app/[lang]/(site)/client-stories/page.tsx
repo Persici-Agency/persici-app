@@ -2,7 +2,7 @@ import { getDictionary, hasLocale } from '@dictionaries';
 import { notFound } from 'next/navigation';
 import { createMetadata } from '@lib/metadata';
 import type { Locale } from '@lib/i18n';
-import { getAllClientStories } from './_client-stories/data/client-stories.data';
+import { getAllProjectsFromDb } from '@/lib/projects-server';
 import { ClientStoriesHubView } from './_client-stories/components/client-stories-hub-view';
 
 export async function generateMetadata({ params }: PageProps<'/[lang]/client-stories'>) {
@@ -26,7 +26,7 @@ export default async function ClientStoriesPage({ params }: PageProps<'/[lang]/c
   const { lang } = await params;
   if (!hasLocale(lang)) notFound();
   const dict = await getDictionary(lang);
-  const stories = getAllClientStories();
+  const stories = await getAllProjectsFromDb();
 
   return <ClientStoriesHubView stories={stories} lang={lang} dict={dict} />;
 }
