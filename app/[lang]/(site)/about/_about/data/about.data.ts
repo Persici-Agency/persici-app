@@ -7,8 +7,8 @@ export interface AboutHeroData {
   badge: LocalizedString;
   title: LocalizedString;
   subtitle: LocalizedString;
-  primaryCta: LocalizedString & { href: string };
-  secondaryCta: LocalizedString & { href: string };
+  primaryCta: LocalizedString & { href: string; enabled?: boolean };
+  secondaryCta: LocalizedString & { href: string; enabled?: boolean };
 }
 
 export interface AboutPurposeStat {
@@ -40,8 +40,9 @@ export interface AboutHeritageData {
   title: LocalizedString;
   description: LocalizedString;
   metrics: AboutHeritageMetric[];
-  cta: LocalizedString & { href: string };
+  cta: LocalizedString & { href: string; enabled?: boolean };
   image: string;
+  bgImage?: string;
 }
 
 export interface AboutPartnershipData {
@@ -49,8 +50,9 @@ export interface AboutPartnershipData {
   title: LocalizedString;
   quote: LocalizedString;
   paragraphs: LocalizedString[];
-  cta: LocalizedString & { href: string };
+  cta: LocalizedString & { href: string; enabled?: boolean };
   image: string;
+  floatingBadge?: LocalizedString;
 }
 
 export interface AboutMilestoneItem {
@@ -112,7 +114,7 @@ export interface AboutValueCard {
   badge: LocalizedString;
   title: LocalizedString;
   description: LocalizedString;
-  cta: LocalizedString & { href: string };
+  cta: LocalizedString & { href: string; enabled?: boolean };
 }
 
 export interface AboutValuesData {
@@ -256,6 +258,7 @@ export const aboutPageData: AboutPageData = {
       href: '/client-stories',
     },
     image: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&w=1000&q=80',
+    bgImage: '/about/heritage-bg.jpg',
   },
 
   partnership: {
@@ -287,6 +290,10 @@ export const aboutPageData: AboutPageData = {
       href: '/how-we-do-it',
     },
     image: 'https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=1200&q=80',
+    floatingBadge: {
+      en: 'Active Strategic Squads',
+      ar: 'تحالفات استراتيجية نشطة',
+    },
   },
 
   milestones: {

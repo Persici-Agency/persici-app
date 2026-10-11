@@ -1,5 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getPageContent, updatePageContent } from '@shared/services/db.service';
+import {
+  getPageContent,
+  updatePageContent,
+  normalizeAboutPageData,
+  normalizeContactPageData,
+} from '@shared/services/db.service';
 import { getSessionUser } from '@/lib/auth/jwt';
 import { isRoleAllowed } from '@/lib/auth/rbac';
 import { revalidatePageContent } from '@/lib/revalidate';
@@ -7,7 +12,6 @@ import {
   homePageContent,
   servicesPageContent,
   workPageContent,
-  contactPageContent,
   solutionsPageContent,
   industriesPageContent,
   howWeDoItPageContent,
@@ -43,7 +47,13 @@ export async function GET(
     const { page } = await params;
     const fallback = FALLBACK_PAGES[page] || {};
 
-    const content = await getPageContent(page, fallback);
+    const rawContent = await getPageContent(page, fallback);
+    const content =
+      page === 'about'
+        ? normalizeAboutPageData(rawContent)
+        : page === 'contact'
+          ? normalizeContactPageData(rawContent)
+          : rawContent;
     return NextResponse.json({
       success: true,
       page,

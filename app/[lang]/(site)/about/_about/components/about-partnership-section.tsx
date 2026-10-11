@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React from 'react';
 import { sectionContainer, sectionPaddingY, badgePill } from '@shared/constants';
@@ -16,6 +16,16 @@ export function AboutPartnershipSection({ data, lang }: AboutPartnershipSectionP
   const title = data.title[lang as 'en' | 'ar'] || data.title.en;
   const quote = data.quote[lang as 'en' | 'ar'] || data.quote.en;
   const ctaLabel = data.cta[lang as 'en' | 'ar'] || data.cta.en;
+  const floatingBadgeText =
+    data.floatingBadge?.[lang as 'en' | 'ar'] ||
+    data.floatingBadge?.en ||
+    (isRtl ? 'تحالفات استراتيجية نشطة' : 'Active Strategic Squads');
+  const hasHtml = (str: string) => /<[a-z][\s\S]*>/i.test(str);
+  const resolveHref = (href: string) => {
+    if (!href) return '#';
+    if (href.startsWith('#') || href.startsWith('http') || href.startsWith(`/${lang}`)) return href;
+    return `/${lang}${href.startsWith('/') ? href : `/${href}`}`;
+  };
 
   return (
     <section className={`${sectionPaddingY} bg-[#FBFBFB] relative overflow-hidden border-b border-black/[0.04]`}>
@@ -38,9 +48,16 @@ export function AboutPartnershipSection({ data, lang }: AboutPartnershipSectionP
             {/* Standout Quote Callout */}
             <FadeUp delay={150} duration={750} distance={20}>
               <div className="border-l-2 rtl:border-l-0 rtl:border-r-2 border-persici-crimson pl-4 rtl:pl-0 rtl:pr-4 mb-6">
-                <p className="font-primary text-lg sm:text-xl font-semibold text-persici-black leading-snug">
-                  {quote}
-                </p>
+                {hasHtml(quote) ? (
+                  <div
+                    className="font-primary text-lg sm:text-xl font-semibold text-persici-black leading-snug"
+                    dangerouslySetInnerHTML={{ __html: quote }}
+                  />
+                ) : (
+                  <p className="font-primary text-lg sm:text-xl font-semibold text-persici-black leading-snug">
+                    {quote}
+                  </p>
+                )}
               </div>
             </FadeUp>
 
@@ -50,24 +67,33 @@ export function AboutPartnershipSection({ data, lang }: AboutPartnershipSectionP
                 const text = p[lang as 'en' | 'ar'] || p.en;
                 return (
                   <FadeUp key={idx} delay={200 + idx * 80} duration={700} distance={18}>
-                    <p className="font-secondary text-base sm:text-lg text-slate-600 leading-relaxed font-normal">
-                      {text}
-                    </p>
+                    {hasHtml(text) ? (
+                      <div
+                        className="font-secondary text-base sm:text-lg text-slate-600 leading-relaxed font-normal [&_a]:text-persici-crimson [&_a]:underline [&_ul]:list-disc [&_ul]:ms-5 [&_ol]:list-decimal [&_ol]:ms-5"
+                        dangerouslySetInnerHTML={{ __html: text }}
+                      />
+                    ) : (
+                      <p className="font-secondary text-base sm:text-lg text-slate-600 leading-relaxed font-normal">
+                        {text}
+                      </p>
+                    )}
                   </FadeUp>
                 );
               })}
             </div>
 
             {/* CTA Button */}
-            <FadeUp delay={350} duration={650} distance={16}>
-              <HomeButton
-                href={`/${lang}${data.cta.href}`}
-                title={ctaLabel}
-                currentLang={lang}
-                isLangEffectIcon
-                className="bg-persici-black hover:bg-persici-crimson text-white px-7 py-3 text-sm font-semibold transition-colors duration-300"
-              />
-            </FadeUp>
+            {data.cta.enabled !== false && ctaLabel && (
+              <FadeUp delay={350} duration={650} distance={16}>
+                <HomeButton
+                  href={resolveHref(data.cta.href)}
+                  title={ctaLabel}
+                  currentLang={lang}
+                  isLangEffectIcon
+                  className="bg-persici-black hover:bg-persici-crimson text-white px-7 py-3 text-sm font-semibold transition-colors duration-300"
+                />
+              </FadeUp>
+            )}
           </div>
 
           {/* Right Column: Publicis Sapient Signature Shaped Tab Container */}
@@ -89,16 +115,18 @@ export function AboutPartnershipSection({ data, lang }: AboutPartnershipSectionP
                 />
 
                 {/* Subtle floating branding chip */}
-                <div
-                  className={`absolute bottom-6 ${
-                    isRtl ? 'right-6' : 'left-6'
-                  } bg-white/95 backdrop-blur-md px-5 py-2.5 rounded-full border border-black/10 shadow-lg hidden sm:flex items-center gap-2.5`}
-                >
-                  <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-                  <span className="font-mono text-xs font-semibold text-slate-800 tracking-wide">
-                    {isRtl ? 'تحالفات استراتيجية نشطة' : 'Active Strategic Squads'}
-                  </span>
-                </div>
+                {floatingBadgeText && (
+                  <div
+                    className={`absolute bottom-6 ${
+                      isRtl ? 'right-6' : 'left-6'
+                    } bg-white/95 backdrop-blur-md px-5 py-2.5 rounded-full border border-black/10 shadow-lg hidden sm:flex items-center gap-2.5`}
+                  >
+                    <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                    <span className="font-mono text-xs font-semibold text-slate-800 tracking-wide">
+                      {floatingBadgeText}
+                    </span>
+                  </div>
+                )}
               </div>
             </FadeUp>
           </div>

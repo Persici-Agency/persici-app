@@ -85,9 +85,16 @@ export function ClientReviewSection({
           </span>
 
           {/* Monospaced Typographic Client Quotation */}
-          <blockquote className="font-mono ltr:border-l-4 rtl:border-r-4 border-persici-crimson ltr:pl-4 rtl:pr-4 text-xl sm:text-2xl lg:text-2xl font-normal sm:font-medium tracking-tight text-slate-900 leading-relaxed text-left rtl:text-right">
-            &ldquo;{cleanQuoteText}&rdquo;
-          </blockquote>
+          {/<[a-z][\s\S]*>/i.test(cleanQuoteText) ? (
+            <blockquote
+              className="font-mono ltr:border-l-4 rtl:border-r-4 border-persici-crimson ltr:pl-4 rtl:pr-4 text-xl sm:text-2xl lg:text-2xl font-normal sm:font-medium tracking-tight text-slate-900 leading-relaxed text-left rtl:text-right"
+              dangerouslySetInnerHTML={{ __html: `&ldquo;${cleanQuoteText}&rdquo;` }}
+            />
+          ) : (
+            <blockquote className="font-mono ltr:border-l-4 rtl:border-r-4 border-persici-crimson ltr:pl-4 rtl:pr-4 text-xl sm:text-2xl lg:text-2xl font-normal sm:font-medium tracking-tight text-slate-900 leading-relaxed text-left rtl:text-right">
+              &ldquo;{cleanQuoteText}&rdquo;
+            </blockquote>
+          )}
 
           {/* Author Details with optional Avatar beside it */}
           {(author || role) && (

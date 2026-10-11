@@ -14,6 +14,10 @@ import {
   TbEye,
   TbCode,
   TbEraser,
+  TbAlignLeft,
+  TbAlignCenter,
+  TbAlignRight,
+  TbAlignJustified,
 } from 'react-icons/tb';
 
 export interface RichTextEditorProps {
@@ -67,6 +71,27 @@ export function RichTextEditor({
     wrapSelection(`<${tag}>`, `</${tag}>`);
   };
 
+  const applyAlignment = (align: 'left' | 'center' | 'right' | 'justify') => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const text = textarea.value;
+    const selected = text.substring(start, end);
+
+    if (selected) {
+      const cleaned = selected.replace(/^<div style="text-align:\s*(?:left|center|right|justify);?">([\s\S]*)<\/div>$/i, '$1');
+      const replacement = `<div style="text-align: ${align}">${cleaned}</div>`;
+      currentSetter(text.substring(0, start) + replacement + text.substring(end));
+    } else {
+      const trimmed = text.trim();
+      if (!trimmed) return;
+      const cleaned = trimmed.replace(/^<div style="text-align:\s*(?:left|center|right|justify);?">([\s\S]*)<\/div>$/i, '$1');
+      currentSetter(`<div style="text-align: ${align}">${cleaned}</div>`);
+    }
+  };
+
   const insertList = (type: 'ul' | 'ol') => {
     const textarea = textareaRef.current;
     if (!textarea) return;
@@ -95,10 +120,14 @@ export function RichTextEditor({
     const start = textarea.selectionStart;
     const end = textarea.selectionEnd;
     const text = textarea.value;
-    const selected = text.substring(start, end);
-    const stripped = selected.replace(/<[^>]*>?/gm, '');
-    const newValue = text.substring(0, start) + stripped + text.substring(end);
-    currentSetter(newValue);
+    if (start !== end) {
+      const selected = text.substring(start, end);
+      const stripped = selected.replace(/<[^>]*>?/gm, '');
+      const newValue = text.substring(0, start) + stripped + text.substring(end);
+      currentSetter(newValue);
+    } else {
+      currentSetter(text.replace(/<[^>]*>?/gm, ''));
+    }
   };
 
   return (
@@ -225,6 +254,41 @@ export function RichTextEditor({
               className="p-1.5 hover:bg-slate-200/80 rounded-md transition-colors"
             >
               <TbQuote className="w-4 h-4" />
+            </button>
+
+            <span className="w-px h-4 bg-slate-300 mx-1" />
+
+            <button
+              type="button"
+              onClick={() => applyAlignment('left')}
+              title="Align Left"
+              className="p-1.5 hover:bg-slate-200/80 rounded-md transition-colors"
+            >
+              <TbAlignLeft className="w-4 h-4" />
+            </button>
+            <button
+              type="button"
+              onClick={() => applyAlignment('center')}
+              title="Align Center"
+              className="p-1.5 hover:bg-slate-200/80 rounded-md transition-colors"
+            >
+              <TbAlignCenter className="w-4 h-4" />
+            </button>
+            <button
+              type="button"
+              onClick={() => applyAlignment('right')}
+              title="Align Right"
+              className="p-1.5 hover:bg-slate-200/80 rounded-md transition-colors"
+            >
+              <TbAlignRight className="w-4 h-4" />
+            </button>
+            <button
+              type="button"
+              onClick={() => applyAlignment('justify')}
+              title="Justify Text"
+              className="p-1.5 hover:bg-slate-200/80 rounded-md transition-colors"
+            >
+              <TbAlignJustified className="w-4 h-4" />
             </button>
 
             <span className="w-px h-4 bg-slate-300 mx-1" />

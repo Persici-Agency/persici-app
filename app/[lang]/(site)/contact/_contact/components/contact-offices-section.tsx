@@ -8,6 +8,7 @@ import type { ContactOfficeItem, LocalizedString } from '../data/contact.data';
 
 export interface ContactOfficesSectionProps {
   offices: ContactOfficeItem[];
+  badge?: LocalizedString;
   title: LocalizedString;
   subtitle: LocalizedString;
   lang: string;
@@ -15,13 +16,19 @@ export interface ContactOfficesSectionProps {
 
 export function ContactOfficesSection({
   offices,
+  badge,
   title,
   subtitle,
   lang,
 }: ContactOfficesSectionProps) {
   const isAr = lang === 'ar';
+  const sectionBadge =
+    badge?.[isAr ? 'ar' : 'en'] ||
+    badge?.en ||
+    (isAr ? 'حضور استراتيجي عالمي' : 'Global Presence');
   const sectionTitle = title[isAr ? 'ar' : 'en'] || title.en;
   const sectionSubtitle = subtitle[isAr ? 'ar' : 'en'] || subtitle.en;
+  const hasHtml = (str: string) => /<[a-z][\s\S]*>/i.test(str);
 
   return (
     <section className={`${sectionPaddingY} bg-[#FBFBFB] relative overflow-hidden border-b border-black/[0.04]`} id="offices">
@@ -30,7 +37,7 @@ export function ContactOfficesSection({
         <div className="max-w-3xl mx-auto text-center mb-12 sm:mb-16">
           <FadeUp delay={0} duration={600} distance={16}>
             <span className={`${badgePill} mb-4 tracking-wide uppercase text-[9.5px] font-mono font-semibold`}>
-              {isAr ? 'حضور استراتيجي عالمي' : 'Global Presence'}
+              {sectionBadge}
             </span>
           </FadeUp>
 
@@ -41,9 +48,16 @@ export function ContactOfficesSection({
           </FadeUp>
 
           <FadeUp delay={180} duration={750} distance={20}>
-            <p className="font-secondary text-base sm:text-lg text-slate-600 leading-relaxed font-normal">
-              {sectionSubtitle}
-            </p>
+            {hasHtml(sectionSubtitle) ? (
+              <div
+                className="font-secondary text-base sm:text-lg text-slate-600 leading-relaxed font-normal [&_a]:text-persici-crimson [&_a]:underline"
+                dangerouslySetInnerHTML={{ __html: sectionSubtitle }}
+              />
+            ) : (
+              <p className="font-secondary text-base sm:text-lg text-slate-600 leading-relaxed font-normal">
+                {sectionSubtitle}
+              </p>
+            )}
           </FadeUp>
         </div>
 
@@ -52,9 +66,15 @@ export function ContactOfficesSection({
           {offices.map((office, idx) => {
             const city = typeof office.city === 'object' && office.city ? (office.city[isAr ? 'ar' : 'en'] || office.city.en || '') : (office.city || '');
             const country = typeof office.country === 'object' && office.country ? (office.country[isAr ? 'ar' : 'en'] || office.country.en || '') : (office.country || '');
-            const badge = office.badge ? (typeof office.badge === 'object' ? (office.badge[isAr ? 'ar' : 'en'] || office.badge.en) : office.badge) : undefined;
+            const officeBadge = office.badge ? (typeof office.badge === 'object' ? (office.badge[isAr ? 'ar' : 'en'] || office.badge.en) : office.badge) : undefined;
             const address = typeof office.address === 'object' && office.address ? (office.address[isAr ? 'ar' : 'en'] || office.address.en || '') : (office.address || '');
             const hours = typeof office.hours === 'object' && office.hours ? (office.hours[isAr ? 'ar' : 'en'] || office.hours.en || '') : (office.hours || '');
+            const directionsLabel =
+              office.directionsLabel && typeof office.directionsLabel === 'object'
+                ? office.directionsLabel[isAr ? 'ar' : 'en'] || office.directionsLabel.en
+                : isAr
+                  ? 'الاتجاهات عبر خرائط جوجل'
+                  : 'Get Directions';
             const image = office.image || '/images/contact/dubai-office.webp';
             const phone = office.phone || '+971 4 000 0000';
             const email = office.email || 'dubai@persiciagency.com';
@@ -81,10 +101,10 @@ export function ContactOfficesSection({
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent pointer-events-none" />
 
                     {/* Floating Badge */}
-                    {badge && (
+                    {officeBadge && (
                       <div className="absolute top-4 left-4 rtl:left-auto rtl:right-4 z-10">
                         <span className="inline-flex items-center px-3 py-1 rounded-full text-[9.5px] font-mono font-semibold uppercase tracking-wider bg-white/90 backdrop-blur-md text-persici-black border border-white/40 shadow-xs">
-                          {badge}
+                          {officeBadge}
                         </span>
                       </div>
                     )}
@@ -109,9 +129,16 @@ export function ContactOfficesSection({
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                         </svg>
-                        <p className="font-secondary text-xs sm:text-sm text-slate-600 leading-relaxed">
-                          {address}
-                        </p>
+                        {hasHtml(String(address)) ? (
+                          <div
+                            className="font-secondary text-xs sm:text-sm text-slate-600 leading-relaxed flex-1"
+                            dangerouslySetInnerHTML={{ __html: String(address) }}
+                          />
+                        ) : (
+                          <p className="font-secondary text-xs sm:text-sm text-slate-600 leading-relaxed">
+                            {address}
+                          </p>
+                        )}
                       </div>
 
                       {/* Working Hours & Timezone */}
@@ -157,7 +184,7 @@ export function ContactOfficesSection({
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-1.5 text-xs font-semibold text-persici-crimson hover:text-persici-black transition-colors"
                       >
-                        <span>{isAr ? 'الاتجاهات عبر خرائط جوجل' : 'Get Directions'}</span>
+                        <span>{directionsLabel}</span>
                         <span className={`transition-transform duration-200 ${isAr ? 'group-hover:-translate-x-1' : 'group-hover:translate-x-1'}`}>
                           {isAr ? '←' : '→'}
                         </span>

@@ -173,9 +173,16 @@ export function PanoramicCarousel({
                 {title}
               </h2>
               {subtitle && (
-                <p className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed max-w-3xl">
-                  {subtitle}
-                </p>
+                /<[a-z][\s\S]*>/i.test(subtitle) ? (
+                  <div
+                    className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed max-w-3xl [&_a]:text-persici-crimson [&_a]:underline"
+                    dangerouslySetInnerHTML={{ __html: subtitle }}
+                  />
+                ) : (
+                  <p className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed max-w-3xl">
+                    {subtitle}
+                  </p>
+                )
               )}
             </div>
 

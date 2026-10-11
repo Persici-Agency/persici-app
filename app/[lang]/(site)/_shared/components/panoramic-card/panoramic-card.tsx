@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React from 'react';
 import Image from 'next/image';
@@ -62,9 +62,16 @@ export function PanoramicCard({
           {title}
         </h3>
 
-        <p className="text-xs sm:text-sm text-slate-100 leading-relaxed font-normal line-clamp-4 drop-shadow-xs">
-          {description}
-        </p>
+        {/<[a-z][\s\S]*>/i.test(description) ? (
+          <div
+            className="text-xs sm:text-sm text-slate-100 leading-relaxed font-normal line-clamp-4 drop-shadow-xs"
+            dangerouslySetInnerHTML={{ __html: description }}
+          />
+        ) : (
+          <p className="text-xs sm:text-sm text-slate-100 leading-relaxed font-normal line-clamp-4 drop-shadow-xs">
+            {description}
+          </p>
+        )}
 
         {href && (
           <div className="mt-3.5 flex items-center gap-1.5 text-xs font-semibold text-white hover:text-persici-crimson transition-colors">

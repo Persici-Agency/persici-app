@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState } from 'react';
 import { sectionContainer, sectionPaddingY, badgePill } from '@shared/constants';
@@ -7,6 +7,7 @@ import type { ContactChannelItem, LocalizedString } from '../data/contact.data';
 
 export interface ContactDirectChannelsSectionProps {
   channels: ContactChannelItem[];
+  badge?: LocalizedString;
   title: LocalizedString;
   subtitle: LocalizedString;
   lang: string;
@@ -14,14 +15,20 @@ export interface ContactDirectChannelsSectionProps {
 
 export function ContactDirectChannelsSection({
   channels,
+  badge,
   title,
   subtitle,
   lang,
 }: ContactDirectChannelsSectionProps) {
   const isAr = lang === 'ar';
+  const sectionBadge =
+    badge?.[isAr ? 'ar' : 'en'] ||
+    badge?.en ||
+    (isAr ? 'قنوات تواصل سريعة ومباشرة' : 'Direct Inquiries');
   const sectionTitle = title[isAr ? 'ar' : 'en'] || title.en;
   const sectionSubtitle = subtitle[isAr ? 'ar' : 'en'] || subtitle.en;
   const [copiedEmail, setCopiedEmail] = useState<string | null>(null);
+  const hasHtml = (str: string) => /<[a-z][\s\S]*>/i.test(str);
 
   const handleCopy = (email: string) => {
     navigator.clipboard.writeText(email);
@@ -38,7 +45,7 @@ export function ContactDirectChannelsSection({
         <div className="max-w-3xl mx-auto text-center mb-12 sm:mb-16">
           <FadeUp delay={0} duration={600} distance={16}>
             <span className={`${badgePill} mb-4 tracking-wide uppercase text-[9.5px] font-mono font-semibold`}>
-              {isAr ? 'قنوات تواصل سريعة ومباشرة' : 'Direct Inquiries'}
+              {sectionBadge}
             </span>
           </FadeUp>
 
@@ -49,24 +56,31 @@ export function ContactDirectChannelsSection({
           </FadeUp>
 
           <FadeUp delay={180} duration={750} distance={20}>
-            <p className="font-secondary text-base sm:text-lg text-slate-600 leading-relaxed font-normal">
-              {sectionSubtitle}
-            </p>
+            {hasHtml(sectionSubtitle) ? (
+              <div
+                className="font-secondary text-base sm:text-lg text-slate-600 leading-relaxed font-normal [&_a]:text-persici-crimson [&_a]:underline"
+                dangerouslySetInnerHTML={{ __html: sectionSubtitle }}
+              />
+            ) : (
+              <p className="font-secondary text-base sm:text-lg text-slate-600 leading-relaxed font-normal">
+                {sectionSubtitle}
+              </p>
+            )}
           </FadeUp>
         </div>
 
         {/* 4-Column Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {channels.map((ch, idx) => {
-            const chCategory = ch.category[isAr ? 'ar' : 'en'] || ch.category.en;
-            const chTitle = ch.title[isAr ? 'ar' : 'en'] || ch.title.en;
-            const chDesc = ch.description[isAr ? 'ar' : 'en'] || ch.description.en;
-            const chSla = ch.sla[isAr ? 'ar' : 'en'] || ch.sla.en;
+            const chCategory = ch.category?.[isAr ? 'ar' : 'en'] || ch.category?.en || '';
+            const chTitle = ch.title?.[isAr ? 'ar' : 'en'] || ch.title?.en || '';
+            const chDesc = ch.description?.[isAr ? 'ar' : 'en'] || ch.description?.en || '';
+            const chSla = ch.sla?.[isAr ? 'ar' : 'en'] || ch.sla?.en || '';
             const isCopied = copiedEmail === ch.email;
 
             return (
               <FadeUp
-                key={ch.id}
+                key={ch.id || idx}
                 delay={100 + idx * 80}
                 duration={750}
                 distance={20}
@@ -86,9 +100,16 @@ export function ContactDirectChannelsSection({
                       {chTitle}
                     </h3>
 
-                    <p className="font-secondary text-xs sm:text-sm text-slate-600 leading-relaxed font-normal mb-6">
-                      {chDesc}
-                    </p>
+                    {hasHtml(chDesc) ? (
+                      <div
+                        className="font-secondary text-xs sm:text-sm text-slate-600 leading-relaxed font-normal mb-6 [&_a]:text-persici-crimson [&_a]:underline"
+                        dangerouslySetInnerHTML={{ __html: chDesc }}
+                      />
+                    ) : (
+                      <p className="font-secondary text-xs sm:text-sm text-slate-600 leading-relaxed font-normal mb-6">
+                        {chDesc}
+                      </p>
+                    )}
                   </div>
 
                   {/* Bottom Action Box */}

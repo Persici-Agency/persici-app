@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React from 'react';
 import Image from 'next/image';
@@ -16,6 +16,7 @@ export function AboutPurposeSection({ data, lang }: AboutPurposeSectionProps) {
   const title = data.title[lang as 'en' | 'ar'] || data.title.en;
   const desc1 = data.description1[lang as 'en' | 'ar'] || data.description1.en;
   const desc2 = data.description2[lang as 'en' | 'ar'] || data.description2.en;
+  const hasHtml = (str: string) => /<[a-z][\s\S]*>/i.test(str);
 
   return (
     <section className={`${sectionPaddingY} bg-white relative overflow-hidden`} id="purpose">
@@ -35,16 +36,30 @@ export function AboutPurposeSection({ data, lang }: AboutPurposeSectionProps) {
           </FadeUp>
 
           <FadeUp delay={180} duration={750} distance={20}>
-            <p className="font-secondary text-base sm:text-lg lg:text-xl text-slate-700 leading-relaxed font-normal max-w-3xl mx-auto mb-4">
-              {desc1}
-            </p>
+            {hasHtml(desc1) ? (
+              <div
+                className="font-secondary text-base sm:text-lg lg:text-xl text-slate-700 leading-relaxed font-normal max-w-3xl mx-auto mb-4 [&_a]:text-persici-crimson [&_a]:underline [&_ul]:list-disc [&_ul]:ms-5 [&_ol]:list-decimal [&_ol]:ms-5"
+                dangerouslySetInnerHTML={{ __html: desc1 }}
+              />
+            ) : (
+              <p className="font-secondary text-base sm:text-lg lg:text-xl text-slate-700 leading-relaxed font-normal max-w-3xl mx-auto mb-4">
+                {desc1}
+              </p>
+            )}
           </FadeUp>
 
           {desc2 && (
             <FadeUp delay={260} duration={750} distance={20}>
-              <p className="font-secondary text-sm sm:text-base text-slate-500 leading-relaxed font-normal max-w-2xl mx-auto">
-                {desc2}
-              </p>
+              {hasHtml(desc2) ? (
+                <div
+                  className="font-secondary text-sm sm:text-base text-slate-500 leading-relaxed font-normal max-w-2xl mx-auto [&_a]:text-persici-crimson [&_a]:underline [&_ul]:list-disc [&_ul]:ms-5 [&_ol]:list-decimal [&_ol]:ms-5"
+                  dangerouslySetInnerHTML={{ __html: desc2 }}
+                />
+              ) : (
+                <p className="font-secondary text-sm sm:text-base text-slate-500 leading-relaxed font-normal max-w-2xl mx-auto">
+                  {desc2}
+                </p>
+              )}
             </FadeUp>
           )}
         </div>
@@ -82,7 +97,8 @@ export function AboutPurposeSection({ data, lang }: AboutPurposeSectionProps) {
                   <div className="font-mono text-5xl sm:text-6xl lg:text-[64px] font-normal tracking-tight text-black leading-none mb-3 sm:mb-4 tabular-nums">
                     <CountUp
                       end={stat.number}
-                      suffix={stat.suffix}
+                      prefix={stat.prefix || ''}
+                      suffix={stat.suffix || ''}
                       thousandsSeparator={stat.thousandsSeparator || ''}
                       duration={2000}
                       viewportTrigger

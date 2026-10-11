@@ -108,13 +108,14 @@ async function seed() {
     );
     console.log(`   ✓ Root Admin Account configured: ${adminEmail}`);
 
-    // Dynamic import of master shared data
+    // Dynamic import of master shared data, about data, & contact data
     const sharedDataModule = await import('../app/[lang]/(site)/_shared/data.ts');
+    const aboutDataModule = await import('../app/[lang]/(site)/about/_about/data/about.data.ts');
+    const contactDataModule = await import('../app/[lang]/(site)/contact/_contact/data/contact.data.ts');
     const {
       homePageContent,
       servicesPageContent,
       workPageContent,
-      contactPageContent,
       solutionsPageContent,
       solutionsOfferingsList,
       industriesPageContent,
@@ -128,7 +129,10 @@ async function seed() {
       reviewsList,
       defaultTestimonials,
       siteNavLinks,
+      defaultSharedContactData,
     } = sharedDataModule;
+    const { aboutPageData } = aboutDataModule;
+    const { contactPageData } = contactDataModule;
 
     // 1. Seed Page Contents
     console.log('\n📄 Seeding page_contents collection...');
@@ -137,12 +141,14 @@ async function seed() {
 
     const pages = [
       { page: 'home', data: homePageContent },
+      { page: 'about', data: aboutPageData },
       { page: 'services', data: servicesPageContent },
       { page: 'work', data: workPageContent },
-      { page: 'contact', data: contactPageContent },
+      { page: 'contact', data: contactPageData },
       { page: 'solutions', data: solutionsPageContent },
       { page: 'industries', data: industriesPageContent },
       { page: 'how-we-do-it', data: howWeDoItPageContent },
+      { page: 'shared-contact', data: defaultSharedContactData },
     ];
 
     for (const p of pages) {

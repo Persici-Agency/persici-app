@@ -31,6 +31,14 @@ import {
   approachTeamAvatars,
   reviewsList as fallbackReviewsList,
 } from '@shared/data';
+import { aboutPageData } from '@/app/[lang]/(site)/about/_about/data/about.data';
+import {
+  contactPageData,
+  type ContactQuickLink,
+  type ContactOfficeItem,
+  type ContactChannelItem,
+  type ContactFaqItem,
+} from '@/app/[lang]/(site)/contact/_contact/data/contact.data';
 import Link from 'next/link';
 
 export default function UniversalPageCmsEditor() {
@@ -215,6 +223,191 @@ export default function UniversalPageCmsEditor() {
               homeContactSubtitleEn: c.homeContactSubtitleEn || c.homeContact?.subtitle?.en || 'Submit the form below and our digital transformation experts will reach out.',
               homeContactSubtitleAr: c.homeContactSubtitleAr || c.homeContact?.subtitle?.ar || 'أرسل بياناتك وسيتواصل معك أحد خبرائنا في التحول الرقمي والتكنولوجيا.',
               homeContactBgImage: c.homeContactBgImage || c.homeContact?.bgImage || '/images/footer/footer.gif',
+            });
+          } else if (slug === 'about') {
+            setPageData({
+              ...aboutPageData,
+              ...c,
+              hero: {
+                ...aboutPageData.hero,
+                ...(c.hero || {}),
+                badge: { ...aboutPageData.hero.badge, ...(c.hero?.badge || {}) },
+                title: { ...aboutPageData.hero.title, ...(c.hero?.title || {}) },
+                subtitle: { ...aboutPageData.hero.subtitle, ...(c.hero?.subtitle || {}) },
+                primaryCta: { ...aboutPageData.hero.primaryCta, ...(c.hero?.primaryCta || {}) },
+                secondaryCta: { ...aboutPageData.hero.secondaryCta, ...(c.hero?.secondaryCta || {}) },
+              },
+              purpose: {
+                ...aboutPageData.purpose,
+                ...(c.purpose || {}),
+                badge: { ...aboutPageData.purpose.badge, ...(c.purpose?.badge || {}) },
+                title: { ...aboutPageData.purpose.title, ...(c.purpose?.title || {}) },
+                description1: { ...aboutPageData.purpose.description1, ...(c.purpose?.description1 || {}) },
+                description2: { ...aboutPageData.purpose.description2, ...(c.purpose?.description2 || {}) },
+                image: c.purpose?.image || aboutPageData.purpose.image,
+                stats: Array.isArray(c.purpose?.stats) && c.purpose.stats.length > 0
+                  ? c.purpose.stats
+                  : aboutPageData.purpose.stats,
+              },
+              heritage: {
+                ...aboutPageData.heritage,
+                ...(c.heritage || {}),
+                badge: { ...aboutPageData.heritage.badge, ...(c.heritage?.badge || {}) },
+                title: { ...aboutPageData.heritage.title, ...(c.heritage?.title || {}) },
+                description: { ...aboutPageData.heritage.description, ...(c.heritage?.description || {}) },
+                cta: { ...aboutPageData.heritage.cta, ...(c.heritage?.cta || {}) },
+                image: c.heritage?.image || aboutPageData.heritage.image,
+                bgImage: c.heritage?.bgImage || aboutPageData.heritage.bgImage || '/about/heritage-bg.jpg',
+                metrics: Array.isArray(c.heritage?.metrics) && c.heritage.metrics.length > 0
+                  ? c.heritage.metrics
+                  : aboutPageData.heritage.metrics,
+              },
+              partnership: {
+                ...aboutPageData.partnership,
+                ...(c.partnership || {}),
+                badge: { ...aboutPageData.partnership.badge, ...(c.partnership?.badge || {}) },
+                title: { ...aboutPageData.partnership.title, ...(c.partnership?.title || {}) },
+                quote: { ...aboutPageData.partnership.quote, ...(c.partnership?.quote || {}) },
+                cta: { ...aboutPageData.partnership.cta, ...(c.partnership?.cta || {}) },
+                image: c.partnership?.image || aboutPageData.partnership.image,
+                floatingBadge: {
+                  ...(aboutPageData.partnership.floatingBadge || {
+                    en: 'Active Strategic Squads',
+                    ar: 'تحالفات استراتيجية نشطة',
+                  }),
+                  ...(c.partnership?.floatingBadge || {}),
+                },
+                paragraphs: Array.isArray(c.partnership?.paragraphs) && c.partnership.paragraphs.length > 0
+                  ? c.partnership.paragraphs
+                  : aboutPageData.partnership.paragraphs,
+              },
+              milestones: {
+                ...aboutPageData.milestones,
+                ...(c.milestones || {}),
+                badge: { ...aboutPageData.milestones.badge, ...(c.milestones?.badge || {}) },
+                title: { ...aboutPageData.milestones.title, ...(c.milestones?.title || {}) },
+                subtitle: { ...aboutPageData.milestones.subtitle, ...(c.milestones?.subtitle || {}) },
+                items: Array.isArray(c.milestones?.items) && c.milestones.items.length > 0
+                  ? c.milestones.items
+                  : aboutPageData.milestones.items,
+              },
+              quote: {
+                ...aboutPageData.quote,
+                ...(c.quote || {}),
+                badge: { ...aboutPageData.quote.badge, ...(c.quote?.badge || {}) },
+                quote: { ...aboutPageData.quote.quote, ...(c.quote?.quote || {}) },
+                author: { ...aboutPageData.quote.author, ...(c.quote?.author || {}) },
+                role: { ...aboutPageData.quote.role, ...(c.quote?.role || {}) },
+                avatar: c.quote?.avatar ?? aboutPageData.quote.avatar,
+              },
+              culture: {
+                ...aboutPageData.culture,
+                ...(c.culture || {}),
+                badge: { ...aboutPageData.culture.badge, ...(c.culture?.badge || {}) },
+                title: { ...aboutPageData.culture.title, ...(c.culture?.title || {}) },
+                subtitle: { ...aboutPageData.culture.subtitle, ...(c.culture?.subtitle || {}) },
+                photos: Array.isArray(c.culture?.photos) && c.culture.photos.length >= 4
+                  ? c.culture.photos
+                  : aboutPageData.culture.photos,
+              },
+              pillars: {
+                ...aboutPageData.pillars,
+                ...(c.pillars || {}),
+                badge: { ...aboutPageData.pillars.badge, ...(c.pillars?.badge || {}) },
+                title: { ...aboutPageData.pillars.title, ...(c.pillars?.title || {}) },
+                subtitle: { ...aboutPageData.pillars.subtitle, ...(c.pillars?.subtitle || {}) },
+                items: Array.isArray(c.pillars?.items) && c.pillars.items.length > 0
+                  ? c.pillars.items
+                  : aboutPageData.pillars.items,
+              },
+              values: {
+                ...aboutPageData.values,
+                ...(c.values || {}),
+                badge: { ...aboutPageData.values.badge, ...(c.values?.badge || {}) },
+                title: { ...aboutPageData.values.title, ...(c.values?.title || {}) },
+                subtitle: { ...aboutPageData.values.subtitle, ...(c.values?.subtitle || {}) },
+                card1: {
+                  ...aboutPageData.values.card1,
+                  ...(c.values?.card1 || {}),
+                  badge: { ...aboutPageData.values.card1.badge, ...(c.values?.card1?.badge || {}) },
+                  title: { ...aboutPageData.values.card1.title, ...(c.values?.card1?.title || {}) },
+                  description: { ...aboutPageData.values.card1.description, ...(c.values?.card1?.description || {}) },
+                  cta: { ...aboutPageData.values.card1.cta, ...(c.values?.card1?.cta || {}) },
+                },
+                card2: {
+                  ...aboutPageData.values.card2,
+                  ...(c.values?.card2 || {}),
+                  badge: { ...aboutPageData.values.card2.badge, ...(c.values?.card2?.badge || {}) },
+                  title: { ...aboutPageData.values.card2.title, ...(c.values?.card2?.title || {}) },
+                  description: { ...aboutPageData.values.card2.description, ...(c.values?.card2?.description || {}) },
+                  cta: { ...aboutPageData.values.card2.cta, ...(c.values?.card2?.cta || {}) },
+                },
+              },
+            });
+          } else if (slug === 'contact') {
+            const hasValidOffices =
+              Array.isArray(c.offices) &&
+              c.offices.length > 0 &&
+              typeof c.offices[0]?.city === 'object' &&
+              Boolean(c.offices[0]?.country);
+            const hasValidChannels =
+              Array.isArray(c.channels) &&
+              c.channels.length > 0 &&
+              typeof c.channels[0]?.title === 'object';
+            const hasValidFaqs =
+              Array.isArray(c.faqs) &&
+              c.faqs.length > 0 &&
+              typeof c.faqs[0]?.question === 'object';
+
+            setPageData({
+              ...contactPageData,
+              ...c,
+              hero: {
+                ...contactPageData.hero,
+                ...(c.hero || {}),
+                badge: { ...contactPageData.hero.badge, ...(c.hero?.badge || {}) },
+                title: { ...contactPageData.hero.title, ...(c.hero?.title || {}) },
+                subtitle: { ...contactPageData.hero.subtitle, ...(c.hero?.subtitle || {}) },
+                quickLinks:
+                  Array.isArray(c.hero?.quickLinks) && c.hero.quickLinks.length > 0
+                    ? c.hero.quickLinks
+                    : contactPageData.hero.quickLinks,
+              },
+              officesBadge: {
+                ...(contactPageData.officesBadge || { en: 'Global Presence', ar: 'حضور استراتيجي عالمي' }),
+                ...(c.officesBadge || {}),
+              },
+              officesTitle: {
+                ...contactPageData.officesTitle,
+                ...(c.officesTitle || {}),
+              },
+              officesSubtitle: {
+                ...contactPageData.officesSubtitle,
+                ...(c.officesSubtitle || {}),
+              },
+              offices: hasValidOffices ? c.offices : contactPageData.offices,
+              channelsBadge: {
+                ...(contactPageData.channelsBadge || { en: 'Direct Inquiries', ar: 'قنوات تواصل سريعة ومباشرة' }),
+                ...(c.channelsBadge || {}),
+              },
+              channelsTitle: {
+                ...contactPageData.channelsTitle,
+                ...(c.channelsTitle || {}),
+              },
+              channelsSubtitle: {
+                ...contactPageData.channelsSubtitle,
+                ...(c.channelsSubtitle || {}),
+              },
+              channels: hasValidChannels ? c.channels : contactPageData.channels,
+              faqsTitle: {
+                ...contactPageData.faqsTitle,
+                ...(c.faqsTitle || {}),
+              },
+              faqsSubtitle: {
+                ...contactPageData.faqsSubtitle,
+                ...(c.faqsSubtitle || {}),
+              },
+              faqs: hasValidFaqs ? c.faqs : contactPageData.faqs,
             });
           } else {
             setPageData(c);
@@ -430,6 +623,82 @@ export default function UniversalPageCmsEditor() {
             bgImage: pageData.homeContactBgImage || pageData.homeContact?.bgImage || '',
           },
         };
+      } else if (slug === 'about') {
+        payloadToSave = {
+          ...aboutPageData,
+          ...pageData,
+          page: 'about',
+          hero: { ...aboutPageData.hero, ...(pageData.hero || {}) },
+          purpose: { ...aboutPageData.purpose, ...(pageData.purpose || {}) },
+          heritage: { ...aboutPageData.heritage, ...(pageData.heritage || {}) },
+          partnership: { ...aboutPageData.partnership, ...(pageData.partnership || {}) },
+          milestones: { ...aboutPageData.milestones, ...(pageData.milestones || {}) },
+          quote: { ...aboutPageData.quote, ...(pageData.quote || {}) },
+          culture: { ...aboutPageData.culture, ...(pageData.culture || {}) },
+          pillars: { ...aboutPageData.pillars, ...(pageData.pillars || {}) },
+          values: { ...aboutPageData.values, ...(pageData.values || {}) },
+        };
+      } else if (slug === 'contact') {
+        payloadToSave = {
+          ...contactPageData,
+          ...pageData,
+          page: 'contact',
+          hero: {
+            ...contactPageData.hero,
+            ...(pageData.hero || {}),
+            badge: { ...contactPageData.hero.badge, ...(pageData.hero?.badge || {}) },
+            title: { ...contactPageData.hero.title, ...(pageData.hero?.title || {}) },
+            subtitle: { ...contactPageData.hero.subtitle, ...(pageData.hero?.subtitle || {}) },
+            quickLinks:
+              Array.isArray(pageData.hero?.quickLinks) && pageData.hero.quickLinks.length > 0
+                ? pageData.hero.quickLinks
+                : contactPageData.hero.quickLinks,
+          },
+          officesBadge: {
+            ...(contactPageData.officesBadge || { en: 'Global Presence', ar: 'حضور استراتيجي عالمي' }),
+            ...(pageData.officesBadge || {}),
+          },
+          officesTitle: {
+            ...contactPageData.officesTitle,
+            ...(pageData.officesTitle || {}),
+          },
+          officesSubtitle: {
+            ...contactPageData.officesSubtitle,
+            ...(pageData.officesSubtitle || {}),
+          },
+          offices:
+            Array.isArray(pageData.offices) && pageData.offices.length > 0
+              ? pageData.offices
+              : contactPageData.offices,
+          channelsBadge: {
+            ...(contactPageData.channelsBadge || { en: 'Direct Inquiries', ar: 'قنوات تواصل سريعة ومباشرة' }),
+            ...(pageData.channelsBadge || {}),
+          },
+          channelsTitle: {
+            ...contactPageData.channelsTitle,
+            ...(pageData.channelsTitle || {}),
+          },
+          channelsSubtitle: {
+            ...contactPageData.channelsSubtitle,
+            ...(pageData.channelsSubtitle || {}),
+          },
+          channels:
+            Array.isArray(pageData.channels) && pageData.channels.length > 0
+              ? pageData.channels
+              : contactPageData.channels,
+          faqsTitle: {
+            ...contactPageData.faqsTitle,
+            ...(pageData.faqsTitle || {}),
+          },
+          faqsSubtitle: {
+            ...contactPageData.faqsSubtitle,
+            ...(pageData.faqsSubtitle || {}),
+          },
+          faqs:
+            Array.isArray(pageData.faqs) && pageData.faqs.length > 0
+              ? pageData.faqs
+              : contactPageData.faqs,
+        };
       }
 
       const res = await fetch(`/api/content/${slug}`, {
@@ -446,6 +715,15 @@ export default function UniversalPageCmsEditor() {
     } finally {
       setSavingAll(false);
     }
+  };
+
+  const moveItem = <T,>(list: T[], index: number, direction: 'up' | 'down'): T[] => {
+    const targetIndex = direction === 'up' ? index - 1 : index + 1;
+    if (targetIndex < 0 || targetIndex >= list.length) return list;
+    const copy = [...list];
+    const [moved] = copy.splice(index, 1);
+    copy.splice(targetIndex, 0, moved);
+    return copy;
   };
 
   if (loading) {
@@ -2430,45 +2708,1440 @@ export default function UniversalPageCmsEditor() {
       )}
 
       {/* =================================================================== */}
-      {/* 2. ABOUT US PAGE SECTIONS BUILDER                                  */}
+      {/* 2. ABOUT US PAGE SECTIONS BUILDER (ALL 10 SECTIONS)                 */}
       {/* =================================================================== */}
       {slug === 'about' && (
         <div className="space-y-4">
-          {/* Section 1: Hero */}
+          {/* ----------------------------------------------------------------- */}
+          {/* Section 1: Hero Billboard (AboutHeroSection)                      */}
+          {/* ----------------------------------------------------------------- */}
           <SectionAccordion
             number={1}
             title="About Us • Hero Billboard"
-            description="Agency statement, badges, and primary / secondary CTAs"
+            description="Eyebrow badge, agency headline (H1), subtitle narrative, and primary / secondary CTAs"
             isOpenDefault={true}
             onSave={savePage}
           >
+            {/* Eyebrow Badge */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Hero Title (EN)</label>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Eyebrow Badge (EN)</label>
                 <input
                   type="text"
-                  value={pageData.hero?.title?.en || pageData.heroTitle || ''}
+                  value={pageData.hero?.badge?.en ?? aboutPageData.hero.badge.en}
                   onChange={(e) =>
                     setPageData({
                       ...pageData,
-                      hero: { ...pageData.hero, title: { ...pageData.hero?.title, en: e.target.value } },
-                      heroTitle: e.target.value,
+                      hero: {
+                        ...aboutPageData.hero,
+                        ...pageData.hero,
+                        badge: { ...aboutPageData.hero.badge, ...pageData.hero?.badge, en: e.target.value },
+                      },
                     })
                   }
                   className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white"
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">عنوان الصفحة (AR)</label>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">شارة القسم العلوية (AR)</label>
                 <input
                   type="text"
                   dir="rtl"
-                  value={pageData.hero?.title?.ar || pageData.heroTitleAr || ''}
+                  value={pageData.hero?.badge?.ar ?? aboutPageData.hero.badge.ar}
                   onChange={(e) =>
                     setPageData({
                       ...pageData,
-                      hero: { ...pageData.hero, title: { ...pageData.hero?.title, ar: e.target.value } },
-                      heroTitleAr: e.target.value,
+                      hero: {
+                        ...aboutPageData.hero,
+                        ...pageData.hero,
+                        badge: { ...aboutPageData.hero.badge, ...pageData.hero?.badge, ar: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white"
+                />
+              </div>
+            </div>
+
+            {/* Hero Main Title */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Hero Main Title H1 (EN)</label>
+                <input
+                  type="text"
+                  value={pageData.hero?.title?.en ?? aboutPageData.hero.title.en}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      hero: {
+                        ...aboutPageData.hero,
+                        ...pageData.hero,
+                        title: { ...aboutPageData.hero.title, ...pageData.hero?.title, en: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">العنوان الرئيسي (AR)</label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={pageData.hero?.title?.ar ?? aboutPageData.hero.title.ar}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      hero: {
+                        ...aboutPageData.hero,
+                        ...pageData.hero,
+                        title: { ...aboutPageData.hero.title, ...pageData.hero?.title, ar: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white"
+                />
+              </div>
+            </div>
+
+            {/* Hero Subtitle Narrative */}
+            <RichTextEditor
+              label="Hero Subtitle Narrative"
+              helperText="Supports rich formatting, links, and text alignment (Left, Center, Right, Justify)."
+              rows={4}
+              valueEn={pageData.hero?.subtitle?.en ?? aboutPageData.hero.subtitle.en}
+              valueAr={pageData.hero?.subtitle?.ar ?? aboutPageData.hero.subtitle.ar}
+              onChangeEn={(val) =>
+                setPageData({
+                  ...pageData,
+                  hero: {
+                    ...aboutPageData.hero,
+                    ...pageData.hero,
+                    subtitle: { ...aboutPageData.hero.subtitle, ...pageData.hero?.subtitle, en: val },
+                  },
+                })
+              }
+              onChangeAr={(val) =>
+                setPageData({
+                  ...pageData,
+                  hero: {
+                    ...aboutPageData.hero,
+                    ...pageData.hero,
+                    subtitle: { ...aboutPageData.hero.subtitle, ...pageData.hero?.subtitle, ar: val },
+                  },
+                })
+              }
+            />
+
+            {/* Primary & Secondary CTAs */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 pt-2">
+              <CtaEditor
+                title="Primary CTA Button (Explore Our Journey)"
+                cta={{
+                  enabled: pageData.hero?.primaryCta?.enabled !== false,
+                  labelEn: pageData.hero?.primaryCta?.en ?? aboutPageData.hero.primaryCta.en,
+                  labelAr: pageData.hero?.primaryCta?.ar ?? aboutPageData.hero.primaryCta.ar,
+                  href: pageData.hero?.primaryCta?.href ?? aboutPageData.hero.primaryCta.href,
+                }}
+                onChange={(cta: CtaConfig) =>
+                  setPageData({
+                    ...pageData,
+                    hero: {
+                      ...aboutPageData.hero,
+                      ...pageData.hero,
+                      primaryCta: {
+                        en: cta.labelEn,
+                        ar: cta.labelAr,
+                        href: cta.href,
+                        enabled: cta.enabled,
+                      },
+                    },
+                  })
+                }
+              />
+
+              <CtaEditor
+                title="Secondary CTA Button (Book a Discovery Call)"
+                cta={{
+                  enabled: pageData.hero?.secondaryCta?.enabled !== false,
+                  labelEn: pageData.hero?.secondaryCta?.en ?? aboutPageData.hero.secondaryCta.en,
+                  labelAr: pageData.hero?.secondaryCta?.ar ?? aboutPageData.hero.secondaryCta.ar,
+                  href: pageData.hero?.secondaryCta?.href ?? aboutPageData.hero.secondaryCta.href,
+                }}
+                onChange={(cta: CtaConfig) =>
+                  setPageData({
+                    ...pageData,
+                    hero: {
+                      ...aboutPageData.hero,
+                      ...pageData.hero,
+                      secondaryCta: {
+                        en: cta.labelEn,
+                        ar: cta.labelAr,
+                        href: cta.href,
+                        enabled: cta.enabled,
+                      },
+                    },
+                  })
+                }
+              />
+            </div>
+          </SectionAccordion>
+
+          {/* ----------------------------------------------------------------- */}
+          {/* Section 2: Purpose & Vision + Stats (AboutPurposeSection)         */}
+          {/* ----------------------------------------------------------------- */}
+          <SectionAccordion
+            number={2}
+            title="About Us • Purpose, Vision & Enterprise Stats"
+            description="Mission narratives, wide panoramic team image, and animated CountUp statistics"
+            onSave={savePage}
+          >
+            {/* Eyebrow & Title */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Eyebrow Badge (EN)</label>
+                <input
+                  type="text"
+                  value={pageData.purpose?.badge?.en ?? aboutPageData.purpose.badge.en}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      purpose: {
+                        ...aboutPageData.purpose,
+                        ...pageData.purpose,
+                        badge: { ...aboutPageData.purpose.badge, ...pageData.purpose?.badge, en: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">شارة القسم (AR)</label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={pageData.purpose?.badge?.ar ?? aboutPageData.purpose.badge.ar}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      purpose: {
+                        ...aboutPageData.purpose,
+                        ...pageData.purpose,
+                        badge: { ...aboutPageData.purpose.badge, ...pageData.purpose?.badge, ar: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Purpose Title H2 (EN)</label>
+                <input
+                  type="text"
+                  value={pageData.purpose?.title?.en ?? aboutPageData.purpose.title.en}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      purpose: {
+                        ...aboutPageData.purpose,
+                        ...pageData.purpose,
+                        title: { ...aboutPageData.purpose.title, ...pageData.purpose?.title, en: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">عنوان الرؤية والهدف (AR)</label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={pageData.purpose?.title?.ar ?? aboutPageData.purpose.title.ar}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      purpose: {
+                        ...aboutPageData.purpose,
+                        ...pageData.purpose,
+                        title: { ...aboutPageData.purpose.title, ...pageData.purpose?.title, ar: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white"
+                />
+              </div>
+            </div>
+
+            {/* Description 1 & 2 */}
+            <RichTextEditor
+              label="Primary Purpose Paragraph (Description 1)"
+              rows={4}
+              valueEn={pageData.purpose?.description1?.en ?? aboutPageData.purpose.description1.en}
+              valueAr={pageData.purpose?.description1?.ar ?? aboutPageData.purpose.description1.ar}
+              onChangeEn={(val) =>
+                setPageData({
+                  ...pageData,
+                  purpose: {
+                    ...aboutPageData.purpose,
+                    ...pageData.purpose,
+                    description1: { ...aboutPageData.purpose.description1, ...pageData.purpose?.description1, en: val },
+                  },
+                })
+              }
+              onChangeAr={(val) =>
+                setPageData({
+                  ...pageData,
+                  purpose: {
+                    ...aboutPageData.purpose,
+                    ...pageData.purpose,
+                    description1: { ...aboutPageData.purpose.description1, ...pageData.purpose?.description1, ar: val },
+                  },
+                })
+              }
+            />
+
+            <RichTextEditor
+              label="Secondary Purpose Paragraph (Description 2)"
+              rows={4}
+              valueEn={pageData.purpose?.description2?.en ?? aboutPageData.purpose.description2.en}
+              valueAr={pageData.purpose?.description2?.ar ?? aboutPageData.purpose.description2.ar}
+              onChangeEn={(val) =>
+                setPageData({
+                  ...pageData,
+                  purpose: {
+                    ...aboutPageData.purpose,
+                    ...pageData.purpose,
+                    description2: { ...aboutPageData.purpose.description2, ...pageData.purpose?.description2, en: val },
+                  },
+                })
+              }
+              onChangeAr={(val) =>
+                setPageData({
+                  ...pageData,
+                  purpose: {
+                    ...aboutPageData.purpose,
+                    ...pageData.purpose,
+                    description2: { ...aboutPageData.purpose.description2, ...pageData.purpose?.description2, ar: val },
+                  },
+                })
+              }
+            />
+
+            {/* Wide Feature Image */}
+            <div className="p-4 bg-white border border-slate-200 rounded-xl space-y-2">
+              <label className="block text-xs font-bold text-slate-700 uppercase">
+                Wide Team Collaboration Feature Image (21:9 / 16:9)
+              </label>
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                {(pageData.purpose?.image || aboutPageData.purpose.image) && (
+                  <img
+                    src={pageData.purpose?.image || aboutPageData.purpose.image}
+                    alt="Purpose preview"
+                    className="w-28 h-16 object-cover rounded-lg border border-slate-200 shrink-0 bg-slate-100"
+                  />
+                )}
+                <div className="flex-1 flex gap-2 w-full">
+                  <input
+                    type="text"
+                    value={pageData.purpose?.image ?? aboutPageData.purpose.image}
+                    onChange={(e) =>
+                      setPageData({
+                        ...pageData,
+                        purpose: { ...aboutPageData.purpose, ...pageData.purpose, image: e.target.value },
+                      })
+                    }
+                    className="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl font-mono text-[11px] bg-white"
+                  />
+                  <button
+                    type="button"
+                    onClick={() =>
+                      openMediaPicker((url) => {
+                        setPageData({
+                          ...pageData,
+                          purpose: { ...aboutPageData.purpose, ...pageData.purpose, image: url },
+                        });
+                      }, 'image')
+                    }
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-semibold shrink-0"
+                  >
+                    <TbPhoto className="w-3.5 h-3.5" />
+                    <span>Pick R2</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Animated Stats Repeater */}
+            <div className="p-4 bg-white border border-slate-200 rounded-xl space-y-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="text-xs font-bold uppercase tracking-wider text-slate-700">
+                    Animated Enterprise Counters ({(pageData.purpose?.stats || aboutPageData.purpose.stats).length})
+                  </span>
+                  <p className="text-[11px] text-slate-500">
+                    Each counter animates up to &ldquo;Target Number&rdquo; on viewport scroll with optional prefix, suffix, and separator.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const currentStats = pageData.purpose?.stats || aboutPageData.purpose.stats;
+                    const nextCode = String(currentStats.length + 1).padStart(2, '0');
+                    setPageData({
+                      ...pageData,
+                      purpose: {
+                        ...aboutPageData.purpose,
+                        ...pageData.purpose,
+                        stats: [
+                          ...currentStats,
+                          {
+                            code: nextCode,
+                            value: '100+',
+                            number: 100,
+                            prefix: '',
+                            suffix: '+',
+                            thousandsSeparator: '',
+                            label: { en: 'new metric label', ar: 'عنوان المؤشر الجديد' },
+                          },
+                        ],
+                      },
+                    });
+                  }}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 text-white rounded-lg text-xs font-semibold hover:bg-slate-800"
+                >
+                  <TbPlus className="w-3.5 h-3.5" />
+                  <span>Add Counter</span>
+                </button>
+              </div>
+
+              <div className="space-y-3">
+                {(pageData.purpose?.stats || aboutPageData.purpose.stats).map((stat: any, idx: number) => {
+                  const statsList = pageData.purpose?.stats || aboutPageData.purpose.stats;
+                  return (
+                    <div key={idx} className="p-3.5 bg-slate-50 border border-slate-200 rounded-xl space-y-3">
+                      <div className="flex items-center justify-between border-b border-slate-200/80 pb-2">
+                        <span className="text-xs font-bold text-slate-700 font-mono">
+                          Counter #{idx + 1} ({stat.number}{stat.suffix || ''})
+                        </span>
+                        <div className="flex items-center gap-1">
+                          <button
+                            type="button"
+                            disabled={idx === 0}
+                            onClick={() => {
+                              const updated = [...statsList];
+                              [updated[idx - 1], updated[idx]] = [updated[idx], updated[idx - 1]];
+                              setPageData({
+                                ...pageData,
+                                purpose: { ...aboutPageData.purpose, ...pageData.purpose, stats: updated },
+                              });
+                            }}
+                            className="p-1 text-slate-500 hover:text-slate-900 disabled:opacity-30"
+                            title="Move Up"
+                          >
+                            <TbArrowUp className="w-4 h-4" />
+                          </button>
+                          <button
+                            type="button"
+                            disabled={idx === statsList.length - 1}
+                            onClick={() => {
+                              const updated = [...statsList];
+                              [updated[idx + 1], updated[idx]] = [updated[idx], updated[idx + 1]];
+                              setPageData({
+                                ...pageData,
+                                purpose: { ...aboutPageData.purpose, ...pageData.purpose, stats: updated },
+                              });
+                            }}
+                            className="p-1 text-slate-500 hover:text-slate-900 disabled:opacity-30"
+                            title="Move Down"
+                          >
+                            <TbArrowDown className="w-4 h-4" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const updated = statsList.filter((_: any, i: number) => i !== idx);
+                              setPageData({
+                                ...pageData,
+                                purpose: { ...aboutPageData.purpose, ...pageData.purpose, stats: updated },
+                              });
+                            }}
+                            className="p-1 text-red-500 hover:text-red-700"
+                            title="Remove Counter"
+                          >
+                            <TbTrash className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Code</label>
+                          <input
+                            type="text"
+                            value={stat.code ?? ''}
+                            onChange={(e) => {
+                              const updated = [...statsList];
+                              updated[idx] = { ...stat, code: e.target.value };
+                              setPageData({
+                                ...pageData,
+                                purpose: { ...aboutPageData.purpose, ...pageData.purpose, stats: updated },
+                              });
+                            }}
+                            className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg font-mono"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Target Number</label>
+                          <input
+                            type="number"
+                            value={stat.number ?? 0}
+                            onChange={(e) => {
+                              const num = Number(e.target.value) || 0;
+                              const updated = [...statsList];
+                              updated[idx] = {
+                                ...stat,
+                                number: num,
+                                value: `${stat.prefix || ''}${num}${stat.suffix || ''}`,
+                              };
+                              setPageData({
+                                ...pageData,
+                                purpose: { ...aboutPageData.purpose, ...pageData.purpose, stats: updated },
+                              });
+                            }}
+                            className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg font-mono font-bold"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Prefix</label>
+                          <input
+                            type="text"
+                            placeholder="e.g. +, $"
+                            value={stat.prefix ?? ''}
+                            onChange={(e) => {
+                              const updated = [...statsList];
+                              updated[idx] = { ...stat, prefix: e.target.value };
+                              setPageData({
+                                ...pageData,
+                                purpose: { ...aboutPageData.purpose, ...pageData.purpose, stats: updated },
+                              });
+                            }}
+                            className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg font-mono"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Suffix</label>
+                          <input
+                            type="text"
+                            placeholder="e.g. +, %, k"
+                            value={stat.suffix ?? ''}
+                            onChange={(e) => {
+                              const updated = [...statsList];
+                              updated[idx] = { ...stat, suffix: e.target.value };
+                              setPageData({
+                                ...pageData,
+                                purpose: { ...aboutPageData.purpose, ...pageData.purpose, stats: updated },
+                              });
+                            }}
+                            className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg font-mono"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Thousands Sep</label>
+                          <input
+                            type="text"
+                            placeholder="e.g. ,"
+                            value={stat.thousandsSeparator ?? ''}
+                            onChange={(e) => {
+                              const updated = [...statsList];
+                              updated[idx] = { ...stat, thousandsSeparator: e.target.value };
+                              setPageData({
+                                ...pageData,
+                                purpose: { ...aboutPageData.purpose, ...pageData.purpose, stats: updated },
+                              });
+                            }}
+                            className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg font-mono"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Stat Label (EN)</label>
+                          <input
+                            type="text"
+                            value={stat.label?.en ?? ''}
+                            onChange={(e) => {
+                              const updated = [...statsList];
+                              updated[idx] = { ...stat, label: { ...stat.label, en: e.target.value } };
+                              setPageData({
+                                ...pageData,
+                                purpose: { ...aboutPageData.purpose, ...pageData.purpose, stats: updated },
+                              });
+                            }}
+                            className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">وصف المؤشر (AR)</label>
+                          <input
+                            type="text"
+                            dir="rtl"
+                            value={stat.label?.ar ?? ''}
+                            onChange={(e) => {
+                              const updated = [...statsList];
+                              updated[idx] = { ...stat, label: { ...stat.label, ar: e.target.value } };
+                              setPageData({
+                                ...pageData,
+                                purpose: { ...aboutPageData.purpose, ...pageData.purpose, stats: updated },
+                              });
+                            }}
+                            className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </SectionAccordion>
+
+          {/* ----------------------------------------------------------------- */}
+          {/* Section 3: Global Strategic Reach / Heritage Card                 */}
+          {/* ----------------------------------------------------------------- */}
+          <SectionAccordion
+            number={3}
+            title="About Us • Global Strategic Reach & Heritage Card"
+            description="Floating architectural card, background photography, 3 regional metrics, portrait image, and CTA"
+            onSave={savePage}
+          >
+            {/* Eyebrow & Title */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Eyebrow Badge (EN)</label>
+                <input
+                  type="text"
+                  value={pageData.heritage?.badge?.en ?? aboutPageData.heritage.badge.en}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      heritage: {
+                        ...aboutPageData.heritage,
+                        ...pageData.heritage,
+                        badge: { ...aboutPageData.heritage.badge, ...pageData.heritage?.badge, en: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">شارة القسم (AR)</label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={pageData.heritage?.badge?.ar ?? aboutPageData.heritage.badge.ar}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      heritage: {
+                        ...aboutPageData.heritage,
+                        ...pageData.heritage,
+                        badge: { ...aboutPageData.heritage.badge, ...pageData.heritage?.badge, ar: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Heritage Card Title H2 (EN)</label>
+                <input
+                  type="text"
+                  value={pageData.heritage?.title?.en ?? aboutPageData.heritage.title.en}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      heritage: {
+                        ...aboutPageData.heritage,
+                        ...pageData.heritage,
+                        title: { ...aboutPageData.heritage.title, ...pageData.heritage?.title, en: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">عنوان بطاقة الإرث والحضور (AR)</label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={pageData.heritage?.title?.ar ?? aboutPageData.heritage.title.ar}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      heritage: {
+                        ...aboutPageData.heritage,
+                        ...pageData.heritage,
+                        title: { ...aboutPageData.heritage.title, ...pageData.heritage?.title, ar: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white"
+                />
+              </div>
+            </div>
+
+            {/* Heritage Description */}
+            <RichTextEditor
+              label="Heritage Narrative Description"
+              rows={4}
+              valueEn={pageData.heritage?.description?.en ?? aboutPageData.heritage.description.en}
+              valueAr={pageData.heritage?.description?.ar ?? aboutPageData.heritage.description.ar}
+              onChangeEn={(val) =>
+                setPageData({
+                  ...pageData,
+                  heritage: {
+                    ...aboutPageData.heritage,
+                    ...pageData.heritage,
+                    description: { ...aboutPageData.heritage.description, ...pageData.heritage?.description, en: val },
+                  },
+                })
+              }
+              onChangeAr={(val) =>
+                setPageData({
+                  ...pageData,
+                  heritage: {
+                    ...aboutPageData.heritage,
+                    ...pageData.heritage,
+                    description: { ...aboutPageData.heritage.description, ...pageData.heritage?.description, ar: val },
+                  },
+                })
+              }
+            />
+
+            {/* Portrait Image & Architectural Background Image */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <div className="p-4 bg-white border border-slate-200 rounded-xl space-y-2">
+                <label className="block text-xs font-bold text-slate-700 uppercase">
+                  Right Column Portrait Image (4:5)
+                </label>
+                <div className="flex items-center gap-3">
+                  {(pageData.heritage?.image || aboutPageData.heritage.image) && (
+                    <img
+                      src={pageData.heritage?.image || aboutPageData.heritage.image}
+                      alt="Heritage portrait"
+                      className="w-16 h-20 object-cover rounded-lg border border-slate-200 shrink-0 bg-slate-100"
+                    />
+                  )}
+                  <div className="flex-1 flex gap-2">
+                    <input
+                      type="text"
+                      value={pageData.heritage?.image ?? aboutPageData.heritage.image}
+                      onChange={(e) =>
+                        setPageData({
+                          ...pageData,
+                          heritage: { ...aboutPageData.heritage, ...pageData.heritage, image: e.target.value },
+                        })
+                      }
+                      className="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl font-mono text-[11px]"
+                    />
+                    <button
+                      type="button"
+                      onClick={() =>
+                        openMediaPicker((url) => {
+                          setPageData({
+                            ...pageData,
+                            heritage: { ...aboutPageData.heritage, ...pageData.heritage, image: url },
+                          });
+                        }, 'image')
+                      }
+                      className="inline-flex items-center gap-1.5 px-3 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-semibold shrink-0"
+                    >
+                      <TbPhoto className="w-3.5 h-3.5" />
+                      <span>Pick R2</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-4 bg-white border border-slate-200 rounded-xl space-y-2">
+                <label className="block text-xs font-bold text-slate-700 uppercase">
+                  Section Architectural Background Image
+                </label>
+                <div className="flex items-center gap-3">
+                  {(pageData.heritage?.bgImage || aboutPageData.heritage.bgImage || '/about/heritage-bg.jpg') && (
+                    <img
+                      src={pageData.heritage?.bgImage || aboutPageData.heritage.bgImage || '/about/heritage-bg.jpg'}
+                      alt="Heritage background"
+                      className="w-24 h-16 object-cover rounded-lg border border-slate-200 shrink-0 bg-slate-100"
+                    />
+                  )}
+                  <div className="flex-1 flex gap-2">
+                    <input
+                      type="text"
+                      value={pageData.heritage?.bgImage ?? aboutPageData.heritage.bgImage ?? '/about/heritage-bg.jpg'}
+                      onChange={(e) =>
+                        setPageData({
+                          ...pageData,
+                          heritage: { ...aboutPageData.heritage, ...pageData.heritage, bgImage: e.target.value },
+                        })
+                      }
+                      className="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl font-mono text-[11px]"
+                    />
+                    <button
+                      type="button"
+                      onClick={() =>
+                        openMediaPicker((url) => {
+                          setPageData({
+                            ...pageData,
+                            heritage: { ...aboutPageData.heritage, ...pageData.heritage, bgImage: url },
+                          });
+                        }, 'image')
+                      }
+                      className="inline-flex items-center gap-1.5 px-3 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-semibold shrink-0"
+                    >
+                      <TbPhoto className="w-3.5 h-3.5" />
+                      <span>Pick R2</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* 3 Metrics Repeater */}
+            <div className="p-4 bg-white border border-slate-200 rounded-xl space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold uppercase tracking-wider text-slate-700">
+                  Card Key Metrics ({(pageData.heritage?.metrics || aboutPageData.heritage.metrics).length})
+                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const currentMetrics = pageData.heritage?.metrics || aboutPageData.heritage.metrics;
+                    setPageData({
+                      ...pageData,
+                      heritage: {
+                        ...aboutPageData.heritage,
+                        ...pageData.heritage,
+                        metrics: [
+                          ...currentMetrics,
+                          {
+                            value: '99%',
+                            label: { en: 'New Metric', ar: 'مؤشر جديد' },
+                          },
+                        ],
+                      },
+                    });
+                  }}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 text-white rounded-lg text-xs font-semibold hover:bg-slate-800"
+                >
+                  <TbPlus className="w-3.5 h-3.5" />
+                  <span>Add Metric</span>
+                </button>
+              </div>
+
+              <div className="space-y-3">
+                {(pageData.heritage?.metrics || aboutPageData.heritage.metrics).map((metric: any, idx: number) => {
+                  const metricsList = pageData.heritage?.metrics || aboutPageData.heritage.metrics;
+                  return (
+                    <div key={idx} className="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-slate-700 font-mono">
+                          Metric #{idx + 1} ({metric.value})
+                        </span>
+                        <div className="flex items-center gap-1">
+                          <button
+                            type="button"
+                            disabled={idx === 0}
+                            onClick={() => {
+                              const updated = [...metricsList];
+                              [updated[idx - 1], updated[idx]] = [updated[idx], updated[idx - 1]];
+                              setPageData({
+                                ...pageData,
+                                heritage: { ...aboutPageData.heritage, ...pageData.heritage, metrics: updated },
+                              });
+                            }}
+                            className="p-1 text-slate-500 hover:text-slate-900 disabled:opacity-30"
+                          >
+                            <TbArrowUp className="w-4 h-4" />
+                          </button>
+                          <button
+                            type="button"
+                            disabled={idx === metricsList.length - 1}
+                            onClick={() => {
+                              const updated = [...metricsList];
+                              [updated[idx + 1], updated[idx]] = [updated[idx], updated[idx + 1]];
+                              setPageData({
+                                ...pageData,
+                                heritage: { ...aboutPageData.heritage, ...pageData.heritage, metrics: updated },
+                              });
+                            }}
+                            className="p-1 text-slate-500 hover:text-slate-900 disabled:opacity-30"
+                          >
+                            <TbArrowDown className="w-4 h-4" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const updated = metricsList.filter((_: any, i: number) => i !== idx);
+                              setPageData({
+                                ...pageData,
+                                heritage: { ...aboutPageData.heritage, ...pageData.heritage, metrics: updated },
+                              });
+                            }}
+                            className="p-1 text-red-500 hover:text-red-700"
+                          >
+                            <TbTrash className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Value (e.g. 100+, 98%, 4.8★)</label>
+                          <input
+                            type="text"
+                            value={metric.value ?? ''}
+                            onChange={(e) => {
+                              const updated = [...metricsList];
+                              updated[idx] = { ...metric, value: e.target.value };
+                              setPageData({
+                                ...pageData,
+                                heritage: { ...aboutPageData.heritage, ...pageData.heritage, metrics: updated },
+                              });
+                            }}
+                            className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg font-bold"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Metric Label (EN)</label>
+                          <input
+                            type="text"
+                            value={metric.label?.en ?? ''}
+                            onChange={(e) => {
+                              const updated = [...metricsList];
+                              updated[idx] = { ...metric, label: { ...metric.label, en: e.target.value } };
+                              setPageData({
+                                ...pageData,
+                                heritage: { ...aboutPageData.heritage, ...pageData.heritage, metrics: updated },
+                              });
+                            }}
+                            className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">وصف المؤشر (AR)</label>
+                          <input
+                            type="text"
+                            dir="rtl"
+                            value={metric.label?.ar ?? ''}
+                            onChange={(e) => {
+                              const updated = [...metricsList];
+                              updated[idx] = { ...metric, label: { ...metric.label, ar: e.target.value } };
+                              setPageData({
+                                ...pageData,
+                                heritage: { ...aboutPageData.heritage, ...pageData.heritage, metrics: updated },
+                              });
+                            }}
+                            className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Heritage CTA */}
+            <CtaEditor
+              title="Heritage Card Action Button"
+              cta={{
+                enabled: pageData.heritage?.cta?.enabled !== false,
+                labelEn: pageData.heritage?.cta?.en ?? aboutPageData.heritage.cta.en,
+                labelAr: pageData.heritage?.cta?.ar ?? aboutPageData.heritage.cta.ar,
+                href: pageData.heritage?.cta?.href ?? aboutPageData.heritage.cta.href,
+              }}
+              onChange={(cta: CtaConfig) =>
+                setPageData({
+                  ...pageData,
+                  heritage: {
+                    ...aboutPageData.heritage,
+                    ...pageData.heritage,
+                    cta: {
+                      en: cta.labelEn,
+                      ar: cta.labelAr,
+                      href: cta.href,
+                      enabled: cta.enabled,
+                    },
+                  },
+                })
+              }
+            />
+          </SectionAccordion>
+
+          {/* ----------------------------------------------------------------- */}
+          {/* Section 4: How We Partner (AboutPartnershipSection)               */}
+          {/* ----------------------------------------------------------------- */}
+          <SectionAccordion
+            number={4}
+            title="About Us • Partnership Philosophy (How We Partner)"
+            description="Standout quote callout, multi-paragraph philosophy, shaped tab image, floating status chip, and CTA"
+            onSave={savePage}
+          >
+            {/* Eyebrow & Title */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Eyebrow Badge (EN)</label>
+                <input
+                  type="text"
+                  value={pageData.partnership?.badge?.en ?? aboutPageData.partnership.badge.en}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      partnership: {
+                        ...aboutPageData.partnership,
+                        ...pageData.partnership,
+                        badge: { ...aboutPageData.partnership.badge, ...pageData.partnership?.badge, en: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">شارة القسم (AR)</label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={pageData.partnership?.badge?.ar ?? aboutPageData.partnership.badge.ar}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      partnership: {
+                        ...aboutPageData.partnership,
+                        ...pageData.partnership,
+                        badge: { ...aboutPageData.partnership.badge, ...pageData.partnership?.badge, ar: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Partnership Title H2 (EN)</label>
+                <input
+                  type="text"
+                  value={pageData.partnership?.title?.en ?? aboutPageData.partnership.title.en}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      partnership: {
+                        ...aboutPageData.partnership,
+                        ...pageData.partnership,
+                        title: { ...aboutPageData.partnership.title, ...pageData.partnership?.title, en: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">عنوان الشراكة (AR)</label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={pageData.partnership?.title?.ar ?? aboutPageData.partnership.title.ar}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      partnership: {
+                        ...aboutPageData.partnership,
+                        ...pageData.partnership,
+                        title: { ...aboutPageData.partnership.title, ...pageData.partnership?.title, ar: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white"
+                />
+              </div>
+            </div>
+
+            {/* Standout Quote Callout */}
+            <RichTextEditor
+              label="Standout Crimson-Bordered Callout Quote"
+              rows={3}
+              valueEn={pageData.partnership?.quote?.en ?? aboutPageData.partnership.quote.en}
+              valueAr={pageData.partnership?.quote?.ar ?? aboutPageData.partnership.quote.ar}
+              onChangeEn={(val) =>
+                setPageData({
+                  ...pageData,
+                  partnership: {
+                    ...aboutPageData.partnership,
+                    ...pageData.partnership,
+                    quote: { ...aboutPageData.partnership.quote, ...pageData.partnership?.quote, en: val },
+                  },
+                })
+              }
+              onChangeAr={(val) =>
+                setPageData({
+                  ...pageData,
+                  partnership: {
+                    ...aboutPageData.partnership,
+                    ...pageData.partnership,
+                    quote: { ...aboutPageData.partnership.quote, ...pageData.partnership?.quote, ar: val },
+                  },
+                })
+              }
+            />
+
+            {/* Paragraphs Repeater */}
+            <div className="p-4 bg-white border border-slate-200 rounded-xl space-y-4">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold uppercase tracking-wider text-slate-700">
+                  Narrative Paragraphs ({(pageData.partnership?.paragraphs || aboutPageData.partnership.paragraphs).length})
+                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const currentParagraphs = pageData.partnership?.paragraphs || aboutPageData.partnership.paragraphs;
+                    setPageData({
+                      ...pageData,
+                      partnership: {
+                        ...aboutPageData.partnership,
+                        ...pageData.partnership,
+                        paragraphs: [
+                          ...currentParagraphs,
+                          { en: 'New partnership narrative paragraph...', ar: 'فقرة جديدة حول فلسفة الشراكة...' },
+                        ],
+                      },
+                    });
+                  }}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 text-white rounded-lg text-xs font-semibold hover:bg-slate-800"
+                >
+                  <TbPlus className="w-3.5 h-3.5" />
+                  <span>Add Paragraph</span>
+                </button>
+              </div>
+
+              <div className="space-y-4">
+                {(pageData.partnership?.paragraphs || aboutPageData.partnership.paragraphs).map((p: any, idx: number) => {
+                  const paragraphsList = pageData.partnership?.paragraphs || aboutPageData.partnership.paragraphs;
+                  return (
+                    <div key={idx} className="p-3.5 bg-slate-50 border border-slate-200 rounded-xl space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-slate-700 uppercase">Paragraph #{idx + 1}</span>
+                        <div className="flex items-center gap-1">
+                          <button
+                            type="button"
+                            disabled={idx === 0}
+                            onClick={() => {
+                              const updated = [...paragraphsList];
+                              [updated[idx - 1], updated[idx]] = [updated[idx], updated[idx - 1]];
+                              setPageData({
+                                ...pageData,
+                                partnership: { ...aboutPageData.partnership, ...pageData.partnership, paragraphs: updated },
+                              });
+                            }}
+                            className="p-1 text-slate-500 hover:text-slate-900 disabled:opacity-30"
+                          >
+                            <TbArrowUp className="w-4 h-4" />
+                          </button>
+                          <button
+                            type="button"
+                            disabled={idx === paragraphsList.length - 1}
+                            onClick={() => {
+                              const updated = [...paragraphsList];
+                              [updated[idx + 1], updated[idx]] = [updated[idx], updated[idx + 1]];
+                              setPageData({
+                                ...pageData,
+                                partnership: { ...aboutPageData.partnership, ...pageData.partnership, paragraphs: updated },
+                              });
+                            }}
+                            className="p-1 text-slate-500 hover:text-slate-900 disabled:opacity-30"
+                          >
+                            <TbArrowDown className="w-4 h-4" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const updated = paragraphsList.filter((_: any, i: number) => i !== idx);
+                              setPageData({
+                                ...pageData,
+                                partnership: { ...aboutPageData.partnership, ...pageData.partnership, paragraphs: updated },
+                              });
+                            }}
+                            className="p-1 text-red-500 hover:text-red-700"
+                          >
+                            <TbTrash className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+
+                      <RichTextEditor
+                        label={`Paragraph ${idx + 1} Content`}
+                        rows={4}
+                        valueEn={p.en ?? ''}
+                        valueAr={p.ar ?? ''}
+                        onChangeEn={(val) => {
+                          const updated = [...paragraphsList];
+                          updated[idx] = { ...p, en: val };
+                          setPageData({
+                            ...pageData,
+                            partnership: { ...aboutPageData.partnership, ...pageData.partnership, paragraphs: updated },
+                          });
+                        }}
+                        onChangeAr={(val) => {
+                          const updated = [...paragraphsList];
+                          updated[idx] = { ...p, ar: val };
+                          setPageData({
+                            ...pageData,
+                            partnership: { ...aboutPageData.partnership, ...pageData.partnership, paragraphs: updated },
+                          });
+                        }}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Shaped Tab Image & Floating Status Badge */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <div className="p-4 bg-white border border-slate-200 rounded-xl space-y-2">
+                <label className="block text-xs font-bold text-slate-700 uppercase">
+                  Shaped Tab Feature Image (4:3)
+                </label>
+                <div className="flex items-center gap-3">
+                  {(pageData.partnership?.image || aboutPageData.partnership.image) && (
+                    <img
+                      src={pageData.partnership?.image || aboutPageData.partnership.image}
+                      alt="Partnership preview"
+                      className="w-24 h-18 object-cover rounded-lg border border-slate-200 shrink-0 bg-slate-100"
+                    />
+                  )}
+                  <div className="flex-1 flex gap-2">
+                    <input
+                      type="text"
+                      value={pageData.partnership?.image ?? aboutPageData.partnership.image}
+                      onChange={(e) =>
+                        setPageData({
+                          ...pageData,
+                          partnership: { ...aboutPageData.partnership, ...pageData.partnership, image: e.target.value },
+                        })
+                      }
+                      className="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl font-mono text-[11px]"
+                    />
+                    <button
+                      type="button"
+                      onClick={() =>
+                        openMediaPicker((url) => {
+                          setPageData({
+                            ...pageData,
+                            partnership: { ...aboutPageData.partnership, ...pageData.partnership, image: url },
+                          });
+                        }, 'image')
+                      }
+                      className="inline-flex items-center gap-1.5 px-3 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-semibold shrink-0"
+                    >
+                      <TbPhoto className="w-3.5 h-3.5" />
+                      <span>Pick R2</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-4 bg-white border border-slate-200 rounded-xl space-y-2">
+                <label className="block text-xs font-bold text-slate-700 uppercase">
+                  Floating Image Chip Badge (Active Strategic Squads)
+                </label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Chip Text (EN)</label>
+                    <input
+                      type="text"
+                      value={
+                        pageData.partnership?.floatingBadge?.en ??
+                        aboutPageData.partnership.floatingBadge?.en ??
+                        'Active Strategic Squads'
+                      }
+                      onChange={(e) =>
+                        setPageData({
+                          ...pageData,
+                          partnership: {
+                            ...aboutPageData.partnership,
+                            ...pageData.partnership,
+                            floatingBadge: {
+                              ...(aboutPageData.partnership.floatingBadge || {
+                                en: 'Active Strategic Squads',
+                                ar: 'تحالفات استراتيجية نشطة',
+                              }),
+                              ...pageData.partnership?.floatingBadge,
+                              en: e.target.value,
+                            },
+                          },
+                        })
+                      }
+                      className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">نص الشارة العائمة (AR)</label>
+                    <input
+                      type="text"
+                      dir="rtl"
+                      value={
+                        pageData.partnership?.floatingBadge?.ar ??
+                        aboutPageData.partnership.floatingBadge?.ar ??
+                        'تحالفات استراتيجية نشطة'
+                      }
+                      onChange={(e) =>
+                        setPageData({
+                          ...pageData,
+                          partnership: {
+                            ...aboutPageData.partnership,
+                            ...pageData.partnership,
+                            floatingBadge: {
+                              ...(aboutPageData.partnership.floatingBadge || {
+                                en: 'Active Strategic Squads',
+                                ar: 'تحالفات استراتيجية نشطة',
+                              }),
+                              ...pageData.partnership?.floatingBadge,
+                              ar: e.target.value,
+                            },
+                          },
+                        })
+                      }
+                      className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Partnership CTA */}
+            <CtaEditor
+              title="Partnership Methodology CTA Button"
+              cta={{
+                enabled: pageData.partnership?.cta?.enabled !== false,
+                labelEn: pageData.partnership?.cta?.en ?? aboutPageData.partnership.cta.en,
+                labelAr: pageData.partnership?.cta?.ar ?? aboutPageData.partnership.cta.ar,
+                href: pageData.partnership?.cta?.href ?? aboutPageData.partnership.cta.href,
+              }}
+              onChange={(cta: CtaConfig) =>
+                setPageData({
+                  ...pageData,
+                  partnership: {
+                    ...aboutPageData.partnership,
+                    ...pageData.partnership,
+                    cta: {
+                      en: cta.labelEn,
+                      ar: cta.labelAr,
+                      href: cta.href,
+                      enabled: cta.enabled,
+                    },
+                  },
+                })
+              }
+            />
+          </SectionAccordion>
+
+          {/* ----------------------------------------------------------------- */}
+          {/* Section 5: Our Journey / Milestones Timeline                      */}
+          {/* ----------------------------------------------------------------- */}
+          <SectionAccordion
+            number={5}
+            title="About Us • Milestones Timeline (Our Journey)"
+            description="Section header and chronological milestones (2018–2026) with photos and bilingual narratives"
+            onSave={savePage}
+          >
+            {/* Eyebrow & Title */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Eyebrow Badge (EN)</label>
+                <input
+                  type="text"
+                  value={pageData.milestones?.badge?.en ?? aboutPageData.milestones.badge.en}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      milestones: {
+                        ...aboutPageData.milestones,
+                        ...pageData.milestones,
+                        badge: { ...aboutPageData.milestones.badge, ...pageData.milestones?.badge, en: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">شارة القسم (AR)</label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={pageData.milestones?.badge?.ar ?? aboutPageData.milestones.badge.ar}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      milestones: {
+                        ...aboutPageData.milestones,
+                        ...pageData.milestones,
+                        badge: { ...aboutPageData.milestones.badge, ...pageData.milestones?.badge, ar: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Timeline Section Title H2 (EN)</label>
+                <input
+                  type="text"
+                  value={pageData.milestones?.title?.en ?? aboutPageData.milestones.title.en}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      milestones: {
+                        ...aboutPageData.milestones,
+                        ...pageData.milestones,
+                        title: { ...aboutPageData.milestones.title, ...pageData.milestones?.title, en: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">عنوان قسم المحطات الزمنية (AR)</label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={pageData.milestones?.title?.ar ?? aboutPageData.milestones.title.ar}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      milestones: {
+                        ...aboutPageData.milestones,
+                        ...pageData.milestones,
+                        title: { ...aboutPageData.milestones.title, ...pageData.milestones?.title, ar: e.target.value },
+                      },
                     })
                   }
                   className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white"
@@ -2477,122 +4150,54 @@ export default function UniversalPageCmsEditor() {
             </div>
 
             <RichTextEditor
-              label="Hero Subtitle Narrative"
-              valueEn={pageData.hero?.subtitle?.en || pageData.heroDescriptionEn || ''}
-              valueAr={pageData.hero?.subtitle?.ar || pageData.heroDescriptionAr || ''}
+              label="Timeline Section Subtitle"
+              rows={3}
+              valueEn={pageData.milestones?.subtitle?.en ?? aboutPageData.milestones.subtitle.en}
+              valueAr={pageData.milestones?.subtitle?.ar ?? aboutPageData.milestones.subtitle.ar}
               onChangeEn={(val) =>
                 setPageData({
                   ...pageData,
-                  hero: { ...pageData.hero, subtitle: { ...pageData.hero?.subtitle, en: val } },
+                  milestones: {
+                    ...aboutPageData.milestones,
+                    ...pageData.milestones,
+                    subtitle: { ...aboutPageData.milestones.subtitle, ...pageData.milestones?.subtitle, en: val },
+                  },
                 })
               }
               onChangeAr={(val) =>
                 setPageData({
                   ...pageData,
-                  hero: { ...pageData.hero, subtitle: { ...pageData.hero?.subtitle, ar: val } },
+                  milestones: {
+                    ...aboutPageData.milestones,
+                    ...pageData.milestones,
+                    subtitle: { ...aboutPageData.milestones.subtitle, ...pageData.milestones?.subtitle, ar: val },
+                  },
                 })
               }
             />
-          </SectionAccordion>
 
-          {/* Section 2: Purpose & Stats */}
-          <SectionAccordion
-            number={2}
-            title="About Us • Purpose & Enterprise Stats"
-            description="Our mission, purpose image, and quantified metrics (+340% Revenue, 99.9% Uptime)"
-            onSave={savePage}
-          >
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Purpose Title (EN)</label>
-                <input
-                  type="text"
-                  value={pageData.purpose?.title?.en || ''}
-                  onChange={(e) =>
-                    setPageData({
-                      ...pageData,
-                      purpose: { ...pageData.purpose, title: { ...pageData.purpose?.title, en: e.target.value } },
-                    })
-                  }
-                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">عنوان الهدف المؤسسي (AR)</label>
-                <input
-                  type="text"
-                  dir="rtl"
-                  value={pageData.purpose?.title?.ar || ''}
-                  onChange={(e) =>
-                    setPageData({
-                      ...pageData,
-                      purpose: { ...pageData.purpose, title: { ...pageData.purpose?.title, ar: e.target.value } },
-                    })
-                  }
-                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Purpose Feature Image</label>
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  value={pageData.purpose?.image || ''}
-                  onChange={(e) =>
-                    setPageData({
-                      ...pageData,
-                      purpose: { ...pageData.purpose, image: e.target.value },
-                    })
-                  }
-                  className="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl font-mono text-[11px]"
-                />
-                <button
-                  type="button"
-                  onClick={() => {
-                    openMediaPicker((url) => {
-                      setPageData({
-                        ...pageData,
-                        purpose: { ...pageData.purpose, image: url },
-                      });
-                    }, 'image');
-                  }}
-                  className="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl text-xs font-semibold shrink-0"
-                >
-                  Pick R2
-                </button>
-              </div>
-            </div>
-          </SectionAccordion>
-
-          {/* Section 3: Milestones Timeline */}
-          <SectionAccordion
-            number={3}
-            title="About Us • Milestones Timeline"
-            description="Chronological milestones from inception to regional scaling"
-            onSave={savePage}
-          >
-            <div className="p-4 bg-white border border-slate-200 rounded-xl space-y-3">
+            {/* Milestones Items Repeater */}
+            <div className="p-4 bg-white border border-slate-200 rounded-xl space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold uppercase tracking-wider text-slate-700">
-                  Timeline Milestones ({(pageData.milestones?.items || []).length})
+                  Chronological Milestones ({(pageData.milestones?.items || aboutPageData.milestones.items).length})
                 </span>
                 <button
                   type="button"
                   onClick={() => {
-                    const existing = pageData.milestones?.items || [];
+                    const existing = pageData.milestones?.items || aboutPageData.milestones.items;
                     setPageData({
                       ...pageData,
                       milestones: {
+                        ...aboutPageData.milestones,
                         ...pageData.milestones,
                         items: [
                           ...existing,
                           {
                             year: String(new Date().getFullYear()),
                             title: { en: 'New Milestone', ar: 'إنجاز جديد' },
-                            description: { en: 'Milestone narrative...', ar: 'تفاصيل الإنجاز...' },
-                            image: '',
+                            description: { en: 'Milestone narrative...', ar: 'تفاصيل المحطة الزمنية...' },
+                            image: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1000&q=80',
                           },
                         ],
                       },
@@ -2605,48 +4210,1333 @@ export default function UniversalPageCmsEditor() {
                 </button>
               </div>
 
-              <div className="space-y-3">
-                {(pageData.milestones?.items || []).map((m: any, idx: number) => (
-                  <div key={idx} className="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
-                    <div className="grid grid-cols-1 sm:grid-cols-4 gap-2">
+              <div className="space-y-4">
+                {(pageData.milestones?.items || aboutPageData.milestones.items).map((m: any, idx: number) => {
+                  const itemsList = pageData.milestones?.items || aboutPageData.milestones.items;
+                  return (
+                    <div key={idx} className="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-3">
+                      <div className="flex items-center justify-between border-b border-slate-200/80 pb-2">
+                        <span className="text-xs font-bold text-slate-800 font-mono">
+                          #{idx + 1} • {m.year} — {m.title?.en}
+                        </span>
+                        <div className="flex items-center gap-1">
+                          <button
+                            type="button"
+                            disabled={idx === 0}
+                            onClick={() => {
+                              const updated = [...itemsList];
+                              [updated[idx - 1], updated[idx]] = [updated[idx], updated[idx - 1]];
+                              setPageData({
+                                ...pageData,
+                                milestones: { ...aboutPageData.milestones, ...pageData.milestones, items: updated },
+                              });
+                            }}
+                            className="p-1 text-slate-500 hover:text-slate-900 disabled:opacity-30"
+                            title="Move Up"
+                          >
+                            <TbArrowUp className="w-4 h-4" />
+                          </button>
+                          <button
+                            type="button"
+                            disabled={idx === itemsList.length - 1}
+                            onClick={() => {
+                              const updated = [...itemsList];
+                              [updated[idx + 1], updated[idx]] = [updated[idx], updated[idx + 1]];
+                              setPageData({
+                                ...pageData,
+                                milestones: { ...aboutPageData.milestones, ...pageData.milestones, items: updated },
+                              });
+                            }}
+                            className="p-1 text-slate-500 hover:text-slate-900 disabled:opacity-30"
+                            title="Move Down"
+                          >
+                            <TbArrowDown className="w-4 h-4" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const updated = itemsList.filter((_: any, i: number) => i !== idx);
+                              setPageData({
+                                ...pageData,
+                                milestones: { ...aboutPageData.milestones, ...pageData.milestones, items: updated },
+                              });
+                            }}
+                            className="p-1 text-red-500 hover:text-red-700"
+                            title="Delete Milestone"
+                          >
+                            <TbTrash className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-5 gap-3">
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Year</label>
+                          <input
+                            type="text"
+                            value={m.year || ''}
+                            onChange={(e) => {
+                              const updated = [...itemsList];
+                              updated[idx] = { ...m, year: e.target.value };
+                              setPageData({
+                                ...pageData,
+                                milestones: { ...aboutPageData.milestones, ...pageData.milestones, items: updated },
+                              });
+                            }}
+                            className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg font-mono font-bold"
+                          />
+                        </div>
+                        <div className="sm:col-span-2">
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Milestone Title (EN)</label>
+                          <input
+                            type="text"
+                            value={m.title?.en || ''}
+                            onChange={(e) => {
+                              const updated = [...itemsList];
+                              updated[idx] = { ...m, title: { ...m.title, en: e.target.value } };
+                              setPageData({
+                                ...pageData,
+                                milestones: { ...aboutPageData.milestones, ...pageData.milestones, items: updated },
+                              });
+                            }}
+                            className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg"
+                          />
+                        </div>
+                        <div className="sm:col-span-2">
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">عنوان المحطة (AR)</label>
+                          <input
+                            type="text"
+                            dir="rtl"
+                            value={m.title?.ar || ''}
+                            onChange={(e) => {
+                              const updated = [...itemsList];
+                              updated[idx] = { ...m, title: { ...m.title, ar: e.target.value } };
+                              setPageData({
+                                ...pageData,
+                                milestones: { ...aboutPageData.milestones, ...pageData.milestones, items: updated },
+                              });
+                            }}
+                            className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Milestone Image */}
                       <div>
-                        <label className="block text-[10px] font-bold text-slate-500 uppercase">Year</label>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Milestone Photo (4:3)</label>
+                        <div className="flex items-center gap-3">
+                          {m.image && (
+                            <img
+                              src={m.image}
+                              alt={m.title?.en || m.year}
+                              className="w-20 h-14 object-cover rounded-lg border border-slate-200 shrink-0 bg-white"
+                            />
+                          )}
+                          <div className="flex-1 flex gap-2">
+                            <input
+                              type="text"
+                              value={m.image || ''}
+                              onChange={(e) => {
+                                const updated = [...itemsList];
+                                updated[idx] = { ...m, image: e.target.value };
+                                setPageData({
+                                  ...pageData,
+                                  milestones: { ...aboutPageData.milestones, ...pageData.milestones, items: updated },
+                                });
+                              }}
+                              className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg font-mono text-[11px]"
+                            />
+                            <button
+                              type="button"
+                              onClick={() =>
+                                openMediaPicker((url) => {
+                                  const updated = [...itemsList];
+                                  updated[idx] = { ...m, image: url };
+                                  setPageData({
+                                    ...pageData,
+                                    milestones: { ...aboutPageData.milestones, ...pageData.milestones, items: updated },
+                                  });
+                                }, 'image')
+                              }
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-semibold shrink-0"
+                            >
+                              <TbPhoto className="w-3.5 h-3.5" />
+                              <span>Pick R2</span>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Milestone Description */}
+                      <RichTextEditor
+                        label={`Milestone ${m.year} Description`}
+                        rows={3}
+                        valueEn={m.description?.en || ''}
+                        valueAr={m.description?.ar || ''}
+                        onChangeEn={(val) => {
+                          const updated = [...itemsList];
+                          updated[idx] = { ...m, description: { ...m.description, en: val } };
+                          setPageData({
+                            ...pageData,
+                            milestones: { ...aboutPageData.milestones, ...pageData.milestones, items: updated },
+                          });
+                        }}
+                        onChangeAr={(val) => {
+                          const updated = [...itemsList];
+                          updated[idx] = { ...m, description: { ...m.description, ar: val } };
+                          setPageData({
+                            ...pageData,
+                            milestones: { ...aboutPageData.milestones, ...pageData.milestones, items: updated },
+                          });
+                        }}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </SectionAccordion>
+
+          {/* ----------------------------------------------------------------- */}
+          {/* Section 6: Leadership Vision / Executive Quote                    */}
+          {/* ----------------------------------------------------------------- */}
+          <SectionAccordion
+            number={6}
+            title="About Us • Leadership Vision & Executive Quote"
+            description="Executive quote block, eyebrow badge, author name, role, and portrait avatar"
+            onSave={savePage}
+          >
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Eyebrow Badge (EN)</label>
+                <input
+                  type="text"
+                  value={pageData.quote?.badge?.en ?? aboutPageData.quote.badge.en}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      quote: {
+                        ...aboutPageData.quote,
+                        ...pageData.quote,
+                        badge: { ...aboutPageData.quote.badge, ...pageData.quote?.badge, en: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">شارة الاقتباس القيادي (AR)</label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={pageData.quote?.badge?.ar ?? aboutPageData.quote.badge.ar}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      quote: {
+                        ...aboutPageData.quote,
+                        ...pageData.quote,
+                        badge: { ...aboutPageData.quote.badge, ...pageData.quote?.badge, ar: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white"
+                />
+              </div>
+            </div>
+
+            <RichTextEditor
+              label="Executive Quote Text"
+              rows={4}
+              valueEn={pageData.quote?.quote?.en ?? aboutPageData.quote.quote.en}
+              valueAr={pageData.quote?.quote?.ar ?? aboutPageData.quote.quote.ar}
+              onChangeEn={(val) =>
+                setPageData({
+                  ...pageData,
+                  quote: {
+                    ...aboutPageData.quote,
+                    ...pageData.quote,
+                    quote: { ...aboutPageData.quote.quote, ...pageData.quote?.quote, en: val },
+                  },
+                })
+              }
+              onChangeAr={(val) =>
+                setPageData({
+                  ...pageData,
+                  quote: {
+                    ...aboutPageData.quote,
+                    ...pageData.quote,
+                    quote: { ...aboutPageData.quote.quote, ...pageData.quote?.quote, ar: val },
+                  },
+                })
+              }
+            />
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Author Name (EN)</label>
+                <input
+                  type="text"
+                  value={pageData.quote?.author?.en ?? aboutPageData.quote.author.en}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      quote: {
+                        ...aboutPageData.quote,
+                        ...pageData.quote,
+                        author: { ...aboutPageData.quote.author, ...pageData.quote?.author, en: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">اسم القائد / المتحدث (AR)</label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={pageData.quote?.author?.ar ?? aboutPageData.quote.author.ar}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      quote: {
+                        ...aboutPageData.quote,
+                        ...pageData.quote,
+                        author: { ...aboutPageData.quote.author, ...pageData.quote?.author, ar: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Author Role / Title (EN)</label>
+                <input
+                  type="text"
+                  value={pageData.quote?.role?.en ?? aboutPageData.quote.role.en}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      quote: {
+                        ...aboutPageData.quote,
+                        ...pageData.quote,
+                        role: { ...aboutPageData.quote.role, ...pageData.quote?.role, en: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">المنصب الوظيفي (AR)</label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={pageData.quote?.role?.ar ?? aboutPageData.quote.role.ar}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      quote: {
+                        ...aboutPageData.quote,
+                        ...pageData.quote,
+                        role: { ...aboutPageData.quote.role, ...pageData.quote?.role, ar: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white"
+                />
+              </div>
+            </div>
+
+            {/* Executive Avatar */}
+            <div className="p-4 bg-white border border-slate-200 rounded-xl space-y-2">
+              <label className="block text-xs font-bold text-slate-700 uppercase">
+                Executive Portrait Avatar
+              </label>
+              <div className="flex items-center gap-3">
+                {(pageData.quote?.avatar ?? aboutPageData.quote.avatar) && (
+                  <img
+                    src={pageData.quote?.avatar ?? aboutPageData.quote.avatar}
+                    alt="Executive avatar"
+                    className="w-14 h-14 object-cover rounded-full border-2 border-persici-crimson/30 shrink-0 bg-slate-100"
+                  />
+                )}
+                <div className="flex-1 flex gap-2">
+                  <input
+                    type="text"
+                    value={pageData.quote?.avatar ?? aboutPageData.quote.avatar ?? ''}
+                    onChange={(e) =>
+                      setPageData({
+                        ...pageData,
+                        quote: { ...aboutPageData.quote, ...pageData.quote, avatar: e.target.value },
+                      })
+                    }
+                    className="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl font-mono text-[11px]"
+                  />
+                  <button
+                    type="button"
+                    onClick={() =>
+                      openMediaPicker((url) => {
+                        setPageData({
+                          ...pageData,
+                          quote: { ...aboutPageData.quote, ...pageData.quote, avatar: url },
+                        });
+                      }, 'image')
+                    }
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-semibold shrink-0"
+                  >
+                    <TbPhoto className="w-3.5 h-3.5" />
+                    <span>Pick R2</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </SectionAccordion>
+
+          {/* ----------------------------------------------------------------- */}
+          {/* Section 7: Our Culture / 4-Photo Bento Mosaic                     */}
+          {/* ----------------------------------------------------------------- */}
+          <SectionAccordion
+            number={7}
+            title="About Us • Culture & Workspace 4-Photo Bento Mosaic"
+            description="Asymmetric 4-photo Bento grid (1 tall portrait + 2 top landscapes + 1 wide bottom panoramic)"
+            onSave={savePage}
+          >
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Culture Badge (EN)</label>
+                <input
+                  type="text"
+                  value={pageData.culture?.badge?.en ?? aboutPageData.culture.badge.en}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      culture: {
+                        ...aboutPageData.culture,
+                        ...pageData.culture,
+                        badge: { ...aboutPageData.culture.badge, ...pageData.culture?.badge, en: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">شارة الثقافة وبيئة العمل (AR)</label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={pageData.culture?.badge?.ar ?? aboutPageData.culture.badge.ar}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      culture: {
+                        ...aboutPageData.culture,
+                        ...pageData.culture,
+                        badge: { ...aboutPageData.culture.badge, ...pageData.culture?.badge, ar: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Culture Title (EN)</label>
+                <input
+                  type="text"
+                  value={pageData.culture?.title?.en ?? aboutPageData.culture.title.en}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      culture: {
+                        ...aboutPageData.culture,
+                        ...pageData.culture,
+                        title: { ...aboutPageData.culture.title, ...pageData.culture?.title, en: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">عنوان الثقافة (AR)</label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={pageData.culture?.title?.ar ?? aboutPageData.culture.title.ar}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      culture: {
+                        ...aboutPageData.culture,
+                        ...pageData.culture,
+                        title: { ...aboutPageData.culture.title, ...pageData.culture?.title, ar: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white"
+                />
+              </div>
+            </div>
+
+            <RichTextEditor
+              label="Culture Subtitle"
+              rows={2}
+              valueEn={pageData.culture?.subtitle?.en ?? aboutPageData.culture.subtitle.en}
+              valueAr={pageData.culture?.subtitle?.ar ?? aboutPageData.culture.subtitle.ar}
+              onChangeEn={(val) =>
+                setPageData({
+                  ...pageData,
+                  culture: {
+                    ...aboutPageData.culture,
+                    ...pageData.culture,
+                    subtitle: { ...aboutPageData.culture.subtitle, ...pageData.culture?.subtitle, en: val },
+                  },
+                })
+              }
+              onChangeAr={(val) =>
+                setPageData({
+                  ...pageData,
+                  culture: {
+                    ...aboutPageData.culture,
+                    ...pageData.culture,
+                    subtitle: { ...aboutPageData.culture.subtitle, ...pageData.culture?.subtitle, ar: val },
+                  },
+                })
+              }
+            />
+
+            {/* 4 Bento Photos */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {(pageData.culture?.photos || aboutPageData.culture.photos).slice(0, 4).map((photo: any, idx: number) => {
+                const photosList = [...(pageData.culture?.photos || aboutPageData.culture.photos)];
+                const slotLabels = [
+                  'Slot 1 • Left Tall Portrait (5 cols full height)',
+                  'Slot 2 • Top-Left Collaboration (7 cols)',
+                  'Slot 3 • Top-Right Engineering (5 cols)',
+                  'Slot 4 • Bottom Wide Panoramic Hub (12 cols)',
+                ];
+                return (
+                  <div key={photo.id || idx} className="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-3">
+                    <div className="flex items-center justify-between border-b border-slate-200/80 pb-2">
+                      <span className="text-xs font-bold text-slate-800">{slotLabels[idx] || `Photo #${idx + 1}`}</span>
+                      <span className="text-[10px] font-mono px-2 py-0.5 bg-white border border-slate-200 rounded text-slate-500">
+                        {photo.aspect || 'mosaic'}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                      {photo.image && (
+                        <img
+                          src={photo.image}
+                          alt={photo.title?.en || `Culture ${idx + 1}`}
+                          className="w-20 h-16 object-cover rounded-lg border border-slate-200 shrink-0 bg-white"
+                        />
+                      )}
+                      <div className="flex-1 flex gap-2">
                         <input
                           type="text"
-                          value={m.year || ''}
+                          value={photo.image || ''}
                           onChange={(e) => {
-                            const updated = [...(pageData.milestones?.items || [])];
-                            updated[idx] = { ...m, year: e.target.value };
+                            photosList[idx] = { ...photo, image: e.target.value };
                             setPageData({
                               ...pageData,
-                              milestones: { ...pageData.milestones, items: updated },
+                              culture: { ...aboutPageData.culture, ...pageData.culture, photos: photosList },
                             });
                           }}
-                          className="w-full px-2.5 py-1 text-xs bg-white border border-slate-200 rounded-lg font-bold"
+                          className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg font-mono text-[11px]"
+                        />
+                        <button
+                          type="button"
+                          onClick={() =>
+                            openMediaPicker((url) => {
+                              photosList[idx] = { ...photo, image: url };
+                              setPageData({
+                                ...pageData,
+                                culture: { ...aboutPageData.culture, ...pageData.culture, photos: photosList },
+                              });
+                            }, 'image')
+                          }
+                          className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-semibold shrink-0"
+                        >
+                          <TbPhoto className="w-3.5 h-3.5" />
+                          <span>R2</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Alt / Title (EN)</label>
+                        <input
+                          type="text"
+                          value={photo.title?.en || ''}
+                          onChange={(e) => {
+                            photosList[idx] = { ...photo, title: { ...photo.title, en: e.target.value } };
+                            setPageData({
+                              ...pageData,
+                              culture: { ...aboutPageData.culture, ...pageData.culture, photos: photosList },
+                            });
+                          }}
+                          className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg"
                         />
                       </div>
-                      <div className="sm:col-span-3">
-                        <label className="block text-[10px] font-bold text-slate-500 uppercase">Title (EN)</label>
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">العنوان البديل (AR)</label>
                         <input
                           type="text"
-                          value={m.title?.en || ''}
+                          dir="rtl"
+                          value={photo.title?.ar || ''}
                           onChange={(e) => {
-                            const updated = [...(pageData.milestones?.items || [])];
-                            updated[idx] = { ...m, title: { ...m.title, en: e.target.value } };
+                            photosList[idx] = { ...photo, title: { ...photo.title, ar: e.target.value } };
                             setPageData({
                               ...pageData,
-                              milestones: { ...pageData.milestones, items: updated },
+                              culture: { ...aboutPageData.culture, ...pageData.culture, photos: photosList },
                             });
                           }}
-                          className="w-full px-2.5 py-1 text-xs bg-white border border-slate-200 rounded-lg"
+                          className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Caption (EN)</label>
+                        <input
+                          type="text"
+                          value={photo.caption?.en || ''}
+                          onChange={(e) => {
+                            photosList[idx] = { ...photo, caption: { ...photo.caption, en: e.target.value } };
+                            setPageData({
+                              ...pageData,
+                              culture: { ...aboutPageData.culture, ...pageData.culture, photos: photosList },
+                            });
+                          }}
+                          className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">الوصف المختصر (AR)</label>
+                        <input
+                          type="text"
+                          dir="rtl"
+                          value={photo.caption?.ar || ''}
+                          onChange={(e) => {
+                            photosList[idx] = { ...photo, caption: { ...photo.caption, ar: e.target.value } };
+                            setPageData({
+                              ...pageData,
+                              culture: { ...aboutPageData.culture, ...pageData.culture, photos: photosList },
+                            });
+                          }}
+                          className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg"
                         />
                       </div>
                     </div>
                   </div>
-                ))}
+                );
+              })}
+            </div>
+          </SectionAccordion>
+
+          {/* ----------------------------------------------------------------- */}
+          {/* Section 8: Strategic Capabilities Carousel (AboutPillarsCarousel) */}
+          {/* ----------------------------------------------------------------- */}
+          <SectionAccordion
+            number={8}
+            title="About Us • Strategic Capability Pillars Carousel"
+            description="Full-bleed panoramic capability cards with frosted glassmorphic overlays"
+            onSave={savePage}
+          >
+            {/* Eyebrow & Title */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Eyebrow Badge (EN)</label>
+                <input
+                  type="text"
+                  value={pageData.pillars?.badge?.en ?? aboutPageData.pillars.badge.en}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      pillars: {
+                        ...aboutPageData.pillars,
+                        ...pageData.pillars,
+                        badge: { ...aboutPageData.pillars.badge, ...pageData.pillars?.badge, en: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">شارة القسم (AR)</label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={pageData.pillars?.badge?.ar ?? aboutPageData.pillars.badge.ar}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      pillars: {
+                        ...aboutPageData.pillars,
+                        ...pageData.pillars,
+                        badge: { ...aboutPageData.pillars.badge, ...pageData.pillars?.badge, ar: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Pillars Section Title H2 (EN)</label>
+                <input
+                  type="text"
+                  value={pageData.pillars?.title?.en ?? aboutPageData.pillars.title.en}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      pillars: {
+                        ...aboutPageData.pillars,
+                        ...pageData.pillars,
+                        title: { ...aboutPageData.pillars.title, ...pageData.pillars?.title, en: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">عنوان الركائز الاستراتيجية (AR)</label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={pageData.pillars?.title?.ar ?? aboutPageData.pillars.title.ar}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      pillars: {
+                        ...aboutPageData.pillars,
+                        ...pageData.pillars,
+                        title: { ...aboutPageData.pillars.title, ...pageData.pillars?.title, ar: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white"
+                />
+              </div>
+            </div>
+
+            <RichTextEditor
+              label="Pillars Section Subtitle"
+              rows={3}
+              valueEn={pageData.pillars?.subtitle?.en ?? aboutPageData.pillars.subtitle.en}
+              valueAr={pageData.pillars?.subtitle?.ar ?? aboutPageData.pillars.subtitle.ar}
+              onChangeEn={(val) =>
+                setPageData({
+                  ...pageData,
+                  pillars: {
+                    ...aboutPageData.pillars,
+                    ...pageData.pillars,
+                    subtitle: { ...aboutPageData.pillars.subtitle, ...pageData.pillars?.subtitle, en: val },
+                  },
+                })
+              }
+              onChangeAr={(val) =>
+                setPageData({
+                  ...pageData,
+                  pillars: {
+                    ...aboutPageData.pillars,
+                    ...pageData.pillars,
+                    subtitle: { ...aboutPageData.pillars.subtitle, ...pageData.pillars?.subtitle, ar: val },
+                  },
+                })
+              }
+            />
+
+            {/* Pillars Items Repeater */}
+            <div className="p-4 bg-white border border-slate-200 rounded-xl space-y-4">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold uppercase tracking-wider text-slate-700">
+                  Panoramic Capability Cards ({(pageData.pillars?.items || aboutPageData.pillars.items).length})
+                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const existing = pageData.pillars?.items || aboutPageData.pillars.items;
+                    setPageData({
+                      ...pageData,
+                      pillars: {
+                        ...aboutPageData.pillars,
+                        ...pageData.pillars,
+                        items: [
+                          ...existing,
+                          {
+                            id: `pillar-${existing.length + 1}`,
+                            title: { en: 'New Strategic Capability', ar: 'قدرة استراتيجية جديدة' },
+                            category: { en: 'Core Practice', ar: 'ممارسة أساسية' },
+                            date: { en: 'Core Capability', ar: 'قدرة جوهرية' },
+                            type: 'strategy',
+                            href: '/solutions',
+                            summary: { en: 'Capability description...', ar: 'وصف القدرة الاستراتيجية...' },
+                            image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=85',
+                          },
+                        ],
+                      },
+                    });
+                  }}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 text-white rounded-lg text-xs font-semibold hover:bg-slate-800"
+                >
+                  <TbPlus className="w-3.5 h-3.5" />
+                  <span>Add Capability Card</span>
+                </button>
+              </div>
+
+              <div className="space-y-4">
+                {(pageData.pillars?.items || aboutPageData.pillars.items).map((pillar: any, idx: number) => {
+                  const itemsList = pageData.pillars?.items || aboutPageData.pillars.items;
+                  return (
+                    <div key={pillar.id || idx} className="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-3">
+                      <div className="flex items-center justify-between border-b border-slate-200/80 pb-2">
+                        <span className="text-xs font-bold text-slate-800">
+                          Card #{idx + 1} • {pillar.title?.en}
+                        </span>
+                        <div className="flex items-center gap-1">
+                          <button
+                            type="button"
+                            disabled={idx === 0}
+                            onClick={() => {
+                              const updated = [...itemsList];
+                              [updated[idx - 1], updated[idx]] = [updated[idx], updated[idx - 1]];
+                              setPageData({
+                                ...pageData,
+                                pillars: { ...aboutPageData.pillars, ...pageData.pillars, items: updated },
+                              });
+                            }}
+                            className="p-1 text-slate-500 hover:text-slate-900 disabled:opacity-30"
+                          >
+                            <TbArrowUp className="w-4 h-4" />
+                          </button>
+                          <button
+                            type="button"
+                            disabled={idx === itemsList.length - 1}
+                            onClick={() => {
+                              const updated = [...itemsList];
+                              [updated[idx + 1], updated[idx]] = [updated[idx], updated[idx + 1]];
+                              setPageData({
+                                ...pageData,
+                                pillars: { ...aboutPageData.pillars, ...pageData.pillars, items: updated },
+                              });
+                            }}
+                            className="p-1 text-slate-500 hover:text-slate-900 disabled:opacity-30"
+                          >
+                            <TbArrowDown className="w-4 h-4" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const updated = itemsList.filter((_: any, i: number) => i !== idx);
+                              setPageData({
+                                ...pageData,
+                                pillars: { ...aboutPageData.pillars, ...pageData.pillars, items: updated },
+                              });
+                            }}
+                            className="p-1 text-red-500 hover:text-red-700"
+                          >
+                            <TbTrash className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Card Title (EN)</label>
+                          <input
+                            type="text"
+                            value={pillar.title?.en || ''}
+                            onChange={(e) => {
+                              const updated = [...itemsList];
+                              updated[idx] = { ...pillar, title: { ...pillar.title, en: e.target.value } };
+                              setPageData({
+                                ...pageData,
+                                pillars: { ...aboutPageData.pillars, ...pageData.pillars, items: updated },
+                              });
+                            }}
+                            className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">عنوان البطاقة (AR)</label>
+                          <input
+                            type="text"
+                            dir="rtl"
+                            value={pillar.title?.ar || ''}
+                            onChange={(e) => {
+                              const updated = [...itemsList];
+                              updated[idx] = { ...pillar, title: { ...pillar.title, ar: e.target.value } };
+                              setPageData({
+                                ...pageData,
+                                pillars: { ...aboutPageData.pillars, ...pageData.pillars, items: updated },
+                              });
+                            }}
+                            className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Category Badge (EN)</label>
+                          <input
+                            type="text"
+                            value={pillar.category?.en || ''}
+                            onChange={(e) => {
+                              const updated = [...itemsList];
+                              updated[idx] = { ...pillar, category: { ...pillar.category, en: e.target.value } };
+                              setPageData({
+                                ...pageData,
+                                pillars: { ...aboutPageData.pillars, ...pageData.pillars, items: updated },
+                              });
+                            }}
+                            className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">شارة التصنيف (AR)</label>
+                          <input
+                            type="text"
+                            dir="rtl"
+                            value={pillar.category?.ar || ''}
+                            onChange={(e) => {
+                              const updated = [...itemsList];
+                              updated[idx] = { ...pillar, category: { ...pillar.category, ar: e.target.value } };
+                              setPageData({
+                                ...pageData,
+                                pillars: { ...aboutPageData.pillars, ...pageData.pillars, items: updated },
+                              });
+                            }}
+                            className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Target Link (href)</label>
+                          <input
+                            type="text"
+                            value={pillar.href || ''}
+                            onChange={(e) => {
+                              const updated = [...itemsList];
+                              updated[idx] = { ...pillar, href: e.target.value };
+                              setPageData({
+                                ...pageData,
+                                pillars: { ...aboutPageData.pillars, ...pageData.pillars, items: updated },
+                              });
+                            }}
+                            className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg font-mono"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Pillar Background Image */}
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Panoramic Background Image</label>
+                        <div className="flex items-center gap-3">
+                          {pillar.image && (
+                            <img
+                              src={pillar.image}
+                              alt={pillar.title?.en || ''}
+                              className="w-24 h-14 object-cover rounded-lg border border-slate-200 shrink-0 bg-white"
+                            />
+                          )}
+                          <div className="flex-1 flex gap-2">
+                            <input
+                              type="text"
+                              value={pillar.image || ''}
+                              onChange={(e) => {
+                                const updated = [...itemsList];
+                                updated[idx] = { ...pillar, image: e.target.value };
+                                setPageData({
+                                  ...pageData,
+                                  pillars: { ...aboutPageData.pillars, ...pageData.pillars, items: updated },
+                                });
+                              }}
+                              className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg font-mono text-[11px]"
+                            />
+                            <button
+                              type="button"
+                              onClick={() =>
+                                openMediaPicker((url) => {
+                                  const updated = [...itemsList];
+                                  updated[idx] = { ...pillar, image: url };
+                                  setPageData({
+                                    ...pageData,
+                                    pillars: { ...aboutPageData.pillars, ...pageData.pillars, items: updated },
+                                  });
+                                }, 'image')
+                              }
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-semibold shrink-0"
+                            >
+                              <TbPhoto className="w-3.5 h-3.5" />
+                              <span>Pick R2</span>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Pillar Summary */}
+                      <RichTextEditor
+                        label={`Card #${idx + 1} Summary Description`}
+                        rows={3}
+                        valueEn={pillar.summary?.en || ''}
+                        valueAr={pillar.summary?.ar || ''}
+                        onChangeEn={(val) => {
+                          const updated = [...itemsList];
+                          updated[idx] = { ...pillar, summary: { ...pillar.summary, en: val } };
+                          setPageData({
+                            ...pageData,
+                            pillars: { ...aboutPageData.pillars, ...pageData.pillars, items: updated },
+                          });
+                        }}
+                        onChangeAr={(val) => {
+                          const updated = [...itemsList];
+                          updated[idx] = { ...pillar, summary: { ...pillar.summary, ar: val } };
+                          setPageData({
+                            ...pageData,
+                            pillars: { ...aboutPageData.pillars, ...pageData.pillars, items: updated },
+                          });
+                        }}
+                      />
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </SectionAccordion>
+
+          {/* ----------------------------------------------------------------- */}
+          {/* Section 9: Core Principles / Values Dual Cards                    */}
+          {/* ----------------------------------------------------------------- */}
+          <SectionAccordion
+            number={9}
+            title="About Us • Core Principles & Values Dual Cards"
+            description="Section header and 2 interactive value cards (How We Think & How We Work)"
+            onSave={savePage}
+          >
+            {/* Eyebrow & Title */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Eyebrow Badge (EN)</label>
+                <input
+                  type="text"
+                  value={pageData.values?.badge?.en ?? aboutPageData.values.badge.en}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      values: {
+                        ...aboutPageData.values,
+                        ...pageData.values,
+                        badge: { ...aboutPageData.values.badge, ...pageData.values?.badge, en: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">شارة القيم والمبادئ (AR)</label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={pageData.values?.badge?.ar ?? aboutPageData.values.badge.ar}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      values: {
+                        ...aboutPageData.values,
+                        ...pageData.values,
+                        badge: { ...aboutPageData.values.badge, ...pageData.values?.badge, ar: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Values Section Title H2 (EN)</label>
+                <input
+                  type="text"
+                  value={pageData.values?.title?.en ?? aboutPageData.values.title.en}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      values: {
+                        ...aboutPageData.values,
+                        ...pageData.values,
+                        title: { ...aboutPageData.values.title, ...pageData.values?.title, en: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">عنوان قسم القيم (AR)</label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={pageData.values?.title?.ar ?? aboutPageData.values.title.ar}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      values: {
+                        ...aboutPageData.values,
+                        ...pageData.values,
+                        title: { ...aboutPageData.values.title, ...pageData.values?.title, ar: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white"
+                />
+              </div>
+            </div>
+
+            <RichTextEditor
+              label="Values Section Subtitle"
+              rows={3}
+              valueEn={pageData.values?.subtitle?.en ?? aboutPageData.values.subtitle.en}
+              valueAr={pageData.values?.subtitle?.ar ?? aboutPageData.values.subtitle.ar}
+              onChangeEn={(val) =>
+                setPageData({
+                  ...pageData,
+                  values: {
+                    ...aboutPageData.values,
+                    ...pageData.values,
+                    subtitle: { ...aboutPageData.values.subtitle, ...pageData.values?.subtitle, en: val },
+                  },
+                })
+              }
+              onChangeAr={(val) =>
+                setPageData({
+                  ...pageData,
+                  values: {
+                    ...aboutPageData.values,
+                    ...pageData.values,
+                    subtitle: { ...aboutPageData.values.subtitle, ...pageData.values?.subtitle, ar: val },
+                  },
+                })
+              }
+            />
+
+            {/* Dual Value Cards (card1 & card2) */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              {(['card1', 'card2'] as const).map((cardKey, idx) => {
+                const defaultCard = aboutPageData.values[cardKey];
+                const currentCard = pageData.values?.[cardKey] || defaultCard;
+                return (
+                  <div key={cardKey} className="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-3">
+                    <div className="border-b border-slate-200/80 pb-2">
+                      <span className="text-xs font-bold uppercase tracking-wider text-slate-800">
+                        Value Card #{idx + 1} ({currentCard.badge?.en || defaultCard.badge.en})
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Card Badge (EN)</label>
+                        <input
+                          type="text"
+                          value={currentCard.badge?.en ?? defaultCard.badge.en}
+                          onChange={(e) =>
+                            setPageData({
+                              ...pageData,
+                              values: {
+                                ...aboutPageData.values,
+                                ...pageData.values,
+                                [cardKey]: {
+                                  ...defaultCard,
+                                  ...currentCard,
+                                  badge: { ...defaultCard.badge, ...currentCard.badge, en: e.target.value },
+                                },
+                              },
+                            })
+                          }
+                          className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">شارة البطاقة (AR)</label>
+                        <input
+                          type="text"
+                          dir="rtl"
+                          value={currentCard.badge?.ar ?? defaultCard.badge.ar}
+                          onChange={(e) =>
+                            setPageData({
+                              ...pageData,
+                              values: {
+                                ...aboutPageData.values,
+                                ...pageData.values,
+                                [cardKey]: {
+                                  ...defaultCard,
+                                  ...currentCard,
+                                  badge: { ...defaultCard.badge, ...currentCard.badge, ar: e.target.value },
+                                },
+                              },
+                            })
+                          }
+                          className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Card Title (EN)</label>
+                        <input
+                          type="text"
+                          value={currentCard.title?.en ?? defaultCard.title.en}
+                          onChange={(e) =>
+                            setPageData({
+                              ...pageData,
+                              values: {
+                                ...aboutPageData.values,
+                                ...pageData.values,
+                                [cardKey]: {
+                                  ...defaultCard,
+                                  ...currentCard,
+                                  title: { ...defaultCard.title, ...currentCard.title, en: e.target.value },
+                                },
+                              },
+                            })
+                          }
+                          className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">عنوان البطاقة (AR)</label>
+                        <input
+                          type="text"
+                          dir="rtl"
+                          value={currentCard.title?.ar ?? defaultCard.title.ar}
+                          onChange={(e) =>
+                            setPageData({
+                              ...pageData,
+                              values: {
+                                ...aboutPageData.values,
+                                ...pageData.values,
+                                [cardKey]: {
+                                  ...defaultCard,
+                                  ...currentCard,
+                                  title: { ...defaultCard.title, ...currentCard.title, ar: e.target.value },
+                                },
+                              },
+                            })
+                          }
+                          className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg"
+                        />
+                      </div>
+                    </div>
+
+                    <RichTextEditor
+                      label={`Card #${idx + 1} Description`}
+                      rows={3}
+                      valueEn={currentCard.description?.en ?? defaultCard.description.en}
+                      valueAr={currentCard.description?.ar ?? defaultCard.description.ar}
+                      onChangeEn={(val) =>
+                        setPageData({
+                          ...pageData,
+                          values: {
+                            ...aboutPageData.values,
+                            ...pageData.values,
+                            [cardKey]: {
+                              ...defaultCard,
+                              ...currentCard,
+                              description: { ...defaultCard.description, ...currentCard.description, en: val },
+                            },
+                          },
+                        })
+                      }
+                      onChangeAr={(val) =>
+                        setPageData({
+                          ...pageData,
+                          values: {
+                            ...aboutPageData.values,
+                            ...pageData.values,
+                            [cardKey]: {
+                              ...defaultCard,
+                              ...currentCard,
+                              description: { ...defaultCard.description, ...currentCard.description, ar: val },
+                            },
+                          },
+                        })
+                      }
+                    />
+
+                    <CtaEditor
+                      title={`Card #${idx + 1} Action CTA`}
+                      cta={{
+                        enabled: currentCard.cta?.enabled !== false,
+                        labelEn: currentCard.cta?.en ?? defaultCard.cta.en,
+                        labelAr: currentCard.cta?.ar ?? defaultCard.cta.ar,
+                        href: currentCard.cta?.href ?? defaultCard.cta.href,
+                      }}
+                      onChange={(cta: CtaConfig) =>
+                        setPageData({
+                          ...pageData,
+                          values: {
+                            ...aboutPageData.values,
+                            ...pageData.values,
+                            [cardKey]: {
+                              ...defaultCard,
+                              ...currentCard,
+                              cta: {
+                                en: cta.labelEn,
+                                ar: cta.labelAr,
+                                href: cta.href,
+                                enabled: cta.enabled,
+                              },
+                            },
+                          },
+                        })
+                      }
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          </SectionAccordion>
+
+          {/* ----------------------------------------------------------------- */}
+          {/* Section 10: Global Shared Contact Notice Banner                   */}
+          {/* ----------------------------------------------------------------- */}
+          <div className="p-5 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white rounded-2xl border border-slate-700 shadow-md flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="space-y-1">
+              <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-amber-400">
+                <TbForms className="w-4 h-4" />
+                <span>Section 10 • Global Shared Contact & Lead Form</span>
+              </div>
+              <p className="text-xs text-slate-300 leading-relaxed max-w-3xl">
+                The bottom contact section (&ldquo;Ready to accelerate your digital future?&rdquo; &amp; Get in Touch form) is a global component shared across all pages (Home, About Us, Services, etc.). To customize its titles, value points, animated background, partner logos, form fields, or reCAPTCHA settings, open the <strong className="text-white">Shared Contact</strong> editor.
+              </p>
+            </div>
+            <Link
+              href={`/${lang}/dashboard/shared-contact`}
+              className="inline-flex items-center gap-2 px-4 py-2.5 bg-white text-slate-900 hover:bg-slate-100 rounded-xl text-xs font-bold shrink-0 transition-colors"
+            >
+              <span>Edit Shared Contact</span>
+              <TbChevronRight className="w-4 h-4" />
+            </Link>
+          </div>
         </div>
       )}
 
@@ -2773,30 +5663,74 @@ export default function UniversalPageCmsEditor() {
       {/* =================================================================== */}
       {slug === 'contact' && (
         <div className="space-y-4">
+          {/* SECTION 1: HERO SECTION & QUICK ANCHOR LINKS */}
           <SectionAccordion
             number={1}
-            title="Contact Us • Hero Headline"
-            description="Bold inquiry statement and overview"
+            title="ContactHeroSection • Hero Banner & Quick Anchor Links"
+            description="Eyebrow badge, primary H1 headline, rich-text subtitle with alignment, and anchor navigation chips (#offices, #channels, #faqs, #contact-form)"
             isOpenDefault={true}
             onSave={savePage}
           >
+            {/* Eyebrow Badge */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Hero Title (EN)</label>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Eyebrow Badge (EN)</label>
                 <input
                   type="text"
-                  value={pageData.hero?.title?.en || ''}
+                  value={pageData.hero?.badge?.en || ''}
                   onChange={(e) =>
                     setPageData({
                       ...pageData,
-                      hero: { ...pageData.hero, title: { ...pageData.hero?.title, en: e.target.value } },
+                      hero: {
+                        ...pageData.hero,
+                        badge: { ...(pageData.hero?.badge || {}), en: e.target.value },
+                      },
                     })
                   }
                   className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white"
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">عنوان الواجهة (AR)</label>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">شارة القسم العلوية (AR)</label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={pageData.hero?.badge?.ar || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      hero: {
+                        ...pageData.hero,
+                        badge: { ...(pageData.hero?.badge || {}), ar: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-arabic"
+                />
+              </div>
+            </div>
+
+            {/* Hero Title H1 */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-3">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Hero Title H1 (EN)</label>
+                <input
+                  type="text"
+                  value={pageData.hero?.title?.en || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      hero: {
+                        ...pageData.hero,
+                        title: { ...(pageData.hero?.title || {}), en: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-semibold"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">عنوان الواجهة الرئيسي (AR)</label>
                 <input
                   type="text"
                   dir="rtl"
@@ -2804,91 +5738,577 @@ export default function UniversalPageCmsEditor() {
                   onChange={(e) =>
                     setPageData({
                       ...pageData,
-                      hero: { ...pageData.hero, title: { ...pageData.hero?.title, ar: e.target.value } },
+                      hero: {
+                        ...pageData.hero,
+                        title: { ...(pageData.hero?.title || {}), ar: e.target.value },
+                      },
                     })
                   }
-                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white"
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-semibold font-arabic"
                 />
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Subtitle (EN)</label>
-                <input
-                  type="text"
-                  value={pageData.hero?.subtitle?.en || ''}
-                  onChange={(e) =>
+            {/* Hero Subtitle (RichTextEditor) */}
+            <div className="pt-3">
+              <RichTextEditor
+                label="Hero Subtitle / Description"
+                rows={3}
+                valueEn={pageData.hero?.subtitle?.en || ''}
+                valueAr={pageData.hero?.subtitle?.ar || ''}
+                onChangeEn={(val) =>
+                  setPageData({
+                    ...pageData,
+                    hero: {
+                      ...pageData.hero,
+                      subtitle: { ...(pageData.hero?.subtitle || {}), en: val },
+                    },
+                  })
+                }
+                onChangeAr={(val) =>
+                  setPageData({
+                    ...pageData,
+                    hero: {
+                      ...pageData.hero,
+                      subtitle: { ...(pageData.hero?.subtitle || {}), ar: val },
+                    },
+                  })
+                }
+              />
+            </div>
+
+            {/* Quick Anchor Navigation Chips */}
+            <div className="pt-4 border-t border-slate-200/80 space-y-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="text-xs font-bold text-slate-800 uppercase tracking-wider">
+                    Quick Anchor Navigation Chips ({(pageData.hero?.quickLinks || []).length})
+                  </span>
+                  <p className="text-[11px] text-slate-500">
+                    Fast-jump navigation buttons displayed beneath the hero subtitle
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const currentLinks = pageData.hero?.quickLinks || [];
+                    const newLink = {
+                      id: `ql-${Date.now()}`,
+                      label: { en: 'New Quick Link', ar: 'رابط سريع جديد' },
+                      href: '#contact-form',
+                      enabled: true,
+                    };
                     setPageData({
                       ...pageData,
-                      hero: { ...pageData.hero, subtitle: { ...pageData.hero?.subtitle, en: e.target.value } },
-                    })
-                  }
-                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white"
-                />
+                      hero: {
+                        ...pageData.hero,
+                        quickLinks: [...currentLinks, newLink],
+                      },
+                    });
+                  }}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900 text-white text-xs font-semibold hover:bg-persici-crimson transition-colors cursor-pointer"
+                >
+                  <TbPlus className="w-3.5 h-3.5" />
+                  <span>Add Anchor Chip</span>
+                </button>
               </div>
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">الوصف التوضيحي (AR)</label>
-                <input
-                  type="text"
-                  dir="rtl"
-                  value={pageData.hero?.subtitle?.ar || ''}
-                  onChange={(e) =>
-                    setPageData({
-                      ...pageData,
-                      hero: { ...pageData.hero, subtitle: { ...pageData.hero?.subtitle, ar: e.target.value } },
-                    })
-                  }
-                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white"
-                />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {(pageData.hero?.quickLinks || []).map((chip: ContactQuickLink, idx: number) => (
+                  <div
+                    key={chip.id || idx}
+                    className="p-3.5 bg-white border border-slate-200 rounded-xl space-y-2.5 shadow-2xs"
+                  >
+                    <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+                      <span className="text-xs font-bold text-slate-800">
+                        Chip #{idx + 1}: {chip.label?.en || 'Quick Link'}
+                      </span>
+                      <div className="flex items-center gap-1.5">
+                        <label className="inline-flex items-center gap-1 text-[11px] font-semibold text-slate-600 mr-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={chip.enabled !== false}
+                            onChange={(e) => {
+                              const updated = [...(pageData.hero?.quickLinks || [])];
+                              updated[idx] = { ...chip, enabled: e.target.checked };
+                              setPageData({
+                                ...pageData,
+                                hero: { ...pageData.hero, quickLinks: updated },
+                              });
+                            }}
+                            className="rounded border-slate-300 text-persici-crimson focus:ring-persici-crimson"
+                          />
+                          <span>Visible</span>
+                        </label>
+                        <button
+                          type="button"
+                          disabled={idx === 0}
+                          onClick={() =>
+                            setPageData({
+                              ...pageData,
+                              hero: {
+                                ...pageData.hero,
+                                quickLinks: moveItem(pageData.hero?.quickLinks || [], idx, 'up'),
+                              },
+                            })
+                          }
+                          className="p-1 rounded bg-slate-100 hover:bg-slate-200 disabled:opacity-30 text-slate-700"
+                          title="Move Up"
+                        >
+                          <TbArrowUp className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          disabled={idx === (pageData.hero?.quickLinks || []).length - 1}
+                          onClick={() =>
+                            setPageData({
+                              ...pageData,
+                              hero: {
+                                ...pageData.hero,
+                                quickLinks: moveItem(pageData.hero?.quickLinks || [], idx, 'down'),
+                              },
+                            })
+                          }
+                          className="p-1 rounded bg-slate-100 hover:bg-slate-200 disabled:opacity-30 text-slate-700"
+                          title="Move Down"
+                        >
+                          <TbArrowDown className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const updated = (pageData.hero?.quickLinks || []).filter(
+                              (_item: ContactQuickLink, i: number) => i !== idx
+                            );
+                            setPageData({
+                              ...pageData,
+                              hero: { ...pageData.hero, quickLinks: updated },
+                            });
+                          }}
+                          className="p-1 rounded bg-red-50 hover:bg-red-100 text-red-600"
+                          title="Delete Chip"
+                        >
+                          <TbTrash className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-0.5">
+                          Label (EN)
+                        </label>
+                        <input
+                          type="text"
+                          value={chip.label?.en || ''}
+                          onChange={(e) => {
+                            const updated = [...(pageData.hero?.quickLinks || [])];
+                            updated[idx] = {
+                              ...chip,
+                              label: { ...(chip.label || {}), en: e.target.value },
+                            };
+                            setPageData({
+                              ...pageData,
+                              hero: { ...pageData.hero, quickLinks: updated },
+                            });
+                          }}
+                          className="w-full px-2.5 py-1.5 text-xs border border-slate-200 rounded-lg"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-0.5">
+                          التسمية (AR)
+                        </label>
+                        <input
+                          type="text"
+                          dir="rtl"
+                          value={chip.label?.ar || ''}
+                          onChange={(e) => {
+                            const updated = [...(pageData.hero?.quickLinks || [])];
+                            updated[idx] = {
+                              ...chip,
+                              label: { ...(chip.label || {}), ar: e.target.value },
+                            };
+                            setPageData({
+                              ...pageData,
+                              hero: { ...pageData.hero, quickLinks: updated },
+                            });
+                          }}
+                          className="w-full px-2.5 py-1.5 text-xs border border-slate-200 rounded-lg font-arabic"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-0.5">
+                          Target Anchor / Href
+                        </label>
+                        <input
+                          type="text"
+                          value={chip.href || ''}
+                          onChange={(e) => {
+                            const updated = [...(pageData.hero?.quickLinks || [])];
+                            updated[idx] = { ...chip, href: e.target.value };
+                            setPageData({
+                              ...pageData,
+                              hero: { ...pageData.hero, quickLinks: updated },
+                            });
+                          }}
+                          placeholder="#offices"
+                          className="w-full px-2.5 py-1.5 text-xs border border-slate-200 rounded-lg font-mono"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </SectionAccordion>
 
+          {/* SECTION 2: GLOBAL OFFICES / STRATEGIC GROWTH HUBS */}
           <SectionAccordion
             number={2}
-            title="Contact Us • Global Offices (Dubai, Riyadh, Amman)"
-            description="Manage office addresses, architectural photos (Images Only), and contact channels"
+            title="ContactOfficesSection • Strategic Global Growth Hubs (Dubai, Riyadh, Amman)"
+            description="Section headers, architectural hub photos, rich-text addresses, working hours, timezones, and Google Maps directions"
             onSave={savePage}
           >
-            <div className="space-y-4">
-              {(pageData.offices || []).map((office: any, idx: number) => (
-                <div key={idx} className="p-4 bg-white border border-slate-200 rounded-xl space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
-                      <TbMapPin className="w-4 h-4 text-persici-crimson" />
-                      <span>{office.city?.en} ({office.country?.en})</span>
-                    </span>
-                    {office.isHQ && (
-                      <span className="text-[10px] font-bold uppercase tracking-wider bg-persici-crimson/10 text-persici-crimson px-2 py-0.5 rounded-full">
-                        Global HQ
+            {/* Section Header Controls */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  Offices Eyebrow Badge (EN)
+                </label>
+                <input
+                  type="text"
+                  value={pageData.officesBadge?.en || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      officesBadge: { ...(pageData.officesBadge || {}), en: e.target.value },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  شارة قسم المكاتب الإقليمية (AR)
+                </label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={pageData.officesBadge?.ar || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      officesBadge: { ...(pageData.officesBadge || {}), ar: e.target.value },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-arabic"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-3">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  Offices Section Title H2 (EN)
+                </label>
+                <input
+                  type="text"
+                  value={pageData.officesTitle?.en || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      officesTitle: { ...(pageData.officesTitle || {}), en: e.target.value },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-semibold"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  عنوان قسم المكاتب الإقليمية (AR)
+                </label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={pageData.officesTitle?.ar || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      officesTitle: { ...(pageData.officesTitle || {}), ar: e.target.value },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-semibold font-arabic"
+                />
+              </div>
+            </div>
+
+            <div className="pt-3">
+              <RichTextEditor
+                label="Offices Section Subtitle"
+                rows={2}
+                valueEn={pageData.officesSubtitle?.en || ''}
+                valueAr={pageData.officesSubtitle?.ar || ''}
+                onChangeEn={(val) =>
+                  setPageData({
+                    ...pageData,
+                    officesSubtitle: { ...(pageData.officesSubtitle || {}), en: val },
+                  })
+                }
+                onChangeAr={(val) =>
+                  setPageData({
+                    ...pageData,
+                    officesSubtitle: { ...(pageData.officesSubtitle || {}), ar: val },
+                  })
+                }
+              />
+            </div>
+
+            {/* Offices Repeater */}
+            <div className="pt-4 border-t border-slate-200/80 space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="text-xs font-bold text-slate-800 uppercase tracking-wider">
+                    Global Office Hubs ({(pageData.offices || []).length})
+                  </span>
+                  <p className="text-[11px] text-slate-500">
+                    Manage regional headquarters, addresses, operational hours, and map coordinates
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const current = pageData.offices || [];
+                    const newOffice = {
+                      id: `office-${Date.now()}`,
+                      city: { en: 'New City', ar: 'مدينة جديدة' },
+                      country: { en: 'Country', ar: 'الدولة' },
+                      badge: { en: 'Regional Hub', ar: 'مركز إقليمي' },
+                      isHQ: false,
+                      address: { en: 'Business District, Tower 1', ar: 'المنطقة التجارية، برج 1' },
+                      email: 'dubai@persiciagency.com',
+                      phone: '+971 4 000 0000',
+                      hours: { en: 'Mon – Fri, 9:00 AM – 5:00 PM', ar: 'الإثنين – الجمعة، 9:00 ص – 5:00 م' },
+                      timezone: 'UTC+3',
+                      mapsUrl: 'https://maps.google.com',
+                      directionsLabel: { en: 'Get Directions', ar: 'الاتجاهات عبر خرائط جوجل' },
+                      image: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=1200&q=85',
+                    };
+                    setPageData({ ...pageData, offices: [...current, newOffice] });
+                  }}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900 text-white text-xs font-semibold hover:bg-persici-crimson transition-colors cursor-pointer"
+                >
+                  <TbPlus className="w-3.5 h-3.5" />
+                  <span>Add Office Hub</span>
+                </button>
+              </div>
+
+              {(pageData.offices || []).map((office: ContactOfficeItem, idx: number) => (
+                <div
+                  key={office.id || idx}
+                  className="p-4 bg-white border border-slate-200 rounded-2xl space-y-4 shadow-2xs"
+                >
+                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                    <div className="flex items-center gap-2">
+                      <span className="w-6 h-6 rounded-lg bg-persici-crimson/10 text-persici-crimson text-xs font-bold flex items-center justify-center">
+                        {idx + 1}
                       </span>
-                    )}
+                      <TbMapPin className="w-4 h-4 text-persici-crimson" />
+                      <span className="text-xs font-bold text-slate-900">
+                        {office.city?.en || 'City'} — {office.country?.en || 'Country'}
+                      </span>
+                      {office.isHQ && (
+                        <span className="text-[10px] font-bold uppercase tracking-wider bg-persici-crimson text-white px-2.5 py-0.5 rounded-full">
+                          HQ Badge Active
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <label className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-700 mr-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={Boolean(office.isHQ)}
+                          onChange={(e) => {
+                            const updated = [...(pageData.offices || [])];
+                            updated[idx] = { ...office, isHQ: e.target.checked };
+                            setPageData({ ...pageData, offices: updated });
+                          }}
+                          className="rounded border-slate-300 text-persici-crimson focus:ring-persici-crimson"
+                        />
+                        <span>Highlight as HQ</span>
+                      </label>
+
+                      <button
+                        type="button"
+                        disabled={idx === 0}
+                        onClick={() =>
+                          setPageData({
+                            ...pageData,
+                            offices: moveItem(pageData.offices || [], idx, 'up'),
+                          })
+                        }
+                        className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 disabled:opacity-30 text-slate-700"
+                        title="Move Up"
+                      >
+                        <TbArrowUp className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        type="button"
+                        disabled={idx === (pageData.offices || []).length - 1}
+                        onClick={() =>
+                          setPageData({
+                            ...pageData,
+                            offices: moveItem(pageData.offices || [], idx, 'down'),
+                          })
+                        }
+                        className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 disabled:opacity-30 text-slate-700"
+                        title="Move Down"
+                      >
+                        <TbArrowDown className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const updated = (pageData.offices || []).filter(
+                            (_item: ContactOfficeItem, i: number) => i !== idx
+                          );
+                          setPageData({ ...pageData, offices: updated });
+                        }}
+                        className="p-1.5 rounded-lg bg-red-50 hover:bg-red-100 text-red-600"
+                        title="Delete Office"
+                      >
+                        <TbTrash className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {/* Row 1: City, Country, Role Badge */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div>
-                      <label className="block text-[11px] font-semibold text-slate-600 mb-0.5">Address (EN)</label>
+                      <label className="block text-[11px] font-semibold text-slate-600 mb-0.5">
+                        City Name (EN)
+                      </label>
                       <input
                         type="text"
-                        value={office.address?.en || ''}
+                        value={office.city?.en || ''}
                         onChange={(e) => {
                           const updated = [...(pageData.offices || [])];
-                          updated[idx] = { ...office, address: { ...office.address, en: e.target.value } };
+                          updated[idx] = {
+                            ...office,
+                            city: { ...(office.city || {}), en: e.target.value },
+                          };
+                          setPageData({ ...pageData, offices: updated });
+                        }}
+                        className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg font-semibold"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-slate-600 mb-0.5">
+                        اسم المدينة (AR)
+                      </label>
+                      <input
+                        type="text"
+                        dir="rtl"
+                        value={office.city?.ar || ''}
+                        onChange={(e) => {
+                          const updated = [...(pageData.offices || [])];
+                          updated[idx] = {
+                            ...office,
+                            city: { ...(office.city || {}), ar: e.target.value },
+                          };
+                          setPageData({ ...pageData, offices: updated });
+                        }}
+                        className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg font-semibold font-arabic"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-slate-600 mb-0.5">
+                        Timezone Badge (e.g. UTC+3)
+                      </label>
+                      <input
+                        type="text"
+                        value={office.timezone || ''}
+                        onChange={(e) => {
+                          const updated = [...(pageData.offices || [])];
+                          updated[idx] = { ...office, timezone: e.target.value };
+                          setPageData({ ...pageData, offices: updated });
+                        }}
+                        className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg font-mono"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                    <div>
+                      <label className="block text-[11px] font-semibold text-slate-600 mb-0.5">
+                        Country (EN)
+                      </label>
+                      <input
+                        type="text"
+                        value={office.country?.en || ''}
+                        onChange={(e) => {
+                          const updated = [...(pageData.offices || [])];
+                          updated[idx] = {
+                            ...office,
+                            country: { ...(office.country || {}), en: e.target.value },
+                          };
                           setPageData({ ...pageData, offices: updated });
                         }}
                         className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg"
                       />
                     </div>
                     <div>
-                      <label className="block text-[11px] font-semibold text-slate-600 mb-0.5">العنوان (AR)</label>
+                      <label className="block text-[11px] font-semibold text-slate-600 mb-0.5">
+                        الدولة (AR)
+                      </label>
                       <input
                         type="text"
                         dir="rtl"
-                        value={office.address?.ar || ''}
+                        value={office.country?.ar || ''}
                         onChange={(e) => {
                           const updated = [...(pageData.offices || [])];
-                          updated[idx] = { ...office, address: { ...office.address, ar: e.target.value } };
+                          updated[idx] = {
+                            ...office,
+                            country: { ...(office.country || {}), ar: e.target.value },
+                          };
+                          setPageData({ ...pageData, offices: updated });
+                        }}
+                        className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg font-arabic"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-slate-600 mb-0.5">
+                        Hub Role Badge (EN)
+                      </label>
+                      <input
+                        type="text"
+                        value={office.badge?.en || ''}
+                        onChange={(e) => {
+                          const updated = [...(pageData.offices || [])];
+                          updated[idx] = {
+                            ...office,
+                            badge: { ...(office.badge || {}), en: e.target.value },
+                          };
+                          setPageData({ ...pageData, offices: updated });
+                        }}
+                        className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-slate-600 mb-0.5">
+                        شارة المركز الإقليمي (AR)
+                      </label>
+                      <input
+                        type="text"
+                        dir="rtl"
+                        value={office.badge?.ar || ''}
+                        onChange={(e) => {
+                          const updated = [...(pageData.offices || [])];
+                          updated[idx] = {
+                            ...office,
+                            badge: { ...(office.badge || {}), ar: e.target.value },
+                          };
                           setPageData({ ...pageData, offices: updated });
                         }}
                         className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg font-arabic"
@@ -2896,23 +6316,166 @@ export default function UniversalPageCmsEditor() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {/* Row 2: RichText Address (EN / AR) */}
+                  <RichTextEditor
+                    label={`Office #${idx + 1} Full Address`}
+                    rows={2}
+                    valueEn={office.address?.en || ''}
+                    valueAr={office.address?.ar || ''}
+                    onChangeEn={(val) => {
+                      const updated = [...(pageData.offices || [])];
+                      updated[idx] = {
+                        ...office,
+                        address: { ...(office.address || {}), en: val },
+                      };
+                      setPageData({ ...pageData, offices: updated });
+                    }}
+                    onChangeAr={(val) => {
+                      const updated = [...(pageData.offices || [])];
+                      updated[idx] = {
+                        ...office,
+                        address: { ...(office.address || {}), ar: val },
+                      };
+                      setPageData({ ...pageData, offices: updated });
+                    }}
+                  />
+
+                  {/* Row 3: Working Hours (EN / AR), Direct Email, Direct Phone */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                     <div>
-                      <label className="block text-[11px] font-semibold text-slate-600 mb-0.5">Email & Phone</label>
+                      <label className="block text-[11px] font-semibold text-slate-600 mb-0.5">
+                        Working Hours (EN)
+                      </label>
                       <input
                         type="text"
-                        value={`${office.email || ''} | ${office.phone || ''}`}
+                        value={office.hours?.en || ''}
                         onChange={(e) => {
-                          const [email, phone] = e.target.value.split('|');
                           const updated = [...(pageData.offices || [])];
-                          updated[idx] = { ...office, email: email?.trim(), phone: phone?.trim() };
+                          updated[idx] = {
+                            ...office,
+                            hours: { ...(office.hours || {}), en: e.target.value },
+                          };
                           setPageData({ ...pageData, offices: updated });
                         }}
                         className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg"
                       />
                     </div>
                     <div>
-                      <label className="block text-[11px] font-semibold text-slate-600 mb-0.5">Office Photo URL</label>
+                      <label className="block text-[11px] font-semibold text-slate-600 mb-0.5">
+                        ساعات العمل (AR)
+                      </label>
+                      <input
+                        type="text"
+                        dir="rtl"
+                        value={office.hours?.ar || ''}
+                        onChange={(e) => {
+                          const updated = [...(pageData.offices || [])];
+                          updated[idx] = {
+                            ...office,
+                            hours: { ...(office.hours || {}), ar: e.target.value },
+                          };
+                          setPageData({ ...pageData, offices: updated });
+                        }}
+                        className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg font-arabic"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-slate-600 mb-0.5">
+                        Direct Hub Email
+                      </label>
+                      <input
+                        type="text"
+                        value={office.email || ''}
+                        onChange={(e) => {
+                          const updated = [...(pageData.offices || [])];
+                          updated[idx] = { ...office, email: e.target.value };
+                          setPageData({ ...pageData, offices: updated });
+                        }}
+                        className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg font-mono"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-slate-600 mb-0.5">
+                        Direct Hub Phone
+                      </label>
+                      <input
+                        type="text"
+                        dir="ltr"
+                        value={office.phone || ''}
+                        onChange={(e) => {
+                          const updated = [...(pageData.offices || [])];
+                          updated[idx] = { ...office, phone: e.target.value };
+                          setPageData({ ...pageData, offices: updated });
+                        }}
+                        className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg font-mono"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Row 4: Google Maps URL, Directions Button Labels, and Architectural Image */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                    <div>
+                      <label className="block text-[11px] font-semibold text-slate-600 mb-0.5">
+                        Google Maps URL
+                      </label>
+                      <input
+                        type="text"
+                        value={office.mapsUrl || ''}
+                        onChange={(e) => {
+                          const updated = [...(pageData.offices || [])];
+                          updated[idx] = { ...office, mapsUrl: e.target.value };
+                          setPageData({ ...pageData, offices: updated });
+                        }}
+                        className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg font-mono text-[11px]"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-slate-600 mb-0.5">
+                        Directions Button Text (EN)
+                      </label>
+                      <input
+                        type="text"
+                        value={office.directionsLabel?.en || 'Get Directions'}
+                        onChange={(e) => {
+                          const updated = [...(pageData.offices || [])];
+                          updated[idx] = {
+                            ...office,
+                            directionsLabel: {
+                              ...(office.directionsLabel || { en: 'Get Directions', ar: 'الاتجاهات عبر خرائط جوجل' }),
+                              en: e.target.value,
+                            },
+                          };
+                          setPageData({ ...pageData, offices: updated });
+                        }}
+                        className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-slate-600 mb-0.5">
+                        نص زر الاتجاهات (AR)
+                      </label>
+                      <input
+                        type="text"
+                        dir="rtl"
+                        value={office.directionsLabel?.ar || 'الاتجاهات عبر خرائط جوجل'}
+                        onChange={(e) => {
+                          const updated = [...(pageData.offices || [])];
+                          updated[idx] = {
+                            ...office,
+                            directionsLabel: {
+                              ...(office.directionsLabel || { en: 'Get Directions', ar: 'الاتجاهات عبر خرائط جوجل' }),
+                              ar: e.target.value,
+                            },
+                          };
+                          setPageData({ ...pageData, offices: updated });
+                        }}
+                        className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg font-arabic"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-slate-600 mb-0.5">
+                        Office Photo URL (Cloudflare R2)
+                      </label>
                       <div className="flex gap-2">
                         <input
                           type="text"
@@ -2933,7 +6496,7 @@ export default function UniversalPageCmsEditor() {
                               setPageData({ ...pageData, offices: updated });
                             }, 'image');
                           }}
-                          className="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold shrink-0"
+                          className="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold shrink-0 cursor-pointer"
                         >
                           Pick R2
                         </button>
@@ -2942,6 +6505,635 @@ export default function UniversalPageCmsEditor() {
                   </div>
                 </div>
               ))}
+            </div>
+          </SectionAccordion>
+
+          {/* SECTION 3: DIRECT INQUIRY CHANNELS */}
+          <SectionAccordion
+            number={3}
+            title="ContactDirectChannelsSection • Direct Department & SLA Channels"
+            description="Dedicated executive routing cards for New Business & RFPs, Strategic Partnerships, Careers, and Media & Press"
+            onSave={savePage}
+          >
+            {/* Section Header Controls */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  Channels Eyebrow Badge (EN)
+                </label>
+                <input
+                  type="text"
+                  value={pageData.channelsBadge?.en || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      channelsBadge: { ...(pageData.channelsBadge || {}), en: e.target.value },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  شارة قنوات التواصل المباشر (AR)
+                </label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={pageData.channelsBadge?.ar || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      channelsBadge: { ...(pageData.channelsBadge || {}), ar: e.target.value },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-arabic"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-3">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  Channels Section Title H2 (EN)
+                </label>
+                <input
+                  type="text"
+                  value={pageData.channelsTitle?.en || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      channelsTitle: { ...(pageData.channelsTitle || {}), en: e.target.value },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-semibold"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  عنوان قسم قنوات التواصل المباشر (AR)
+                </label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={pageData.channelsTitle?.ar || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      channelsTitle: { ...(pageData.channelsTitle || {}), ar: e.target.value },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-semibold font-arabic"
+                />
+              </div>
+            </div>
+
+            <div className="pt-3">
+              <RichTextEditor
+                label="Channels Section Subtitle"
+                rows={2}
+                valueEn={pageData.channelsSubtitle?.en || ''}
+                valueAr={pageData.channelsSubtitle?.ar || ''}
+                onChangeEn={(val) =>
+                  setPageData({
+                    ...pageData,
+                    channelsSubtitle: { ...(pageData.channelsSubtitle || {}), en: val },
+                  })
+                }
+                onChangeAr={(val) =>
+                  setPageData({
+                    ...pageData,
+                    channelsSubtitle: { ...(pageData.channelsSubtitle || {}), ar: val },
+                  })
+                }
+              />
+            </div>
+
+            {/* Direct Channels Repeater */}
+            <div className="pt-4 border-t border-slate-200/80 space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="text-xs font-bold text-slate-800 uppercase tracking-wider">
+                    Direct Department Channels ({(pageData.channels || []).length})
+                  </span>
+                  <p className="text-[11px] text-slate-500">
+                    Each card displays a category badge, title, rich-text description, direct email desk, and SLA response badge
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const current = pageData.channels || [];
+                    const newChannel = {
+                      id: `channel-${Date.now()}`,
+                      category: { en: 'Department Desk', ar: 'مكتب مختص' },
+                      title: { en: 'New Inquiry Channel', ar: 'قناة تواصل جديدة' },
+                      description: {
+                        en: 'Direct routing for specialized inquiries and executive requests.',
+                        ar: 'توجيه مباشر للاستفسارات المتخصصة والطلبات التنفيذية.',
+                      },
+                      email: 'growth@persiciagency.com',
+                      sla: { en: 'Response within 24 hours', ar: 'الرد خلال 24 ساعة عمل' },
+                    };
+                    setPageData({ ...pageData, channels: [...current, newChannel] });
+                  }}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900 text-white text-xs font-semibold hover:bg-persici-crimson transition-colors cursor-pointer"
+                >
+                  <TbPlus className="w-3.5 h-3.5" />
+                  <span>Add Direct Channel</span>
+                </button>
+              </div>
+
+              {(pageData.channels || []).map((channel: ContactChannelItem, idx: number) => (
+                <div
+                  key={channel.id || idx}
+                  className="p-4 bg-white border border-slate-200 rounded-2xl space-y-3.5 shadow-2xs"
+                >
+                  <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
+                    <div className="flex items-center gap-2">
+                      <span className="w-6 h-6 rounded-lg bg-slate-900 text-white text-xs font-bold flex items-center justify-center">
+                        {idx + 1}
+                      </span>
+                      <span className="text-xs font-bold text-slate-900">
+                        {channel.title?.en || 'Channel'} ({channel.email || 'email'})
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        type="button"
+                        disabled={idx === 0}
+                        onClick={() =>
+                          setPageData({
+                            ...pageData,
+                            channels: moveItem(pageData.channels || [], idx, 'up'),
+                          })
+                        }
+                        className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 disabled:opacity-30 text-slate-700"
+                        title="Move Up"
+                      >
+                        <TbArrowUp className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        type="button"
+                        disabled={idx === (pageData.channels || []).length - 1}
+                        onClick={() =>
+                          setPageData({
+                            ...pageData,
+                            channels: moveItem(pageData.channels || [], idx, 'down'),
+                          })
+                        }
+                        className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 disabled:opacity-30 text-slate-700"
+                        title="Move Down"
+                      >
+                        <TbArrowDown className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const updated = (pageData.channels || []).filter(
+                            (_item: ContactChannelItem, i: number) => i !== idx
+                          );
+                          setPageData({ ...pageData, channels: updated });
+                        }}
+                        className="p-1.5 rounded-lg bg-red-50 hover:bg-red-100 text-red-600"
+                        title="Delete Channel"
+                      >
+                        <TbTrash className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Row 1: Category Badge & Title */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                    <div>
+                      <label className="block text-[11px] font-semibold text-slate-600 mb-0.5">
+                        Category Badge (EN)
+                      </label>
+                      <input
+                        type="text"
+                        value={channel.category?.en || ''}
+                        onChange={(e) => {
+                          const updated = [...(pageData.channels || [])];
+                          updated[idx] = {
+                            ...channel,
+                            category: { ...(channel.category || {}), en: e.target.value },
+                          };
+                          setPageData({ ...pageData, channels: updated });
+                        }}
+                        className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-slate-600 mb-0.5">
+                        شارة الفئة (AR)
+                      </label>
+                      <input
+                        type="text"
+                        dir="rtl"
+                        value={channel.category?.ar || ''}
+                        onChange={(e) => {
+                          const updated = [...(pageData.channels || [])];
+                          updated[idx] = {
+                            ...channel,
+                            category: { ...(channel.category || {}), ar: e.target.value },
+                          };
+                          setPageData({ ...pageData, channels: updated });
+                        }}
+                        className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg font-arabic"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-slate-600 mb-0.5">
+                        Channel Title (EN)
+                      </label>
+                      <input
+                        type="text"
+                        value={channel.title?.en || ''}
+                        onChange={(e) => {
+                          const updated = [...(pageData.channels || [])];
+                          updated[idx] = {
+                            ...channel,
+                            title: { ...(channel.title || {}), en: e.target.value },
+                          };
+                          setPageData({ ...pageData, channels: updated });
+                        }}
+                        className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg font-semibold"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-slate-600 mb-0.5">
+                        عنوان القناة (AR)
+                      </label>
+                      <input
+                        type="text"
+                        dir="rtl"
+                        value={channel.title?.ar || ''}
+                        onChange={(e) => {
+                          const updated = [...(pageData.channels || [])];
+                          updated[idx] = {
+                            ...channel,
+                            title: { ...(channel.title || {}), ar: e.target.value },
+                          };
+                          setPageData({ ...pageData, channels: updated });
+                        }}
+                        className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg font-semibold font-arabic"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Row 2: RichText Description */}
+                  <RichTextEditor
+                    label={`Channel #${idx + 1} Description`}
+                    rows={2}
+                    valueEn={channel.description?.en || ''}
+                    valueAr={channel.description?.ar || ''}
+                    onChangeEn={(val) => {
+                      const updated = [...(pageData.channels || [])];
+                      updated[idx] = {
+                        ...channel,
+                        description: { ...(channel.description || {}), en: val },
+                      };
+                      setPageData({ ...pageData, channels: updated });
+                    }}
+                    onChangeAr={(val) => {
+                      const updated = [...(pageData.channels || [])];
+                      updated[idx] = {
+                        ...channel,
+                        description: { ...(channel.description || {}), ar: val },
+                      };
+                      setPageData({ ...pageData, channels: updated });
+                    }}
+                  />
+
+                  {/* Row 3: Direct Email & SLA Commitment */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div>
+                      <label className="block text-[11px] font-semibold text-slate-600 mb-0.5">
+                        Direct Routing Email
+                      </label>
+                      <input
+                        type="text"
+                        value={channel.email || ''}
+                        onChange={(e) => {
+                          const updated = [...(pageData.channels || [])];
+                          updated[idx] = { ...channel, email: e.target.value };
+                          setPageData({ ...pageData, channels: updated });
+                        }}
+                        className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg font-mono"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-slate-600 mb-0.5">
+                        SLA Commitment Badge (EN)
+                      </label>
+                      <input
+                        type="text"
+                        value={channel.sla?.en || ''}
+                        onChange={(e) => {
+                          const updated = [...(pageData.channels || [])];
+                          updated[idx] = {
+                            ...channel,
+                            sla: { ...(channel.sla || {}), en: e.target.value },
+                          };
+                          setPageData({ ...pageData, channels: updated });
+                        }}
+                        className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-slate-600 mb-0.5">
+                        التزام سرعة الاستجابة SLA (AR)
+                      </label>
+                      <input
+                        type="text"
+                        dir="rtl"
+                        value={channel.sla?.ar || ''}
+                        onChange={(e) => {
+                          const updated = [...(pageData.channels || [])];
+                          updated[idx] = {
+                            ...channel,
+                            sla: { ...(channel.sla || {}), ar: e.target.value },
+                          };
+                          setPageData({ ...pageData, channels: updated });
+                        }}
+                        className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg font-arabic"
+                      />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </SectionAccordion>
+
+          {/* SECTION 4: PRE-ENGAGEMENT FAQ ACCORDION */}
+          <SectionAccordion
+            number={4}
+            title="ContactFaqSection • Pre-Engagement FAQ Accordion"
+            description="Section headline, subtitle, and expandable Q&A items answering executive pre-engagement questions"
+            onSave={savePage}
+          >
+            {/* FAQ Section Headers */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  FAQ Section Title H2 (EN)
+                </label>
+                <input
+                  type="text"
+                  value={pageData.faqsTitle?.en || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      faqsTitle: { ...(pageData.faqsTitle || {}), en: e.target.value },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-semibold"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  عنوان قسم الأسئلة الشائعة (AR)
+                </label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={pageData.faqsTitle?.ar || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      faqsTitle: { ...(pageData.faqsTitle || {}), ar: e.target.value },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-semibold font-arabic"
+                />
+              </div>
+            </div>
+
+            <div className="pt-3">
+              <RichTextEditor
+                label="FAQ Section Subtitle"
+                rows={2}
+                valueEn={pageData.faqsSubtitle?.en || ''}
+                valueAr={pageData.faqsSubtitle?.ar || ''}
+                onChangeEn={(val) =>
+                  setPageData({
+                    ...pageData,
+                    faqsSubtitle: { ...(pageData.faqsSubtitle || {}), en: val },
+                  })
+                }
+                onChangeAr={(val) =>
+                  setPageData({
+                    ...pageData,
+                    faqsSubtitle: { ...(pageData.faqsSubtitle || {}), ar: val },
+                  })
+                }
+              />
+            </div>
+
+            {/* FAQ Items Repeater */}
+            <div className="pt-4 border-t border-slate-200/80 space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="text-xs font-bold text-slate-800 uppercase tracking-wider">
+                    Pre-Engagement FAQ Items ({(pageData.faqs || []).length})
+                  </span>
+                  <p className="text-[11px] text-slate-500">
+                    Add, reorder, or edit questions and rich-text answers
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const currentItems = pageData.faqs || [];
+                    const newFaq = {
+                      id: `faq-${Date.now()}`,
+                      question: {
+                        en: 'New Frequently Asked Question?',
+                        ar: 'سؤال جديد من الأسئلة الشائعة؟',
+                      },
+                      answer: {
+                        en: 'Provide a clear, executive-level answer here.',
+                        ar: 'أضف إجابة واضحة ومفصلة هنا.',
+                      },
+                    };
+                    setPageData({
+                      ...pageData,
+                      faqs: [...currentItems, newFaq],
+                    });
+                  }}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900 text-white text-xs font-semibold hover:bg-persici-crimson transition-colors cursor-pointer"
+                >
+                  <TbPlus className="w-3.5 h-3.5" />
+                  <span>Add FAQ Item</span>
+                </button>
+              </div>
+
+              {(pageData.faqs || []).map((faq: ContactFaqItem, idx: number) => (
+                <div
+                  key={faq.id || idx}
+                  className="p-4 bg-white border border-slate-200 rounded-2xl space-y-3 shadow-2xs"
+                >
+                  <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
+                    <div className="flex items-center gap-2">
+                      <span className="w-6 h-6 rounded-lg bg-persici-crimson/10 text-persici-crimson text-xs font-bold flex items-center justify-center">
+                        Q{idx + 1}
+                      </span>
+                      <span className="text-xs font-bold text-slate-900 line-clamp-1">
+                        {faq.question?.en || 'Question'}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        type="button"
+                        disabled={idx === 0}
+                        onClick={() =>
+                          setPageData({
+                            ...pageData,
+                            faqs: moveItem(pageData.faqs || [], idx, 'up'),
+                          })
+                        }
+                        className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 disabled:opacity-30 text-slate-700"
+                        title="Move Up"
+                      >
+                        <TbArrowUp className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        type="button"
+                        disabled={idx === (pageData.faqs || []).length - 1}
+                        onClick={() =>
+                          setPageData({
+                            ...pageData,
+                            faqs: moveItem(pageData.faqs || [], idx, 'down'),
+                          })
+                        }
+                        className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 disabled:opacity-30 text-slate-700"
+                        title="Move Down"
+                      >
+                        <TbArrowDown className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const updated = (pageData.faqs || []).filter(
+                            (_item: ContactFaqItem, i: number) => i !== idx
+                          );
+                          setPageData({
+                            ...pageData,
+                            faqs: updated,
+                          });
+                        }}
+                        className="p-1.5 rounded-lg bg-red-50 hover:bg-red-100 text-red-600"
+                        title="Delete FAQ"
+                      >
+                        <TbTrash className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-[11px] font-semibold text-slate-600 mb-0.5">
+                        Question (EN)
+                      </label>
+                      <input
+                        type="text"
+                        value={faq.question?.en || ''}
+                        onChange={(e) => {
+                          const updated = [...(pageData.faqs || [])];
+                          updated[idx] = {
+                            ...faq,
+                            question: { ...(faq.question || {}), en: e.target.value },
+                          };
+                          setPageData({
+                            ...pageData,
+                            faqs: updated,
+                          });
+                        }}
+                        className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg font-semibold"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-slate-600 mb-0.5">
+                        السؤال (AR)
+                      </label>
+                      <input
+                        type="text"
+                        dir="rtl"
+                        value={faq.question?.ar || ''}
+                        onChange={(e) => {
+                          const updated = [...(pageData.faqs || [])];
+                          updated[idx] = {
+                            ...faq,
+                            question: { ...(faq.question || {}), ar: e.target.value },
+                          };
+                          setPageData({
+                            ...pageData,
+                            faqs: updated,
+                          });
+                        }}
+                        className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg font-semibold font-arabic"
+                      />
+                    </div>
+                  </div>
+
+                  <RichTextEditor
+                    label={`FAQ #${idx + 1} Answer`}
+                    rows={3}
+                    valueEn={faq.answer?.en || ''}
+                    valueAr={faq.answer?.ar || ''}
+                    onChangeEn={(val) => {
+                      const updated = [...(pageData.faqs || [])];
+                      updated[idx] = {
+                        ...faq,
+                        answer: { ...(faq.answer || {}), en: val },
+                      };
+                      setPageData({
+                        ...pageData,
+                        faqs: updated,
+                      });
+                    }}
+                    onChangeAr={(val) => {
+                      const updated = [...(pageData.faqs || [])];
+                      updated[idx] = {
+                        ...faq,
+                        answer: { ...(faq.answer || {}), ar: val },
+                      };
+                      setPageData({
+                        ...pageData,
+                        faqs: updated,
+                      });
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
+          </SectionAccordion>
+
+          {/* SECTION 5: SHARED EXECUTIVE CONTACT FORM NOTICE */}
+          <SectionAccordion
+            number={5}
+            title="HomeContactSection • Shared Executive Inquiry Form (#contact-form)"
+            description="Global conversion form shared across Home, About Us, Solutions, Case Studies, and Contact Us"
+            onSave={savePage}
+          >
+            <div className="p-4 rounded-2xl bg-slate-900 text-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="space-y-1">
+                <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-persici-crimson">
+                  <span>Global Shared Section</span>
+                </div>
+                <h4 className="text-sm font-bold text-white">
+                  Executive Lead Capture & Contact Form (#contact-form)
+                </h4>
+                <p className="text-xs text-slate-300 max-w-2xl leading-relaxed">
+                  The interactive executive inquiry form at the bottom of the Contact Us page is synchronized globally across Home, About Us, Solutions, Case Studies, and Contact Us. Edit its headline, service scope pills, budget tiers, form labels, and contact details from the dedicated Shared Contact Form manager.
+                </p>
+              </div>
+              <Link
+                href={`/${lang}/dashboard/shared-contact`}
+                className="px-4 py-2.5 rounded-xl bg-persici-crimson hover:bg-red-600 text-white text-xs font-bold tracking-wide transition-colors shrink-0"
+              >
+                Edit Shared Contact Form →
+              </Link>
             </div>
           </SectionAccordion>
         </div>

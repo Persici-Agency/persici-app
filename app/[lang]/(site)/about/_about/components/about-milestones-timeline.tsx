@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useRef, useState, useEffect } from 'react';
 import Image from 'next/image';
@@ -16,6 +16,7 @@ export function AboutMilestonesTimeline({ data, lang }: AboutMilestonesTimelineP
   const badge = data.badge[lang as 'en' | 'ar'] || data.badge.en;
   const title = data.title[lang as 'en' | 'ar'] || data.title.en;
   const subtitle = data.subtitle[lang as 'en' | 'ar'] || data.subtitle.en;
+  const hasHtml = (str: string) => /<[a-z][\s\S]*>/i.test(str);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const [scrollProgress, setScrollProgress] = useState(0);
@@ -75,9 +76,16 @@ export function AboutMilestonesTimeline({ data, lang }: AboutMilestonesTimelineP
           </FadeUp>
 
           <FadeUp delay={180} duration={750} distance={20}>
-            <p className="font-secondary text-base sm:text-lg text-slate-600 leading-relaxed font-normal">
-              {subtitle}
-            </p>
+            {hasHtml(subtitle) ? (
+              <div
+                className="font-secondary text-base sm:text-lg text-slate-600 leading-relaxed font-normal [&_a]:text-persici-crimson [&_a]:underline"
+                dangerouslySetInnerHTML={{ __html: subtitle }}
+              />
+            ) : (
+              <p className="font-secondary text-base sm:text-lg text-slate-600 leading-relaxed font-normal">
+                {subtitle}
+              </p>
+            )}
           </FadeUp>
         </div>
 
@@ -159,14 +167,21 @@ export function AboutMilestonesTimeline({ data, lang }: AboutMilestonesTimelineP
                   </h3>
 
                   {/* Narrative Description */}
-                  <p className="font-secondary text-base sm:text-lg text-slate-600 leading-relaxed font-normal max-w-xl">
-                    {itemDesc}
-                  </p>
+                  {hasHtml(itemDesc) ? (
+                    <div
+                      className="font-secondary text-base sm:text-lg text-slate-600 leading-relaxed font-normal max-w-xl [&_a]:text-persici-crimson [&_a]:underline [&_ul]:list-disc [&_ul]:ms-5 [&_ol]:list-decimal [&_ol]:ms-5"
+                      dangerouslySetInnerHTML={{ __html: itemDesc }}
+                    />
+                  ) : (
+                    <p className="font-secondary text-base sm:text-lg text-slate-600 leading-relaxed font-normal max-w-xl">
+                      {itemDesc}
+                    </p>
+                  )}
                 </div>
               );
 
               return (
-                <div key={item.year} className="relative">
+                <div key={`${item.year}-${idx}`} className="relative">
                   {/* Central Node Indicator (Desktop) */}
                   <div className="hidden md:flex absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 items-center justify-center pointer-events-none">
                     <div

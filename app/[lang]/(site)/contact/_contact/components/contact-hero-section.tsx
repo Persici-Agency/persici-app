@@ -12,53 +12,85 @@ export interface ContactHeroSectionProps {
 
 export function ContactHeroSection({ data, lang }: ContactHeroSectionProps) {
   const isAr = lang === 'ar';
-  const badge = data.badge[isAr ? 'ar' : 'en'] || data.badge.en;
-  const title = data.title[isAr ? 'ar' : 'en'] || data.title.en;
-  const subtitle = data.subtitle[isAr ? 'ar' : 'en'] || data.subtitle.en;
+  const badge = data.badge?.[isAr ? 'ar' : 'en'] || data.badge?.en || '';
+  const title = data.title?.[isAr ? 'ar' : 'en'] || data.title?.en || '';
+  const subtitle = data.subtitle?.[isAr ? 'ar' : 'en'] || data.subtitle?.en || '';
+  const hasHtml = (str: string) => /<[a-z][\s\S]*>/i.test(str);
 
-  const quickLinks = [
-    {
-      id: 'offices',
-      label: isAr ? 'مكاتبنا العالمية' : 'Global Hubs',
-      href: '#offices',
-      icon: (
+  const getQuickLinkIcon = (id?: string, href?: string) => {
+    const key = `${id || ''} ${href || ''}`.toLowerCase();
+    if (key.includes('office')) {
+      return (
         <svg className="w-3.5 h-3.5 text-persici-crimson" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
         </svg>
-      ),
-    },
-    {
-      id: 'channels',
-      label: isAr ? 'قنوات مباشرة' : 'Direct Channels',
-      href: '#channels',
-      icon: (
+      );
+    }
+    if (key.includes('channel')) {
+      return (
         <svg className="w-3.5 h-3.5 text-persici-crimson" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
         </svg>
-      ),
-    },
-    {
-      id: 'faqs',
-      label: isAr ? 'الأسئلة الشائعة' : 'Engagement FAQs',
-      href: '#faqs',
-      icon: (
+      );
+    }
+    if (key.includes('faq')) {
+      return (
         <svg className="w-3.5 h-3.5 text-persici-crimson" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
-      ),
+      );
+    }
+    return (
+      <svg className="w-3.5 h-3.5 text-persici-crimson" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+      </svg>
+    );
+  };
+
+  const defaultQuickLinks = [
+    {
+      id: 'offices',
+      label: { en: 'Global Hubs', ar: 'مكاتبنا العالمية' },
+      href: '#offices',
+      enabled: true,
+    },
+    {
+      id: 'channels',
+      label: { en: 'Direct Channels', ar: 'قنوات مباشرة' },
+      href: '#channels',
+      enabled: true,
+    },
+    {
+      id: 'faqs',
+      label: { en: 'Engagement FAQs', ar: 'الأسئلة الشائعة' },
+      href: '#faqs',
+      enabled: true,
     },
     {
       id: 'form',
-      label: isAr ? 'نموذج التواصل السريع' : 'Inquiry Form',
+      label: { en: 'Inquiry Form', ar: 'نموذج التواصل السريع' },
       href: '#contact-form',
-      icon: (
-        <svg className="w-3.5 h-3.5 text-persici-crimson" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-        </svg>
-      ),
+      enabled: true,
     },
   ];
+
+  const rawQuickLinks =
+    Array.isArray(data.quickLinks) && data.quickLinks.length > 0
+      ? data.quickLinks
+      : defaultQuickLinks;
+
+  const quickLinks = rawQuickLinks
+    .filter((item) => item.enabled !== false)
+    .map((item) => ({
+      id: item.id,
+      label:
+        typeof item.label === 'object' && item.label
+          ? item.label[isAr ? 'ar' : 'en'] || item.label.en
+          : String(item.label || ''),
+      href: item.href || '#contact-form',
+      icon: getQuickLinkIcon(item.id, item.href),
+    }));
 
   return (
     <section data-header-luminance="light" dir={isAr ? 'rtl' : 'ltr'} className="relative pt-24 sm:pt-28 lg:pt-32 pb-14 sm:pb-16 lg:pb-20 bg-gradient-to-b from-slate-50 via-white to-white overflow-hidden border-b border-black/[0.04]">
@@ -83,9 +115,16 @@ export function ContactHeroSection({ data, lang }: ContactHeroSectionProps) {
 
           {/* Subtitle */}
           <FadeUp delay={180} duration={750} distance={20}>
-            <p className="font-secondary text-base sm:text-lg lg:text-xl text-slate-600 leading-relaxed font-normal max-w-3xl mx-auto mb-8">
-              {subtitle}
-            </p>
+            {hasHtml(subtitle) ? (
+              <div
+                className="font-secondary text-base sm:text-lg lg:text-xl text-slate-600 leading-relaxed font-normal max-w-3xl mx-auto mb-8 [&_a]:text-persici-crimson [&_a]:underline [&_ul]:list-disc [&_ul]:ms-5 [&_ol]:list-decimal [&_ol]:ms-5"
+                dangerouslySetInnerHTML={{ __html: subtitle }}
+              />
+            ) : (
+              <p className="font-secondary text-base sm:text-lg lg:text-xl text-slate-600 leading-relaxed font-normal max-w-3xl mx-auto mb-8">
+                {subtitle}
+              </p>
+            )}
           </FadeUp>
 
           {/* Quick Anchor Navigation Chips */}

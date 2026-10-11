@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState } from 'react';
 import type { SolutionFaqItem } from '@shared/types';
@@ -38,6 +38,7 @@ export function FaqSection({
     typeof subtitle === 'string'
       ? subtitle
       : subtitle?.[lang as 'en' | 'ar'] || subtitle?.en;
+  const hasHtml = (str: string) => /<[a-z][\s\S]*>/i.test(str);
 
   return (
     <section className={`${className || 'pt-14 pb-20 sm:pt-16 sm:pb-24 lg:pt-20 lg:pb-28'} bg-white overflow-hidden`}>
@@ -47,11 +48,17 @@ export function FaqSection({
           <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-slate-900">
             {displayTitle}
           </h2>
-          {displaySubtitle && (
-            <p className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed font-normal">
-              {displaySubtitle}
-            </p>
-          )}
+          {displaySubtitle &&
+            (hasHtml(displaySubtitle) ? (
+              <div
+                className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed font-normal [&_a]:text-persici-crimson [&_a]:underline"
+                dangerouslySetInnerHTML={{ __html: displaySubtitle }}
+              />
+            ) : (
+              <p className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed font-normal">
+                {displaySubtitle}
+              </p>
+            ))}
         </FadeUp>
 
         {/* FAQs Accordion with Staggered FadeUp */}

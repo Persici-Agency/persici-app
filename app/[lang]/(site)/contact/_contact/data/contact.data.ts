@@ -3,6 +3,13 @@ export interface LocalizedString {
   ar: string;
 }
 
+export interface ContactQuickLink {
+  id: string;
+  label: LocalizedString;
+  href: string;
+  enabled?: boolean;
+}
+
 export interface ContactOfficeItem {
   id: string;
   city: LocalizedString;
@@ -16,6 +23,7 @@ export interface ContactOfficeItem {
   image: string;
   mapsUrl: string;
   isHQ?: boolean;
+  directionsLabel?: LocalizedString;
 }
 
 export interface ContactChannelItem {
@@ -38,10 +46,13 @@ export interface ContactPageData {
     badge: LocalizedString;
     title: LocalizedString;
     subtitle: LocalizedString;
+    quickLinks?: ContactQuickLink[];
   };
+  officesBadge?: LocalizedString;
   officesTitle: LocalizedString;
   officesSubtitle: LocalizedString;
   offices: ContactOfficeItem[];
+  channelsBadge?: LocalizedString;
   channelsTitle: LocalizedString;
   channelsSubtitle: LocalizedString;
   channels: ContactChannelItem[];
@@ -64,8 +75,50 @@ export const contactPageData: ContactPageData = {
       en: 'Whether you are seeking enterprise digital transformation, bespoke cloud engineering, or full-funnel customer acquisition, our strategists are ready to partner with you.',
       ar: 'سواء كنت تتطلع إلى تحول رقمي مؤسسي، أو هندسة سحابية متقدمة، أو قيادة استراتيجيات الاستحواذ والنمو، فإن فريق خبرائنا مستعد للبدء فوراً معك.',
     },
+    quickLinks: [
+      {
+        id: 'offices',
+        label: {
+          en: 'Global Hubs',
+          ar: 'مكاتبنا العالمية',
+        },
+        href: '#offices',
+        enabled: true,
+      },
+      {
+        id: 'channels',
+        label: {
+          en: 'Direct Channels',
+          ar: 'قنوات مباشرة',
+        },
+        href: '#channels',
+        enabled: true,
+      },
+      {
+        id: 'faqs',
+        label: {
+          en: 'Engagement FAQs',
+          ar: 'الأسئلة الشائعة',
+        },
+        href: '#faqs',
+        enabled: true,
+      },
+      {
+        id: 'form',
+        label: {
+          en: 'Inquiry Form',
+          ar: 'نموذج التواصل السريع',
+        },
+        href: '#contact-form',
+        enabled: true,
+      },
+    ],
   },
 
+  officesBadge: {
+    en: 'Global Presence',
+    ar: 'حضور استراتيجي عالمي',
+  },
   officesTitle: {
     en: 'Global Growth Hubs',
     ar: 'مراكزنا ومكاتبنا حول العالم',
@@ -103,6 +156,10 @@ export const contactPageData: ContactPageData = {
       image: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=1200&q=85',
       mapsUrl: 'https://maps.google.com/?q=Dubai+Internet+City',
       isHQ: true,
+      directionsLabel: {
+        en: 'Get Directions',
+        ar: 'الاتجاهات عبر خرائط جوجل',
+      },
     },
     {
       id: 'riyadh-hub',
@@ -132,6 +189,10 @@ export const contactPageData: ContactPageData = {
       image: 'https://images.unsplash.com/photo-1586724237569-f3d0c1dee8c6?auto=format&fit=crop&w=1200&q=85',
       mapsUrl: 'https://maps.google.com/?q=King+Fahd+Road+Riyadh',
       isHQ: false,
+      directionsLabel: {
+        en: 'Get Directions',
+        ar: 'الاتجاهات عبر خرائط جوجل',
+      },
     },
     {
       id: 'amman-hub',
@@ -161,9 +222,17 @@ export const contactPageData: ContactPageData = {
       image: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1200&q=85',
       mapsUrl: 'https://maps.google.com/?q=King+Hussein+Business+Park+Amman',
       isHQ: false,
+      directionsLabel: {
+        en: 'Get Directions',
+        ar: 'الاتجاهات عبر خرائط جوجل',
+      },
     },
   ],
 
+  channelsBadge: {
+    en: 'Direct Inquiries',
+    ar: 'قنوات تواصل سريعة ومباشرة',
+  },
   channelsTitle: {
     en: 'Direct Inquiries & Concierge',
     ar: 'قنوات التواصل المباشرة المخصصة',
