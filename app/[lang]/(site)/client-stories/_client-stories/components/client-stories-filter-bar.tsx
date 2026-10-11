@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React from 'react';
 import type { StoryCategorySlug } from '../types';
@@ -53,6 +53,7 @@ export interface ClientStoriesFilterBarProps {
   activeCategory: StoryCategorySlug;
   onSelectCategory: (slug: StoryCategorySlug) => void;
   counts?: Partial<Record<StoryCategorySlug, number>>;
+  categories?: FilterCategoryOption[];
   lang: string;
   className?: string;
 }
@@ -61,10 +62,13 @@ export function ClientStoriesFilterBar({
   activeCategory,
   onSelectCategory,
   counts = {},
+  categories,
   lang,
   className = '',
 }: ClientStoriesFilterBarProps) {
   const isRtl = lang === 'ar';
+  const resolvedCategories =
+    categories && categories.length > 0 ? categories : FILTER_CATEGORIES;
 
   return (
     <div
@@ -72,7 +76,7 @@ export function ClientStoriesFilterBar({
       className={`w-full overflow-x-auto scrollbar-none py-2 flex justify-center ${className}`}
     >
       <div className="flex items-center justify-center flex-wrap gap-2 sm:gap-3 pb-1">
-        {FILTER_CATEGORIES.map((cat) => {
+        {resolvedCategories.map((cat) => {
           const isActive = activeCategory === cat.slug;
           const label = isRtl ? cat.label.ar : cat.label.en;
           const count = counts[cat.slug];

@@ -1,8 +1,7 @@
-﻿'use client';
+'use client';
 
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import type { ClientStoryDetail, StoryCategorySlug } from '../types';
-import { ClientStoriesCard } from './client-stories-card';
 import { ClientStoryMinimalCard } from './client-story-minimal-card';
 import { ClientStoriesFilterBar } from './client-stories-filter-bar';
 import { TbLoader2, TbFolderOff } from 'react-icons/tb';
@@ -11,6 +10,9 @@ export interface ClientStoriesInfiniteGridProps {
   initialStories: ClientStoryDetail[];
   lang: string;
   initialCategory?: StoryCategorySlug;
+  categories?: { slug: StoryCategorySlug; label: { en: string; ar: string } }[];
+  emptyTitle?: { en: string; ar: string };
+  emptySubtitle?: { en: string; ar: string };
 }
 
 const PAGE_SIZE = 6;
@@ -19,6 +21,9 @@ export function ClientStoriesInfiniteGrid({
   initialStories,
   lang,
   initialCategory = 'all',
+  categories,
+  emptyTitle,
+  emptySubtitle,
 }: ClientStoriesInfiniteGridProps) {
   const isRtl = lang === 'ar';
   const [selectedCategory, setSelectedCategory] = useState<StoryCategorySlug>(initialCategory);
@@ -87,6 +92,13 @@ export function ClientStoriesInfiniteGrid({
     };
   }, [hasMore, filteredStories.length]);
 
+  const resolvedEmptyTitle = isRtl
+    ? emptyTitle?.ar || 'لا توجد قصص نجاح في هذا التصنيف'
+    : emptyTitle?.en || 'No client stories in this category';
+  const resolvedEmptySubtitle = isRtl
+    ? emptySubtitle?.ar || 'يرجى اختيار تصنيف آخر للاطلاع على أعمالنا'
+    : emptySubtitle?.en || 'Please select another category to view our client stories';
+
   return (
     <div className="w-full">
       {/* Category Filter Pills */}
@@ -95,6 +107,7 @@ export function ClientStoriesInfiniteGrid({
           activeCategory={selectedCategory}
           onSelectCategory={handleCategoryChange}
           counts={counts}
+          categories={categories}
           lang={lang}
         />
       </div>
@@ -116,12 +129,10 @@ export function ClientStoriesInfiniteGrid({
         <div className="flex flex-col items-center justify-center py-20 text-center rounded-3xl border border-dashed border-slate-200 bg-slate-50/50">
           <TbFolderOff className="h-12 w-12 text-slate-400 mb-3" />
           <h4 className="text-lg font-medium text-slate-800">
-            {isRtl ? 'لا توجد قصص نجاح في هذا التصنيف' : 'No client stories in this category'}
+            {resolvedEmptyTitle}
           </h4>
           <p className="text-sm text-slate-500 mt-1">
-            {isRtl
-              ? 'يرجى اختيار تصنيف آخر للاطلاع على أعمالنا'
-              : 'Please select another category to view our client stories'}
+            {resolvedEmptySubtitle}
           </p>
         </div>
       )}

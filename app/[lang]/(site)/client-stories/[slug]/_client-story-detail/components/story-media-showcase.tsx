@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState, useRef } from 'react';
 import Image from 'next/image';
@@ -106,11 +106,17 @@ export function StoryMediaShowcase({ story, lang }: StoryMediaShowcaseProps) {
         <h2 className="font-primary text-2xl sm:text-3xl lg:text-4xl font-medium text-slate-900 tracking-tight">
           {showcaseTitle}
         </h2>
-        {showcaseDesc && (
-          <p className="mt-3 text-base sm:text-lg text-slate-600 max-w-3xl leading-relaxed">
-            {showcaseDesc}
-          </p>
-        )}
+        {showcaseDesc &&
+          (showcaseDesc.includes('<') && showcaseDesc.includes('>') ? (
+            <div
+              className="mt-3 text-base sm:text-lg text-slate-600 max-w-3xl leading-relaxed"
+              dangerouslySetInnerHTML={{ __html: showcaseDesc }}
+            />
+          ) : (
+            <p className="mt-3 text-base sm:text-lg text-slate-600 max-w-3xl leading-relaxed">
+              {showcaseDesc}
+            </p>
+          ))}
       </div>
 
       {/* ========================================================================= */}

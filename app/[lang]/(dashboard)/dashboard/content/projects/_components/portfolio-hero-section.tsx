@@ -6,6 +6,7 @@ import {
   TbPhoto,
   TbVideo,
 } from 'react-icons/tb';
+import { RichTextEditor } from '@dashboard-shared/components';
 import type { ClientStoryDetail } from '@/app/[lang]/(site)/client-stories/_client-stories/types';
 
 interface PortfolioHeroSectionProps {
@@ -81,82 +82,44 @@ export function PortfolioHeroSection({
       </div>
 
       {/* 2. Lead Subtitle (EN & AR) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div>
-          <label className="block text-xs font-semibold text-slate-700 mb-1">
-            {isRtl ? 'العبارة التقديمية الفرعية (EN)' : 'Lead Subtitle Hook (EN)'}
-          </label>
-          <textarea
-            rows={2}
-            value={story.leadSubtitle?.en || ''}
-            onChange={(e) =>
-              onChange({
-                ...story,
-                leadSubtitle: { en: e.target.value, ar: story.leadSubtitle?.ar || '' },
-              })
-            }
-            placeholder="Connecting a generational legacy of premium halal foods..."
-            className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-persici-crimson outline-none"
-          />
-        </div>
-        <div>
-          <label className="block text-xs font-semibold text-slate-700 mb-1">
-            {isRtl ? 'العبارة التقديمية الفرعية (AR)' : 'Lead Subtitle Hook (AR)'}
-          </label>
-          <textarea
-            rows={2}
-            dir="rtl"
-            value={story.leadSubtitle?.ar || ''}
-            onChange={(e) =>
-              onChange({
-                ...story,
-                leadSubtitle: { en: story.leadSubtitle?.en || '', ar: e.target.value },
-              })
-            }
-            placeholder="ربط إرث عريق من المنتجات الحلال المتميزة بدفء اللقاءات العائلية..."
-            className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-persici-crimson outline-none font-arabic"
-          />
-        </div>
-      </div>
+      <RichTextEditor
+        label={isRtl ? 'العبارة التقديمية الفرعية (Lead Subtitle Hook)' : 'Lead Subtitle Hook (EN / AR)'}
+        rows={3}
+        valueEn={story.leadSubtitle?.en || ''}
+        valueAr={story.leadSubtitle?.ar || ''}
+        onChangeEn={(val) =>
+          onChange({
+            ...story,
+            leadSubtitle: { en: val, ar: story.leadSubtitle?.ar || '' },
+          })
+        }
+        onChangeAr={(val) =>
+          onChange({
+            ...story,
+            leadSubtitle: { en: story.leadSubtitle?.en || '', ar: val },
+          })
+        }
+      />
 
       {/* 3. Executive Summary (EN & AR) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div>
-          <label className="block text-xs font-semibold text-slate-700 mb-1">
-            {isRtl ? 'الملخص التنفيذي الشامل (EN)' : 'Executive Summary (EN)'}
-          </label>
-          <textarea
-            rows={3}
-            value={story.executiveSummary?.en || ''}
-            onChange={(e) =>
-              onChange({
-                ...story,
-                executiveSummary: { en: e.target.value, ar: story.executiveSummary?.ar || '' },
-              })
-            }
-            placeholder="Persici engineered an end-to-end transformation..."
-            className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-persici-crimson outline-none leading-relaxed"
-          />
-        </div>
-        <div>
-          <label className="block text-xs font-semibold text-slate-700 mb-1">
-            {isRtl ? 'الملخص التنفيذي الشامل (AR)' : 'Executive Summary (AR)'}
-          </label>
-          <textarea
-            rows={3}
-            dir="rtl"
-            value={story.executiveSummary?.ar || ''}
-            onChange={(e) =>
-              onChange({
-                ...story,
-                executiveSummary: { en: story.executiveSummary?.en || '', ar: e.target.value },
-              })
-            }
-            placeholder="طوّرت بيرسيشي بنية رقمية واستراتيجية تحول متكاملة..."
-            className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-persici-crimson outline-none leading-relaxed font-arabic"
-          />
-        </div>
-      </div>
+      <RichTextEditor
+        label={isRtl ? 'الملخص التنفيذي الشامل (Executive Summary)' : 'Executive Summary (EN / AR)'}
+        rows={4}
+        valueEn={story.executiveSummary?.en || ''}
+        valueAr={story.executiveSummary?.ar || ''}
+        onChangeEn={(val) =>
+          onChange({
+            ...story,
+            executiveSummary: { en: val, ar: story.executiveSummary?.ar || '' },
+          })
+        }
+        onChangeAr={(val) =>
+          onChange({
+            ...story,
+            executiveSummary: { en: story.executiveSummary?.en || '', ar: val },
+          })
+        }
+      />
 
       {/* 4. Cover Hero Image (R2 Media Picker + Live Preview) */}
       <div className="bg-slate-50/70 p-4 rounded-2xl border border-slate-200">

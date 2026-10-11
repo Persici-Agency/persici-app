@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState } from 'react';
 import Image from 'next/image';
@@ -17,11 +17,14 @@ export function StorySummaryStatsSection({ story, lang }: StorySummaryStatsSecti
 
   const summary = story.executiveSummary[lang as 'en' | 'ar'] || story.executiveSummary.en;
   const metrics = story.metrics || [];
+  const isHtmlSummary = summary.includes('<') && summary.includes('>');
+  const plainSummary = isHtmlSummary ? summary.replace(/<[^>]*>/g, '').trim() : summary;
 
   // Threshold for truncation
   const CHAR_LIMIT = 180;
-  const isLong = summary.length > CHAR_LIMIT;
-  const displaySummary = isLong && !isExpanded ? `${summary.slice(0, CHAR_LIMIT).trim()}...` : summary;
+  const isLong = plainSummary.length > CHAR_LIMIT;
+  const displaySummary =
+    isLong && !isExpanded ? `${plainSummary.slice(0, CHAR_LIMIT).trim()}...` : summary;
 
   return (
     <section
@@ -42,7 +45,14 @@ export function StorySummaryStatsSection({ story, lang }: StorySummaryStatsSecti
 
               {/* Normal Size Paragraph with Read More */}
               <div className="text-base sm:text-lg text-slate-600 leading-relaxed font-normal">
-                <span>{displaySummary}</span>
+                {isHtmlSummary && (!isLong || isExpanded) ? (
+                  <div
+                    className="inline"
+                    dangerouslySetInnerHTML={{ __html: displaySummary }}
+                  />
+                ) : (
+                  <span>{displaySummary}</span>
+                )}
                 {isLong && (
                   <button
                     type="button"

@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { createMetadata } from '@lib/metadata';
 import type { Locale } from '@lib/i18n';
 import { getAllProjectsFromDb } from '@/lib/projects-server';
+import { getClientStoriesPageData } from '@shared/services/db.service';
 import { ClientStoriesHubView } from './_client-stories/components/client-stories-hub-view';
 
 export async function generateMetadata({ params }: PageProps<'/[lang]/client-stories'>) {
@@ -25,8 +26,19 @@ export async function generateMetadata({ params }: PageProps<'/[lang]/client-sto
 export default async function ClientStoriesPage({ params }: PageProps<'/[lang]/client-stories'>) {
   const { lang } = await params;
   if (!hasLocale(lang)) notFound();
-  const dict = await getDictionary(lang);
-  const stories = await getAllProjectsFromDb();
+  const [dict, stories, pageContent] = await Promise.all([
+    getDictionary(lang),
+    getAllProjectsFromDb(),
+    getClientStoriesPageData(),
+  ]);
 
-  return <ClientStoriesHubView stories={stories} lang={lang} dict={dict} />;
+  return (
+    <ClientStoriesHubView
+      stories={stories}
+      pageContent={pageContent}
+      lang={lang}
+      dict={dict}
+    />
+  );
 }
+

@@ -4,6 +4,7 @@ import {
   updatePageContent,
   normalizeAboutPageData,
   normalizeContactPageData,
+  normalizeClientStoriesPageData,
 } from '@shared/services/db.service';
 import { getSessionUser } from '@/lib/auth/jwt';
 import { isRoleAllowed } from '@/lib/auth/rbac';
@@ -19,6 +20,7 @@ import {
 } from '@shared/data';
 import { aboutPageData } from '@/app/[lang]/(site)/about/_about/data/about.data';
 import { contactPageData } from '@/app/[lang]/(site)/contact/_contact/data/contact.data';
+import { clientStoriesHubPageData } from '@/app/[lang]/(site)/client-stories/_client-stories/data/client-stories.data';
 
 export const runtime = 'nodejs';
 
@@ -26,6 +28,7 @@ const FALLBACK_PAGES: Record<string, object> = {
   home: homePageContent,
   services: servicesPageContent,
   work: workPageContent,
+  'client-stories': clientStoriesHubPageData,
   contact: contactPageData,
   solutions: solutionsPageContent,
   industries: industriesPageContent,
@@ -53,7 +56,9 @@ export async function GET(
         ? normalizeAboutPageData(rawContent)
         : page === 'contact'
           ? normalizeContactPageData(rawContent)
-          : rawContent;
+          : page === 'client-stories'
+            ? normalizeClientStoriesPageData(rawContent)
+            : rawContent;
     return NextResponse.json({
       success: true,
       page,

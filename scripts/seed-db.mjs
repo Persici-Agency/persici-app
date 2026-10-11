@@ -108,10 +108,11 @@ async function seed() {
     );
     console.log(`   ✓ Root Admin Account configured: ${adminEmail}`);
 
-    // Dynamic import of master shared data, about data, & contact data
+    // Dynamic import of master shared data, about data, contact data, & client stories data
     const sharedDataModule = await import('../app/[lang]/(site)/_shared/data.ts');
     const aboutDataModule = await import('../app/[lang]/(site)/about/_about/data/about.data.ts');
     const contactDataModule = await import('../app/[lang]/(site)/contact/_contact/data/contact.data.ts');
+    const clientStoriesModule = await import('../app/[lang]/(site)/client-stories/_client-stories/data/client-stories.data.ts');
     const {
       homePageContent,
       servicesPageContent,
@@ -122,7 +123,6 @@ async function seed() {
       industriesOfferingsList,
       howWeDoItPageContent,
       howWeDoItOfferingsList,
-      projectsList,
       servicesList,
       insightsArticles,
       clientLogos,
@@ -133,6 +133,7 @@ async function seed() {
     } = sharedDataModule;
     const { aboutPageData } = aboutDataModule;
     const { contactPageData } = contactDataModule;
+    const { clientStoriesData, clientStoriesHubPageData } = clientStoriesModule;
 
     // 1. Seed Page Contents
     console.log('\n📄 Seeding page_contents collection...');
@@ -144,6 +145,7 @@ async function seed() {
       { page: 'about', data: aboutPageData },
       { page: 'services', data: servicesPageContent },
       { page: 'work', data: workPageContent },
+      { page: 'client-stories', data: clientStoriesHubPageData },
       { page: 'contact', data: contactPageData },
       { page: 'solutions', data: solutionsPageContent },
       { page: 'industries', data: industriesPageContent },
@@ -199,20 +201,38 @@ async function seed() {
     }
     console.log(`   ✓ Seeded ${industriesOfferingsList.length} industry offerings.`);
 
-    // 4. Seed Projects / Case Studies
-    console.log('\n💼 Seeding projects collection...');
+    // 4. Seed Real Client Stories (projects collection)
+    console.log('\n💼 Seeding real client stories into projects collection...');
     const projectsCol = db.collection('projects');
     await projectsCol.createIndex({ slug: 1 }, { unique: true });
-    for (const item of projectsList) {
-      const { id, ...rest } = item;
-      void id;
+
+    // Remove legacy fake placeholder items
+    const legacyFakeSlugs = ['nordic-living', 'lumina-beauty', 'urban-pulse', 'atelier-chic'];
+    const delRes = await projectsCol.deleteMany({ slug: { $in: legacyFakeSlugs } });
+    if (delRes.deletedCount > 0) {
+      console.log(`   ✓ Purged ${delRes.deletedCount} legacy placeholder project records.`);
+    }
+
+    const baseTime = Date.now();
+    for (let idx = 0; idx < clientStoriesData.length; idx++) {
+      const item = clientStoriesData[idx];
       await projectsCol.updateOne(
         { slug: item.slug },
-        { $set: { ...rest, updatedAt: new Date() }, $setOnInsert: { createdAt: new Date() } },
+        {
+          $set: {
+            ...item,
+            isActive: true,
+            sortOrder: idx + 1,
+            updatedAt: new Date(baseTime - idx * 1000),
+          },
+          $setOnInsert: {
+            createdAt: new Date(baseTime - idx * 1000),
+          },
+        },
         { upsert: true }
       );
     }
-    console.log(`   ✓ Seeded ${projectsList.length} portfolio projects.`);
+    console.log(`   ✓ Seeded ${clientStoriesData.length} real Persici client stories.`);
 
     // 5. Seed Services
     console.log('\n⚙️  Seeding services collection...');

@@ -72,26 +72,41 @@ function mapDocToClientStory(d: Document | Record<string, unknown>): ClientStory
   };
 }
 
+const LEGACY_PLACEHOLDER_SLUGS = [
+  'nordic-living',
+  'lumina-beauty',
+  'urban-pulse',
+  'atelier-chic',
+];
+
 /**
- * Ensures initial default client stories are seeded into MongoDB Atlas if collection is empty.
+ * Ensures initial default client stories are seeded into MongoDB Atlas if collection is empty
+ * or still contains legacy placeholder records.
  */
 export async function ensureProjectsSeeded(force = false) {
   try {
     const db = await getDb();
     if (!db) return;
 
-    const count = await db.collection(COLLECTIONS.PROJECTS).countDocuments();
+    const col = db.collection(COLLECTIONS.PROJECTS);
+
+    // Purge legacy 4 dummy placeholder records if present
+    await col.deleteMany({ slug: { $in: LEGACY_PLACEHOLDER_SLUGS } });
+
+    const count = await col.countDocuments();
     if ((count === 0 || force) && clientStoriesData.length > 0) {
       if (force && count > 0) {
-        await db.collection(COLLECTIONS.PROJECTS).deleteMany({});
+        await col.deleteMany({});
       }
-      const docs = clientStoriesData.map((project) => ({
+      const now = Date.now();
+      const docs = clientStoriesData.map((project, idx) => ({
         ...project,
         isActive: true,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        sortOrder: idx + 1,
+        createdAt: new Date(now - idx * 1000),
+        updatedAt: new Date(now - idx * 1000),
       }));
-      await db.collection(COLLECTIONS.PROJECTS).insertMany(docs);
+      await col.insertMany(docs);
     }
   } catch (err) {
     console.warn('[Projects DB] Seed check warning:', err);

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
+import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import {
   TbBriefcase,
@@ -12,6 +13,7 @@ import {
   TbExternalLink,
   TbSparkles,
   TbDatabaseImport,
+  TbLayout,
 } from 'react-icons/tb';
 import { MediaPickerModal } from '@dashboard-shared/components';
 import type {
@@ -399,15 +401,15 @@ export default function ProjectsManagerPage() {
         <div>
           <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-persici-crimson mb-1.5">
             <TbSparkles className="w-4 h-4" />
-            <span>{isRtl ? 'معرض الأعمال ودراسات الحالة' : 'Portfolio & Client Stories CMS'}</span>
+            <span>{isRtl ? 'إدارة قصص نجاح العملاء ودراسات الحالة' : 'Client Stories & Case Studies CMS'}</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
-            {isRtl ? 'إدارة مشاريع وقصص نجاح العملاء' : 'Portfolio Projects & Case Studies'}
+            {isRtl ? 'قصص العملاء (Client Stories)' : 'Client Stories & Case Studies'}
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 mt-1.5 max-w-2xl leading-relaxed">
             {isRtl
-              ? 'إنشاء وتعديل دراسات الحالة المتكاملة، وتحديد نوع القالب المناسب (تطبيقات ويب، تطبيقات جوال، حملات فيديو)، وإدارة مقاييس الأداء ومكتبة الوسائط.'
-              : 'Create, edit, and style enterprise case studies. Configure specialized showcase templates (Web Apps, Mobile Apps, Video Reels), metrics, and Cloudflare R2 media assets.'}
+              ? 'إضافة وتعديل قصص العملاء، وتحديد القصص المميزة (Featured Stories)، وتخصيص التصنيف والقالب الديناميكي (تطبيقات ويب، تطبيقات جوال، حملات فيديو، وهوية بصرية) ومكتبة Cloudflare R2.'
+              : 'Create, edit, and feature client stories across the Featured Stories carousel and All Client Stories infinite grid. Customize categories, dynamic showcase templates (Web Apps, Mobile Apps, Video Reels, Branding Galleries), metrics, and Cloudflare R2 media.'}
           </p>
         </div>
 
@@ -418,8 +420,17 @@ export default function ProjectsManagerPage() {
             className="flex items-center gap-2 px-5 py-2.5 bg-persici-crimson hover:bg-red-700 text-white rounded-xl text-xs font-semibold shadow-sm shadow-persici-crimson/20 transition-all cursor-pointer"
           >
             <TbPlus className="w-4 h-4" />
-            <span>{isRtl ? 'إضافة دراسة حالة جديدة' : 'Create Case Study'}</span>
+            <span>{isRtl ? 'إضافة قصة عميل جديدة' : 'Add Client Story'}</span>
           </button>
+
+          <Link
+            href={`/${lang}/dashboard/pages/client-stories`}
+            className="flex items-center gap-2 px-3.5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-semibold transition-colors shadow-xs"
+            title="Edit Client Stories Hub Page Hero & Section Titles"
+          >
+            <TbLayout className="w-4 h-4 text-persici-crimson" />
+            <span>{isRtl ? 'تعديل عناوين صفحة قصص العملاء' : 'Edit Hub Page Sections'}</span>
+          </Link>
 
           <button
             type="button"

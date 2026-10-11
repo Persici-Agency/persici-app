@@ -39,6 +39,8 @@ import {
   type ContactChannelItem,
   type ContactFaqItem,
 } from '@/app/[lang]/(site)/contact/_contact/data/contact.data';
+import { clientStoriesHubPageData } from '@/app/[lang]/(site)/client-stories/_client-stories/data/client-stories.data';
+import type { ClientStoriesHubCategoryFilter } from '@/app/[lang]/(site)/client-stories/_client-stories/types';
 import Link from 'next/link';
 
 export default function UniversalPageCmsEditor() {
@@ -409,6 +411,85 @@ export default function UniversalPageCmsEditor() {
               },
               faqs: hasValidFaqs ? c.faqs : contactPageData.faqs,
             });
+          } else if (slug === 'client-stories') {
+            const defaultCategories = clientStoriesHubPageData.allStoriesSection.categories;
+            const hasValidCategories =
+              Array.isArray(c.allStoriesSection?.categories) &&
+              c.allStoriesSection.categories.length > 0 &&
+              typeof c.allStoriesSection.categories[0]?.label === 'object';
+
+            setPageData({
+              ...clientStoriesHubPageData,
+              ...c,
+              hero: {
+                ...clientStoriesHubPageData.hero,
+                ...(c.hero || {}),
+                badge: { ...clientStoriesHubPageData.hero.badge, ...(c.hero?.badge || {}) },
+                title: { ...clientStoriesHubPageData.hero.title, ...(c.hero?.title || {}) },
+                titleHighlight: {
+                  ...clientStoriesHubPageData.hero.titleHighlight,
+                  ...(c.hero?.titleHighlight || {}),
+                },
+                subtitle: { ...clientStoriesHubPageData.hero.subtitle, ...(c.hero?.subtitle || {}) },
+                primaryCtaLabel: {
+                  ...clientStoriesHubPageData.hero.primaryCtaLabel,
+                  ...(c.hero?.primaryCtaLabel || {}),
+                },
+                primaryCtaHref:
+                  c.hero?.primaryCtaHref || clientStoriesHubPageData.hero.primaryCtaHref,
+                secondaryCtaLabel: {
+                  ...clientStoriesHubPageData.hero.secondaryCtaLabel,
+                  ...(c.hero?.secondaryCtaLabel || {}),
+                },
+                secondaryCtaHref:
+                  c.hero?.secondaryCtaHref || clientStoriesHubPageData.hero.secondaryCtaHref,
+              },
+              featuredSection: {
+                ...clientStoriesHubPageData.featuredSection,
+                ...(c.featuredSection || {}),
+                badge: {
+                  ...clientStoriesHubPageData.featuredSection.badge,
+                  ...(c.featuredSection?.badge || {}),
+                },
+                title: {
+                  ...clientStoriesHubPageData.featuredSection.title,
+                  ...(c.featuredSection?.title || {}),
+                },
+                subtitle: {
+                  ...clientStoriesHubPageData.featuredSection.subtitle,
+                  ...(c.featuredSection?.subtitle || {}),
+                },
+                ctaLabel: {
+                  ...clientStoriesHubPageData.featuredSection.ctaLabel,
+                  ...(c.featuredSection?.ctaLabel || {}),
+                },
+              },
+              allStoriesSection: {
+                ...clientStoriesHubPageData.allStoriesSection,
+                ...(c.allStoriesSection || {}),
+                badge: {
+                  ...clientStoriesHubPageData.allStoriesSection.badge,
+                  ...(c.allStoriesSection?.badge || {}),
+                },
+                title: {
+                  ...clientStoriesHubPageData.allStoriesSection.title,
+                  ...(c.allStoriesSection?.title || {}),
+                },
+                subtitle: {
+                  ...clientStoriesHubPageData.allStoriesSection.subtitle,
+                  ...(c.allStoriesSection?.subtitle || {}),
+                },
+                emptyTitle: {
+                  ...clientStoriesHubPageData.allStoriesSection.emptyTitle,
+                  ...(c.allStoriesSection?.emptyTitle || {}),
+                },
+                emptySubtitle: {
+                  ...clientStoriesHubPageData.allStoriesSection.emptySubtitle,
+                  ...(c.allStoriesSection?.emptySubtitle || {}),
+                },
+                categories: hasValidCategories ? c.allStoriesSection.categories : defaultCategories,
+              },
+            });
           } else {
             setPageData(c);
           }
@@ -698,6 +779,29 @@ export default function UniversalPageCmsEditor() {
             Array.isArray(pageData.faqs) && pageData.faqs.length > 0
               ? pageData.faqs
               : contactPageData.faqs,
+        };
+      } else if (slug === 'client-stories') {
+        payloadToSave = {
+          ...clientStoriesHubPageData,
+          ...pageData,
+          page: 'client-stories',
+          hero: {
+            ...clientStoriesHubPageData.hero,
+            ...(pageData.hero || {}),
+          },
+          featuredSection: {
+            ...clientStoriesHubPageData.featuredSection,
+            ...(pageData.featuredSection || {}),
+          },
+          allStoriesSection: {
+            ...clientStoriesHubPageData.allStoriesSection,
+            ...(pageData.allStoriesSection || {}),
+            categories:
+              Array.isArray(pageData.allStoriesSection?.categories) &&
+              pageData.allStoriesSection.categories.length > 0
+                ? pageData.allStoriesSection.categories
+                : clientStoriesHubPageData.allStoriesSection.categories,
+          },
         };
       }
 
@@ -7140,9 +7244,834 @@ export default function UniversalPageCmsEditor() {
       )}
 
       {/* =================================================================== */}
-      {/* 5. UNIVERSAL / CUSTOM SECTIONS FALLBACK BUILDER                     */}
+      {/* 5. CLIENT STORIES HUB PAGE EDITOR (/client-stories)                 */}
       {/* =================================================================== */}
-      {!['home', 'about', 'solutions', 'contact'].includes(slug) && (
+      {slug === 'client-stories' && (
+        <div className="space-y-4">
+          {/* SECTION 1: HERO BANNER */}
+          <SectionAccordion
+            number={1}
+            title="ClientStoriesHeroSection • Hero Banner & CTAs"
+            description="Top badge, main headline + crimson highlight phrase, rich-text subtitle, and action buttons"
+            isOpenDefault={true}
+            onSave={savePage}
+          >
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  Hero Badge (EN)
+                </label>
+                <input
+                  type="text"
+                  value={pageData.hero?.badge?.en || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      hero: {
+                        ...pageData.hero,
+                        badge: { ...(pageData.hero?.badge || {}), en: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  شارة الهيرو (AR)
+                </label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={pageData.hero?.badge?.ar || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      hero: {
+                        ...pageData.hero,
+                        badge: { ...(pageData.hero?.badge || {}), ar: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-arabic"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  Main Headline (EN)
+                </label>
+                <input
+                  type="text"
+                  value={pageData.hero?.title?.en || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      hero: {
+                        ...pageData.hero,
+                        title: { ...(pageData.hero?.title || {}), en: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-semibold"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  العنوان الرئيسي (AR)
+                </label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={pageData.hero?.title?.ar || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      hero: {
+                        ...pageData.hero,
+                        title: { ...(pageData.hero?.title || {}), ar: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-semibold font-arabic"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-persici-crimson uppercase mb-1">
+                  Highlighted Crimson Phrase (EN)
+                </label>
+                <input
+                  type="text"
+                  value={pageData.hero?.titleHighlight?.en || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      hero: {
+                        ...pageData.hero,
+                        titleHighlight: {
+                          ...(pageData.hero?.titleHighlight || {}),
+                          en: e.target.value,
+                        },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-red-200 rounded-xl bg-red-50/20 font-semibold text-persici-crimson"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-persici-crimson uppercase mb-1">
+                  العبارة المميزة باللون القرمزي (AR)
+                </label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={pageData.hero?.titleHighlight?.ar || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      hero: {
+                        ...pageData.hero,
+                        titleHighlight: {
+                          ...(pageData.hero?.titleHighlight || {}),
+                          ar: e.target.value,
+                        },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-red-200 rounded-xl bg-red-50/20 font-semibold text-persici-crimson font-arabic"
+                />
+              </div>
+            </div>
+
+            <RichTextEditor
+              label="Hero Subtitle / Description"
+              rows={3}
+              valueEn={pageData.hero?.subtitle?.en || ''}
+              valueAr={pageData.hero?.subtitle?.ar || ''}
+              onChangeEn={(val) =>
+                setPageData({
+                  ...pageData,
+                  hero: {
+                    ...pageData.hero,
+                    subtitle: { ...(pageData.hero?.subtitle || {}), en: val },
+                  },
+                })
+              }
+              onChangeAr={(val) =>
+                setPageData({
+                  ...pageData,
+                  hero: {
+                    ...pageData.hero,
+                    subtitle: { ...(pageData.hero?.subtitle || {}), ar: val },
+                  },
+                })
+              }
+            />
+
+            <div className="pt-4 border-t border-slate-200 grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div>
+                <label className="block text-[11px] font-bold text-slate-600 uppercase mb-1">
+                  Primary Button Label (EN)
+                </label>
+                <input
+                  type="text"
+                  value={pageData.hero?.primaryCtaLabel?.en || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      hero: {
+                        ...pageData.hero,
+                        primaryCtaLabel: {
+                          ...(pageData.hero?.primaryCtaLabel || {}),
+                          en: e.target.value,
+                        },
+                      },
+                    })
+                  }
+                  className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg bg-white"
+                />
+              </div>
+              <div>
+                <label className="block text-[11px] font-bold text-slate-600 uppercase mb-1">
+                  نص الزر الأساسي (AR)
+                </label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={pageData.hero?.primaryCtaLabel?.ar || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      hero: {
+                        ...pageData.hero,
+                        primaryCtaLabel: {
+                          ...(pageData.hero?.primaryCtaLabel || {}),
+                          ar: e.target.value,
+                        },
+                      },
+                    })
+                  }
+                  className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg bg-white font-arabic"
+                />
+              </div>
+              <div>
+                <label className="block text-[11px] font-bold text-slate-600 uppercase mb-1">
+                  Primary Button Link / Anchor
+                </label>
+                <input
+                  type="text"
+                  value={pageData.hero?.primaryCtaHref || '#explore'}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      hero: {
+                        ...pageData.hero,
+                        primaryCtaHref: e.target.value,
+                      },
+                    })
+                  }
+                  className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg bg-white font-mono"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-bold text-slate-600 uppercase mb-1">
+                  Secondary Button Label (EN)
+                </label>
+                <input
+                  type="text"
+                  value={pageData.hero?.secondaryCtaLabel?.en || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      hero: {
+                        ...pageData.hero,
+                        secondaryCtaLabel: {
+                          ...(pageData.hero?.secondaryCtaLabel || {}),
+                          en: e.target.value,
+                        },
+                      },
+                    })
+                  }
+                  className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg bg-white"
+                />
+              </div>
+              <div>
+                <label className="block text-[11px] font-bold text-slate-600 uppercase mb-1">
+                  نص الزر الثانوي (AR)
+                </label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={pageData.hero?.secondaryCtaLabel?.ar || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      hero: {
+                        ...pageData.hero,
+                        secondaryCtaLabel: {
+                          ...(pageData.hero?.secondaryCtaLabel || {}),
+                          ar: e.target.value,
+                        },
+                      },
+                    })
+                  }
+                  className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg bg-white font-arabic"
+                />
+              </div>
+              <div>
+                <label className="block text-[11px] font-bold text-slate-600 uppercase mb-1">
+                  Secondary Button Link / Anchor
+                </label>
+                <input
+                  type="text"
+                  value={pageData.hero?.secondaryCtaHref || '#contact'}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      hero: {
+                        ...pageData.hero,
+                        secondaryCtaHref: e.target.value,
+                      },
+                    })
+                  }
+                  className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg bg-white font-mono"
+                />
+              </div>
+            </div>
+          </SectionAccordion>
+
+          {/* SECTION 2: FEATURED STORIES SECTION HEADER */}
+          <SectionAccordion
+            number={2}
+            title="FeaturedClientStories • Featured Stories Section Header"
+            description="Section badge, title, rich-text subtitle, and CTA label for the stacked featured client stories"
+            onSave={savePage}
+          >
+            <div className="p-4 rounded-2xl bg-slate-900 text-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
+              <div className="space-y-1">
+                <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-amber-400">
+                  <span>Dynamic Data Source</span>
+                </div>
+                <h4 className="text-sm font-bold text-white">
+                  Featured Client Stories Cards (Synced from Client Stories Tab)
+                </h4>
+                <p className="text-xs text-slate-300 max-w-2xl leading-relaxed">
+                  The individual client story cards displayed in this stacked section are pulled dynamically from the <strong>Client Stories</strong> tab for all stories marked as <strong>Featured</strong>. Below you can edit the section badge, title, description, and card CTA text.
+                </p>
+              </div>
+              <Link
+                href={`/${lang}/dashboard/content/projects`}
+                className="px-4 py-2.5 rounded-xl bg-persici-crimson hover:bg-red-600 text-white text-xs font-bold tracking-wide transition-colors shrink-0"
+              >
+                Manage Featured Stories →
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  Section Badge (EN)
+                </label>
+                <input
+                  type="text"
+                  value={pageData.featuredSection?.badge?.en || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      featuredSection: {
+                        ...pageData.featuredSection,
+                        badge: { ...(pageData.featuredSection?.badge || {}), en: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  شارة قسم القصص المختارة (AR)
+                </label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={pageData.featuredSection?.badge?.ar || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      featuredSection: {
+                        ...pageData.featuredSection,
+                        badge: { ...(pageData.featuredSection?.badge || {}), ar: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-arabic"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  Section Title (EN)
+                </label>
+                <input
+                  type="text"
+                  value={pageData.featuredSection?.title?.en || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      featuredSection: {
+                        ...pageData.featuredSection,
+                        title: { ...(pageData.featuredSection?.title || {}), en: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-semibold"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  عنوان قسم القصص المختارة (AR)
+                </label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={pageData.featuredSection?.title?.ar || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      featuredSection: {
+                        ...pageData.featuredSection,
+                        title: { ...(pageData.featuredSection?.title || {}), ar: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-semibold font-arabic"
+                />
+              </div>
+            </div>
+
+            <RichTextEditor
+              label="Featured Stories Section Subtitle / Description"
+              rows={2}
+              valueEn={pageData.featuredSection?.subtitle?.en || ''}
+              valueAr={pageData.featuredSection?.subtitle?.ar || ''}
+              onChangeEn={(val) =>
+                setPageData({
+                  ...pageData,
+                  featuredSection: {
+                    ...pageData.featuredSection,
+                    subtitle: { ...(pageData.featuredSection?.subtitle || {}), en: val },
+                  },
+                })
+              }
+              onChangeAr={(val) =>
+                setPageData({
+                  ...pageData,
+                  featuredSection: {
+                    ...pageData.featuredSection,
+                    subtitle: { ...(pageData.featuredSection?.subtitle || {}), ar: val },
+                  },
+                })
+              }
+            />
+
+            <div className="pt-3 border-t border-slate-200 grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  Featured Card CTA Button Label (EN)
+                </label>
+                <input
+                  type="text"
+                  value={pageData.featuredSection?.ctaLabel?.en || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      featuredSection: {
+                        ...pageData.featuredSection,
+                        ctaLabel: {
+                          ...(pageData.featuredSection?.ctaLabel || {}),
+                          en: e.target.value,
+                        },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  نص زر استكشاف القصة (AR)
+                </label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={pageData.featuredSection?.ctaLabel?.ar || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      featuredSection: {
+                        ...pageData.featuredSection,
+                        ctaLabel: {
+                          ...(pageData.featuredSection?.ctaLabel || {}),
+                          ar: e.target.value,
+                        },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-arabic"
+                />
+              </div>
+            </div>
+          </SectionAccordion>
+
+          {/* SECTION 3: ALL STORIES & CATEGORY FILTER SECTION */}
+          <SectionAccordion
+            number={3}
+            title="ClientStoriesInfiniteGrid • All Client Stories & Category Filters (#explore)"
+            description="Section badge, title, rich-text subtitle, category filter pill labels, and empty state message"
+            onSave={savePage}
+          >
+            <div className="p-4 rounded-2xl bg-slate-900 text-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
+              <div className="space-y-1">
+                <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-emerald-400">
+                  <span>Infinite Grid Catalog</span>
+                </div>
+                <h4 className="text-sm font-bold text-white">
+                  All Client Stories Grid (Synced from Client Stories Tab)
+                </h4>
+                <p className="text-xs text-slate-300 max-w-2xl leading-relaxed">
+                  All active client stories in the infinite-scrolling 3-column grid are loaded dynamically from the <strong>Client Stories</strong> tab. Below you can edit this section&apos;s header, subtitle, category filter tab labels, and empty state text.
+                </p>
+              </div>
+              <Link
+                href={`/${lang}/dashboard/content/projects`}
+                className="px-4 py-2.5 rounded-xl bg-persici-crimson hover:bg-red-600 text-white text-xs font-bold tracking-wide transition-colors shrink-0"
+              >
+                Open Client Stories Tab →
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  Section Badge (EN)
+                </label>
+                <input
+                  type="text"
+                  value={pageData.allStoriesSection?.badge?.en || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      allStoriesSection: {
+                        ...pageData.allStoriesSection,
+                        badge: { ...(pageData.allStoriesSection?.badge || {}), en: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  شارة قسم جميع القصص (AR)
+                </label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={pageData.allStoriesSection?.badge?.ar || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      allStoriesSection: {
+                        ...pageData.allStoriesSection,
+                        badge: { ...(pageData.allStoriesSection?.badge || {}), ar: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-arabic"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  Section Title (EN)
+                </label>
+                <input
+                  type="text"
+                  value={pageData.allStoriesSection?.title?.en || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      allStoriesSection: {
+                        ...pageData.allStoriesSection,
+                        title: { ...(pageData.allStoriesSection?.title || {}), en: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-semibold"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  عنوان قسم جميع القصص (AR)
+                </label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={pageData.allStoriesSection?.title?.ar || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      allStoriesSection: {
+                        ...pageData.allStoriesSection,
+                        title: { ...(pageData.allStoriesSection?.title || {}), ar: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-semibold font-arabic"
+                />
+              </div>
+            </div>
+
+            <RichTextEditor
+              label="All Client Stories Section Subtitle / Description"
+              rows={2}
+              valueEn={pageData.allStoriesSection?.subtitle?.en || ''}
+              valueAr={pageData.allStoriesSection?.subtitle?.ar || ''}
+              onChangeEn={(val) =>
+                setPageData({
+                  ...pageData,
+                  allStoriesSection: {
+                    ...pageData.allStoriesSection,
+                    subtitle: { ...(pageData.allStoriesSection?.subtitle || {}), en: val },
+                  },
+                })
+              }
+              onChangeAr={(val) =>
+                setPageData({
+                  ...pageData,
+                  allStoriesSection: {
+                    ...pageData.allStoriesSection,
+                    subtitle: { ...(pageData.allStoriesSection?.subtitle || {}), ar: val },
+                  },
+                })
+              }
+            />
+
+            {/* Category Filter Pills Labels */}
+            <div className="pt-4 border-t border-slate-200 space-y-3">
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-700 block">
+                Category Filter Bar Pills ({(pageData.allStoriesSection?.categories || []).length})
+              </span>
+
+              <div className="grid grid-cols-1 gap-3">
+                {(
+                  (pageData.allStoriesSection?.categories ||
+                    clientStoriesHubPageData.allStoriesSection.categories) as ClientStoriesHubCategoryFilter[]
+                ).map((cat, idx) => (
+                  <div
+                    key={cat.slug || idx}
+                    className="p-3 bg-white border border-slate-200 rounded-xl grid grid-cols-1 md:grid-cols-12 gap-3 items-center"
+                  >
+                    <div className="md:col-span-3">
+                      <span className="text-[10px] font-mono uppercase px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 font-bold">
+                        slug: {cat.slug}
+                      </span>
+                    </div>
+                    <div className="md:col-span-4">
+                      <label className="block text-[10px] font-semibold text-slate-500 mb-0.5">
+                        Filter Pill Label (EN)
+                      </label>
+                      <input
+                        type="text"
+                        value={cat.label?.en || ''}
+                        onChange={(e) => {
+                          const updated = [
+                            ...(pageData.allStoriesSection?.categories ||
+                              clientStoriesHubPageData.allStoriesSection.categories),
+                          ];
+                          updated[idx] = {
+                            ...cat,
+                            label: { ...(cat.label || {}), en: e.target.value },
+                          };
+                          setPageData({
+                            ...pageData,
+                            allStoriesSection: {
+                              ...pageData.allStoriesSection,
+                              categories: updated,
+                            },
+                          });
+                        }}
+                        className="w-full px-2.5 py-1.5 text-xs border border-slate-200 rounded-lg"
+                      />
+                    </div>
+                    <div className="md:col-span-5">
+                      <label className="block text-[10px] font-semibold text-slate-500 mb-0.5">
+                        اسم التصنيف (AR)
+                      </label>
+                      <input
+                        type="text"
+                        dir="rtl"
+                        value={cat.label?.ar || ''}
+                        onChange={(e) => {
+                          const updated = [
+                            ...(pageData.allStoriesSection?.categories ||
+                              clientStoriesHubPageData.allStoriesSection.categories),
+                          ];
+                          updated[idx] = {
+                            ...cat,
+                            label: { ...(cat.label || {}), ar: e.target.value },
+                          };
+                          setPageData({
+                            ...pageData,
+                            allStoriesSection: {
+                              ...pageData.allStoriesSection,
+                              categories: updated,
+                            },
+                          });
+                        }}
+                        className="w-full px-2.5 py-1.5 text-xs border border-slate-200 rounded-lg font-arabic"
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Empty State Labels */}
+            <div className="pt-4 border-t border-slate-200 grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-[11px] font-bold text-slate-600 uppercase mb-1">
+                  Empty Category State Title (EN)
+                </label>
+                <input
+                  type="text"
+                  value={pageData.allStoriesSection?.emptyTitle?.en || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      allStoriesSection: {
+                        ...pageData.allStoriesSection,
+                        emptyTitle: {
+                          ...(pageData.allStoriesSection?.emptyTitle || {}),
+                          en: e.target.value,
+                        },
+                      },
+                    })
+                  }
+                  className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg bg-white"
+                />
+              </div>
+              <div>
+                <label className="block text-[11px] font-bold text-slate-600 uppercase mb-1">
+                  عنوان حالة عدم وجود قصص (AR)
+                </label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={pageData.allStoriesSection?.emptyTitle?.ar || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      allStoriesSection: {
+                        ...pageData.allStoriesSection,
+                        emptyTitle: {
+                          ...(pageData.allStoriesSection?.emptyTitle || {}),
+                          ar: e.target.value,
+                        },
+                      },
+                    })
+                  }
+                  className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg bg-white font-arabic"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-bold text-slate-600 uppercase mb-1">
+                  Empty Category State Subtitle (EN)
+                </label>
+                <input
+                  type="text"
+                  value={pageData.allStoriesSection?.emptySubtitle?.en || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      allStoriesSection: {
+                        ...pageData.allStoriesSection,
+                        emptySubtitle: {
+                          ...(pageData.allStoriesSection?.emptySubtitle || {}),
+                          en: e.target.value,
+                        },
+                      },
+                    })
+                  }
+                  className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg bg-white"
+                />
+              </div>
+              <div>
+                <label className="block text-[11px] font-bold text-slate-600 uppercase mb-1">
+                  وصف حالة عدم وجود قصص (AR)
+                </label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={pageData.allStoriesSection?.emptySubtitle?.ar || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      allStoriesSection: {
+                        ...pageData.allStoriesSection,
+                        emptySubtitle: {
+                          ...(pageData.allStoriesSection?.emptySubtitle || {}),
+                          ar: e.target.value,
+                        },
+                      },
+                    })
+                  }
+                  className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg bg-white font-arabic"
+                />
+              </div>
+            </div>
+          </SectionAccordion>
+
+          {/* SECTION 4: SHARED EXECUTIVE CONTACT FORM NOTICE */}
+          <SectionAccordion
+            number={4}
+            title="HomeContactSection • Shared Executive Inquiry Form (#contact)"
+            description="Global conversion form rendered at the bottom of the Client Stories Hub page"
+            onSave={savePage}
+          >
+            <div className="p-4 rounded-2xl bg-slate-900 text-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="space-y-1">
+                <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-persici-crimson">
+                  <span>Global Shared Section</span>
+                </div>
+                <h4 className="text-sm font-bold text-white">
+                  Executive Lead Capture & Contact Form (#contact)
+                </h4>
+                <p className="text-xs text-slate-300 max-w-2xl leading-relaxed">
+                  The interactive executive inquiry form at the bottom of the Client Stories Hub page is synchronized globally across Home, About Us, Solutions, Client Stories, and Contact Us.
+                </p>
+              </div>
+              <Link
+                href={`/${lang}/dashboard/shared-contact`}
+                className="px-4 py-2.5 rounded-xl bg-persici-crimson hover:bg-red-600 text-white text-xs font-bold tracking-wide transition-colors shrink-0"
+              >
+                Edit Shared Contact Form →
+              </Link>
+            </div>
+          </SectionAccordion>
+        </div>
+      )}
+
+      {/* =================================================================== */}
+      {/* 6. UNIVERSAL / CUSTOM SECTIONS FALLBACK BUILDER                     */}
+      {/* =================================================================== */}
+      {!['home', 'about', 'solutions', 'contact', 'client-stories'].includes(slug) && (
         <div className="space-y-4">
           <SectionAccordion
             number={1}

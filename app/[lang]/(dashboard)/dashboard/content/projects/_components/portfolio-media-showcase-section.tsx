@@ -10,6 +10,7 @@ import {
   TbMovie,
   TbStack2,
 } from 'react-icons/tb';
+import { RichTextEditor } from '@dashboard-shared/components';
 import type {
   ClientStoryDetail,
   StoryVideoItem,
@@ -302,33 +303,14 @@ export function PortfolioMediaShowcaseSection({
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div>
-          <label className="block text-xs font-semibold text-slate-700 mb-1">
-            {isRtl ? 'وصف المعرض (EN)' : 'Showcase Description (EN)'}
-          </label>
-          <textarea
-            rows={2}
-            value={showcase.description?.en || ''}
-            onChange={(e) => handleUpdateHeader('descEn', e.target.value)}
-            placeholder="Explore the multi-faceted deliverables engineered for this project..."
-            className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-persici-crimson outline-none"
-          />
-        </div>
-        <div>
-          <label className="block text-xs font-semibold text-slate-700 mb-1">
-            {isRtl ? 'وصف المعرض (AR)' : 'Showcase Description (AR)'}
-          </label>
-          <textarea
-            rows={2}
-            dir="rtl"
-            value={showcase.description?.ar || ''}
-            onChange={(e) => handleUpdateHeader('descAr', e.target.value)}
-            placeholder="استكشف مخرجات العمل المتكاملة التي تم تطويرها لهذا المشروع..."
-            className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-persici-crimson outline-none font-arabic"
-          />
-        </div>
-      </div>
+      <RichTextEditor
+        label={isRtl ? 'وصف المعرض (Showcase Description)' : 'Showcase Description (EN / AR)'}
+        rows={3}
+        valueEn={showcase.description?.en || ''}
+        valueAr={showcase.description?.ar || ''}
+        onChangeEn={(val) => handleUpdateHeader('descEn', val)}
+        onChangeAr={(val) => handleUpdateHeader('descAr', val)}
+      />
 
       {/* ========================================================================= */}
       {/* 2. TEMPLATE A: MARKETING VIDEO SHOWCASE                                   */}

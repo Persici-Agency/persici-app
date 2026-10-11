@@ -8,6 +8,7 @@ import {
   TbListCheck,
   TbAlignLeft,
 } from 'react-icons/tb';
+import { RichTextEditor } from '@dashboard-shared/components';
 import type {
   StoryNarrativeSection,
 } from '@/app/[lang]/(site)/client-stories/_client-stories/types';
@@ -222,23 +223,14 @@ export function PortfolioNarrativeSection({
                 )}
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <textarea
-                  rows={3}
-                  value={p.en}
-                  onChange={(e) => handleUpdateParagraph(pIdx, 'en', e.target.value)}
-                  placeholder="Paragraph content in English..."
-                  className="w-full px-3 py-2 text-xs bg-white border border-slate-200 rounded-lg focus:border-persici-crimson outline-none leading-relaxed"
-                />
-                <textarea
-                  rows={3}
-                  dir="rtl"
-                  value={p.ar}
-                  onChange={(e) => handleUpdateParagraph(pIdx, 'ar', e.target.value)}
-                  placeholder="محتوى الفقرة باللغة العربية..."
-                  className="w-full px-3 py-2 text-xs bg-white border border-slate-200 rounded-lg focus:border-persici-crimson outline-none leading-relaxed font-arabic"
-                />
-              </div>
+              <RichTextEditor
+                label={isRtl ? `محتوى الفقرة 0${pIdx + 1}` : `Paragraph #${pIdx + 1} Content (EN / AR)`}
+                rows={4}
+                valueEn={p.en}
+                valueAr={p.ar}
+                onChangeEn={(val) => handleUpdateParagraph(pIdx, 'en', val)}
+                onChangeAr={(val) => handleUpdateParagraph(pIdx, 'ar', val)}
+              />
             </div>
           ))}
         </div>
@@ -320,33 +312,14 @@ export function PortfolioNarrativeSection({
 
         {quote && (
           <div className="space-y-3 pt-2">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div>
-                <label className="block text-[11px] font-semibold text-slate-600 mb-1">
-                  {isRtl ? 'نص الاقتباس (EN)' : 'Quote Text (EN)'}
-                </label>
-                <textarea
-                  rows={2}
-                  value={quote.text.en}
-                  onChange={(e) => handleUpdateQuote('textEn', e.target.value)}
-                  placeholder="Persici turned our vision into reality..."
-                  className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg focus:border-persici-crimson outline-none italic"
-                />
-              </div>
-              <div>
-                <label className="block text-[11px] font-semibold text-slate-600 mb-1">
-                  {isRtl ? 'نص الاقتباس (AR)' : 'Quote Text (AR)'}
-                </label>
-                <textarea
-                  rows={2}
-                  dir="rtl"
-                  value={quote.text.ar}
-                  onChange={(e) => handleUpdateQuote('textAr', e.target.value)}
-                  placeholder="حولت بيرسيشي رؤيتنا إلى واقع ملموس..."
-                  className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg focus:border-persici-crimson outline-none italic font-arabic"
-                />
-              </div>
-            </div>
+            <RichTextEditor
+              label={isRtl ? 'نص الاقتباس (Quote Text)' : 'Quote Text (EN / AR)'}
+              rows={3}
+              valueEn={quote.text.en}
+              valueAr={quote.text.ar}
+              onChangeEn={(val) => handleUpdateQuote('textEn', val)}
+              onChangeAr={(val) => handleUpdateQuote('textAr', val)}
+            />
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div>

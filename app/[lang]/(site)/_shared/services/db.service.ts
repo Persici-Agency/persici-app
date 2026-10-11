@@ -19,7 +19,9 @@ import {
 } from '@shared/data';
 import { aboutPageData, type AboutPageData } from '@/app/[lang]/(site)/about/_about/data/about.data';
 import { contactPageData, type ContactPageData } from '@/app/[lang]/(site)/contact/_contact/data/contact.data';
-export type { ContactPageData };
+import { clientStoriesHubPageData } from '@/app/[lang]/(site)/client-stories/_client-stories/data/client-stories.data';
+import type { ClientStoriesHubPageData } from '@/app/[lang]/(site)/client-stories/_client-stories/types';
+export type { ContactPageData, ClientStoriesHubPageData };
 import type {
   SharedContactContent,
   HomePageContent,
@@ -109,6 +111,108 @@ export async function getServicesPageData(): Promise<ServicesPageContent> {
 
 export async function getWorkPageData(): Promise<WorkPageContent> {
   return getPageContent<WorkPageContent>('work', workPageContent);
+}
+
+export function normalizeClientStoriesPageData(
+  raw?: Partial<ClientStoriesHubPageData> | null
+): ClientStoriesHubPageData {
+  const src = raw || {};
+  const defaultCategories = clientStoriesHubPageData.allStoriesSection.categories;
+  const hasValidCategories =
+    Array.isArray(src.allStoriesSection?.categories) &&
+    src.allStoriesSection!.categories.length > 0 &&
+    typeof src.allStoriesSection!.categories[0]?.label === 'object';
+
+  return {
+    ...clientStoriesHubPageData,
+    ...src,
+    hero: {
+      ...clientStoriesHubPageData.hero,
+      ...(src.hero || {}),
+      badge: { ...clientStoriesHubPageData.hero.badge, ...(src.hero?.badge || {}) },
+      title: { ...clientStoriesHubPageData.hero.title, ...(src.hero?.title || {}) },
+      titleHighlight: {
+        ...clientStoriesHubPageData.hero.titleHighlight,
+        ...(src.hero?.titleHighlight || {}),
+      },
+      subtitle: { ...clientStoriesHubPageData.hero.subtitle, ...(src.hero?.subtitle || {}) },
+      primaryCtaLabel: {
+        ...clientStoriesHubPageData.hero.primaryCtaLabel,
+        ...(src.hero?.primaryCtaLabel || {}),
+      },
+      primaryCtaHref: src.hero?.primaryCtaHref || clientStoriesHubPageData.hero.primaryCtaHref,
+      secondaryCtaLabel: {
+        ...clientStoriesHubPageData.hero.secondaryCtaLabel,
+        ...(src.hero?.secondaryCtaLabel || {}),
+      },
+      secondaryCtaHref: src.hero?.secondaryCtaHref || clientStoriesHubPageData.hero.secondaryCtaHref,
+    },
+    featuredSection: {
+      ...clientStoriesHubPageData.featuredSection,
+      ...(src.featuredSection || {}),
+      badge: {
+        ...clientStoriesHubPageData.featuredSection.badge,
+        ...(src.featuredSection?.badge || {}),
+      },
+      title: {
+        ...clientStoriesHubPageData.featuredSection.title,
+        ...(src.featuredSection?.title || {}),
+      },
+      subtitle: {
+        ...clientStoriesHubPageData.featuredSection.subtitle,
+        ...(src.featuredSection?.subtitle || {}),
+      },
+      ctaLabel: {
+        ...clientStoriesHubPageData.featuredSection.ctaLabel,
+        ...(src.featuredSection?.ctaLabel || {}),
+      },
+    },
+    allStoriesSection: {
+      ...clientStoriesHubPageData.allStoriesSection,
+      ...(src.allStoriesSection || {}),
+      badge: {
+        ...clientStoriesHubPageData.allStoriesSection.badge,
+        ...(src.allStoriesSection?.badge || {}),
+      },
+      title: {
+        ...clientStoriesHubPageData.allStoriesSection.title,
+        ...(src.allStoriesSection?.title || {}),
+      },
+      subtitle: {
+        ...clientStoriesHubPageData.allStoriesSection.subtitle,
+        ...(src.allStoriesSection?.subtitle || {}),
+      },
+      emptyTitle: {
+        ...clientStoriesHubPageData.allStoriesSection.emptyTitle,
+        ...(src.allStoriesSection?.emptyTitle || {}),
+      },
+      emptySubtitle: {
+        ...clientStoriesHubPageData.allStoriesSection.emptySubtitle,
+        ...(src.allStoriesSection?.emptySubtitle || {}),
+      },
+      categories: hasValidCategories
+        ? src.allStoriesSection!.categories.map((cat, idx) => {
+            const defCat = defaultCategories[idx] || defaultCategories[0];
+            return {
+              ...defCat,
+              ...cat,
+              label: {
+                ...(defCat?.label || { en: '', ar: '' }),
+                ...(cat?.label || {}),
+              },
+            };
+          })
+        : defaultCategories,
+    },
+  };
+}
+
+export async function getClientStoriesPageData(): Promise<ClientStoriesHubPageData> {
+  const raw = await getPageContent<ClientStoriesHubPageData>(
+    'client-stories',
+    clientStoriesHubPageData
+  );
+  return normalizeClientStoriesPageData(raw);
 }
 
 export function normalizeContactPageData(raw?: Partial<ContactPageData> | null): ContactPageData {

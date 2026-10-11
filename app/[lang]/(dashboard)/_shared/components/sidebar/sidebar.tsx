@@ -26,6 +26,8 @@ import {
   TbLayoutSidebarRightCollapse,
   TbLayoutSidebarRightExpand,
   TbForms,
+  TbBriefcase,
+  TbStar,
 } from 'react-icons/tb';
 
 export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
@@ -185,10 +187,10 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
     appointments: isRtl ? 'مواعيد الجلسات الاستراتيجية' : 'Strategy Appointments',
     discovery: isRtl ? 'جلسات الاستكشاف المؤسسي' : 'Discovery Calls',
     campaignAnalytics: isRtl ? 'تحليلات أداء الحملات' : 'Campaign Analytics',
-    editorial: isRtl ? 'المقالات ومعرض الأعمال' : 'Blog & Portfolio',
-    insights: isRtl ? 'المقالات والمدونة (Blog Posts)' : 'Blog Posts & Insights',
-    projects: isRtl ? 'معرض الأعمال والمشاريع (Portfolio)' : 'Portfolio Case Studies',
-    reviews: isRtl ? 'جدار التقييمات والشهادات' : 'Reviews & Testimonials',
+    editorial: isRtl ? 'المدونة والمقالات' : 'Blogs & Insights',
+    insights: isRtl ? 'المدونة والمقالات' : 'Blogs & Insights',
+    projects: isRtl ? 'قصص نجاح العملاء' : 'Client Stories',
+    reviews: isRtl ? 'التقييمات والشهادات' : 'Reviews & Testimonials',
     users: isRtl ? 'فريق العمل وصلاحيات RBAC' : 'Team & RBAC Users',
     settings: isRtl ? 'إعدادات النظام والأمان' : 'System Settings',
     collapseBtn: isRtl ? 'طي الشريط الجانبي (Ctrl+B)' : 'Collapse Sidebar (Ctrl+B)',
@@ -764,70 +766,69 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
           </div>
         )}
 
-        {/* 7. Editorial & Proof */}
+        {/* 7. Client Stories (Standalone Single Tab) */}
         {canSeeContent && (
           <div className="pt-2">
             <div className="relative group">
-              <button
-                type="button"
-                onClick={() => toggleSection('content')}
-                className={`w-full flex items-center ${
-                  isCollapsed ? 'justify-center p-3' : 'justify-between px-3.5 py-2'
-                } text-xs font-semibold text-white/40 uppercase tracking-wider hover:text-white/70 transition-colors rounded-xl hover:bg-white/5`}
+              <Link
+                href={getHref(`/${lang}/dashboard/content/projects`)}
+                className={`flex items-center ${
+                  isCollapsed ? 'justify-center p-3' : 'gap-3 px-3.5 py-2.5'
+                } rounded-xl text-sm font-medium transition-all ${
+                  isActive('/dashboard/content/projects')
+                    ? 'bg-persici-crimson text-white shadow-lg shadow-persici-crimson/25'
+                    : 'text-white/70 hover:bg-white/5 hover:text-white'
+                }`}
               >
-                <div className="flex items-center gap-2">
-                  <TbArticle className="w-5 h-5 shrink-0" />
-                  {!isCollapsed && <span>{t.editorial}</span>}
-                </div>
-                {!isCollapsed && (
-                  <div>
-                    {openSections.content ? (
-                      <TbChevronDown className="w-4 h-4" />
-                    ) : isRtl ? (
-                      <TbChevronLeft className="w-4 h-4" />
-                    ) : (
-                      <TbChevronRight className="w-4 h-4" />
-                    )}
-                  </div>
-                )}
-              </button>
-              {isCollapsed && <div className={tooltipClass}>{t.editorial}</div>}
+                <TbBriefcase className="w-5 h-5 shrink-0" />
+                {!isCollapsed && <span>{t.projects}</span>}
+              </Link>
+              {isCollapsed && <div className={tooltipClass}>{t.projects}</div>}
             </div>
+          </div>
+        )}
 
-            {!isCollapsed && openSections.content && (
-              <div className="mt-1 ps-3 space-y-1 border-s border-white/10 ms-4">
-                <Link
-                  href={getHref(`/${lang}/dashboard/content/insights`)}
-                  className={`block px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                    isActive('/dashboard/content/insights')
-                      ? 'bg-white/15 text-white font-semibold'
-                      : 'text-white/60 hover:text-white'
-                  }`}
-                >
-                  {t.insights}
-                </Link>
-                <Link
-                  href={getHref(`/${lang}/dashboard/content/projects`)}
-                  className={`block px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                    isActive('/dashboard/content/projects')
-                      ? 'bg-white/15 text-white font-semibold'
-                      : 'text-white/60 hover:text-white'
-                  }`}
-                >
-                  {t.projects}
-                </Link>
-                <Link
-                  href={getHref(`/${lang}/dashboard/content/reviews`)}
-                  className={`block px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                    isActive('/dashboard/content/reviews')
-                      ? 'bg-white/15 text-white font-semibold'
-                      : 'text-white/60 hover:text-white'
-                  }`}
-                >
-                  {t.reviews}
-                </Link>
-              </div>
-            )}
+        {/* 8. Blogs & Insights (Standalone Single Tab) */}
+        {canSeeContent && (
+          <div className="pt-1">
+            <div className="relative group">
+              <Link
+                href={getHref(`/${lang}/dashboard/content/insights`)}
+                className={`flex items-center ${
+                  isCollapsed ? 'justify-center p-3' : 'gap-3 px-3.5 py-2.5'
+                } rounded-xl text-sm font-medium transition-all ${
+                  isActive('/dashboard/content/insights')
+                    ? 'bg-persici-crimson text-white shadow-lg shadow-persici-crimson/25'
+                    : 'text-white/70 hover:bg-white/5 hover:text-white'
+                }`}
+              >
+                <TbArticle className="w-5 h-5 shrink-0" />
+                {!isCollapsed && <span>{t.insights}</span>}
+              </Link>
+              {isCollapsed && <div className={tooltipClass}>{t.insights}</div>}
+            </div>
+          </div>
+        )}
+
+        {/* 9. Reviews & Testimonials (Standalone Single Tab) */}
+        {canSeeContent && (
+          <div className="pt-1">
+            <div className="relative group">
+              <Link
+                href={getHref(`/${lang}/dashboard/content/reviews`)}
+                className={`flex items-center ${
+                  isCollapsed ? 'justify-center p-3' : 'gap-3 px-3.5 py-2.5'
+                } rounded-xl text-sm font-medium transition-all ${
+                  isActive('/dashboard/content/reviews')
+                    ? 'bg-persici-crimson text-white shadow-lg shadow-persici-crimson/25'
+                    : 'text-white/70 hover:bg-white/5 hover:text-white'
+                }`}
+              >
+                <TbStar className="w-5 h-5 shrink-0" />
+                {!isCollapsed && <span>{t.reviews}</span>}
+              </Link>
+              {isCollapsed && <div className={tooltipClass}>{t.reviews}</div>}
+            </div>
           </div>
         )}
 
