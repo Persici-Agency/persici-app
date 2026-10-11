@@ -70,9 +70,9 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const user = await getSessionUser();
-    if (!user || !isRoleAllowed(user.role, ['admin', 'hr'])) {
+    if (!user || !isRoleAllowed(user.role, ['admin', 'hr', 'editor'])) {
       return NextResponse.json(
-        { error: 'Unauthorized. Only Admins and HR can publish career openings.' },
+        { error: 'Unauthorized. Only Admins, HR, and Editors can publish career openings.' },
         { status: 403 }
       );
     }
@@ -116,12 +116,12 @@ export async function POST(request: NextRequest) {
         en: body.department?.en?.trim() || 'Engineering & AI',
         ar: body.department?.ar?.trim() || 'الهندسة والذكاء الاصطناعي',
       },
-      departmentSlug: body.departmentSlug || 'engineering',
+      departmentSlug: body.departmentSlug ? slugify(body.departmentSlug) : 'engineering',
       location: {
         en: body.location?.en?.trim() || 'Dubai HQ / Hybrid',
         ar: body.location?.ar?.trim() || 'مقر دبي / هجين',
       },
-      locationSlug: body.locationSlug || 'dubai',
+      locationSlug: body.locationSlug ? slugify(body.locationSlug) : 'dubai',
       type: {
         en: body.type?.en?.trim() || 'Full-time Permanent',
         ar: body.type?.ar?.trim() || 'دوام كامل دائم',
@@ -153,6 +153,17 @@ export async function POST(request: NextRequest) {
         : [],
       techStack: Array.isArray(body.techStack) ? body.techStack : [],
       benefits: Array.isArray(body.benefits) ? body.benefits : [],
+      visaSponsorship: body.visaSponsorship || {
+        en: 'Available (UAE / KSA)',
+        ar: 'متاح (الإمارات / السعودية)',
+      },
+      workstation: body.workstation || {
+        en: 'Apple M-Series Choice',
+        ar: 'جهاز Apple M-Series',
+      },
+      contactEmail: body.contactEmail?.trim() || 'hr@persiciagency.com',
+      customSectionTitles: body.customSectionTitles || {},
+      sectionVisibility: body.sectionVisibility || {},
       featured: Boolean(body.featured),
       isActive: body.isActive !== false,
       postedDate:
@@ -167,6 +178,7 @@ export async function POST(request: NextRequest) {
 
     // Revalidate public routes for immediate ISR update
     try {
+      revalidatePath('/[lang]/careers', 'page');
       revalidatePath('/en/careers');
       revalidatePath('/ar/careers');
       revalidatePath(`/en/careers/${slug}`);
@@ -195,20 +207,20 @@ export async function POST(request: NextRequest) {
 /**
  * PUT /api/careers
  * Updates an existing career opening in MongoDB Atlas.
- * PROTECTED: Requires 'admin' or 'hr' role.
+ * PROTECTED: Requires 'admin', 'hr', or 'editor' role.
  */
 export async function PUT(request: NextRequest) {
   try {
     const user = await getSessionUser();
-    if (!user || !isRoleAllowed(user.role, ['admin', 'hr'])) {
+    if (!user || !isRoleAllowed(user.role, ['admin', 'hr', 'editor'])) {
       return NextResponse.json(
-        { error: 'Unauthorized. Only Admins and HR can edit career openings.' },
+        { error: 'Unauthorized. Only Admins, HR, and Editors can edit career openings.' },
         { status: 403 }
       );
     }
 
     const body = await request.json();
-    const slug = body.slug;
+    const slug = body.originalSlug || body.slug;
 
     if (!slug) {
       return NextResponse.json({ error: 'Missing job slug to update.' }, { status: 400 });
@@ -219,16 +231,17 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: 'Database unavailable.' }, { status: 503 });
     }
 
-    const updateDoc: Record<string, any> = {
+    const updateDoc: Record<string, unknown> = {
       updatedAt: new Date(),
       updatedBy: user.email,
     };
 
+    if (body.slug && slugify(body.slug)) updateDoc.slug = slugify(body.slug);
     if (body.title) updateDoc.title = body.title;
     if (body.department) updateDoc.department = body.department;
-    if (body.departmentSlug) updateDoc.departmentSlug = body.departmentSlug;
+    if (body.departmentSlug) updateDoc.departmentSlug = slugify(body.departmentSlug);
     if (body.location) updateDoc.location = body.location;
-    if (body.locationSlug) updateDoc.locationSlug = body.locationSlug;
+    if (body.locationSlug) updateDoc.locationSlug = slugify(body.locationSlug);
     if (body.type) updateDoc.type = body.type;
     if (body.experience) updateDoc.experience = body.experience;
     if (body.workPolicy) updateDoc.workPolicy = body.workPolicy;
@@ -241,18 +254,30 @@ export async function PUT(request: NextRequest) {
       updateDoc.preferredQualifications = body.preferredQualifications;
     if (Array.isArray(body.techStack)) updateDoc.techStack = body.techStack;
     if (Array.isArray(body.benefits)) updateDoc.benefits = body.benefits;
+    if (body.visaSponsorship) updateDoc.visaSponsorship = body.visaSponsorship;
+    if (body.workstation) updateDoc.workstation = body.workstation;
+    if (body.contactEmail !== undefined) updateDoc.contactEmail = body.contactEmail;
+    if (body.customSectionTitles) updateDoc.customSectionTitles = body.customSectionTitles;
+    if (body.sectionVisibility) updateDoc.sectionVisibility = body.sectionVisibility;
     if (body.featured !== undefined) updateDoc.featured = Boolean(body.featured);
     if (body.isActive !== undefined) updateDoc.isActive = Boolean(body.isActive);
     if (body.postedDate) updateDoc.postedDate = body.postedDate;
 
     await db.collection(COLLECTIONS.CAREERS).updateOne({ slug }, { $set: updateDoc });
 
+    const finalSlug = updateDoc.slug || slug;
+
     // Revalidate public routes
     try {
+      revalidatePath('/[lang]/careers', 'page');
       revalidatePath('/en/careers');
       revalidatePath('/ar/careers');
       revalidatePath(`/en/careers/${slug}`);
       revalidatePath(`/ar/careers/${slug}`);
+      if (finalSlug !== slug) {
+        revalidatePath(`/en/careers/${finalSlug}`);
+        revalidatePath(`/ar/careers/${finalSlug}`);
+      }
     } catch (e) {
       console.warn('[API /api/careers PUT] Revalidation warning:', e);
     }
@@ -260,7 +285,7 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json({
       success: true,
       message: 'Job opening updated successfully.',
-      slug,
+      slug: finalSlug,
     });
   } catch (error) {
     console.error('[API /api/careers PUT] Error:', error);
@@ -274,14 +299,14 @@ export async function PUT(request: NextRequest) {
 /**
  * DELETE /api/careers
  * Deletes or archives a career opening in MongoDB Atlas.
- * PROTECTED: Requires 'admin' or 'hr' role.
+ * PROTECTED: Requires 'admin', 'hr', or 'editor' role.
  */
 export async function DELETE(request: NextRequest) {
   try {
     const user = await getSessionUser();
-    if (!user || !isRoleAllowed(user.role, ['admin', 'hr'])) {
+    if (!user || !isRoleAllowed(user.role, ['admin', 'hr', 'editor'])) {
       return NextResponse.json(
-        { error: 'Unauthorized. Only Admins and HR can delete career openings.' },
+        { error: 'Unauthorized. Only Admins, HR, and Editors can delete career openings.' },
         { status: 403 }
       );
     }

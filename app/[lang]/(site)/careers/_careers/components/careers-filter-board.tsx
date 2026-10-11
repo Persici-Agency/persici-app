@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
@@ -10,36 +10,63 @@ import {
 } from 'react-icons/tb';
 import { sectionContainer, sectionPaddingY } from '@shared/constants';
 import { FadeUp, HomeButton } from '@shared';
-import type { CareerJobOpening } from '../data/careers.data';
+import {
+  careersHubData,
+  type CareerJobOpening,
+  type CareersHubData,
+} from '../data/careers.data';
 
 export interface CareersFilterBoardProps {
   openings: CareerJobOpening[];
+  data?: CareersHubData['openPositions'];
   lang: string;
 }
 
-export function CareersFilterBoard({ openings, lang }: CareersFilterBoardProps) {
+export function CareersFilterBoard({ openings, data, lang }: CareersFilterBoardProps) {
   const isAr = lang === 'ar';
+  const board = data || careersHubData.openPositions;
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDept, setSelectedDept] = useState<string>('all');
   const [selectedLocation, setSelectedLocation] = useState<string>('all');
 
-  const departments = useMemo(() => [
-    { slug: 'all', label: { en: 'All Departments', ar: 'كافة الأقسام' } },
-    { slug: 'engineering', label: { en: 'Engineering & AI', ar: 'الهندسة والذكاء الاصطناعي' } },
-    { slug: 'growth', label: { en: 'Growth Marketing', ar: 'التسويق الأدائي والنمو' } },
-    { slug: 'creative', label: { en: 'Creative & Brand', ar: 'الإبداع والهوية' } },
-    { slug: 'strategy', label: { en: 'Client Strategy', ar: 'استراتيجيات العملاء' } },
-    { slug: 'data', label: { en: 'AI & Data', ar: 'البيانات والذكاء الاصطناعي' } },
-  ], []);
+  const departments = useMemo(() => {
+    const base =
+      Array.isArray(board.departments) && board.departments.length > 0
+        ? [...board.departments]
+        : [...careersHubData.openPositions.departments];
+    const knownSlugs = new Set(base.map((d) => d.slug));
 
-  const locations = useMemo(() => [
-    { slug: 'all', label: { en: 'All Hubs', ar: 'كافة المقرات' } },
-    { slug: 'dubai', label: { en: 'Dubai HQ', ar: 'مقر دبي' } },
-    { slug: 'riyadh', label: { en: 'Riyadh Hub', ar: 'مقر الرياض' } },
-    { slug: 'amman', label: { en: 'Amman Hub', ar: 'مقر عمّان' } },
-    { slug: 'remote', label: { en: 'Global Remote', ar: 'عن بُعد' } },
-  ], []);
+    for (const job of openings) {
+      if (job.departmentSlug && !knownSlugs.has(job.departmentSlug)) {
+        knownSlugs.add(job.departmentSlug);
+        base.push({
+          slug: job.departmentSlug,
+          label: job.department || { en: job.departmentSlug, ar: job.departmentSlug },
+        });
+      }
+    }
+    return base;
+  }, [board.departments, openings]);
+
+  const locations = useMemo(() => {
+    const base =
+      Array.isArray(board.locations) && board.locations.length > 0
+        ? [...board.locations]
+        : [...careersHubData.openPositions.locations];
+    const knownSlugs = new Set(base.map((l) => l.slug));
+
+    for (const job of openings) {
+      if (job.locationSlug && !knownSlugs.has(job.locationSlug)) {
+        knownSlugs.add(job.locationSlug);
+        base.push({
+          slug: job.locationSlug,
+          label: job.location || { en: job.locationSlug, ar: job.locationSlug },
+        });
+      }
+    }
+    return base;
+  }, [board.locations, openings]);
 
   const filteredJobs = useMemo(() => {
     return openings.filter((job) => {
@@ -74,6 +101,8 @@ export function CareersFilterBoard({ openings, lang }: CareersFilterBoardProps) 
     setSelectedLocation('all');
   };
 
+  const subtitleText = board.subtitle[isAr ? 'ar' : 'en'] || '';
+
   return (
     <section id="open-positions" className={`bg-[#FFFAFA] ${sectionPaddingY} relative scroll-mt-20`}>
       <div className={sectionContainer}>
@@ -81,20 +110,25 @@ export function CareersFilterBoard({ openings, lang }: CareersFilterBoardProps) 
         <div className="max-w-3xl mb-10 sm:mb-14">
           <FadeUp delay={100} duration={600}>
             <span className="inline-block font-mono text-[9.5px] sm:text-xs font-semibold uppercase tracking-wider text-persici-crimson bg-persici-crimson/10 px-3.5 py-1 rounded-full mb-3">
-              {isAr ? 'فرص العمل الحالية' : 'Open Positions'}
+              {board.badge[isAr ? 'ar' : 'en']}
             </span>
           </FadeUp>
           <FadeUp delay={200} duration={700}>
             <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-foreground mb-4">
-              {isAr ? 'انضم إلى نخبة البناة والمبتكرين' : 'Find Your Role in the Collective'}
+              {board.title[isAr ? 'ar' : 'en']}
             </h2>
           </FadeUp>
           <FadeUp delay={300} duration={700}>
-            <p className="font-secondary text-base sm:text-lg text-foreground/70 leading-relaxed">
-              {isAr
-                ? 'استكشف الوظائف المتاحة في مقراتنا العالمية بدبي والرياض وعمّان وعن بُعد.'
-                : 'Explore active openings across our innovation hubs in Dubai, Riyadh, Amman, and global remote.'}
-            </p>
+            {/<[a-z][\s\S]*>/i.test(subtitleText) ? (
+              <div
+                className="font-secondary text-base sm:text-lg text-foreground/70 leading-relaxed"
+                dangerouslySetInnerHTML={{ __html: subtitleText }}
+              />
+            ) : (
+              <p className="font-secondary text-base sm:text-lg text-foreground/70 leading-relaxed">
+                {subtitleText}
+              </p>
+            )}
           </FadeUp>
         </div>
 
@@ -108,11 +142,7 @@ export function CareersFilterBoard({ openings, lang }: CareersFilterBoardProps) 
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={
-                  isAr
-                    ? 'ابحث بالمسمى الوظيفي، التقنية، أو القسم...'
-                    : 'Search by role title, tech stack, or keyword...'
-                }
+                placeholder={board.searchPlaceholder[isAr ? 'ar' : 'en']}
                 className="w-full ps-11 pe-4 py-3 text-xs sm:text-sm rounded-xl sm:rounded-2xl border border-black/10 bg-black/[0.02] text-foreground placeholder:text-foreground/40 outline-none transition-all focus:border-persici-crimson focus:bg-white focus:ring-2 focus:ring-persici-crimson/20"
               />
               {searchQuery && (
@@ -150,7 +180,7 @@ export function CareersFilterBoard({ openings, lang }: CareersFilterBoardProps) 
           <div className="mt-5 pt-5 border-t border-black/5">
             <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
               <span className="text-xs font-semibold text-foreground/50 shrink-0 me-2">
-                {isAr ? 'القسم:' : 'Department:'}
+                {board.departmentLabel[isAr ? 'ar' : 'en']}
               </span>
               {departments.map((dept) => {
                 const isActive = selectedDept === dept.slug;
@@ -176,7 +206,7 @@ export function CareersFilterBoard({ openings, lang }: CareersFilterBoardProps) 
           <div className="mt-3 pt-3 border-t border-black/5">
             <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
               <span className="text-xs font-semibold text-foreground/50 shrink-0 me-2">
-                {isAr ? 'المقر:' : 'Location:'}
+                {board.locationLabel[isAr ? 'ar' : 'en']}
               </span>
               {locations.map((loc) => {
                 const isActive = selectedLocation === loc.slug;
@@ -202,86 +232,116 @@ export function CareersFilterBoard({ openings, lang }: CareersFilterBoardProps) 
         {/* Job Cards Grid */}
         {filteredJobs.length > 0 ? (
           <div className="grid grid-cols-1 gap-5 sm:gap-6">
-            {filteredJobs.map((job, idx) => (
-              <FadeUp key={job.slug} delay={100 + idx * 50} duration={600}>
-                <div className="group relative flex flex-col lg:flex-row lg:items-center justify-between p-6 sm:p-8 rounded-2xl sm:rounded-3xl bg-white border border-black/8 shadow-xs hover:border-persici-crimson/40 hover:shadow-xl transition-all duration-300">
-                  {/* Subtle top indicator on hover */}
-                  <div className="absolute top-0 inset-x-8 h-0.5 bg-gradient-to-r from-transparent via-persici-crimson to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-full" />
+            {filteredJobs.map((job, idx) => {
+              const vis = job.sectionVisibility || {};
+              const jobSummary = job.summary[isAr ? 'ar' : 'en'] || '';
 
-                  <div className="flex-1 pe-0 lg:pe-8">
-                    {/* Badges Row */}
-                    <div className="flex flex-wrap items-center gap-2 mb-3.5">
-                      <span className="font-mono text-[9.5px] font-semibold text-persici-crimson bg-persici-crimson/10 px-3 py-0.5 rounded-full">
-                        {job.department[isAr ? 'ar' : 'en']}
-                      </span>
-                      <span className="inline-flex items-center gap-1 font-secondary text-xs text-foreground/60 bg-black/5 px-2.5 py-0.5 rounded-full">
-                        <TbMapPin className="w-3 h-3 text-persici-blush" />
-                        <span>{job.location[isAr ? 'ar' : 'en']}</span>
-                      </span>
-                      <span className="font-secondary text-xs text-foreground/60 bg-black/5 px-2.5 py-0.5 rounded-full">
-                        {job.type[isAr ? 'ar' : 'en']}
-                      </span>
-                      <span className="font-secondary text-xs text-foreground/60 bg-black/5 px-2.5 py-0.5 rounded-full">
-                        {job.experience[isAr ? 'ar' : 'en']}
-                      </span>
-                      {job.featured && (
-                        <span className="font-mono text-[9.5px] uppercase font-semibold text-amber-700 bg-amber-500/15 border border-amber-500/30 px-2.5 py-0.5 rounded-full">
-                          {isAr ? 'مطلوبة بشدة' : 'High Priority'}
-                        </span>
+              return (
+                <FadeUp key={job.slug} delay={100 + idx * 50} duration={600}>
+                  <div className="group relative flex flex-col lg:flex-row lg:items-center justify-between p-6 sm:p-8 rounded-2xl sm:rounded-3xl bg-white border border-black/8 shadow-xs hover:border-persici-crimson/40 hover:shadow-xl transition-all duration-300">
+                    {/* Subtle top indicator on hover */}
+                    <div className="absolute top-0 inset-x-8 h-0.5 bg-gradient-to-r from-transparent via-persici-crimson to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-full" />
+
+                    <div className="flex-1 pe-0 lg:pe-8">
+                      {/* Badges Row */}
+                      <div className="flex flex-wrap items-center gap-2 mb-3.5">
+                        {vis.showDepartmentBadge !== false && (
+                          <span className="font-mono text-[9.5px] font-semibold text-persici-crimson bg-persici-crimson/10 px-3 py-0.5 rounded-full">
+                            {job.department[isAr ? 'ar' : 'en']}
+                          </span>
+                        )}
+                        {vis.showLocationBadge !== false && (
+                          <span className="inline-flex items-center gap-1 font-secondary text-xs text-foreground/60 bg-black/5 px-2.5 py-0.5 rounded-full">
+                            <TbMapPin className="w-3 h-3 text-persici-blush" />
+                            <span>{job.location[isAr ? 'ar' : 'en']}</span>
+                          </span>
+                        )}
+                        {vis.showTypeBadge !== false && (
+                          <span className="font-secondary text-xs text-foreground/60 bg-black/5 px-2.5 py-0.5 rounded-full">
+                            {job.type[isAr ? 'ar' : 'en']}
+                          </span>
+                        )}
+                        {vis.showExperienceBadge !== false && (
+                          <span className="font-secondary text-xs text-foreground/60 bg-black/5 px-2.5 py-0.5 rounded-full">
+                            {job.experience[isAr ? 'ar' : 'en']}
+                          </span>
+                        )}
+                        {job.featured && (
+                          <span className="font-mono text-[9.5px] uppercase font-semibold text-amber-700 bg-amber-500/15 border border-amber-500/30 px-2.5 py-0.5 rounded-full">
+                            {board.highPriorityBadge[isAr ? 'ar' : 'en']}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Role Title */}
+                      <h3 className="font-primary text-xl sm:text-2xl font-medium text-foreground mb-2 group-hover:text-persici-crimson transition-colors">
+                        <Link href={`/${lang}/careers/${job.slug}`} className="hover:underline">
+                          {job.title[isAr ? 'ar' : 'en']}
+                        </Link>
+                      </h3>
+
+                      {/* Summary */}
+                      {vis.showSummary !== false && (
+                        /<[a-z][\s\S]*>/i.test(jobSummary) ? (
+                          <div
+                            className="font-secondary text-xs sm:text-sm text-foreground/70 leading-relaxed mb-4 line-clamp-2 max-w-4xl"
+                            dangerouslySetInnerHTML={{ __html: jobSummary }}
+                          />
+                        ) : (
+                          <p className="font-secondary text-xs sm:text-sm text-foreground/70 leading-relaxed mb-4 line-clamp-2 max-w-4xl">
+                            {jobSummary}
+                          </p>
+                        )
+                      )}
+
+                      {/* Tech Stack Pills & Compensation Preview */}
+                      {(vis.showTechStack !== false || vis.showSalary !== false) && (
+                        <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-black/5">
+                          {vis.showTechStack !== false && job.techStack.length > 0 && (
+                            <>
+                              <span className="text-[9.5px] font-semibold text-foreground/50">
+                                {board.stackLabel[isAr ? 'ar' : 'en']}
+                              </span>
+                              {job.techStack.slice(0, 5).map((tech: string) => (
+                                <span
+                                  key={tech}
+                                  className="font-mono text-[9.5px] px-2 py-0.5 rounded-md bg-black/[0.03] text-foreground/75 border border-black/5"
+                                >
+                                  {tech}
+                                </span>
+                              ))}
+                              {job.techStack.length > 5 && (
+                                <span className="font-mono text-[9.5px] text-foreground/50">
+                                  +{job.techStack.length - 5}
+                                </span>
+                              )}
+                            </>
+                          )}
+
+                          {vis.showSalary !== false && job.salaryRange?.[isAr ? 'ar' : 'en'] && (
+                            <span className="ms-auto font-mono text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full">
+                              {job.salaryRange[isAr ? 'ar' : 'en']}
+                            </span>
+                          )}
+                        </div>
                       )}
                     </div>
 
-                    {/* Role Title */}
-                    <h3 className="font-primary text-xl sm:text-2xl font-medium text-foreground mb-2 group-hover:text-persici-crimson transition-colors">
-                      <Link href={`/${lang}/careers/${job.slug}`} className="hover:underline">
-                        {job.title[isAr ? 'ar' : 'en']}
-                      </Link>
-                    </h3>
-
-                    {/* Summary */}
-                    <p className="font-secondary text-xs sm:text-sm text-foreground/70 leading-relaxed mb-4 line-clamp-2 max-w-4xl">
-                      {job.summary[isAr ? 'ar' : 'en']}
-                    </p>
-
-                    {/* Tech Stack Pills & Compensation Preview */}
-                    <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-black/5">
-                      <span className="text-[9.5px] font-semibold text-foreground/50">
-                        {isAr ? 'التقنيات:' : 'Stack:'}
-                      </span>
-                      {job.techStack.slice(0, 5).map((tech: string) => (
-                        <span
-                          key={tech}
-                          className="font-mono text-[9.5px] px-2 py-0.5 rounded-md bg-black/[0.03] text-foreground/75 border border-black/5"
-                        >
-                          {tech}
-                        </span>
-                      ))}
-                      {job.techStack.length > 5 && (
-                        <span className="font-mono text-[9.5px] text-foreground/50">
-                          +{job.techStack.length - 5}
-                        </span>
-                      )}
-
-                      <span className="ms-auto font-mono text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full">
-                        {job.salaryRange[isAr ? 'ar' : 'en']}
-                      </span>
+                    {/* Action Button */}
+                    <div className="mt-5 lg:mt-0 shrink-0 flex items-center justify-end">
+                      <HomeButton
+                        href={`/${lang}/careers/${job.slug}`}
+                        title={board.applyCtaText[isAr ? 'ar' : 'en']}
+                        isLangEffectIcon
+                        currentLang={lang}
+                        className="bg-persici-black group-hover:bg-persici-crimson text-white px-5 py-2.5 text-xs sm:text-sm font-semibold transition-colors duration-300"
+                        iconClassName="h-7 w-7 text-xs"
+                      />
                     </div>
                   </div>
-
-                  {/* Action Button */}
-                  <div className="mt-5 lg:mt-0 shrink-0 flex items-center justify-end">
-                    <HomeButton
-                      href={`/${lang}/careers/${job.slug}`}
-                      title={isAr ? 'تفاصيل الوظيفة والتقديم' : 'View Role & Apply'}
-                      isLangEffectIcon
-                      currentLang={lang}
-                      className="bg-persici-black group-hover:bg-persici-crimson text-white px-5 py-2.5 text-xs sm:text-sm font-semibold transition-colors duration-300"
-                      iconClassName="h-7 w-7 text-xs"
-                    />
-                  </div>
-                </div>
-              </FadeUp>
-            ))}
+                </FadeUp>
+              );
+            })}
           </div>
         ) : (
           /* Empty State */
@@ -290,17 +350,15 @@ export function CareersFilterBoard({ openings, lang }: CareersFilterBoardProps) 
               <TbBriefcase className="w-8 h-8" />
             </div>
             <h3 className="font-primary text-xl font-medium text-foreground mb-2">
-              {isAr ? 'لم نجد وظائف مطابقة للبحث' : 'No Matching Openings Found'}
+              {board.emptyTitle[isAr ? 'ar' : 'en']}
             </h3>
             <p className="font-secondary text-sm text-foreground/60 max-w-md mx-auto mb-6">
-              {isAr
-                ? 'جرّب تغيير مرشحات القسم أو المقر، أو أرسل لنا طلباً عاماً وسنتواصل معك فور توفر فرصة مناسبة.'
-                : 'Try adjusting your department or location filters, or submit a spontaneous application to join our talent network.'}
+              {board.emptySubtitle[isAr ? 'ar' : 'en']}
             </p>
             <HomeButton
               type="button"
               onClick={resetFilters}
-              title={isAr ? 'إعادة ضبط كافة المرشحات' : 'Reset All Filters'}
+              title={board.resetButtonText[isAr ? 'ar' : 'en']}
               icon={<TbRotateClockwise className="w-4 h-4" />}
               className="bg-persici-crimson hover:bg-persici-crimson-80 text-white shadow-lg shadow-persici-crimson/25 px-7 py-3 text-xs sm:text-sm font-semibold"
             />

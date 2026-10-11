@@ -5,6 +5,7 @@ import {
   normalizeAboutPageData,
   normalizeContactPageData,
   normalizeClientStoriesPageData,
+  normalizeCareersPageData,
 } from '@shared/services/db.service';
 import { getSessionUser } from '@/lib/auth/jwt';
 import { isRoleAllowed } from '@/lib/auth/rbac';
@@ -21,6 +22,7 @@ import {
 import { aboutPageData } from '@/app/[lang]/(site)/about/_about/data/about.data';
 import { contactPageData } from '@/app/[lang]/(site)/contact/_contact/data/contact.data';
 import { clientStoriesHubPageData } from '@/app/[lang]/(site)/client-stories/_client-stories/data/client-stories.data';
+import { careersHubData } from '@/app/[lang]/(site)/careers/_careers/data/careers.data';
 
 export const runtime = 'nodejs';
 
@@ -34,6 +36,7 @@ const FALLBACK_PAGES: Record<string, object> = {
   industries: industriesPageContent,
   'how-we-do-it': howWeDoItPageContent,
   about: aboutPageData,
+  careers: careersHubData,
   'shared-contact': defaultSharedContactData,
   'contact-section': defaultSharedContactData,
 };
@@ -58,7 +61,9 @@ export async function GET(
           ? normalizeContactPageData(rawContent)
           : page === 'client-stories'
             ? normalizeClientStoriesPageData(rawContent)
-            : rawContent;
+            : page === 'careers'
+              ? normalizeCareersPageData(rawContent)
+              : rawContent;
     return NextResponse.json({
       success: true,
       page,
@@ -76,7 +81,7 @@ export async function GET(
 /**
  * PUT /api/content/[page]
  * Updates page sections from the dashboard.
- * PROTECTED: Requires 'admin' or 'editor' role.
+ * PROTECTED: Requires 'admin' or 'editor' role (or 'hr' for careers).
  * Triggers instant on-demand ISR cache revalidation.
  */
 export async function PUT(
@@ -84,15 +89,15 @@ export async function PUT(
   { params }: { params: Promise<{ page: string }> }
 ) {
   try {
+    const { page } = await params;
     const user = await getSessionUser();
-    if (!user || !isRoleAllowed(user.role, ['admin', 'editor'])) {
+    const allowedRoles = page === 'careers' ? (['admin', 'editor', 'hr'] as const) : (['admin', 'editor'] as const);
+    if (!user || !isRoleAllowed(user.role, [...allowedRoles])) {
       return NextResponse.json(
         { error: 'Unauthorized. Only Admins and Editors can update page content.' },
         { status: 403 }
       );
     }
-
-    const { page } = await params;
     const body = await request.json();
 
     if (!body || typeof body !== 'object') {

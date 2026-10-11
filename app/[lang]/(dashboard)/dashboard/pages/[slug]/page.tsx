@@ -24,6 +24,7 @@ import {
   TbArrowDown,
   TbForms,
   TbChevronRight,
+  TbBriefcase,
 } from 'react-icons/tb';
 import {
   growthServicesHome,
@@ -41,6 +42,13 @@ import {
 } from '@/app/[lang]/(site)/contact/_contact/data/contact.data';
 import { clientStoriesHubPageData } from '@/app/[lang]/(site)/client-stories/_client-stories/data/client-stories.data';
 import type { ClientStoriesHubCategoryFilter } from '@/app/[lang]/(site)/client-stories/_client-stories/types';
+import {
+  careersHubData,
+  type CareerPerk,
+  type CareerProcessStep,
+  type CareerFaqItem,
+  type CareerFilterOption,
+} from '@/app/[lang]/(site)/careers/_careers/data/careers.data';
 import Link from 'next/link';
 
 export default function UniversalPageCmsEditor() {
@@ -490,6 +498,157 @@ export default function UniversalPageCmsEditor() {
                 categories: hasValidCategories ? c.allStoriesSection.categories : defaultCategories,
               },
             });
+          } else if (slug === 'careers') {
+            setPageData({
+              ...careersHubData,
+              ...c,
+              hero: {
+                ...careersHubData.hero,
+                ...(c.hero || {}),
+                enabled: c.hero?.enabled !== false,
+                badge: { ...careersHubData.hero.badge, ...(c.hero?.badge || {}) },
+                title: { ...careersHubData.hero.title, ...(c.hero?.title || {}) },
+                description: { ...careersHubData.hero.description, ...(c.hero?.description || {}) },
+                primaryCta: {
+                  ...careersHubData.hero.primaryCta!,
+                  ...(c.hero?.primaryCta || {}),
+                  text: {
+                    ...careersHubData.hero.primaryCta!.text,
+                    ...(c.hero?.primaryCta?.text || {}),
+                  },
+                  href: c.hero?.primaryCta?.href || careersHubData.hero.primaryCta!.href,
+                  enabled: c.hero?.primaryCta?.enabled !== false,
+                },
+                secondaryCta: {
+                  ...careersHubData.hero.secondaryCta!,
+                  ...(c.hero?.secondaryCta || {}),
+                  text: {
+                    ...careersHubData.hero.secondaryCta!.text,
+                    ...(c.hero?.secondaryCta?.text || {}),
+                  },
+                  href: c.hero?.secondaryCta?.href || careersHubData.hero.secondaryCta!.href,
+                  enabled: c.hero?.secondaryCta?.enabled !== false,
+                },
+                stats:
+                  Array.isArray(c.hero?.stats) && c.hero.stats.length > 0
+                    ? c.hero.stats
+                    : careersHubData.hero.stats,
+              },
+              culture: {
+                ...careersHubData.culture,
+                ...(c.culture || {}),
+                enabled: c.culture?.enabled !== false,
+                badge: { ...careersHubData.culture.badge, ...(c.culture?.badge || {}) },
+                title: { ...careersHubData.culture.title, ...(c.culture?.title || {}) },
+                description: { ...careersHubData.culture.description, ...(c.culture?.description || {}) },
+                photos:
+                  Array.isArray(c.culture?.photos) && c.culture.photos.length > 0
+                    ? c.culture.photos
+                    : careersHubData.culture.photos,
+              },
+              perks: {
+                ...careersHubData.perks,
+                ...(c.perks || {}),
+                enabled: c.perks?.enabled !== false,
+                badge: { ...careersHubData.perks.badge, ...(c.perks?.badge || {}) },
+                title: { ...careersHubData.perks.title, ...(c.perks?.title || {}) },
+                subtitle: { ...careersHubData.perks.subtitle, ...(c.perks?.subtitle || {}) },
+                items:
+                  Array.isArray(c.perks?.items) && c.perks.items.length > 0
+                    ? c.perks.items
+                    : careersHubData.perks.items,
+              },
+              process: {
+                ...careersHubData.process,
+                ...(c.process || {}),
+                enabled: c.process?.enabled !== false,
+                badge: { ...careersHubData.process.badge, ...(c.process?.badge || {}) },
+                title: { ...careersHubData.process.title, ...(c.process?.title || {}) },
+                subtitle: { ...careersHubData.process.subtitle, ...(c.process?.subtitle || {}) },
+                steps:
+                  Array.isArray(c.process?.steps) && c.process.steps.length > 0
+                    ? c.process.steps
+                    : careersHubData.process.steps,
+              },
+              openPositions: {
+                ...careersHubData.openPositions,
+                ...(c.openPositions || {}),
+                enabled: c.openPositions?.enabled !== false,
+                badge: { ...careersHubData.openPositions.badge, ...(c.openPositions?.badge || {}) },
+                title: { ...careersHubData.openPositions.title, ...(c.openPositions?.title || {}) },
+                subtitle: { ...careersHubData.openPositions.subtitle, ...(c.openPositions?.subtitle || {}) },
+                searchPlaceholder: {
+                  ...careersHubData.openPositions.searchPlaceholder,
+                  ...(c.openPositions?.searchPlaceholder || {}),
+                },
+                departmentLabel: {
+                  ...careersHubData.openPositions.departmentLabel,
+                  ...(c.openPositions?.departmentLabel || {}),
+                },
+                locationLabel: {
+                  ...careersHubData.openPositions.locationLabel,
+                  ...(c.openPositions?.locationLabel || {}),
+                },
+                stackLabel: {
+                  ...careersHubData.openPositions.stackLabel,
+                  ...(c.openPositions?.stackLabel || {}),
+                },
+                highPriorityBadge: {
+                  ...careersHubData.openPositions.highPriorityBadge,
+                  ...(c.openPositions?.highPriorityBadge || {}),
+                },
+                applyCtaText: {
+                  ...careersHubData.openPositions.applyCtaText,
+                  ...(c.openPositions?.applyCtaText || {}),
+                },
+                emptyTitle: {
+                  ...careersHubData.openPositions.emptyTitle,
+                  ...(c.openPositions?.emptyTitle || {}),
+                },
+                emptySubtitle: {
+                  ...careersHubData.openPositions.emptySubtitle,
+                  ...(c.openPositions?.emptySubtitle || {}),
+                },
+                resetButtonText: {
+                  ...careersHubData.openPositions.resetButtonText,
+                  ...(c.openPositions?.resetButtonText || {}),
+                },
+                departments:
+                  Array.isArray(c.openPositions?.departments) && c.openPositions.departments.length > 0
+                    ? c.openPositions.departments
+                    : careersHubData.openPositions.departments,
+                locations:
+                  Array.isArray(c.openPositions?.locations) && c.openPositions.locations.length > 0
+                    ? c.openPositions.locations
+                    : careersHubData.openPositions.locations,
+              },
+              spontaneous: {
+                ...careersHubData.spontaneous,
+                ...(c.spontaneous || {}),
+                enabled: c.spontaneous?.enabled !== false,
+                badge: { ...careersHubData.spontaneous.badge, ...(c.spontaneous?.badge || {}) },
+                title: { ...careersHubData.spontaneous.title, ...(c.spontaneous?.title || {}) },
+                description: { ...careersHubData.spontaneous.description, ...(c.spontaneous?.description || {}) },
+                ctaText: { ...careersHubData.spontaneous.ctaText, ...(c.spontaneous?.ctaText || {}) },
+                email: c.spontaneous?.email || careersHubData.spontaneous.email || 'hr@persiciagency.com',
+                emailSubject: {
+                  ...(careersHubData.spontaneous.emailSubject || { en: '', ar: '' }),
+                  ...(c.spontaneous?.emailSubject || {}),
+                },
+              },
+              faqs: {
+                ...careersHubData.faqs,
+                ...(c.faqs || {}),
+                enabled: c.faqs?.enabled !== false,
+                badge: { ...careersHubData.faqs.badge, ...(c.faqs?.badge || {}) },
+                title: { ...careersHubData.faqs.title, ...(c.faqs?.title || {}) },
+                subtitle: { ...careersHubData.faqs.subtitle, ...(c.faqs?.subtitle || {}) },
+                items:
+                  Array.isArray(c.faqs?.items) && c.faqs.items.length > 0
+                    ? c.faqs.items
+                    : careersHubData.faqs.items,
+              },
+            });
           } else {
             setPageData(c);
           }
@@ -801,6 +960,40 @@ export default function UniversalPageCmsEditor() {
               pageData.allStoriesSection.categories.length > 0
                 ? pageData.allStoriesSection.categories
                 : clientStoriesHubPageData.allStoriesSection.categories,
+          },
+        };
+      } else if (slug === 'careers') {
+        payloadToSave = {
+          ...careersHubData,
+          ...pageData,
+          page: 'careers',
+          hero: {
+            ...careersHubData.hero,
+            ...(pageData.hero || {}),
+          },
+          culture: {
+            ...careersHubData.culture,
+            ...(pageData.culture || {}),
+          },
+          perks: {
+            ...careersHubData.perks,
+            ...(pageData.perks || {}),
+          },
+          process: {
+            ...careersHubData.process,
+            ...(pageData.process || {}),
+          },
+          openPositions: {
+            ...careersHubData.openPositions,
+            ...(pageData.openPositions || {}),
+          },
+          spontaneous: {
+            ...careersHubData.spontaneous,
+            ...(pageData.spontaneous || {}),
+          },
+          faqs: {
+            ...careersHubData.faqs,
+            ...(pageData.faqs || {}),
           },
         };
       }
@@ -8069,9 +8262,2798 @@ export default function UniversalPageCmsEditor() {
       )}
 
       {/* =================================================================== */}
+      {/* 5B. CAREERS HUB PAGE BUILDER (7 SECTIONS)                           */}
+      {/* =================================================================== */}
+      {slug === 'careers' && (
+        <div className="space-y-4">
+          {/* SECTION 1: HERO BANNER, CTAs & IMPACT STATS */}
+          <SectionAccordion
+            number={1}
+            title="CareersHeroSection • Hero Banner, CTAs & Impact Stats"
+            description="Top badge, main headline, rich-text mission narrative, dual CTA buttons, and 4 animated stat counters"
+            isOpenDefault={true}
+            onSave={savePage}
+          >
+            {/* Section Visibility Toggle */}
+            <div className="flex items-center justify-between p-3.5 rounded-xl bg-slate-50 border border-slate-200 mb-4">
+              <div>
+                <span className="text-xs font-bold text-slate-800 block">
+                  Display Hero Banner Section on Live Page
+                </span>
+                <span className="text-[11px] text-slate-500">
+                  Toggle visibility of the top Careers Hero & Stats section on /[lang]/careers
+                </span>
+              </div>
+              <input
+                type="checkbox"
+                checked={pageData.hero?.enabled !== false}
+                onChange={(e) =>
+                  setPageData({
+                    ...pageData,
+                    hero: { ...pageData.hero, enabled: e.target.checked },
+                  })
+                }
+                className="w-4 h-4 accent-persici-crimson rounded cursor-pointer"
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  Hero Badge Pill (English)
+                </label>
+                <input
+                  type="text"
+                  value={pageData.hero?.badge?.en || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      hero: {
+                        ...pageData.hero,
+                        badge: { ...(pageData.hero?.badge || {}), en: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-medium"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  شارة البانر العلوي (العربية)
+                </label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={pageData.hero?.badge?.ar || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      hero: {
+                        ...pageData.hero,
+                        badge: { ...(pageData.hero?.badge || {}), ar: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-medium font-arabic"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  Hero Master Title (English)
+                </label>
+                <input
+                  type="text"
+                  value={pageData.hero?.title?.en || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      hero: {
+                        ...pageData.hero,
+                        title: { ...(pageData.hero?.title || {}), en: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-medium"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  العنوان الرئيسي (العربية)
+                </label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={pageData.hero?.title?.ar || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      hero: {
+                        ...pageData.hero,
+                        title: { ...(pageData.hero?.title || {}), ar: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-medium font-arabic"
+                />
+              </div>
+            </div>
+
+            <RichTextEditor
+              label="Hero Description Narrative"
+              valueEn={pageData.hero?.description?.en || ''}
+              valueAr={pageData.hero?.description?.ar || ''}
+              onChangeEn={(val) =>
+                setPageData({
+                  ...pageData,
+                  hero: {
+                    ...pageData.hero,
+                    description: { ...(pageData.hero?.description || {}), en: val },
+                  },
+                })
+              }
+              onChangeAr={(val) =>
+                setPageData({
+                  ...pageData,
+                  hero: {
+                    ...pageData.hero,
+                    description: { ...(pageData.hero?.description || {}), ar: val },
+                  },
+                })
+              }
+              helperText="Supports rich formatting, alignment, bolding, and links"
+            />
+
+            {/* Hero Primary & Secondary CTA Buttons */}
+            <div className="pt-4 border-t border-slate-200 grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold uppercase text-slate-700">
+                    Primary CTA Button (#open-positions)
+                  </span>
+                  <label className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={pageData.hero?.primaryCta?.enabled !== false}
+                      onChange={(e) =>
+                        setPageData({
+                          ...pageData,
+                          hero: {
+                            ...pageData.hero,
+                            primaryCta: {
+                              ...(pageData.hero?.primaryCta || {}),
+                              enabled: e.target.checked,
+                            },
+                          },
+                        })
+                      }
+                      className="accent-persici-crimson rounded"
+                    />
+                    <span>Show</span>
+                  </label>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">
+                      Button Text (EN)
+                    </label>
+                    <input
+                      type="text"
+                      value={pageData.hero?.primaryCta?.text?.en || ''}
+                      onChange={(e) =>
+                        setPageData({
+                          ...pageData,
+                          hero: {
+                            ...pageData.hero,
+                            primaryCta: {
+                              ...(pageData.hero?.primaryCta || {}),
+                              text: {
+                                ...(pageData.hero?.primaryCta?.text || {}),
+                                en: e.target.value,
+                              },
+                            },
+                          },
+                        })
+                      }
+                      className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg bg-white"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">
+                      نص الزر (AR)
+                    </label>
+                    <input
+                      type="text"
+                      dir="rtl"
+                      value={pageData.hero?.primaryCta?.text?.ar || ''}
+                      onChange={(e) =>
+                        setPageData({
+                          ...pageData,
+                          hero: {
+                            ...pageData.hero,
+                            primaryCta: {
+                              ...(pageData.hero?.primaryCta || {}),
+                              text: {
+                                ...(pageData.hero?.primaryCta?.text || {}),
+                                ar: e.target.value,
+                              },
+                            },
+                          },
+                        })
+                      }
+                      className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg bg-white font-arabic"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">
+                    Target Anchor / URL
+                  </label>
+                  <input
+                    type="text"
+                    value={pageData.hero?.primaryCta?.href || '#open-positions'}
+                    onChange={(e) =>
+                      setPageData({
+                        ...pageData,
+                        hero: {
+                          ...pageData.hero,
+                          primaryCta: {
+                            ...(pageData.hero?.primaryCta || {}),
+                            href: e.target.value,
+                          },
+                        },
+                      })
+                    }
+                    className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg bg-white font-mono"
+                  />
+                </div>
+              </div>
+
+              <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold uppercase text-slate-700">
+                    Secondary CTA Button (#culture)
+                  </span>
+                  <label className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={pageData.hero?.secondaryCta?.enabled !== false}
+                      onChange={(e) =>
+                        setPageData({
+                          ...pageData,
+                          hero: {
+                            ...pageData.hero,
+                            secondaryCta: {
+                              ...(pageData.hero?.secondaryCta || {}),
+                              enabled: e.target.checked,
+                            },
+                          },
+                        })
+                      }
+                      className="accent-persici-crimson rounded"
+                    />
+                    <span>Show</span>
+                  </label>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">
+                      Button Text (EN)
+                    </label>
+                    <input
+                      type="text"
+                      value={pageData.hero?.secondaryCta?.text?.en || ''}
+                      onChange={(e) =>
+                        setPageData({
+                          ...pageData,
+                          hero: {
+                            ...pageData.hero,
+                            secondaryCta: {
+                              ...(pageData.hero?.secondaryCta || {}),
+                              text: {
+                                ...(pageData.hero?.secondaryCta?.text || {}),
+                                en: e.target.value,
+                              },
+                            },
+                          },
+                        })
+                      }
+                      className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg bg-white"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">
+                      نص الزر (AR)
+                    </label>
+                    <input
+                      type="text"
+                      dir="rtl"
+                      value={pageData.hero?.secondaryCta?.text?.ar || ''}
+                      onChange={(e) =>
+                        setPageData({
+                          ...pageData,
+                          hero: {
+                            ...pageData.hero,
+                            secondaryCta: {
+                              ...(pageData.hero?.secondaryCta || {}),
+                              text: {
+                                ...(pageData.hero?.secondaryCta?.text || {}),
+                                ar: e.target.value,
+                              },
+                            },
+                          },
+                        })
+                      }
+                      className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg bg-white font-arabic"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">
+                    Target Anchor / URL
+                  </label>
+                  <input
+                    type="text"
+                    value={pageData.hero?.secondaryCta?.href || '#culture'}
+                    onChange={(e) =>
+                      setPageData({
+                        ...pageData,
+                        hero: {
+                          ...pageData.hero,
+                          secondaryCta: {
+                            ...(pageData.hero?.secondaryCta || {}),
+                            href: e.target.value,
+                          },
+                        },
+                      })
+                    }
+                    className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg bg-white font-mono"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* 4 Impact Stat Counters Repeater */}
+            <div className="pt-4 border-t border-slate-200 space-y-3">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-bold text-slate-700 uppercase">
+                  Hero Animated Impact Stats Strip ({(pageData.hero?.stats || []).length})
+                </label>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const current = Array.isArray(pageData.hero?.stats)
+                      ? [...pageData.hero.stats]
+                      : [...careersHubData.hero.stats];
+                    current.push({
+                      value: '10+',
+                      number: 10,
+                      suffix: { en: '+', ar: '+' },
+                      decimals: 0,
+                      label: { en: 'New Metric Label', ar: 'وصف المؤشر الجديد' },
+                    });
+                    setPageData({
+                      ...pageData,
+                      hero: { ...pageData.hero, stats: current },
+                    });
+                  }}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-persici-crimson/10 text-persici-crimson hover:bg-persici-crimson hover:text-white text-xs font-bold transition-colors"
+                >
+                  <TbPlus className="w-3.5 h-3.5" />
+                  <span>Add Stat Counter</span>
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {(pageData.hero?.stats || []).map(
+                  (
+                    stat: {
+                      number?: number;
+                      decimals?: number;
+                      suffix?: { en?: string; ar?: string };
+                      label?: { en?: string; ar?: string };
+                    },
+                    idx: number
+                  ) => (
+                    <div
+                      key={idx}
+                      className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3"
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-persici-crimson uppercase">
+                          Stat #{idx + 1}
+                        </span>
+                        <div className="flex items-center gap-1">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const updated = moveItem(pageData.hero?.stats || [], idx, 'up');
+                              setPageData({
+                                ...pageData,
+                                hero: { ...pageData.hero, stats: updated },
+                              });
+                            }}
+                            disabled={idx === 0}
+                            className="p-1 text-slate-400 hover:text-slate-700 disabled:opacity-30"
+                          >
+                            <TbArrowUp className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const updated = moveItem(pageData.hero?.stats || [], idx, 'down');
+                              setPageData({
+                                ...pageData,
+                                hero: { ...pageData.hero, stats: updated },
+                              });
+                            }}
+                            disabled={idx === (pageData.hero?.stats || []).length - 1}
+                            className="p-1 text-slate-400 hover:text-slate-700 disabled:opacity-30"
+                          >
+                            <TbArrowDown className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const updated = (pageData.hero?.stats || []).filter(
+                                (_: unknown, i: number) => i !== idx
+                              );
+                              setPageData({
+                                ...pageData,
+                                hero: { ...pageData.hero, stats: updated },
+                              });
+                            }}
+                            className="p-1 text-red-500 hover:bg-red-50 rounded"
+                          >
+                            <TbTrash className="w-3.5 h-3.5" />
+                          </button>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">
+                          Number
+                        </label>
+                        <input
+                          type="number"
+                          step="any"
+                          value={stat.number ?? ''}
+                          onChange={(e) => {
+                            const updated = [...(pageData.hero?.stats || [])];
+                            updated[idx] = {
+                              ...updated[idx],
+                              number: e.target.value === '' ? undefined : Number(e.target.value),
+                            };
+                            setPageData({
+                              ...pageData,
+                              hero: { ...pageData.hero, stats: updated },
+                            });
+                          }}
+                          className="w-full px-2.5 py-1.5 text-xs border border-slate-200 rounded-lg bg-white font-mono"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">
+                          Decimals
+                        </label>
+                        <input
+                          type="number"
+                          min={0}
+                          max={2}
+                          value={stat.decimals ?? 0}
+                          onChange={(e) => {
+                            const updated = [...(pageData.hero?.stats || [])];
+                            updated[idx] = {
+                              ...updated[idx],
+                              decimals: Number(e.target.value) || 0,
+                            };
+                            setPageData({
+                              ...pageData,
+                              hero: { ...pageData.hero, stats: updated },
+                            });
+                          }}
+                          className="w-full px-2.5 py-1.5 text-xs border border-slate-200 rounded-lg bg-white font-mono"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">
+                          Suffix (EN)
+                        </label>
+                        <input
+                          type="text"
+                          value={stat.suffix?.en || ''}
+                          onChange={(e) => {
+                            const updated = [...(pageData.hero?.stats || [])];
+                            updated[idx] = {
+                              ...updated[idx],
+                              suffix: { ...(updated[idx].suffix || {}), en: e.target.value },
+                            };
+                            setPageData({
+                              ...pageData,
+                              hero: { ...pageData.hero, stats: updated },
+                            });
+                          }}
+                          className="w-full px-2.5 py-1.5 text-xs border border-slate-200 rounded-lg bg-white font-mono"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">
+                          اللاحقة (AR)
+                        </label>
+                        <input
+                          type="text"
+                          dir="rtl"
+                          value={stat.suffix?.ar || ''}
+                          onChange={(e) => {
+                            const updated = [...(pageData.hero?.stats || [])];
+                            updated[idx] = {
+                              ...updated[idx],
+                              suffix: { ...(updated[idx].suffix || {}), ar: e.target.value },
+                            };
+                            setPageData({
+                              ...pageData,
+                              hero: { ...pageData.hero, stats: updated },
+                            });
+                          }}
+                          className="w-full px-2.5 py-1.5 text-xs border border-slate-200 rounded-lg bg-white font-arabic"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">
+                          Label (English)
+                        </label>
+                        <input
+                          type="text"
+                          value={stat.label?.en || ''}
+                          onChange={(e) => {
+                            const updated = [...(pageData.hero?.stats || [])];
+                            updated[idx] = {
+                              ...updated[idx],
+                              label: { ...(updated[idx].label || {}), en: e.target.value },
+                            };
+                            setPageData({
+                              ...pageData,
+                              hero: { ...pageData.hero, stats: updated },
+                            });
+                          }}
+                          className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg bg-white"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">
+                          الوصف (العربية)
+                        </label>
+                        <input
+                          type="text"
+                          dir="rtl"
+                          value={stat.label?.ar || ''}
+                          onChange={(e) => {
+                            const updated = [...(pageData.hero?.stats || [])];
+                            updated[idx] = {
+                              ...updated[idx],
+                              label: { ...(updated[idx].label || {}), ar: e.target.value },
+                            };
+                            setPageData({
+                              ...pageData,
+                              hero: { ...pageData.hero, stats: updated },
+                            });
+                          }}
+                          className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg bg-white font-arabic"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </SectionAccordion>
+
+          {/* SECTION 2: CULTURE & 4-PHOTO BENTO GRID */}
+          <SectionAccordion
+            number={2}
+            title="CareersCultureSection • Life at Persici & 4-Photo Bento Grid (#culture)"
+            description="Culture badge, headline, rich-text philosophy, and 4 regional hub photos with R2 Media Library picker"
+            onSave={savePage}
+          >
+            <div className="flex items-center justify-between p-3.5 rounded-xl bg-slate-50 border border-slate-200 mb-4">
+              <div>
+                <span className="text-xs font-bold text-slate-800 block">
+                  Display Culture & Photo Bento Section on Live Page
+                </span>
+                <span className="text-[11px] text-slate-500">
+                  Toggle visibility of the Life at Persici section (#culture)
+                </span>
+              </div>
+              <input
+                type="checkbox"
+                checked={pageData.culture?.enabled !== false}
+                onChange={(e) =>
+                  setPageData({
+                    ...pageData,
+                    culture: { ...pageData.culture, enabled: e.target.checked },
+                  })
+                }
+                className="w-4 h-4 accent-persici-crimson rounded cursor-pointer"
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  Culture Badge (English)
+                </label>
+                <input
+                  type="text"
+                  value={pageData.culture?.badge?.en || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      culture: {
+                        ...pageData.culture,
+                        badge: { ...(pageData.culture?.badge || {}), en: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-medium"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  شارة القسم (العربية)
+                </label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={pageData.culture?.badge?.ar || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      culture: {
+                        ...pageData.culture,
+                        badge: { ...(pageData.culture?.badge || {}), ar: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-medium font-arabic"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  Culture Title (English)
+                </label>
+                <input
+                  type="text"
+                  value={pageData.culture?.title?.en || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      culture: {
+                        ...pageData.culture,
+                        title: { ...(pageData.culture?.title || {}), en: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-medium"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  عنوان ثقافة العمل (العربية)
+                </label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={pageData.culture?.title?.ar || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      culture: {
+                        ...pageData.culture,
+                        title: { ...(pageData.culture?.title || {}), ar: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-medium font-arabic"
+                />
+              </div>
+            </div>
+
+            <RichTextEditor
+              label="Culture Philosophy Description"
+              valueEn={pageData.culture?.description?.en || ''}
+              valueAr={pageData.culture?.description?.ar || ''}
+              onChangeEn={(val) =>
+                setPageData({
+                  ...pageData,
+                  culture: {
+                    ...pageData.culture,
+                    description: { ...(pageData.culture?.description || {}), en: val },
+                  },
+                })
+              }
+              onChangeAr={(val) =>
+                setPageData({
+                  ...pageData,
+                  culture: {
+                    ...pageData.culture,
+                    description: { ...(pageData.culture?.description || {}), ar: val },
+                  },
+                })
+              }
+            />
+
+            {/* 4-Photo Bento Grid Editor */}
+            <div className="pt-4 border-t border-slate-200 space-y-3">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-bold text-slate-700 uppercase">
+                  Culture Bento Grid Photos ({(pageData.culture?.photos || []).length})
+                </label>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const current = Array.isArray(pageData.culture?.photos)
+                      ? [...pageData.culture.photos]
+                      : [...careersHubData.culture.photos];
+                    current.push({
+                      image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1200&q=80',
+                      title: { en: 'New Studio Moment', ar: 'لقطة جديدة من الاستوديو' },
+                      location: { en: 'Dubai HQ', ar: 'مقر دبي' },
+                    });
+                    setPageData({
+                      ...pageData,
+                      culture: { ...pageData.culture, photos: current },
+                    });
+                  }}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-persici-crimson/10 text-persici-crimson hover:bg-persici-crimson hover:text-white text-xs font-bold transition-colors"
+                >
+                  <TbPlus className="w-3.5 h-3.5" />
+                  <span>Add Bento Photo</span>
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {(pageData.culture?.photos || []).map(
+                  (
+                    photo: {
+                      image?: string;
+                      src?: string;
+                      title?: { en?: string; ar?: string };
+                      location?: { en?: string; ar?: string };
+                    },
+                    idx: number
+                  ) => (
+                    <div
+                      key={idx}
+                      className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3"
+                    >
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-persici-crimson uppercase">
+                        Bento Slot #{idx + 1} {idx === 0 ? '(Large Featured Portrait)' : idx === 3 ? '(Wide Panoramic)' : ''}
+                      </span>
+                      <div className="flex items-center gap-1">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const updated = moveItem(pageData.culture?.photos || [], idx, 'up');
+                            setPageData({
+                              ...pageData,
+                              culture: { ...pageData.culture, photos: updated },
+                            });
+                          }}
+                          disabled={idx === 0}
+                          className="p-1 text-slate-400 hover:text-slate-700 disabled:opacity-30"
+                        >
+                          <TbArrowUp className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const updated = moveItem(pageData.culture?.photos || [], idx, 'down');
+                            setPageData({
+                              ...pageData,
+                              culture: { ...pageData.culture, photos: updated },
+                            });
+                          }}
+                          disabled={idx === (pageData.culture?.photos || []).length - 1}
+                          className="p-1 text-slate-400 hover:text-slate-700 disabled:opacity-30"
+                        >
+                          <TbArrowDown className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">
+                        Image URL (R2 or External)
+                      </label>
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          value={photo.image || ''}
+                          onChange={(e) => {
+                            const updated = [...(pageData.culture?.photos || [])];
+                            updated[idx] = { ...updated[idx], image: e.target.value };
+                            setPageData({
+                              ...pageData,
+                              culture: { ...pageData.culture, photos: updated },
+                            });
+                          }}
+                          className="flex-1 px-3 py-1.5 text-xs border border-slate-200 rounded-lg bg-white font-mono"
+                        />
+                        <button
+                          type="button"
+                          onClick={() =>
+                            openMediaPicker((url) => {
+                              const updated = [...(pageData.culture?.photos || [])];
+                              updated[idx] = { ...updated[idx], image: url };
+                              setPageData({
+                                ...pageData,
+                                culture: { ...pageData.culture, photos: updated },
+                              });
+                            }, 'image')
+                          }
+                          className="px-3 py-1.5 rounded-lg bg-slate-900 text-white text-xs font-bold hover:bg-persici-crimson transition-colors shrink-0 inline-flex items-center gap-1"
+                        >
+                          <TbPhoto className="w-3.5 h-3.5" />
+                          <span>R2</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">
+                          Photo Title (EN)
+                        </label>
+                        <input
+                          type="text"
+                          value={photo.title?.en || ''}
+                          onChange={(e) => {
+                            const updated = [...(pageData.culture?.photos || [])];
+                            updated[idx] = {
+                              ...updated[idx],
+                              title: { ...(updated[idx].title || {}), en: e.target.value },
+                            };
+                            setPageData({
+                              ...pageData,
+                              culture: { ...pageData.culture, photos: updated },
+                            });
+                          }}
+                          className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg bg-white"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">
+                          عنوان الصورة (AR)
+                        </label>
+                        <input
+                          type="text"
+                          dir="rtl"
+                          value={photo.title?.ar || ''}
+                          onChange={(e) => {
+                            const updated = [...(pageData.culture?.photos || [])];
+                            updated[idx] = {
+                              ...updated[idx],
+                              title: { ...(updated[idx].title || {}), ar: e.target.value },
+                            };
+                            setPageData({
+                              ...pageData,
+                              culture: { ...pageData.culture, photos: updated },
+                            });
+                          }}
+                          className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg bg-white font-arabic"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">
+                          Hub Location Badge (EN)
+                        </label>
+                        <input
+                          type="text"
+                          value={photo.location?.en || ''}
+                          onChange={(e) => {
+                            const updated = [...(pageData.culture?.photos || [])];
+                            updated[idx] = {
+                              ...updated[idx],
+                              location: { ...(updated[idx].location || {}), en: e.target.value },
+                            };
+                            setPageData({
+                              ...pageData,
+                              culture: { ...pageData.culture, photos: updated },
+                            });
+                          }}
+                          className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg bg-white"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">
+                          الموقع / المقر (AR)
+                        </label>
+                        <input
+                          type="text"
+                          dir="rtl"
+                          value={photo.location?.ar || ''}
+                          onChange={(e) => {
+                            const updated = [...(pageData.culture?.photos || [])];
+                            updated[idx] = {
+                              ...updated[idx],
+                              location: { ...(updated[idx].location || {}), ar: e.target.value },
+                            };
+                            setPageData({
+                              ...pageData,
+                              culture: { ...pageData.culture, photos: updated },
+                            });
+                          }}
+                          className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg bg-white font-arabic"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </SectionAccordion>
+
+          {/* SECTION 3: EXECUTIVE BENEFITS & TOTAL REWARDS (PERKS) */}
+          <SectionAccordion
+            number={3}
+            title="CareersPerksSection • Executive Benefits & Total Rewards Bento"
+            description="Section badge, title, rich-text subtitle, and 6+ compensation & wellbeing bento cards"
+            onSave={savePage}
+          >
+            <div className="flex items-center justify-between p-3.5 rounded-xl bg-slate-50 border border-slate-200 mb-4">
+              <div>
+                <span className="text-xs font-bold text-slate-800 block">
+                  Display Perks & Benefits Section on Live Page
+                </span>
+                <span className="text-[11px] text-slate-500">
+                  Toggle visibility of the Executive Benefits & Total Rewards grid
+                </span>
+              </div>
+              <input
+                type="checkbox"
+                checked={pageData.perks?.enabled !== false}
+                onChange={(e) =>
+                  setPageData({
+                    ...pageData,
+                    perks: { ...pageData.perks, enabled: e.target.checked },
+                  })
+                }
+                className="w-4 h-4 accent-persici-crimson rounded cursor-pointer"
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  Perks Badge (English)
+                </label>
+                <input
+                  type="text"
+                  value={pageData.perks?.badge?.en || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      perks: {
+                        ...pageData.perks,
+                        badge: { ...(pageData.perks?.badge || {}), en: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-medium"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  شارة المزايا (العربية)
+                </label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={pageData.perks?.badge?.ar || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      perks: {
+                        ...pageData.perks,
+                        badge: { ...(pageData.perks?.badge || {}), ar: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-medium font-arabic"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  Perks Section Title (English)
+                </label>
+                <input
+                  type="text"
+                  value={pageData.perks?.title?.en || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      perks: {
+                        ...pageData.perks,
+                        title: { ...(pageData.perks?.title || {}), en: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-medium"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  عنوان قسم المزايا (العربية)
+                </label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={pageData.perks?.title?.ar || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      perks: {
+                        ...pageData.perks,
+                        title: { ...(pageData.perks?.title || {}), ar: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-medium font-arabic"
+                />
+              </div>
+            </div>
+
+            <RichTextEditor
+              label="Perks Section Subtitle"
+              valueEn={pageData.perks?.subtitle?.en || ''}
+              valueAr={pageData.perks?.subtitle?.ar || ''}
+              onChangeEn={(val) =>
+                setPageData({
+                  ...pageData,
+                  perks: {
+                    ...pageData.perks,
+                    subtitle: { ...(pageData.perks?.subtitle || {}), en: val },
+                  },
+                })
+              }
+              onChangeAr={(val) =>
+                setPageData({
+                  ...pageData,
+                  perks: {
+                    ...pageData.perks,
+                    subtitle: { ...(pageData.perks?.subtitle || {}), ar: val },
+                  },
+                })
+              }
+            />
+
+            {/* Perks Items Repeater */}
+            <div className="pt-4 border-t border-slate-200 space-y-3">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-bold text-slate-700 uppercase">
+                  Perks & Benefits Cards ({(pageData.perks?.items || []).length})
+                </label>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const current: CareerPerk[] = Array.isArray(pageData.perks?.items)
+                      ? [...pageData.perks.items]
+                      : [...careersHubData.perks.items];
+                    current.push({
+                      id: `perk-${Date.now()}`,
+                      iconName: 'Sparkles',
+                      tag: { en: 'Executive Perk', ar: 'ميزة استثنائية' },
+                      title: { en: 'New Benefit Title', ar: 'عنوان الميزة الجديدة' },
+                      description: {
+                        en: 'Describe this benefit and how it supports the team.',
+                        ar: 'اشرح تفاصيل هذه الميزة وكيف تدعم أعضاء الفريق.',
+                      },
+                    });
+                    setPageData({
+                      ...pageData,
+                      perks: { ...pageData.perks, items: current },
+                    });
+                  }}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-persici-crimson/10 text-persici-crimson hover:bg-persici-crimson hover:text-white text-xs font-bold transition-colors"
+                >
+                  <TbPlus className="w-3.5 h-3.5" />
+                  <span>Add Benefit Card</span>
+                </button>
+              </div>
+
+              <div className="space-y-4">
+                {(pageData.perks?.items || []).map((perk: CareerPerk, idx: number) => (
+                  <div
+                    key={perk.id || idx}
+                    className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-persici-crimson uppercase">
+                        Benefit Card #{idx + 1} — {perk.title?.en || ''}
+                      </span>
+                      <div className="flex items-center gap-1">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const updated = moveItem(pageData.perks?.items || [], idx, 'up');
+                            setPageData({
+                              ...pageData,
+                              perks: { ...pageData.perks, items: updated },
+                            });
+                          }}
+                          disabled={idx === 0}
+                          className="p-1 text-slate-400 hover:text-slate-700 disabled:opacity-30"
+                        >
+                          <TbArrowUp className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const updated = moveItem(pageData.perks?.items || [], idx, 'down');
+                            setPageData({
+                              ...pageData,
+                              perks: { ...pageData.perks, items: updated },
+                            });
+                          }}
+                          disabled={idx === (pageData.perks?.items || []).length - 1}
+                          className="p-1 text-slate-400 hover:text-slate-700 disabled:opacity-30"
+                        >
+                          <TbArrowDown className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const updated = (pageData.perks?.items || []).filter(
+                              (_: unknown, i: number) => i !== idx
+                            );
+                            setPageData({
+                              ...pageData,
+                              perks: { ...pageData.perks, items: updated },
+                            });
+                          }}
+                          className="p-1 text-red-500 hover:bg-red-50 rounded"
+                        >
+                          <TbTrash className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">
+                          Icon
+                        </label>
+                        <select
+                          value={perk.iconName || 'Globe'}
+                          onChange={(e) => {
+                            const updated = [...(pageData.perks?.items || [])];
+                            updated[idx] = { ...updated[idx], iconName: e.target.value };
+                            setPageData({
+                              ...pageData,
+                              perks: { ...pageData.perks, items: updated },
+                            });
+                          }}
+                          className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg bg-white font-medium"
+                        >
+                          <option value="Globe">Globe (Mobility & Remote)</option>
+                          <option value="TrendingUp">TrendingUp (Equity & Profit)</option>
+                          <option value="GraduationCap">GraduationCap (Learning Stipend)</option>
+                          <option value="HeartHandshake">HeartHandshake (Health & VIP Care)</option>
+                          <option value="Laptop">Laptop (M-Series Gear)</option>
+                          <option value="Sun">Sun (PTO & Family Leave)</option>
+                          <option value="Rocket">Rocket (Velocity & Growth)</option>
+                          <option value="Sparkles">Sparkles (Excellence)</option>
+                          <option value="Award">Award (Recognition)</option>
+                          <option value="Shield">Shield (Security)</option>
+                          <option value="Clock">Clock (Flexible Hours)</option>
+                          <option value="Coin">Coin (Compensation)</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">
+                          Tag Pill (EN)
+                        </label>
+                        <input
+                          type="text"
+                          value={perk.tag?.en || ''}
+                          onChange={(e) => {
+                            const updated = [...(pageData.perks?.items || [])];
+                            updated[idx] = {
+                              ...updated[idx],
+                              tag: { ...(updated[idx].tag || {}), en: e.target.value },
+                            };
+                            setPageData({
+                              ...pageData,
+                              perks: { ...pageData.perks, items: updated },
+                            });
+                          }}
+                          className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg bg-white"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">
+                          الوسم (AR)
+                        </label>
+                        <input
+                          type="text"
+                          dir="rtl"
+                          value={perk.tag?.ar || ''}
+                          onChange={(e) => {
+                            const updated = [...(pageData.perks?.items || [])];
+                            updated[idx] = {
+                              ...updated[idx],
+                              tag: { ...(updated[idx].tag || {}), ar: e.target.value },
+                            };
+                            setPageData({
+                              ...pageData,
+                              perks: { ...pageData.perks, items: updated },
+                            });
+                          }}
+                          className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg bg-white font-arabic"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">
+                          Card Title (EN)
+                        </label>
+                        <input
+                          type="text"
+                          value={perk.title?.en || ''}
+                          onChange={(e) => {
+                            const updated = [...(pageData.perks?.items || [])];
+                            updated[idx] = {
+                              ...updated[idx],
+                              title: { ...(updated[idx].title || {}), en: e.target.value },
+                            };
+                            setPageData({
+                              ...pageData,
+                              perks: { ...pageData.perks, items: updated },
+                            });
+                          }}
+                          className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg bg-white font-medium"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">
+                          عنوان الميزة (AR)
+                        </label>
+                        <input
+                          type="text"
+                          dir="rtl"
+                          value={perk.title?.ar || ''}
+                          onChange={(e) => {
+                            const updated = [...(pageData.perks?.items || [])];
+                            updated[idx] = {
+                              ...updated[idx],
+                              title: { ...(updated[idx].title || {}), ar: e.target.value },
+                            };
+                            setPageData({
+                              ...pageData,
+                              perks: { ...pageData.perks, items: updated },
+                            });
+                          }}
+                          className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg bg-white font-medium font-arabic"
+                        />
+                      </div>
+                    </div>
+
+                    <RichTextEditor
+                      label={`Card #${idx + 1} Description`}
+                      valueEn={perk.description?.en || ''}
+                      valueAr={perk.description?.ar || ''}
+                      onChangeEn={(val) => {
+                        const updated = [...(pageData.perks?.items || [])];
+                        updated[idx] = {
+                          ...updated[idx],
+                          description: { ...(updated[idx].description || {}), en: val },
+                        };
+                        setPageData({
+                          ...pageData,
+                          perks: { ...pageData.perks, items: updated },
+                        });
+                      }}
+                      onChangeAr={(val) => {
+                        const updated = [...(pageData.perks?.items || [])];
+                        updated[idx] = {
+                          ...updated[idx],
+                          description: { ...(updated[idx].description || {}), ar: val },
+                        };
+                        setPageData({
+                          ...pageData,
+                          perks: { ...pageData.perks, items: updated },
+                        });
+                      }}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </SectionAccordion>
+
+          {/* SECTION 4: HIRING PROCESS (4-STAGE TRANSPARENT RECRUITMENT JOURNEY) */}
+          <SectionAccordion
+            number={4}
+            title="CareersProcessSection • 4-Stage Transparent Recruitment Journey"
+            description="Hiring process badge, headline, rich-text subtitle, and step-by-step interview stages"
+            onSave={savePage}
+          >
+            <div className="flex items-center justify-between p-3.5 rounded-xl bg-slate-50 border border-slate-200 mb-4">
+              <div>
+                <span className="text-xs font-bold text-slate-800 block">
+                  Display Hiring Process Section on Live Page
+                </span>
+                <span className="text-[11px] text-slate-500">
+                  Toggle visibility of the 4-stage recruitment journey section
+                </span>
+              </div>
+              <input
+                type="checkbox"
+                checked={pageData.process?.enabled !== false}
+                onChange={(e) =>
+                  setPageData({
+                    ...pageData,
+                    process: { ...pageData.process, enabled: e.target.checked },
+                  })
+                }
+                className="w-4 h-4 accent-persici-crimson rounded cursor-pointer"
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  Process Badge (English)
+                </label>
+                <input
+                  type="text"
+                  value={pageData.process?.badge?.en || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      process: {
+                        ...pageData.process,
+                        badge: { ...(pageData.process?.badge || {}), en: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-medium"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  شارة مسار التوظيف (العربية)
+                </label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={pageData.process?.badge?.ar || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      process: {
+                        ...pageData.process,
+                        badge: { ...(pageData.process?.badge || {}), ar: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-medium font-arabic"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  Process Title (English)
+                </label>
+                <input
+                  type="text"
+                  value={pageData.process?.title?.en || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      process: {
+                        ...pageData.process,
+                        title: { ...(pageData.process?.title || {}), en: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-medium"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  عنوان مسار التوظيف (العربية)
+                </label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={pageData.process?.title?.ar || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      process: {
+                        ...pageData.process,
+                        title: { ...(pageData.process?.title || {}), ar: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-medium font-arabic"
+                />
+              </div>
+            </div>
+
+            <RichTextEditor
+              label="Process Section Subtitle"
+              valueEn={pageData.process?.subtitle?.en || ''}
+              valueAr={pageData.process?.subtitle?.ar || ''}
+              onChangeEn={(val) =>
+                setPageData({
+                  ...pageData,
+                  process: {
+                    ...pageData.process,
+                    subtitle: { ...(pageData.process?.subtitle || {}), en: val },
+                  },
+                })
+              }
+              onChangeAr={(val) =>
+                setPageData({
+                  ...pageData,
+                  process: {
+                    ...pageData.process,
+                    subtitle: { ...(pageData.process?.subtitle || {}), ar: val },
+                  },
+                })
+              }
+            />
+
+            {/* Process Steps Repeater */}
+            <div className="pt-4 border-t border-slate-200 space-y-3">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-bold text-slate-700 uppercase">
+                  Recruitment Stages ({(pageData.process?.steps || []).length})
+                </label>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const current: CareerProcessStep[] = Array.isArray(pageData.process?.steps)
+                      ? [...pageData.process.steps]
+                      : [...careersHubData.process.steps];
+                    const nextNum = String(current.length + 1).padStart(2, '0');
+                    current.push({
+                      step: nextNum,
+                      title: { en: 'New Stage Title', ar: 'مرحلة جديدة' },
+                      duration: { en: '45 Minutes', ar: '45 دقيقة' },
+                      description: { en: 'Stage overview...', ar: 'وصف المرحلة...' },
+                    });
+                    setPageData({
+                      ...pageData,
+                      process: { ...pageData.process, steps: current },
+                    });
+                  }}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-persici-crimson/10 text-persici-crimson hover:bg-persici-crimson hover:text-white text-xs font-bold transition-colors"
+                >
+                  <TbPlus className="w-3.5 h-3.5" />
+                  <span>Add Stage</span>
+                </button>
+              </div>
+
+              <div className="space-y-4">
+                {(pageData.process?.steps || []).map((stepItem: CareerProcessStep, idx: number) => (
+                  <div
+                    key={idx}
+                    className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-persici-crimson uppercase">
+                        Stage #{idx + 1} ({stepItem.step}) — {stepItem.title?.en || ''}
+                      </span>
+                      <div className="flex items-center gap-1">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const updated = moveItem(pageData.process?.steps || [], idx, 'up');
+                            setPageData({
+                              ...pageData,
+                              process: { ...pageData.process, steps: updated },
+                            });
+                          }}
+                          disabled={idx === 0}
+                          className="p-1 text-slate-400 hover:text-slate-700 disabled:opacity-30"
+                        >
+                          <TbArrowUp className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const updated = moveItem(pageData.process?.steps || [], idx, 'down');
+                            setPageData({
+                              ...pageData,
+                              process: { ...pageData.process, steps: updated },
+                            });
+                          }}
+                          disabled={idx === (pageData.process?.steps || []).length - 1}
+                          className="p-1 text-slate-400 hover:text-slate-700 disabled:opacity-30"
+                        >
+                          <TbArrowDown className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const updated = (pageData.process?.steps || []).filter(
+                              (_: unknown, i: number) => i !== idx
+                            );
+                            setPageData({
+                              ...pageData,
+                              process: { ...pageData.process, steps: updated },
+                            });
+                          }}
+                          className="p-1 text-red-500 hover:bg-red-50 rounded"
+                        >
+                          <TbTrash className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">
+                          Step Number Badge
+                        </label>
+                        <input
+                          type="text"
+                          value={stepItem.step || ''}
+                          onChange={(e) => {
+                            const updated = [...(pageData.process?.steps || [])];
+                            updated[idx] = { ...updated[idx], step: e.target.value };
+                            setPageData({
+                              ...pageData,
+                              process: { ...pageData.process, steps: updated },
+                            });
+                          }}
+                          className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg bg-white font-mono"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">
+                          Duration Pill (EN)
+                        </label>
+                        <input
+                          type="text"
+                          value={stepItem.duration?.en || ''}
+                          onChange={(e) => {
+                            const updated = [...(pageData.process?.steps || [])];
+                            updated[idx] = {
+                              ...updated[idx],
+                              duration: { ...(updated[idx].duration || {}), en: e.target.value },
+                            };
+                            setPageData({
+                              ...pageData,
+                              process: { ...pageData.process, steps: updated },
+                            });
+                          }}
+                          className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg bg-white"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">
+                          المدة الزمنية (AR)
+                        </label>
+                        <input
+                          type="text"
+                          dir="rtl"
+                          value={stepItem.duration?.ar || ''}
+                          onChange={(e) => {
+                            const updated = [...(pageData.process?.steps || [])];
+                            updated[idx] = {
+                              ...updated[idx],
+                              duration: { ...(updated[idx].duration || {}), ar: e.target.value },
+                            };
+                            setPageData({
+                              ...pageData,
+                              process: { ...pageData.process, steps: updated },
+                            });
+                          }}
+                          className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg bg-white font-arabic"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">
+                          Stage Title (EN)
+                        </label>
+                        <input
+                          type="text"
+                          value={stepItem.title?.en || ''}
+                          onChange={(e) => {
+                            const updated = [...(pageData.process?.steps || [])];
+                            updated[idx] = {
+                              ...updated[idx],
+                              title: { ...(updated[idx].title || {}), en: e.target.value },
+                            };
+                            setPageData({
+                              ...pageData,
+                              process: { ...pageData.process, steps: updated },
+                            });
+                          }}
+                          className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg bg-white font-medium"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">
+                          عنوان المرحلة (AR)
+                        </label>
+                        <input
+                          type="text"
+                          dir="rtl"
+                          value={stepItem.title?.ar || ''}
+                          onChange={(e) => {
+                            const updated = [...(pageData.process?.steps || [])];
+                            updated[idx] = {
+                              ...updated[idx],
+                              title: { ...(updated[idx].title || {}), ar: e.target.value },
+                            };
+                            setPageData({
+                              ...pageData,
+                              process: { ...pageData.process, steps: updated },
+                            });
+                          }}
+                          className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg bg-white font-medium font-arabic"
+                        />
+                      </div>
+                    </div>
+
+                    <RichTextEditor
+                      label={`Stage #${idx + 1} Description`}
+                      valueEn={stepItem.description?.en || ''}
+                      valueAr={stepItem.description?.ar || ''}
+                      onChangeEn={(val) => {
+                        const updated = [...(pageData.process?.steps || [])];
+                        updated[idx] = {
+                          ...updated[idx],
+                          description: { ...(updated[idx].description || {}), en: val },
+                        };
+                        setPageData({
+                          ...pageData,
+                          process: { ...pageData.process, steps: updated },
+                        });
+                      }}
+                      onChangeAr={(val) => {
+                        const updated = [...(pageData.process?.steps || [])];
+                        updated[idx] = {
+                          ...updated[idx],
+                          description: { ...(updated[idx].description || {}), ar: val },
+                        };
+                        setPageData({
+                          ...pageData,
+                          process: { ...pageData.process, steps: updated },
+                        });
+                      }}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </SectionAccordion>
+
+          {/* SECTION 5: ALL CAREERS & ACTIVE OPENINGS FILTER BOARD (#open-positions) */}
+          <SectionAccordion
+            number={5}
+            title="CareersFilterBoard • All Careers & Active Openings Filter Section (#open-positions)"
+            description="Section badge, title, subtitle, search bar, department & location filter categories, and link to Careers ATS Job Postings"
+            onSave={savePage}
+          >
+            {/* Direct Shortcut Banner to Careers ATS Job Postings */}
+            <div className="p-4 rounded-2xl bg-slate-900 text-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-5">
+              <div className="space-y-1">
+                <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-amber-400">
+                  <TbBriefcase className="w-4 h-4" />
+                  <span>Careers ATS • Active Job Postings & Detail Page Designer</span>
+                </div>
+                <h4 className="text-sm font-bold text-white">
+                  Add, Edit, Toggle Active/Archived Careers, Skills, Recommendations & Detail Section Visibility
+                </h4>
+                <p className="text-xs text-slate-300 max-w-2xl leading-relaxed">
+                  All individual job openings displayed in this filter board are pulled live from the <strong>Careers ATS (Active Job Postings)</strong> collection. From there you can create/edit roles, toggle active status, edit categories/locations, manage responsibilities, requirements, recommendations, and skills, and toggle any section ON/OFF on each job&apos;s detail page.
+                </p>
+              </div>
+              <Link
+                href={`/${lang}/dashboard/careers/openings`}
+                className="px-4 py-2.5 rounded-xl bg-persici-crimson hover:bg-red-600 text-white text-xs font-bold tracking-wide transition-colors shrink-0 inline-flex items-center gap-1.5 shadow-lg shadow-persici-crimson/25"
+              >
+                <span>Open Careers ATS Editor →</span>
+              </Link>
+            </div>
+
+            <div className="flex items-center justify-between p-3.5 rounded-xl bg-slate-50 border border-slate-200 mb-4">
+              <div>
+                <span className="text-xs font-bold text-slate-800 block">
+                  Display Open Positions Filter Board on Live Page
+                </span>
+                <span className="text-[11px] text-slate-500">
+                  Toggle visibility of the interactive All Careers filter board (#open-positions)
+                </span>
+              </div>
+              <input
+                type="checkbox"
+                checked={pageData.openPositions?.enabled !== false}
+                onChange={(e) =>
+                  setPageData({
+                    ...pageData,
+                    openPositions: { ...pageData.openPositions, enabled: e.target.checked },
+                  })
+                }
+                className="w-4 h-4 accent-persici-crimson rounded cursor-pointer"
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  Section Badge (English)
+                </label>
+                <input
+                  type="text"
+                  value={pageData.openPositions?.badge?.en || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      openPositions: {
+                        ...pageData.openPositions,
+                        badge: { ...(pageData.openPositions?.badge || {}), en: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-medium"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  شارة قسم الوظائف الشاغرة (العربية)
+                </label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={pageData.openPositions?.badge?.ar || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      openPositions: {
+                        ...pageData.openPositions,
+                        badge: { ...(pageData.openPositions?.badge || {}), ar: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-medium font-arabic"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  Section Title (English)
+                </label>
+                <input
+                  type="text"
+                  value={pageData.openPositions?.title?.en || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      openPositions: {
+                        ...pageData.openPositions,
+                        title: { ...(pageData.openPositions?.title || {}), en: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-medium"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  عنوان قسم جميع الوظائف (العربية)
+                </label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={pageData.openPositions?.title?.ar || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      openPositions: {
+                        ...pageData.openPositions,
+                        title: { ...(pageData.openPositions?.title || {}), ar: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-medium font-arabic"
+                />
+              </div>
+            </div>
+
+            <RichTextEditor
+              label="Open Positions Section Subtitle"
+              valueEn={pageData.openPositions?.subtitle?.en || ''}
+              valueAr={pageData.openPositions?.subtitle?.ar || ''}
+              onChangeEn={(val) =>
+                setPageData({
+                  ...pageData,
+                  openPositions: {
+                    ...pageData.openPositions,
+                    subtitle: { ...(pageData.openPositions?.subtitle || {}), en: val },
+                  },
+                })
+              }
+              onChangeAr={(val) =>
+                setPageData({
+                  ...pageData,
+                  openPositions: {
+                    ...pageData.openPositions,
+                    subtitle: { ...(pageData.openPositions?.subtitle || {}), ar: val },
+                  },
+                })
+              }
+            />
+
+            {/* Search & Filter Labels */}
+            <div className="pt-4 border-t border-slate-200 grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">
+                  Search Input Placeholder (EN)
+                </label>
+                <input
+                  type="text"
+                  value={pageData.openPositions?.searchPlaceholder?.en || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      openPositions: {
+                        ...pageData.openPositions,
+                        searchPlaceholder: {
+                          ...(pageData.openPositions?.searchPlaceholder || {}),
+                          en: e.target.value,
+                        },
+                      },
+                    })
+                  }
+                  className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg bg-white"
+                />
+              </div>
+              <div>
+                <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">
+                  نص حقل البحث (AR)
+                </label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={pageData.openPositions?.searchPlaceholder?.ar || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      openPositions: {
+                        ...pageData.openPositions,
+                        searchPlaceholder: {
+                          ...(pageData.openPositions?.searchPlaceholder || {}),
+                          ar: e.target.value,
+                        },
+                      },
+                    })
+                  }
+                  className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg bg-white font-arabic"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">
+                  Card CTA Button Label (EN)
+                </label>
+                <input
+                  type="text"
+                  value={pageData.openPositions?.applyCtaText?.en || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      openPositions: {
+                        ...pageData.openPositions,
+                        applyCtaText: {
+                          ...(pageData.openPositions?.applyCtaText || {}),
+                          en: e.target.value,
+                        },
+                      },
+                    })
+                  }
+                  className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg bg-white"
+                />
+              </div>
+              <div>
+                <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">
+                  نص زر تفاصيل الوظيفة والتقديم (AR)
+                </label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={pageData.openPositions?.applyCtaText?.ar || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      openPositions: {
+                        ...pageData.openPositions,
+                        applyCtaText: {
+                          ...(pageData.openPositions?.applyCtaText || {}),
+                          ar: e.target.value,
+                        },
+                      },
+                    })
+                  }
+                  className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg bg-white font-arabic"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">
+                  Featured / High Priority Badge Text (EN)
+                </label>
+                <input
+                  type="text"
+                  value={pageData.openPositions?.highPriorityBadge?.en || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      openPositions: {
+                        ...pageData.openPositions,
+                        highPriorityBadge: {
+                          ...(pageData.openPositions?.highPriorityBadge || {}),
+                          en: e.target.value,
+                        },
+                      },
+                    })
+                  }
+                  className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg bg-white"
+                />
+              </div>
+              <div>
+                <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">
+                  نص شارة الوظيفة المميزة (AR)
+                </label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={pageData.openPositions?.highPriorityBadge?.ar || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      openPositions: {
+                        ...pageData.openPositions,
+                        highPriorityBadge: {
+                          ...(pageData.openPositions?.highPriorityBadge || {}),
+                          ar: e.target.value,
+                        },
+                      },
+                    })
+                  }
+                  className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg bg-white font-arabic"
+                />
+              </div>
+            </div>
+
+            {/* Department Filter Pills Repeater */}
+            <div className="pt-4 border-t border-slate-200 space-y-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <label className="text-xs font-bold text-slate-700 uppercase block">
+                    Department Filter Categories ({(pageData.openPositions?.departments || []).length})
+                  </label>
+                  <span className="text-[11px] text-slate-500">
+                    Keep slug &ldquo;all&rdquo; as the first item for resetting department filters. Any custom department slug added in the ATS will also appear automatically.
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const current: CareerFilterOption[] = Array.isArray(pageData.openPositions?.departments)
+                      ? [...pageData.openPositions.departments]
+                      : [...careersHubData.openPositions.departments];
+                    current.push({
+                      slug: `dept-${current.length}`,
+                      label: { en: 'New Department', ar: 'قسم جديد' },
+                    });
+                    setPageData({
+                      ...pageData,
+                      openPositions: { ...pageData.openPositions, departments: current },
+                    });
+                  }}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-persici-crimson/10 text-persici-crimson hover:bg-persici-crimson hover:text-white text-xs font-bold transition-colors shrink-0"
+                >
+                  <TbPlus className="w-3.5 h-3.5" />
+                  <span>Add Category Filter</span>
+                </button>
+              </div>
+
+              <div className="space-y-2.5">
+                {(pageData.openPositions?.departments || []).map(
+                  (dept: CareerFilterOption, idx: number) => (
+                    <div
+                      key={idx}
+                      className="grid grid-cols-1 sm:grid-cols-12 gap-2.5 items-center p-3 rounded-xl bg-slate-50 border border-slate-200"
+                    >
+                      <div className="sm:col-span-3">
+                        <label className="block text-[10px] font-bold text-slate-400 uppercase mb-0.5">
+                          Category Key (Slug)
+                        </label>
+                        <input
+                          type="text"
+                          value={dept.slug || ''}
+                          onChange={(e) => {
+                            const updated = [...(pageData.openPositions?.departments || [])];
+                            updated[idx] = { ...updated[idx], slug: e.target.value };
+                            setPageData({
+                              ...pageData,
+                              openPositions: { ...pageData.openPositions, departments: updated },
+                            });
+                          }}
+                          className="w-full px-2.5 py-1.5 text-xs border border-slate-200 rounded-lg bg-white font-mono"
+                        />
+                      </div>
+                      <div className="sm:col-span-4">
+                        <label className="block text-[10px] font-bold text-slate-400 uppercase mb-0.5">
+                          Filter Pill Label (EN)
+                        </label>
+                        <input
+                          type="text"
+                          value={dept.label?.en || ''}
+                          onChange={(e) => {
+                            const updated = [...(pageData.openPositions?.departments || [])];
+                            updated[idx] = {
+                              ...updated[idx],
+                              label: { ...(updated[idx].label || {}), en: e.target.value },
+                            };
+                            setPageData({
+                              ...pageData,
+                              openPositions: { ...pageData.openPositions, departments: updated },
+                            });
+                          }}
+                          className="w-full px-2.5 py-1.5 text-xs border border-slate-200 rounded-lg bg-white"
+                        />
+                      </div>
+                      <div className="sm:col-span-4">
+                        <label className="block text-[10px] font-bold text-slate-400 uppercase mb-0.5">
+                          اسم القسم في الفلتر (AR)
+                        </label>
+                        <input
+                          type="text"
+                          dir="rtl"
+                          value={dept.label?.ar || ''}
+                          onChange={(e) => {
+                            const updated = [...(pageData.openPositions?.departments || [])];
+                            updated[idx] = {
+                              ...updated[idx],
+                              label: { ...(updated[idx].label || {}), ar: e.target.value },
+                            };
+                            setPageData({
+                              ...pageData,
+                              openPositions: { ...pageData.openPositions, departments: updated },
+                            });
+                          }}
+                          className="w-full px-2.5 py-1.5 text-xs border border-slate-200 rounded-lg bg-white font-arabic"
+                        />
+                      </div>
+                      <div className="sm:col-span-1 flex items-center justify-end gap-1 pt-3">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const updated = (pageData.openPositions?.departments || []).filter(
+                              (_: unknown, i: number) => i !== idx
+                            );
+                            setPageData({
+                              ...pageData,
+                              openPositions: { ...pageData.openPositions, departments: updated },
+                            });
+                          }}
+                          disabled={dept.slug === 'all'}
+                          className="p-1.5 text-red-500 hover:bg-red-50 rounded disabled:opacity-25"
+                        >
+                          <TbTrash className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+                  )
+                )}
+              </div>
+            </div>
+
+            {/* Location Filter Pills Repeater */}
+            <div className="pt-4 border-t border-slate-200 space-y-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <label className="text-xs font-bold text-slate-700 uppercase block">
+                    Location / Regional Hub Filter Pills ({(pageData.openPositions?.locations || []).length})
+                  </label>
+                  <span className="text-[11px] text-slate-500">
+                    Keep slug &ldquo;all&rdquo; as the first item for showing all locations.
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const current: CareerFilterOption[] = Array.isArray(pageData.openPositions?.locations)
+                      ? [...pageData.openPositions.locations]
+                      : [...careersHubData.openPositions.locations];
+                    current.push({
+                      slug: `loc-${current.length}`,
+                      label: { en: 'New Hub', ar: 'مقر جديد' },
+                    });
+                    setPageData({
+                      ...pageData,
+                      openPositions: { ...pageData.openPositions, locations: current },
+                    });
+                  }}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-persici-crimson/10 text-persici-crimson hover:bg-persici-crimson hover:text-white text-xs font-bold transition-colors shrink-0"
+                >
+                  <TbPlus className="w-3.5 h-3.5" />
+                  <span>Add Location Filter</span>
+                </button>
+              </div>
+
+              <div className="space-y-2.5">
+                {(pageData.openPositions?.locations || []).map(
+                  (loc: CareerFilterOption, idx: number) => (
+                    <div
+                      key={idx}
+                      className="grid grid-cols-1 sm:grid-cols-12 gap-2.5 items-center p-3 rounded-xl bg-slate-50 border border-slate-200"
+                    >
+                      <div className="sm:col-span-3">
+                        <label className="block text-[10px] font-bold text-slate-400 uppercase mb-0.5">
+                          Location Key (Slug)
+                        </label>
+                        <input
+                          type="text"
+                          value={loc.slug || ''}
+                          onChange={(e) => {
+                            const updated = [...(pageData.openPositions?.locations || [])];
+                            updated[idx] = { ...updated[idx], slug: e.target.value };
+                            setPageData({
+                              ...pageData,
+                              openPositions: { ...pageData.openPositions, locations: updated },
+                            });
+                          }}
+                          className="w-full px-2.5 py-1.5 text-xs border border-slate-200 rounded-lg bg-white font-mono"
+                        />
+                      </div>
+                      <div className="sm:col-span-4">
+                        <label className="block text-[10px] font-bold text-slate-400 uppercase mb-0.5">
+                          Location Pill Label (EN)
+                        </label>
+                        <input
+                          type="text"
+                          value={loc.label?.en || ''}
+                          onChange={(e) => {
+                            const updated = [...(pageData.openPositions?.locations || [])];
+                            updated[idx] = {
+                              ...updated[idx],
+                              label: { ...(updated[idx].label || {}), en: e.target.value },
+                            };
+                            setPageData({
+                              ...pageData,
+                              openPositions: { ...pageData.openPositions, locations: updated },
+                            });
+                          }}
+                          className="w-full px-2.5 py-1.5 text-xs border border-slate-200 rounded-lg bg-white"
+                        />
+                      </div>
+                      <div className="sm:col-span-4">
+                        <label className="block text-[10px] font-bold text-slate-400 uppercase mb-0.5">
+                          اسم المقر في الفلتر (AR)
+                        </label>
+                        <input
+                          type="text"
+                          dir="rtl"
+                          value={loc.label?.ar || ''}
+                          onChange={(e) => {
+                            const updated = [...(pageData.openPositions?.locations || [])];
+                            updated[idx] = {
+                              ...updated[idx],
+                              label: { ...(updated[idx].label || {}), ar: e.target.value },
+                            };
+                            setPageData({
+                              ...pageData,
+                              openPositions: { ...pageData.openPositions, locations: updated },
+                            });
+                          }}
+                          className="w-full px-2.5 py-1.5 text-xs border border-slate-200 rounded-lg bg-white font-arabic"
+                        />
+                      </div>
+                      <div className="sm:col-span-1 flex items-center justify-end gap-1 pt-3">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const updated = (pageData.openPositions?.locations || []).filter(
+                              (_: unknown, i: number) => i !== idx
+                            );
+                            setPageData({
+                              ...pageData,
+                              openPositions: { ...pageData.openPositions, locations: updated },
+                            });
+                          }}
+                          disabled={loc.slug === 'all'}
+                          className="p-1.5 text-red-500 hover:bg-red-50 rounded disabled:opacity-25"
+                        >
+                          <TbTrash className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+                  )
+                )}
+              </div>
+            </div>
+
+            {/* Empty State Text */}
+            <div className="pt-4 border-t border-slate-200 grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">
+                  Empty Filter State Title (EN)
+                </label>
+                <input
+                  type="text"
+                  value={pageData.openPositions?.emptyTitle?.en || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      openPositions: {
+                        ...pageData.openPositions,
+                        emptyTitle: {
+                          ...(pageData.openPositions?.emptyTitle || {}),
+                          en: e.target.value,
+                        },
+                      },
+                    })
+                  }
+                  className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg bg-white"
+                />
+              </div>
+              <div>
+                <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">
+                  عنوان عدم وجود نتائج (AR)
+                </label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={pageData.openPositions?.emptyTitle?.ar || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      openPositions: {
+                        ...pageData.openPositions,
+                        emptyTitle: {
+                          ...(pageData.openPositions?.emptyTitle || {}),
+                          ar: e.target.value,
+                        },
+                      },
+                    })
+                  }
+                  className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg bg-white font-arabic"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">
+                  Empty Filter State Subtitle (EN)
+                </label>
+                <input
+                  type="text"
+                  value={pageData.openPositions?.emptySubtitle?.en || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      openPositions: {
+                        ...pageData.openPositions,
+                        emptySubtitle: {
+                          ...(pageData.openPositions?.emptySubtitle || {}),
+                          en: e.target.value,
+                        },
+                      },
+                    })
+                  }
+                  className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg bg-white"
+                />
+              </div>
+              <div>
+                <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">
+                  وصف عدم وجود نتائج (AR)
+                </label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={pageData.openPositions?.emptySubtitle?.ar || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      openPositions: {
+                        ...pageData.openPositions,
+                        emptySubtitle: {
+                          ...(pageData.openPositions?.emptySubtitle || {}),
+                          ar: e.target.value,
+                        },
+                      },
+                    })
+                  }
+                  className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg bg-white font-arabic"
+                />
+              </div>
+            </div>
+          </SectionAccordion>
+
+          {/* SECTION 6: SPONTANEOUS APPLICATION CTA */}
+          <SectionAccordion
+            number={6}
+            title="CareersSpontaneousCta • Open Talent Collective Banner"
+            description="Dark obsidian callout card for visionary candidates applying outside listed roles"
+            onSave={savePage}
+          >
+            <div className="flex items-center justify-between p-3.5 rounded-xl bg-slate-50 border border-slate-200 mb-4">
+              <div>
+                <span className="text-xs font-bold text-slate-800 block">
+                  Display Spontaneous Application CTA Card on Live Page
+                </span>
+                <span className="text-[11px] text-slate-500">
+                  Toggle visibility of the Open Talent Collective dark CTA banner
+                </span>
+              </div>
+              <input
+                type="checkbox"
+                checked={pageData.spontaneous?.enabled !== false}
+                onChange={(e) =>
+                  setPageData({
+                    ...pageData,
+                    spontaneous: { ...pageData.spontaneous, enabled: e.target.checked },
+                  })
+                }
+                className="w-4 h-4 accent-persici-crimson rounded cursor-pointer"
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  Badge Pill (English)
+                </label>
+                <input
+                  type="text"
+                  value={pageData.spontaneous?.badge?.en || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      spontaneous: {
+                        ...pageData.spontaneous,
+                        badge: { ...(pageData.spontaneous?.badge || {}), en: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-medium"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  الشارة (العربية)
+                </label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={pageData.spontaneous?.badge?.ar || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      spontaneous: {
+                        ...pageData.spontaneous,
+                        badge: { ...(pageData.spontaneous?.badge || {}), ar: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-medium font-arabic"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  Headline (English)
+                </label>
+                <input
+                  type="text"
+                  value={pageData.spontaneous?.title?.en || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      spontaneous: {
+                        ...pageData.spontaneous,
+                        title: { ...(pageData.spontaneous?.title || {}), en: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-medium"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  العنوان (العربية)
+                </label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={pageData.spontaneous?.title?.ar || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      spontaneous: {
+                        ...pageData.spontaneous,
+                        title: { ...(pageData.spontaneous?.title || {}), ar: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-medium font-arabic"
+                />
+              </div>
+            </div>
+
+            <RichTextEditor
+              label="Spontaneous CTA Description"
+              valueEn={pageData.spontaneous?.description?.en || ''}
+              valueAr={pageData.spontaneous?.description?.ar || ''}
+              onChangeEn={(val) =>
+                setPageData({
+                  ...pageData,
+                  spontaneous: {
+                    ...pageData.spontaneous,
+                    description: { ...(pageData.spontaneous?.description || {}), en: val },
+                  },
+                })
+              }
+              onChangeAr={(val) =>
+                setPageData({
+                  ...pageData,
+                  spontaneous: {
+                    ...pageData.spontaneous,
+                    description: { ...(pageData.spontaneous?.description || {}), ar: val },
+                  },
+                })
+              }
+            />
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-3 border-t border-slate-200">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  CTA Button Text (EN)
+                </label>
+                <input
+                  type="text"
+                  value={pageData.spontaneous?.ctaText?.en || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      spontaneous: {
+                        ...pageData.spontaneous,
+                        ctaText: { ...(pageData.spontaneous?.ctaText || {}), en: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  نص زر التقديم العام (AR)
+                </label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={pageData.spontaneous?.ctaText?.ar || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      spontaneous: {
+                        ...pageData.spontaneous,
+                        ctaText: { ...(pageData.spontaneous?.ctaText || {}), ar: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-arabic"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  Target HR Email Address
+                </label>
+                <input
+                  type="email"
+                  value={pageData.spontaneous?.email || 'hr@persiciagency.com'}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      spontaneous: {
+                        ...pageData.spontaneous,
+                        email: e.target.value,
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-mono"
+                />
+              </div>
+            </div>
+          </SectionAccordion>
+
+          {/* SECTION 7: CANDIDATE FAQS */}
+          <SectionAccordion
+            number={7}
+            title="CareersFaqSection • Candidate Inquiries & FAQs (#faqs)"
+            description="Frequently asked questions regarding relocation, visa sponsorship, remote work, and hiring timelines"
+            onSave={savePage}
+          >
+            <div className="flex items-center justify-between p-3.5 rounded-xl bg-slate-50 border border-slate-200 mb-4">
+              <div>
+                <span className="text-xs font-bold text-slate-800 block">
+                  Display Candidate FAQs Section on Live Page
+                </span>
+                <span className="text-[11px] text-slate-500">
+                  Toggle visibility of the bottom Candidate FAQs accordion (#faqs)
+                </span>
+              </div>
+              <input
+                type="checkbox"
+                checked={pageData.faqs?.enabled !== false}
+                onChange={(e) =>
+                  setPageData({
+                    ...pageData,
+                    faqs: { ...pageData.faqs, enabled: e.target.checked },
+                  })
+                }
+                className="w-4 h-4 accent-persici-crimson rounded cursor-pointer"
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  FAQs Title (English)
+                </label>
+                <input
+                  type="text"
+                  value={pageData.faqs?.title?.en || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      faqs: {
+                        ...pageData.faqs,
+                        title: { ...(pageData.faqs?.title || {}), en: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-medium"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  عنوان الأسئلة الشائعة (العربية)
+                </label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={pageData.faqs?.title?.ar || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      faqs: {
+                        ...pageData.faqs,
+                        title: { ...(pageData.faqs?.title || {}), ar: e.target.value },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-medium font-arabic"
+                />
+              </div>
+            </div>
+
+            <RichTextEditor
+              label="FAQs Section Subtitle"
+              valueEn={pageData.faqs?.subtitle?.en || ''}
+              valueAr={pageData.faqs?.subtitle?.ar || ''}
+              onChangeEn={(val) =>
+                setPageData({
+                  ...pageData,
+                  faqs: {
+                    ...pageData.faqs,
+                    subtitle: { ...(pageData.faqs?.subtitle || {}), en: val },
+                  },
+                })
+              }
+              onChangeAr={(val) =>
+                setPageData({
+                  ...pageData,
+                  faqs: {
+                    ...pageData.faqs,
+                    subtitle: { ...(pageData.faqs?.subtitle || {}), ar: val },
+                  },
+                })
+              }
+            />
+
+            {/* FAQ Items Repeater */}
+            <div className="pt-4 border-t border-slate-200 space-y-3">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-bold text-slate-700 uppercase">
+                  Candidate FAQ Items ({(pageData.faqs?.items || []).length})
+                </label>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const current: CareerFaqItem[] = Array.isArray(pageData.faqs?.items)
+                      ? [...pageData.faqs.items]
+                      : [...careersHubData.faqs.items];
+                    current.push({
+                      id: `faq-${Date.now()}`,
+                      question: { en: 'New Candidate Question?', ar: 'سؤال جديد للمرشحين؟' },
+                      answer: { en: 'Detailed answer...', ar: 'إجابة تفصيلية...' },
+                    });
+                    setPageData({
+                      ...pageData,
+                      faqs: { ...pageData.faqs, items: current },
+                    });
+                  }}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-persici-crimson/10 text-persici-crimson hover:bg-persici-crimson hover:text-white text-xs font-bold transition-colors"
+                >
+                  <TbPlus className="w-3.5 h-3.5" />
+                  <span>Add FAQ Item</span>
+                </button>
+              </div>
+
+              <div className="space-y-4">
+                {(pageData.faqs?.items || []).map((faq: CareerFaqItem, idx: number) => (
+                  <div
+                    key={faq.id || idx}
+                    className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-persici-crimson uppercase">
+                        FAQ #{idx + 1} — {faq.question?.en || ''}
+                      </span>
+                      <div className="flex items-center gap-1">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const updated = moveItem(pageData.faqs?.items || [], idx, 'up');
+                            setPageData({
+                              ...pageData,
+                              faqs: { ...pageData.faqs, items: updated },
+                            });
+                          }}
+                          disabled={idx === 0}
+                          className="p-1 text-slate-400 hover:text-slate-700 disabled:opacity-30"
+                        >
+                          <TbArrowUp className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const updated = moveItem(pageData.faqs?.items || [], idx, 'down');
+                            setPageData({
+                              ...pageData,
+                              faqs: { ...pageData.faqs, items: updated },
+                            });
+                          }}
+                          disabled={idx === (pageData.faqs?.items || []).length - 1}
+                          className="p-1 text-slate-400 hover:text-slate-700 disabled:opacity-30"
+                        >
+                          <TbArrowDown className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const updated = (pageData.faqs?.items || []).filter(
+                              (_: unknown, i: number) => i !== idx
+                            );
+                            setPageData({
+                              ...pageData,
+                              faqs: { ...pageData.faqs, items: updated },
+                            });
+                          }}
+                          className="p-1 text-red-500 hover:bg-red-50 rounded"
+                        >
+                          <TbTrash className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">
+                          Question (EN)
+                        </label>
+                        <input
+                          type="text"
+                          value={faq.question?.en || ''}
+                          onChange={(e) => {
+                            const updated = [...(pageData.faqs?.items || [])];
+                            updated[idx] = {
+                              ...updated[idx],
+                              question: { ...(updated[idx].question || {}), en: e.target.value },
+                            };
+                            setPageData({
+                              ...pageData,
+                              faqs: { ...pageData.faqs, items: updated },
+                            });
+                          }}
+                          className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg bg-white font-medium"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">
+                          السؤال (AR)
+                        </label>
+                        <input
+                          type="text"
+                          dir="rtl"
+                          value={faq.question?.ar || ''}
+                          onChange={(e) => {
+                            const updated = [...(pageData.faqs?.items || [])];
+                            updated[idx] = {
+                              ...updated[idx],
+                              question: { ...(updated[idx].question || {}), ar: e.target.value },
+                            };
+                            setPageData({
+                              ...pageData,
+                              faqs: { ...pageData.faqs, items: updated },
+                            });
+                          }}
+                          className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg bg-white font-medium font-arabic"
+                        />
+                      </div>
+                    </div>
+
+                    <RichTextEditor
+                      label={`FAQ #${idx + 1} Answer`}
+                      valueEn={faq.answer?.en || ''}
+                      valueAr={faq.answer?.ar || ''}
+                      onChangeEn={(val) => {
+                        const updated = [...(pageData.faqs?.items || [])];
+                        updated[idx] = {
+                          ...updated[idx],
+                          answer: { ...(updated[idx].answer || {}), en: val },
+                        };
+                        setPageData({
+                          ...pageData,
+                          faqs: { ...pageData.faqs, items: updated },
+                        });
+                      }}
+                      onChangeAr={(val) => {
+                        const updated = [...(pageData.faqs?.items || [])];
+                        updated[idx] = {
+                          ...updated[idx],
+                          answer: { ...(updated[idx].answer || {}), ar: val },
+                        };
+                        setPageData({
+                          ...pageData,
+                          faqs: { ...pageData.faqs, items: updated },
+                        });
+                      }}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </SectionAccordion>
+        </div>
+      )}
+
+      {/* =================================================================== */}
       {/* 6. UNIVERSAL / CUSTOM SECTIONS FALLBACK BUILDER                     */}
       {/* =================================================================== */}
-      {!['home', 'about', 'solutions', 'contact', 'client-stories'].includes(slug) && (
+      {!['home', 'about', 'solutions', 'contact', 'client-stories', 'careers'].includes(slug) && (
         <div className="space-y-4">
           <SectionAccordion
             number={1}

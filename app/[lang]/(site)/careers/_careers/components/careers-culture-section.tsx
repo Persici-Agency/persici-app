@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React from 'react';
 import Image from 'next/image';
@@ -32,9 +32,16 @@ export function CareersCultureSection({ data, lang }: CareersCultureSectionProps
             </h2>
           </FadeUp>
           <FadeUp delay={300} duration={700}>
-            <p className="font-secondary text-base sm:text-lg text-foreground/70 leading-relaxed">
-              {data.description[isAr ? 'ar' : 'en']}
-            </p>
+            {/<[a-z][\s\S]*>/i.test(data.description[isAr ? 'ar' : 'en'] || '') ? (
+              <div
+                className="font-secondary text-base sm:text-lg text-foreground/70 leading-relaxed"
+                dangerouslySetInnerHTML={{ __html: data.description[isAr ? 'ar' : 'en'] }}
+              />
+            ) : (
+              <p className="font-secondary text-base sm:text-lg text-foreground/70 leading-relaxed">
+                {data.description[isAr ? 'ar' : 'en']}
+              </p>
+            )}
           </FadeUp>
         </div>
 

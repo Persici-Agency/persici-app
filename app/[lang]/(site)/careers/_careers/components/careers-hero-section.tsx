@@ -41,28 +41,45 @@ export function CareersHeroSection({ data, lang }: CareersHeroSectionProps) {
 
           {/* Subtitle Description */}
           <FadeUp delay={300} duration={700}>
-            <p className="font-secondary text-base sm:text-lg lg:text-xl text-foreground/70 leading-relaxed max-w-3xl mx-auto mb-10 sm:mb-12">
-              {data.description[isAr ? 'ar' : 'en']}
-            </p>
+            {/<[a-z][\s\S]*>/i.test(data.description[isAr ? 'ar' : 'en'] || '') ? (
+              <div
+                className="font-secondary text-base sm:text-lg lg:text-xl text-foreground/70 leading-relaxed max-w-3xl mx-auto mb-10 sm:mb-12"
+                dangerouslySetInnerHTML={{ __html: data.description[isAr ? 'ar' : 'en'] }}
+              />
+            ) : (
+              <p className="font-secondary text-base sm:text-lg lg:text-xl text-foreground/70 leading-relaxed max-w-3xl mx-auto mb-10 sm:mb-12">
+                {data.description[isAr ? 'ar' : 'en']}
+              </p>
+            )}
           </FadeUp>
 
           {/* Action Buttons with HomeButton */}
           <FadeUp delay={400} duration={700}>
             <div className="flex flex-wrap items-center justify-center gap-4 mb-16 sm:mb-20">
-              <HomeButton
-                href="#open-positions"
-                title={isAr ? 'استكشف الوظائف الشاغرة' : 'Explore Open Positions'}
-                iconDirection="down"
-                isLangEffectIcon
-                currentLang={lang}
-                className="bg-persici-crimson hover:bg-persici-crimson-80 text-white shadow-lg shadow-persici-crimson/25 px-8 py-3.5 text-sm font-semibold"
-              />
-              <HomeButton
-                href="#culture"
-                title={isAr ? 'ثقافة العمل والمزايا' : 'Culture & Total Rewards'}
-                icon={null}
-                className="border border-black/15 bg-white/70 backdrop-blur-xs text-foreground hover:bg-black/5 px-7 py-3.5 text-sm font-medium"
-              />
+              {data.primaryCta?.enabled !== false && (
+                <HomeButton
+                  href={data.primaryCta?.href || '#open-positions'}
+                  title={
+                    data.primaryCta?.text?.[isAr ? 'ar' : 'en'] ||
+                    (isAr ? 'استكشف الوظائف الشاغرة' : 'Explore Open Positions')
+                  }
+                  iconDirection="down"
+                  isLangEffectIcon
+                  currentLang={lang}
+                  className="bg-persici-crimson hover:bg-persici-crimson-80 text-white shadow-lg shadow-persici-crimson/25 px-8 py-3.5 text-sm font-semibold"
+                />
+              )}
+              {data.secondaryCta?.enabled !== false && (
+                <HomeButton
+                  href={data.secondaryCta?.href || '#culture'}
+                  title={
+                    data.secondaryCta?.text?.[isAr ? 'ar' : 'en'] ||
+                    (isAr ? 'ثقافة العمل والمزايا' : 'Culture & Total Rewards')
+                  }
+                  icon={null}
+                  className="border border-black/15 bg-white/70 backdrop-blur-xs text-foreground hover:bg-black/5 px-7 py-3.5 text-sm font-medium"
+                />
+              )}
             </div>
           </FadeUp>
         </div>

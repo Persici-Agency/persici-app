@@ -20,6 +20,8 @@ export interface CareerDetailHeaderProps {
 
 export function CareerDetailHeader({ job, lang }: CareerDetailHeaderProps) {
   const isAr = lang === 'ar';
+  const vis = job.sectionVisibility || {};
+  const summaryText = job.summary[isAr ? 'ar' : 'en'] || '';
 
   return (
     <section className="relative overflow-hidden pt-28 pb-12 sm:pt-36 sm:pb-16 lg:pt-40 lg:pb-20 bg-[#FFFAFA] border-b border-black/5">
@@ -46,10 +48,14 @@ export function CareerDetailHeader({ job, lang }: CareerDetailHeaderProps) {
                 </>
               )}
             </Link>
-            <span className="text-slate-300 font-light select-none">/</span>
-            <span className="text-foreground/80 font-medium shrink-0">
-              {job.department[isAr ? 'ar' : 'en']}
-            </span>
+            {vis.showDepartmentBadge !== false && (
+              <>
+                <span className="text-slate-300 font-light select-none">/</span>
+                <span className="text-foreground/80 font-medium shrink-0">
+                  {job.department[isAr ? 'ar' : 'en']}
+                </span>
+              </>
+            )}
             <span className="text-slate-300 font-light select-none">/</span>
             <span className="text-persici-crimson font-semibold">
               {job.title[isAr ? 'ar' : 'en']}
@@ -60,23 +66,33 @@ export function CareerDetailHeader({ job, lang }: CareerDetailHeaderProps) {
         {/* Badges Row */}
         <FadeUp delay={150} duration={600}>
           <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 mb-5">
-            <span className="font-mono text-xs font-semibold text-persici-crimson bg-persici-crimson/10 px-3.5 py-1 rounded-full">
-              {job.department[isAr ? 'ar' : 'en']}
-            </span>
-            <span className="inline-flex items-center gap-1.5 font-secondary text-xs text-foreground/70 bg-white border border-black/8 px-3 py-1 rounded-full shadow-2xs">
-              <TbMapPin className="w-3.5 h-3.5 text-persici-blush" />
-              <span>{job.location[isAr ? 'ar' : 'en']}</span>
-            </span>
-            <span className="inline-flex items-center gap-1.5 font-secondary text-xs text-foreground/70 bg-white border border-black/8 px-3 py-1 rounded-full shadow-2xs">
-              <TbBriefcase className="w-3.5 h-3.5 text-persici-blush" />
-              <span>{job.workPolicy[isAr ? 'ar' : 'en']}</span>
-            </span>
-            <span className="inline-flex items-center gap-1.5 font-secondary text-xs text-foreground/70 bg-white border border-black/8 px-3 py-1 rounded-full shadow-2xs">
-              <span>{job.type[isAr ? 'ar' : 'en']}</span>
-            </span>
-            <span className="font-mono text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full">
-              {job.salaryRange[isAr ? 'ar' : 'en']}
-            </span>
+            {vis.showDepartmentBadge !== false && (
+              <span className="font-mono text-xs font-semibold text-persici-crimson bg-persici-crimson/10 px-3.5 py-1 rounded-full">
+                {job.department[isAr ? 'ar' : 'en']}
+              </span>
+            )}
+            {vis.showLocationBadge !== false && (
+              <span className="inline-flex items-center gap-1.5 font-secondary text-xs text-foreground/70 bg-white border border-black/8 px-3 py-1 rounded-full shadow-2xs">
+                <TbMapPin className="w-3.5 h-3.5 text-persici-blush" />
+                <span>{job.location[isAr ? 'ar' : 'en']}</span>
+              </span>
+            )}
+            {vis.showWorkPolicyBadge !== false && (
+              <span className="inline-flex items-center gap-1.5 font-secondary text-xs text-foreground/70 bg-white border border-black/8 px-3 py-1 rounded-full shadow-2xs">
+                <TbBriefcase className="w-3.5 h-3.5 text-persici-blush" />
+                <span>{job.workPolicy[isAr ? 'ar' : 'en']}</span>
+              </span>
+            )}
+            {vis.showTypeBadge !== false && (
+              <span className="inline-flex items-center gap-1.5 font-secondary text-xs text-foreground/70 bg-white border border-black/8 px-3 py-1 rounded-full shadow-2xs">
+                <span>{job.type[isAr ? 'ar' : 'en']}</span>
+              </span>
+            )}
+            {vis.showSalary !== false && job.salaryRange?.[isAr ? 'ar' : 'en'] && (
+              <span className="font-mono text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full">
+                {job.salaryRange[isAr ? 'ar' : 'en']}
+              </span>
+            )}
           </div>
         </FadeUp>
 
@@ -87,24 +103,37 @@ export function CareerDetailHeader({ job, lang }: CareerDetailHeaderProps) {
               {job.title[isAr ? 'ar' : 'en']}
             </h1>
 
-            <p className="font-secondary text-base sm:text-lg lg:text-xl text-foreground/75 leading-relaxed mb-8">
-              {job.summary[isAr ? 'ar' : 'en']}
-            </p>
+            {vis.showSummary !== false && (
+              /<[a-z][\s\S]*>/i.test(summaryText) ? (
+                <div
+                  className="font-secondary text-base sm:text-lg lg:text-xl text-foreground/75 leading-relaxed mb-8"
+                  dangerouslySetInnerHTML={{ __html: summaryText }}
+                />
+              ) : (
+                <p className="font-secondary text-base sm:text-lg lg:text-xl text-foreground/75 leading-relaxed mb-8">
+                  {summaryText}
+                </p>
+              )
+            )}
 
             {/* Direct Quick Action Anchor */}
             <div className="flex flex-wrap items-center gap-4">
-              <HomeButton
-                href="#apply-now"
-                title={isAr ? 'التقديم على هذه الوظيفة' : 'Apply for this Role'}
-                iconDirection="down"
-                isLangEffectIcon
-                currentLang={lang}
-                className="bg-persici-crimson hover:bg-persici-crimson-80 text-white shadow-lg shadow-persici-crimson/25 px-8 py-3.5 text-sm font-semibold"
-              />
-              <div className="inline-flex items-center gap-1.5 text-xs text-foreground/50 font-mono">
-                <TbCalendar className="w-3.5 h-3.5 text-foreground/40" />
-                <span>{isAr ? `نُشرت: ${job.postedDate}` : `Posted: ${job.postedDate}`}</span>
-              </div>
+              {vis.showApplicationForm !== false && (
+                <HomeButton
+                  href="#apply-now"
+                  title={isAr ? 'التقديم على هذه الوظيفة' : 'Apply for this Role'}
+                  iconDirection="down"
+                  isLangEffectIcon
+                  currentLang={lang}
+                  className="bg-persici-crimson hover:bg-persici-crimson-80 text-white shadow-lg shadow-persici-crimson/25 px-8 py-3.5 text-sm font-semibold"
+                />
+              )}
+              {vis.showPostedDate !== false && job.postedDate && (
+                <div className="inline-flex items-center gap-1.5 text-xs text-foreground/50 font-mono">
+                  <TbCalendar className="w-3.5 h-3.5 text-foreground/40" />
+                  <span>{isAr ? `نُشرت: ${job.postedDate}` : `Posted: ${job.postedDate}`}</span>
+                </div>
+              )}
             </div>
           </div>
         </FadeUp>

@@ -14,6 +14,8 @@ export interface CareerDetailViewProps {
 }
 
 export function CareerDetailView({ job, relatedJobs, lang }: CareerDetailViewProps) {
+  const vis = job.sectionVisibility || {};
+
   return (
     <main className="flex flex-col min-h-screen bg-white">
       {/* 1. Header: Breadcrumbs, Badges, Title & Quick Apply Trigger */}
@@ -23,10 +25,14 @@ export function CareerDetailView({ job, relatedJobs, lang }: CareerDetailViewPro
       <CareerDetailContent job={job} lang={lang} />
 
       {/* 3. Application Form: Candidate Dossier Submission & Resume Upload Suite */}
-      <CareerDetailApplicationForm job={job} lang={lang} />
+      {vis.showApplicationForm !== false && (
+        <CareerDetailApplicationForm job={job} lang={lang} />
+      )}
 
       {/* 4. Related Roles: 2-3 Similar Openings */}
-      <CareerDetailRelatedRoles relatedJobs={relatedJobs} lang={lang} />
+      {vis.showRelatedRoles !== false && (
+        <CareerDetailRelatedRoles relatedJobs={relatedJobs} lang={lang} />
+      )}
     </main>
   );
 }

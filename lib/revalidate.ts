@@ -17,6 +17,9 @@ export function revalidatePageContent(slug?: string): { success: boolean } {
       revalidatePath(`/[lang]/${slug}`, 'page');
       revalidatePath(`/en/${slug}`);
       revalidatePath(`/ar/${slug}`);
+      if (slug === 'careers') {
+        revalidatePath('/[lang]/careers/[slug]', 'page');
+      }
     }
 
     // Also revalidate layout to refresh header/footer navigation if needed

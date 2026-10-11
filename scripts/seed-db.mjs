@@ -108,11 +108,12 @@ async function seed() {
     );
     console.log(`   ✓ Root Admin Account configured: ${adminEmail}`);
 
-    // Dynamic import of master shared data, about data, contact data, & client stories data
+    // Dynamic import of master shared data, about data, contact data, client stories data, & careers data
     const sharedDataModule = await import('../app/[lang]/(site)/_shared/data.ts');
     const aboutDataModule = await import('../app/[lang]/(site)/about/_about/data/about.data.ts');
     const contactDataModule = await import('../app/[lang]/(site)/contact/_contact/data/contact.data.ts');
     const clientStoriesModule = await import('../app/[lang]/(site)/client-stories/_client-stories/data/client-stories.data.ts');
+    const careersDataModule = await import('../app/[lang]/(site)/careers/_careers/data/careers.data.ts');
     const {
       homePageContent,
       servicesPageContent,
@@ -134,6 +135,7 @@ async function seed() {
     const { aboutPageData } = aboutDataModule;
     const { contactPageData } = contactDataModule;
     const { clientStoriesData, clientStoriesHubPageData } = clientStoriesModule;
+    const { careersHubData, careerOpenings } = careersDataModule;
 
     // 1. Seed Page Contents
     console.log('\n📄 Seeding page_contents collection...');
@@ -146,6 +148,7 @@ async function seed() {
       { page: 'services', data: servicesPageContent },
       { page: 'work', data: workPageContent },
       { page: 'client-stories', data: clientStoriesHubPageData },
+      { page: 'careers', data: careersHubData },
       { page: 'contact', data: contactPageData },
       { page: 'solutions', data: solutionsPageContent },
       { page: 'industries', data: industriesPageContent },
@@ -170,6 +173,25 @@ async function seed() {
       );
       console.log(`   ✓ Page synchronized: ${p.page}`);
     }
+
+    // 1b. Seed Careers Collection (Active Job Postings)
+    console.log('\n💼 Seeding careers collection...');
+    const careersCol = db.collection('careers');
+    await careersCol.createIndex({ slug: 1 }, { unique: true });
+    for (const job of careerOpenings) {
+      await careersCol.updateOne(
+        { slug: job.slug },
+        {
+          $setOnInsert: {
+            ...job,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+        },
+        { upsert: true }
+      );
+    }
+    console.log(`   ✓ Verified/Seeded ${careerOpenings.length} career openings.`);
 
     // 2. Seed Solutions Collection
     console.log('\n💡 Seeding solutions offerings collection...');

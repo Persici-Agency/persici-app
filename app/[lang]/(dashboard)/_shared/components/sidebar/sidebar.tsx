@@ -132,7 +132,7 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
   const canSeePages = ['admin', 'editor'].includes(role);
   const canSeeNav = ['admin', 'editor'].includes(role);
   const canSeeMedia = ['admin', 'editor', 'author', 'media buying', 'hr'].includes(role);
-  const canSeeCareersAts = ['admin', 'hr'].includes(role);
+  const canSeeCareersAts = ['admin', 'hr', 'editor'].includes(role);
   const canSeeLeads = ['admin', 'media buying'].includes(role);
   const canSeeContent = ['admin', 'editor', 'author'].includes(role);
   const canSeeUsers = role === 'admin';
@@ -146,7 +146,7 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
     about: isRtl ? 'من نحن' : 'About Us',
     contact: isRtl ? 'اتصل بنا' : 'Contact Us',
     clientStories: isRtl ? 'قصص النجاح' : 'Client Stories Hub',
-    careersPage: isRtl ? 'صفحة الوظائف' : 'Careers Page',
+    careersPage: isRtl ? 'بوابة الوظائف (Careers Hub)' : 'Careers Hub Page',
     solutions: isRtl ? 'الحلول (10)' : 'Solutions (10)',
     solutionsHub: isRtl ? 'الرئيسية للحلول' : 'Overview Hub',
     aiIntegration: isRtl ? 'تكامل الذكاء الاصطناعي' : 'AI Integration',
@@ -655,14 +655,14 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
             {!isCollapsed && openSections.careers && (
               <div className="mt-1 ps-3 space-y-1 border-s border-amber-500/20 ms-4">
                 <Link
-                  href={getHref(`/${lang}/dashboard/careers/applicants`)}
+                  href={getHref(`/${lang}/dashboard/pages/careers`)}
                   className={`block px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                    isActive('/dashboard/careers/applicants')
+                    isActive('/dashboard/pages/careers')
                       ? 'bg-amber-500/20 text-amber-200 font-semibold'
                       : 'text-white/60 hover:text-white'
                   }`}
                 >
-                  {t.candidatePipeline}
+                  {t.careersPage}
                 </Link>
                 <Link
                   href={getHref(`/${lang}/dashboard/careers/openings`)}
@@ -673,6 +673,16 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
                   }`}
                 >
                   {t.activeOpenings}
+                </Link>
+                <Link
+                  href={getHref(`/${lang}/dashboard/careers/applicants`)}
+                  className={`block px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                    isActive('/dashboard/careers/applicants')
+                      ? 'bg-amber-500/20 text-amber-200 font-semibold'
+                      : 'text-white/60 hover:text-white'
+                  }`}
+                >
+                  {t.candidatePipeline}
                 </Link>
                 <Link
                   href={getHref(`/${lang}/dashboard/careers/communications`)}

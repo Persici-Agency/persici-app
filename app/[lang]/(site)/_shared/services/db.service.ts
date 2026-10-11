@@ -21,7 +21,8 @@ import { aboutPageData, type AboutPageData } from '@/app/[lang]/(site)/about/_ab
 import { contactPageData, type ContactPageData } from '@/app/[lang]/(site)/contact/_contact/data/contact.data';
 import { clientStoriesHubPageData } from '@/app/[lang]/(site)/client-stories/_client-stories/data/client-stories.data';
 import type { ClientStoriesHubPageData } from '@/app/[lang]/(site)/client-stories/_client-stories/types';
-export type { ContactPageData, ClientStoriesHubPageData };
+import { careersHubData, type CareersHubData } from '@/app/[lang]/(site)/careers/_careers/data/careers.data';
+export type { ContactPageData, ClientStoriesHubPageData, CareersHubData };
 import type {
   SharedContactContent,
   HomePageContent,
@@ -549,6 +550,250 @@ export function normalizeAboutPageData(raw?: Partial<AboutPageData> | null): Abo
 export async function getAboutPageData(): Promise<AboutPageData> {
   const raw = await getPageContent<AboutPageData>('about', aboutPageData);
   return normalizeAboutPageData(raw);
+}
+
+/**
+ * Deeply normalizes Careers Hub page data against `careersHubData` defaults
+ * so every single section, title, badge, rich-text description, CTA, stat counter,
+ * photo, perk, process step, filter board category/location, spontaneous CTA, and FAQ
+ * is guaranteed to be populated without ever losing or altering existing content.
+ */
+export function normalizeCareersPageData(raw?: Partial<CareersHubData> | null): CareersHubData {
+  const src = raw && typeof raw === 'object' ? raw : {};
+
+  return {
+    ...careersHubData,
+    ...src,
+    hero: {
+      ...careersHubData.hero,
+      ...(src.hero || {}),
+      enabled: src.hero?.enabled !== false,
+      badge: { ...careersHubData.hero.badge, ...(src.hero?.badge || {}) },
+      title: { ...careersHubData.hero.title, ...(src.hero?.title || {}) },
+      description: { ...careersHubData.hero.description, ...(src.hero?.description || {}) },
+      primaryCta: {
+        ...careersHubData.hero.primaryCta!,
+        ...(src.hero?.primaryCta || {}),
+        text: {
+          ...careersHubData.hero.primaryCta!.text,
+          ...(src.hero?.primaryCta?.text || {}),
+        },
+        href: src.hero?.primaryCta?.href || careersHubData.hero.primaryCta!.href,
+        enabled: src.hero?.primaryCta?.enabled !== false,
+      },
+      secondaryCta: {
+        ...careersHubData.hero.secondaryCta!,
+        ...(src.hero?.secondaryCta || {}),
+        text: {
+          ...careersHubData.hero.secondaryCta!.text,
+          ...(src.hero?.secondaryCta?.text || {}),
+        },
+        href: src.hero?.secondaryCta?.href || careersHubData.hero.secondaryCta!.href,
+        enabled: src.hero?.secondaryCta?.enabled !== false,
+      },
+      stats:
+        Array.isArray(src.hero?.stats) && src.hero.stats.length > 0
+          ? src.hero.stats.map((st, idx) => ({
+              ...(careersHubData.hero.stats[idx] || careersHubData.hero.stats[0]),
+              ...st,
+              suffix: {
+                ...(careersHubData.hero.stats[idx]?.suffix || { en: '', ar: '' }),
+                ...(st?.suffix || {}),
+              },
+              label: {
+                ...(careersHubData.hero.stats[idx]?.label || { en: '', ar: '' }),
+                ...(st?.label || {}),
+              },
+            }))
+          : careersHubData.hero.stats,
+    },
+    culture: {
+      ...careersHubData.culture,
+      ...(src.culture || {}),
+      enabled: src.culture?.enabled !== false,
+      badge: { ...careersHubData.culture.badge, ...(src.culture?.badge || {}) },
+      title: { ...careersHubData.culture.title, ...(src.culture?.title || {}) },
+      description: { ...careersHubData.culture.description, ...(src.culture?.description || {}) },
+      photos:
+        Array.isArray(src.culture?.photos) && src.culture.photos.length > 0
+          ? src.culture.photos.map((ph, idx) => ({
+              ...(careersHubData.culture.photos[idx] || careersHubData.culture.photos[0]),
+              ...ph,
+              title: {
+                ...(careersHubData.culture.photos[idx]?.title || { en: '', ar: '' }),
+                ...(ph?.title || {}),
+              },
+              location: {
+                ...(careersHubData.culture.photos[idx]?.location || { en: '', ar: '' }),
+                ...(ph?.location || {}),
+              },
+            }))
+          : careersHubData.culture.photos,
+    },
+    perks: {
+      ...careersHubData.perks,
+      ...(src.perks || {}),
+      enabled: src.perks?.enabled !== false,
+      badge: { ...careersHubData.perks.badge, ...(src.perks?.badge || {}) },
+      title: { ...careersHubData.perks.title, ...(src.perks?.title || {}) },
+      subtitle: { ...careersHubData.perks.subtitle, ...(src.perks?.subtitle || {}) },
+      items:
+        Array.isArray(src.perks?.items) && src.perks.items.length > 0
+          ? src.perks.items.map((pk, idx) => ({
+              ...(careersHubData.perks.items[idx] || careersHubData.perks.items[0]),
+              ...pk,
+              id: pk?.id || `perk-${idx + 1}`,
+              title: {
+                ...(careersHubData.perks.items[idx]?.title || { en: '', ar: '' }),
+                ...(pk?.title || {}),
+              },
+              description: {
+                ...(careersHubData.perks.items[idx]?.description || { en: '', ar: '' }),
+                ...(pk?.description || {}),
+              },
+              tag: {
+                ...(careersHubData.perks.items[idx]?.tag || { en: '', ar: '' }),
+                ...(pk?.tag || {}),
+              },
+            }))
+          : careersHubData.perks.items,
+    },
+    process: {
+      ...careersHubData.process,
+      ...(src.process || {}),
+      enabled: src.process?.enabled !== false,
+      badge: { ...careersHubData.process.badge, ...(src.process?.badge || {}) },
+      title: { ...careersHubData.process.title, ...(src.process?.title || {}) },
+      subtitle: { ...careersHubData.process.subtitle, ...(src.process?.subtitle || {}) },
+      steps:
+        Array.isArray(src.process?.steps) && src.process.steps.length > 0
+          ? src.process.steps.map((st, idx) => ({
+              ...(careersHubData.process.steps[idx] || careersHubData.process.steps[0]),
+              ...st,
+              step: st?.step || String(idx + 1).padStart(2, '0'),
+              title: {
+                ...(careersHubData.process.steps[idx]?.title || { en: '', ar: '' }),
+                ...(st?.title || {}),
+              },
+              duration: {
+                ...(careersHubData.process.steps[idx]?.duration || { en: '', ar: '' }),
+                ...(st?.duration || {}),
+              },
+              description: {
+                ...(careersHubData.process.steps[idx]?.description || { en: '', ar: '' }),
+                ...(st?.description || {}),
+              },
+            }))
+          : careersHubData.process.steps,
+    },
+    openPositions: {
+      ...careersHubData.openPositions,
+      ...(src.openPositions || {}),
+      enabled: src.openPositions?.enabled !== false,
+      badge: { ...careersHubData.openPositions.badge, ...(src.openPositions?.badge || {}) },
+      title: { ...careersHubData.openPositions.title, ...(src.openPositions?.title || {}) },
+      subtitle: { ...careersHubData.openPositions.subtitle, ...(src.openPositions?.subtitle || {}) },
+      searchPlaceholder: {
+        ...careersHubData.openPositions.searchPlaceholder,
+        ...(src.openPositions?.searchPlaceholder || {}),
+      },
+      departmentLabel: {
+        ...careersHubData.openPositions.departmentLabel,
+        ...(src.openPositions?.departmentLabel || {}),
+      },
+      locationLabel: {
+        ...careersHubData.openPositions.locationLabel,
+        ...(src.openPositions?.locationLabel || {}),
+      },
+      stackLabel: {
+        ...careersHubData.openPositions.stackLabel,
+        ...(src.openPositions?.stackLabel || {}),
+      },
+      highPriorityBadge: {
+        ...careersHubData.openPositions.highPriorityBadge,
+        ...(src.openPositions?.highPriorityBadge || {}),
+      },
+      applyCtaText: {
+        ...careersHubData.openPositions.applyCtaText,
+        ...(src.openPositions?.applyCtaText || {}),
+      },
+      emptyTitle: {
+        ...careersHubData.openPositions.emptyTitle,
+        ...(src.openPositions?.emptyTitle || {}),
+      },
+      emptySubtitle: {
+        ...careersHubData.openPositions.emptySubtitle,
+        ...(src.openPositions?.emptySubtitle || {}),
+      },
+      resetButtonText: {
+        ...careersHubData.openPositions.resetButtonText,
+        ...(src.openPositions?.resetButtonText || {}),
+      },
+      departments:
+        Array.isArray(src.openPositions?.departments) && src.openPositions.departments.length > 0
+          ? src.openPositions.departments.map((d, idx) => ({
+              slug: d?.slug || careersHubData.openPositions.departments[idx]?.slug || `dept-${idx}`,
+              label: {
+                ...(careersHubData.openPositions.departments[idx]?.label || { en: '', ar: '' }),
+                ...(d?.label || {}),
+              },
+            }))
+          : careersHubData.openPositions.departments,
+      locations:
+        Array.isArray(src.openPositions?.locations) && src.openPositions.locations.length > 0
+          ? src.openPositions.locations.map((l, idx) => ({
+              slug: l?.slug || careersHubData.openPositions.locations[idx]?.slug || `loc-${idx}`,
+              label: {
+                ...(careersHubData.openPositions.locations[idx]?.label || { en: '', ar: '' }),
+                ...(l?.label || {}),
+              },
+            }))
+          : careersHubData.openPositions.locations,
+    },
+    spontaneous: {
+      ...careersHubData.spontaneous,
+      ...(src.spontaneous || {}),
+      enabled: src.spontaneous?.enabled !== false,
+      badge: { ...careersHubData.spontaneous.badge, ...(src.spontaneous?.badge || {}) },
+      title: { ...careersHubData.spontaneous.title, ...(src.spontaneous?.title || {}) },
+      description: { ...careersHubData.spontaneous.description, ...(src.spontaneous?.description || {}) },
+      ctaText: { ...careersHubData.spontaneous.ctaText, ...(src.spontaneous?.ctaText || {}) },
+      email: src.spontaneous?.email || careersHubData.spontaneous.email || 'hr@persiciagency.com',
+      emailSubject: {
+        ...(careersHubData.spontaneous.emailSubject || { en: '', ar: '' }),
+        ...(src.spontaneous?.emailSubject || {}),
+      },
+    },
+    faqs: {
+      ...careersHubData.faqs,
+      ...(src.faqs || {}),
+      enabled: src.faqs?.enabled !== false,
+      badge: { ...careersHubData.faqs.badge, ...(src.faqs?.badge || {}) },
+      title: { ...careersHubData.faqs.title, ...(src.faqs?.title || {}) },
+      subtitle: { ...careersHubData.faqs.subtitle, ...(src.faqs?.subtitle || {}) },
+      items:
+        Array.isArray(src.faqs?.items) && src.faqs.items.length > 0
+          ? src.faqs.items.map((fq, idx) => ({
+              ...(careersHubData.faqs.items[idx] || careersHubData.faqs.items[0]),
+              ...fq,
+              id: fq?.id || `faq-${idx + 1}`,
+              question: {
+                ...(careersHubData.faqs.items[idx]?.question || { en: '', ar: '' }),
+                ...(fq?.question || {}),
+              },
+              answer: {
+                ...(careersHubData.faqs.items[idx]?.answer || { en: '', ar: '' }),
+                ...(fq?.answer || {}),
+              },
+            }))
+          : careersHubData.faqs.items,
+    },
+  };
+}
+
+export async function getCareersPageData(): Promise<CareersHubData> {
+  const raw = await getPageContent<CareersHubData>('careers', careersHubData);
+  return normalizeCareersPageData(raw);
 }
 
 export async function getDbHowWeDoItOfferings(): Promise<HowWeDoItOfferingItem[]> {
