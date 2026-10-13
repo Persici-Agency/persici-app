@@ -193,9 +193,16 @@ export function SolutionsHeroSection({
             {heroTitle}
           </h1>
 
-          <p className="mt-5 sm:mt-6 text-base sm:text-lg lg:text-xl leading-relaxed rtl:leading-relaxed text-slate-600 max-w-xl">
-            {heroSubtitle}
-          </p>
+          {/<[a-z][\s\S]*>/i.test(heroSubtitle || '') ? (
+            <div
+              className="mt-5 sm:mt-6 text-base sm:text-lg lg:text-xl leading-relaxed rtl:leading-relaxed text-slate-600 max-w-xl [&_p]:mb-2 [&_p:last-child]:mb-0"
+              dangerouslySetInnerHTML={{ __html: heroSubtitle }}
+            />
+          ) : (
+            <p className="mt-5 sm:mt-6 text-base sm:text-lg lg:text-xl leading-relaxed rtl:leading-relaxed text-slate-600 max-w-xl">
+              {heroSubtitle}
+            </p>
+          )}
 
           <div className="mt-8 sm:mt-10 flex items-center rtl:justify-start">
             <HomeButton

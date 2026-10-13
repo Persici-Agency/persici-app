@@ -9,6 +9,7 @@ import { TbBrandAppgallery, TbMessageChatbot, TbDatabaseExport, TbShieldCheck } 
 
 interface CrmTechStackSectionProps {
   pods: TechStackPod[];
+  badge?: string;
   title: string;
   subtitle: string;
   lang: string;
@@ -23,6 +24,7 @@ const podIcons = [
 
 export function CrmTechStackSection({
   pods,
+  badge,
   title,
   subtitle,
   lang,
@@ -39,14 +41,21 @@ export function CrmTechStackSection({
         {/* Section Header */}
         <FadeUp delay={0} duration={700} distance={20} className="text-center max-w-3xl mx-auto mb-16 sm:mb-20 relative z-10">
           <span className="text-xs sm:text-sm font-semibold uppercase tracking-widest text-persici-crimson block mb-3">
-            {isRtl ? 'المنظومة التقنية لإدارة علاقات العملاء' : 'Enterprise CRM Technology Stack'}
+            {badge || (isRtl ? 'المنظومة التقنية لإدارة علاقات العملاء' : 'Enterprise CRM Technology Stack')}
           </span>
           <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-white">
             {title}
           </h2>
-          <p className="mt-4 text-base sm:text-lg text-slate-400 leading-relaxed font-normal">
-            {subtitle}
-          </p>
+          {/<[a-z][\s\S]*>/i.test(subtitle || "") ? (
+            <div
+              className="mt-4 text-base sm:text-lg text-slate-400 leading-relaxed font-normal [&_p]:mb-2 [&_p:last-child]:mb-0"
+              dangerouslySetInnerHTML={{ __html: subtitle }}
+            />
+          ) : (
+            <p className="mt-4 text-base sm:text-lg text-slate-400 leading-relaxed font-normal">
+              {subtitle}
+            </p>
+          )}
         </FadeUp>
 
         {/* 4 Tech Pods Grid */}

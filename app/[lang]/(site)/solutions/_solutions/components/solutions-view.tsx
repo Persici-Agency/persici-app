@@ -1,7 +1,7 @@
 import React from 'react';
 import { FeaturedClientStories, InsightsSection, FaqSection, ClientReviewSection } from '@shared';
 import type { Dictionary } from '@dictionaries';
-import type { SolutionsPageContent } from '@shared/types';
+import type { SolutionsHubCmsData } from '../services/solutions-data.service';
 import { HomeContactSection } from '../../../_home/components/home-contact-section';
 import { SolutionsHeroSection } from './solutions-hero-section';
 import { SolutionsOfferingsGrid } from './solutions-offerings-grid';
@@ -9,87 +9,128 @@ import { SolutionsWhyItMatters } from './solutions-why-it-matters';
 import { SolutionsBenefitsStrip } from './solutions-benefits-strip';
 import { SolutionsDeliveryEngine } from './solutions-delivery-engine';
 
-
-
-
 export type SolutionsViewProps = {
-  content: SolutionsPageContent;
+  content: SolutionsHubCmsData;
   lang: string;
   dict: Dictionary;
 };
 
 export function SolutionsView({ content, lang, dict }: SolutionsViewProps) {
-  const offeringsTitle = content.offeringsTitle[lang as 'en' | 'ar'] || content.offeringsTitle.en;
-  const offeringsSubtitle = content.offeringsSubtitle[lang as 'en' | 'ar'] || content.offeringsSubtitle.en;
-  const whyItMattersTitle = content.whyItMattersTitle[lang as 'en' | 'ar'] || content.whyItMattersTitle.en;
-  const whyItMattersText = content.whyItMattersText[lang as 'en' | 'ar'] || content.whyItMattersText.en;
-  const benefitsTitle = content.benefitsTitle[lang as 'en' | 'ar'] || content.benefitsTitle.en;
-  const deliveryTitle = content.deliveryTitle[lang as 'en' | 'ar'] || content.deliveryTitle.en;
-  const deliverySubtitle = content.deliverySubtitle[lang as 'en' | 'ar'] || content.deliverySubtitle.en;
-  const faqsTitle = content.faqsTitle[lang as 'en' | 'ar'] || content.faqsTitle.en;
-  const faqsSubtitle = content.faqsSubtitle[lang as 'en' | 'ar'] || content.faqsSubtitle.en;
+  const l = lang as 'en' | 'ar';
+  const offeringsTitle = content.offeringsTitle[l] || content.offeringsTitle.en;
+  const offeringsSubtitle = content.offeringsSubtitle[l] || content.offeringsSubtitle.en;
+  const whyItMattersTitle = content.whyItMattersTitle[l] || content.whyItMattersTitle.en;
+  const whyItMattersText = content.whyItMattersText[l] || content.whyItMattersText.en;
+  const benefitsTitle = content.benefitsTitle[l] || content.benefitsTitle.en;
+  const deliveryTitle = content.deliveryTitle[l] || content.deliveryTitle.en;
+  const deliverySubtitle = content.deliverySubtitle[l] || content.deliverySubtitle.en;
+  const faqsTitle = content.faqsTitle[l] || content.faqsTitle.en;
+  const faqsSubtitle = content.faqsSubtitle[l] || content.faqsSubtitle.en;
+
+  const csConfig = content.clientStoriesConfig;
+  const insConfig = content.insightsConfig;
 
   return (
     <div className="flex flex-col min-h-screen">
       {/* 1. Hero Section */}
-      <SolutionsHeroSection content={content} lang={lang} />
+      {content.heroEnabled !== false && (
+        <SolutionsHeroSection content={content} lang={lang} />
+      )}
 
       {/* 2. "Our Offerings" 9 Solutions Grid from Challenges Section */}
-      <SolutionsOfferingsGrid
-        offerings={content.offeringsList}
-        title={offeringsTitle}
-        subtitle={offeringsSubtitle}
-        lang={lang}
-      />
+      {content.offeringsEnabled !== false && (
+        <SolutionsOfferingsGrid
+          offerings={content.offeringsList}
+          title={offeringsTitle}
+          subtitle={offeringsSubtitle}
+          lang={lang}
+        />
+      )}
 
       {/* 3. Why It Matters Context */}
-      <SolutionsWhyItMatters
-        title={whyItMattersTitle}
-        text={whyItMattersText}
-        image={content.whyItMattersImage}
-        lang={lang}
-      />
+      {content.whyItMattersEnabled !== false && (
+        <SolutionsWhyItMatters
+          title={whyItMattersTitle}
+          text={whyItMattersText}
+          image={content.whyItMattersImage}
+          metric1Val={content.whyItMattersMetric1Val}
+          metric1Label={content.whyItMattersMetric1Label}
+          metric2Val={content.whyItMattersMetric2Val}
+          metric2Label={content.whyItMattersMetric2Label}
+          lang={lang}
+        />
+      )}
 
       {/* 4. Benefits of Growth Architecture Strip */}
-      <SolutionsBenefitsStrip
-        title={benefitsTitle}
-        image={content.benefitsImage}
-        benefits={content.benefits}
-        lang={lang}
-      />
+      {content.benefitsEnabled !== false && (
+        <SolutionsBenefitsStrip
+          title={benefitsTitle}
+          image={content.benefitsImage}
+          benefits={content.benefits}
+          lang={lang}
+        />
+      )}
 
       {/* 5. Customer Stories / Stacked Spotlight Cards */}
-      <FeaturedClientStories
-        content={content}
-        stories={content.spotlightStories}
-        lang={lang}
-      />
+      {csConfig?.enabled !== false && (
+        <FeaturedClientStories
+          content={content}
+          sectionBadge={csConfig?.badge}
+          sectionTitle={csConfig?.title?.[l] || csConfig?.title?.en || undefined}
+          sectionSubtitle={csConfig?.subtitle?.[l] || csConfig?.subtitle?.en || undefined}
+          stories={content.spotlightStories}
+          lang={lang}
+        />
+      )}
 
       {/* 6. "How We Deliver Differently" / Cut Dev Time Platform */}
-      <SolutionsDeliveryEngine
-        title={deliveryTitle}
-        subtitle={deliverySubtitle}
-        image={content.deliveryImage}
-        pillars={content.deliveryPillars}
-        lang={lang}
-      />
+      {content.deliveryEnabled !== false && (
+        <SolutionsDeliveryEngine
+          badge={content.deliveryBadge}
+          title={deliveryTitle}
+          subtitle={deliverySubtitle}
+          image={content.deliveryImage}
+          pillars={content.deliveryPillars}
+          lang={lang}
+        />
+      )}
 
       {/* 7. Our Latest Thinking / Insights Section */}
-      <InsightsSection lang={lang} />
+      {insConfig?.enabled !== false && (
+        <InsightsSection
+          title={insConfig?.title || content.insightsTitle}
+          subtitle={insConfig?.subtitle || content.insightsSubtitle}
+          ctaText={insConfig?.ctaText || content.insightsCtaText}
+          ctaHref={insConfig?.ctaHref || '/insights'}
+          items={content.insightsList}
+          lang={lang}
+        />
+      )}
 
       {/* 8. Client Review Standalone Monospace Quote */}
-      <ClientReviewSection content={content} lang={lang} />
+      {content.quoteEnabled !== false && (
+        <ClientReviewSection
+          content={content}
+          badge={content.quoteBadge}
+          quoteAvatar={content.quoteAvatar}
+          lang={lang}
+        />
+      )}
 
       {/* 9. FAQs Accordion */}
-      <FaqSection
-        title={faqsTitle}
-        subtitle={faqsSubtitle}
-        faqs={content.faqs}
-        lang={lang}
-      />
+      {content.faqsEnabled !== false && (
+        <FaqSection
+          title={faqsTitle}
+          subtitle={faqsSubtitle}
+          faqs={content.faqs}
+          lang={lang}
+        />
+      )}
 
-      {/* 9. Static Home Contact Section (Required on all Solution Pages) */}
-      <HomeContactSection lang={lang} dict={dict} />
+      {/* 10. Static Home Contact Section (Required on all Solution Pages) */}
+      {content.contactEnabled !== false && (
+        <HomeContactSection lang={lang} dict={dict} />
+      )}
     </div>
   );
 }

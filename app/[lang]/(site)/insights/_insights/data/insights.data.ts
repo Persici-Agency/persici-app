@@ -1,4 +1,22 @@
-import type { InsightDetail } from '../types';
+import type { InsightDetail, InsightsHubPageData, InsightSectionVisibility } from '../types';
+
+export const DEFAULT_INSIGHT_SECTION_VISIBILITY: InsightSectionVisibility = {
+  showBreadcrumbs: true,
+  showCategoryBadge: true,
+  showSubtitle: true,
+  showDate: true,
+  showReadTime: true,
+  showShareMenu: true,
+  showAuthorCard: true,
+  showAuthorAvatar: true,
+  showAuthorRole: true,
+  showTableOfContents: true,
+  showAiOverview: true,
+  showCallouts: true,
+  showBulletLists: true,
+  showFeedbackWidget: true,
+  showContactSection: true,
+};
 
 export const insightsData: InsightDetail[] = [
   {
@@ -1478,6 +1496,132 @@ export const insightsData: InsightDetail[] = [
   },
 ];
 
+export const insightsHubPageData: InsightsHubPageData = {
+  hero: {
+    enabled: true,
+    badge: {
+      en: 'Insights & Thought Leadership',
+      ar: 'الرؤى والقيادة الفكرية',
+    },
+    title: {
+      en: 'Award-winning',
+      ar: 'قيادة فكرية حائزة على',
+    },
+    titleHighlight: {
+      en: 'thought leadership',
+      ar: 'جوائز عالمية',
+    },
+    description: {
+      en: 'Our brand and research was recognized with the Thought Leadership Storytelling Award at the TLFT Awards 2024. Selected from a competitive global field, the report earned the highest overall score in the judging process and was recognized for its distinctive concept, memorable content, swift format and admirable compelling storytelling.',
+      ar: 'تم تكريم أبحاثنا الاستراتيجية بجائزة السرد القصصي للقيادة الفكرية في حفل جوائز TLFT 2024. بعد منافسة دولية محتدمة، نال تقريرنا أعلى درجات التقييم العام بفضل أصالته المفاهيمية، ومحتواه الاستثنائي، وصياغته البصرية الآسرة.',
+    },
+    primaryCtaLabel: {
+      en: 'Read insight',
+      ar: 'قراءة الرؤية',
+    },
+    primaryCtaHref: '/insights/can-gen-ai-help-agile-teams-improve-delivery-clarity',
+    secondaryCtaLabel: {
+      en: 'Explore All Content',
+      ar: 'استكشف كافة المحتويات',
+    },
+    secondaryCtaHref: '#explore',
+    heroImage: '/images/insights/insights-hero-award.webp',
+    heroImageAlt: {
+      en: 'TLFT Thought Leadership Storytelling Award Winner',
+      ar: 'جائزة القيادة الفكرية والسرد القصصي TLFT',
+    },
+  },
+  exploreSection: {
+    enabled: true,
+    badge: {
+      en: 'Knowledge & Analysis',
+      ar: 'المعرفة والتحليلات',
+    },
+    title: {
+      en: 'Explore all content',
+      ar: 'استكشف كافة المحتويات والرؤى',
+    },
+    subtitle: {
+      en: 'Browse our complete catalog of empirical research, architectural playbooks, and strategic perspectives designed for forward-thinking leaders.',
+      ar: 'تصفح أحدث الأبحاث والدراسات الميدانية، والمقالات المعرفية الموجهة لقادة التحول الرقمي ورواد الأعمال.',
+    },
+    categories: [
+      {
+        slug: 'all',
+        label: {
+          en: 'All',
+          ar: 'الكل',
+        },
+      },
+      {
+        slug: 'article',
+        label: {
+          en: 'Article',
+          ar: 'المقالات',
+        },
+      },
+      {
+        slug: 'research',
+        label: {
+          en: 'Research',
+          ar: 'الأبحاث والدراسات',
+        },
+      },
+    ],
+    emptyTitle: {
+      en: 'No insights in this category',
+      ar: 'لا توجد محتويات في هذا التصنيف',
+    },
+    emptySubtitle: {
+      en: 'Please select another category to view our articles and research',
+      ar: 'يرجى اختيار تصنيف آخر للاطلاع على مقالاتنا وأبحاثنا',
+    },
+    loadMoreText: {
+      en: 'Load more insights',
+      ar: 'عرض المزيد',
+    },
+  },
+  newsletterSection: {
+    enabled: true,
+    badge: {
+      en: 'Persici Dispatch',
+      ar: 'النشرة المعرفية',
+    },
+    title: {
+      en: 'Blog',
+      ar: 'المدونة المعرفية',
+    },
+    subtitle: {
+      en: "From the press, practical guides and what we're learning as we build.",
+      ar: 'من الصحافة، أدلة تطبيقية، وما نتعلمه أثناء بناء المنصات البرمجية الرائدة ونمو العلامات التجارية.',
+    },
+    emailPlaceholder: {
+      en: 'Enter your email',
+      ar: 'أدخل بريدك الإلكتروني',
+    },
+    submitButtonText: {
+      en: 'Submit',
+      ar: 'اشتراك',
+    },
+    successMessage: {
+      en: 'Thank you for subscribing! You will receive our latest insights and practical guides.',
+      ar: 'شكراً لاشتراكك! ستصلك أحدث الرؤى والأدلة مباشرة إلى بريدك.',
+    },
+    privacyDisclaimer: {
+      en: 'By submitting this form you are agreeing to receive marketing communications about products, services, and events from Persici. You may unsubscribe at any time. For more information, please refer to our <a href="/en/privacy" class="text-slate-700 underline hover:text-persici-crimson">Privacy Policy</a>.',
+      ar: 'بإرسال هذا النموذج، فإنك توافق على تلقي النشرات المعرفية والاتصالات التسويقية من بيرسيشي. يمكنك إلغاء الاشتراك في أي وقت. للمزيد من التفاصيل، راجع <a href="/ar/privacy" class="text-slate-700 underline hover:text-persici-crimson">سياسة الخصوصية</a>.',
+    },
+    image: '/images/insights/persici-dispatch-staircase.webp',
+    imageAlt: {
+      en: 'Modern architectural crimson spiral staircase looking upwards to skylight',
+      ar: 'درج حلزوني أحمر رمزي للنمو',
+    },
+  },
+  contactSection: {
+    enabled: true,
+  },
+};
+
 export function getAllInsights(): InsightDetail[] {
   return insightsData;
 }
@@ -1486,10 +1630,11 @@ export function getInsightBySlug(slug: string): InsightDetail | undefined {
   return insightsData.find((i) => i.slug === slug);
 }
 
-export function getInsightsByCategory(categorySlug: 'article' | 'research'): InsightDetail[] {
+export function getInsightsByCategory(categorySlug: string): InsightDetail[] {
   return insightsData.filter((i) => i.categorySlug === categorySlug);
 }
 
 export function getFeaturedInsight(): InsightDetail {
   return insightsData.find((i) => i.featured) || insightsData[0];
 }
+

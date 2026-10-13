@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React from 'react';
 import Image from 'next/image';
@@ -16,6 +16,7 @@ interface EcommercePartnerShowcaseProps {
   badge: string;
   title: string;
   description: string;
+  partnersHeading?: string;
   video: {
     src: string;
     poster?: string;
@@ -31,6 +32,7 @@ export function EcommercePartnerShowcase({
   badge,
   title,
   description,
+  partnersHeading,
   video,
   partners,
   lang,
@@ -48,9 +50,16 @@ export function EcommercePartnerShowcase({
           <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-slate-900">
             {title}
           </h2>
-          <p className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed font-normal">
-            {description}
-          </p>
+          {/<[a-z][\s\S]*>/i.test(description || '') ? (
+            <div
+              className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed font-normal [&_p]:mb-2 [&_p:last-child]:mb-0"
+              dangerouslySetInnerHTML={{ __html: description }}
+            />
+          ) : (
+            <p className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed font-normal">
+              {description}
+            </p>
+          )}
         </FadeUp>
 
         {/* Featured Video Card */}
@@ -73,7 +82,7 @@ export function EcommercePartnerShowcase({
         <FadeUp delay={180} duration={700} distance={20} className="max-w-6xl mx-auto">
           <div className="text-center mb-8">
             <span className="text-xs font-mono font-semibold uppercase tracking-wider text-slate-500">
-              {isRtl ? 'الشركاء والمنصات التكنولوجية المعتمدة' : 'Certified Platform & Media Partners'}
+              {partnersHeading || (isRtl ? 'الشركاء والمنصات التكنولوجية المعتمدة' : 'Certified Platform & Media Partners')}
             </span>
           </div>
 

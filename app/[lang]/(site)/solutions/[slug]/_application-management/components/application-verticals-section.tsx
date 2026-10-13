@@ -8,6 +8,7 @@ import { FadeUp } from '@shared';
 
 interface ApplicationVerticalsSectionProps {
   verticals: ApplicationVerticalItem[];
+  badge?: string;
   title: string;
   subtitle: string;
   lang: string;
@@ -15,6 +16,7 @@ interface ApplicationVerticalsSectionProps {
 
 export function ApplicationVerticalsSection({
   verticals,
+  badge,
   title,
   subtitle,
   lang,
@@ -27,14 +29,21 @@ export function ApplicationVerticalsSection({
         {/* Section Heading */}
         <FadeUp delay={0} duration={700} distance={20} className="text-center max-w-3xl mx-auto mb-14 sm:mb-20">
           <span className="text-xs sm:text-sm font-semibold uppercase tracking-widest text-persici-crimson block mb-3">
-            {isRtl ? 'حلول القطاعات المتخصصة' : 'Domain Architectures'}
+            {badge || (isRtl ? 'حلول القطاعات المتخصصة' : 'Domain Architectures')}
           </span>
           <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-slate-900">
             {title}
           </h2>
-          <p className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed font-normal">
-            {subtitle}
-          </p>
+          {/<[a-z][\s\S]*>/i.test(subtitle || "") ? (
+            <div
+              className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed font-normal [&_p]:mb-2 [&_p:last-child]:mb-0"
+              dangerouslySetInnerHTML={{ __html: subtitle }}
+            />
+          ) : (
+            <p className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed font-normal">
+              {subtitle}
+            </p>
+          )}
         </FadeUp>
 
         {/* 5 Vertical Columns Grid */}

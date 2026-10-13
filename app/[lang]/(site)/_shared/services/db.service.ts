@@ -4,7 +4,6 @@ import {
   homePageContent,
   servicesPageContent,
   workPageContent,
-  solutionsPageContent,
   solutionsOfferingsList,
   industriesPageContent,
   industriesOfferingsList,
@@ -22,14 +21,49 @@ import { contactPageData, type ContactPageData } from '@/app/[lang]/(site)/conta
 import { clientStoriesHubPageData } from '@/app/[lang]/(site)/client-stories/_client-stories/data/client-stories.data';
 import type { ClientStoriesHubPageData } from '@/app/[lang]/(site)/client-stories/_client-stories/types';
 import { careersHubData, type CareersHubData } from '@/app/[lang]/(site)/careers/_careers/data/careers.data';
-export type { ContactPageData, ClientStoriesHubPageData, CareersHubData };
+import { insightsHubPageData } from '@/app/[lang]/(site)/insights/_insights/data/insights.data';
+import type { InsightsHubPageData, InsightDetail } from '@/app/[lang]/(site)/insights/_insights/types';
+import { getAllProjectsFromDb } from '@/lib/projects-server';
+import { getAllInsightsFromDb } from '@/lib/insights-server';
+import { clientStoryToFeaturedItem } from '@shared/data/featured-client-stories.data';
+import type { ContentCardItem } from '@shared/components/content-card';
+import {
+  SOLUTION_FEATURE_SLUGS,
+  isSolutionPageSlug,
+  extractSolutionFeatureSlug,
+  defaultSolutionsHubCmsData,
+  getDefaultSolutionFeatureCmsData,
+  normalizeSolutionsHubPageData,
+  normalizeSolutionFeaturePageData,
+  type SolutionsHubCmsData,
+  type SolutionFeatureCmsData,
+  type SolutionClientStoriesSectionConfig,
+  type SolutionInsightsSectionConfig,
+} from '@/app/[lang]/(site)/solutions/_solutions/data/solutions-cms.data';
+export type {
+  ContactPageData,
+  ClientStoriesHubPageData,
+  CareersHubData,
+  InsightsHubPageData,
+  SolutionsHubCmsData,
+  SolutionFeatureCmsData,
+  SolutionClientStoriesSectionConfig,
+  SolutionInsightsSectionConfig,
+};
+export {
+  SOLUTION_FEATURE_SLUGS,
+  isSolutionPageSlug,
+  extractSolutionFeatureSlug,
+  normalizeSolutionsHubPageData,
+  normalizeSolutionFeaturePageData,
+};
 import type {
   SharedContactContent,
   HomePageContent,
   ServicesPageContent,
   WorkPageContent,
-  SolutionsPageContent,
   SolutionOfferingItem,
+  FeaturedClientStoryItem,
   IndustriesPageContent,
   IndustryOfferingItem,
   HowWeDoItPageContent,
@@ -352,8 +386,280 @@ export async function getSharedContactData(): Promise<SharedContactContent> {
   return getPageContent<SharedContactContent>('shared-contact', defaultSharedContactData);
 }
 
-export async function getSolutionsPageData(): Promise<SolutionsPageContent> {
-  return getPageContent<SolutionsPageContent>('solutions', solutionsPageContent);
+export function insightDetailToInsightItem(detail: InsightDetail): ContentCardItem {
+  return {
+    id: detail.slug || detail.id,
+    slug: detail.slug,
+    category: detail.category || { en: 'Article', ar: 'مقال' },
+    title: detail.title,
+    date: detail.date || { en: '', ar: '' },
+    href: `/insights/${detail.slug}`,
+  };
+}
+
+export async function resolveSolutionClientStories(
+  config: SolutionClientStoriesSectionConfig | undefined,
+  fallbackStories: FeaturedClientStoryItem[]
+): Promise<FeaturedClientStoryItem[]> {
+  const maxCount = Math.max(1, Math.min(24, Number(config?.maxCount) || fallbackStories.length || 4));
+  const mode = config?.selectionMode || 'custom';
+
+  try {
+    const allProjects = await getAllProjectsFromDb(true);
+    if (!allProjects || allProjects.length === 0) {
+      return fallbackStories.slice(0, maxCount);
+    }
+
+    if (mode === 'featured') {
+      const featuredProjects = [...allProjects]
+        .filter((p) => p.featured)
+        .sort((a, b) => (a.featuredOrder ?? 99) - (b.featuredOrder ?? 99));
+      const pool = featuredProjects.length > 0 ? featuredProjects : allProjects;
+      return pool.slice(0, maxCount).map(clientStoryToFeaturedItem);
+    }
+
+    if (mode === 'category') {
+      const catSlug = (config?.categorySlug || 'all').trim().toLowerCase();
+      const filtered =
+        catSlug === 'all' || !catSlug
+          ? allProjects
+          : allProjects.filter(
+              (p) =>
+                p.categorySlug?.toLowerCase() === catSlug ||
+                p.category?.en?.toLowerCase() === catSlug
+            );
+      const pool = filtered.length > 0 ? filtered : allProjects;
+      return pool.slice(0, maxCount).map(clientStoryToFeaturedItem);
+    }
+
+    // 'custom' mode
+    const selectedSlugs = Array.isArray(config?.selectedSlugs) ? config!.selectedSlugs : [];
+    if (selectedSlugs.length > 0) {
+      const resolved: FeaturedClientStoryItem[] = [];
+      for (const slug of selectedSlugs) {
+        const dbMatch = allProjects.find((p) => p.slug === slug || p.id === slug);
+        if (dbMatch) {
+          resolved.push(clientStoryToFeaturedItem(dbMatch));
+          continue;
+        }
+        const fbMatch = fallbackStories.find((s) => s.slug === slug || s.id === slug);
+        if (fbMatch) {
+          resolved.push(fbMatch);
+        }
+      }
+      if (resolved.length > 0) {
+        return resolved.slice(0, maxCount);
+      }
+    }
+
+    return fallbackStories.slice(0, maxCount);
+  } catch (err) {
+    console.warn('[db.service] resolveSolutionClientStories fallback:', err);
+    return fallbackStories.slice(0, maxCount);
+  }
+}
+
+export async function resolveSolutionInsights(
+  config: SolutionInsightsSectionConfig | undefined,
+  fallbackInsights: ContentCardItem[]
+): Promise<ContentCardItem[]> {
+  const maxCount = Math.max(1, Math.min(24, Number(config?.maxCount) || fallbackInsights.length || 4));
+  const mode = config?.selectionMode || 'custom';
+
+  try {
+    const allInsights = await getAllInsightsFromDb(true);
+
+    if (mode === 'featured') {
+      if (!allInsights || allInsights.length === 0) {
+        return fallbackInsights.slice(0, maxCount);
+      }
+      const featuredList = allInsights.filter((ins) => ins.featured);
+      const pool = featuredList.length > 0 ? featuredList : allInsights;
+      return pool.slice(0, maxCount).map(insightDetailToInsightItem);
+    }
+
+    if (mode === 'category') {
+      if (!allInsights || allInsights.length === 0) {
+        return fallbackInsights.slice(0, maxCount);
+      }
+      const catSlug = (config?.categorySlug || 'all').trim().toLowerCase();
+      const filtered =
+        catSlug === 'all' || !catSlug
+          ? allInsights
+          : allInsights.filter(
+              (ins) =>
+                ins.categorySlug?.toLowerCase() === catSlug ||
+                ins.category?.en?.toLowerCase() === catSlug
+            );
+      const pool = filtered.length > 0 ? filtered : allInsights;
+      return pool.slice(0, maxCount).map(insightDetailToInsightItem);
+    }
+
+    // 'custom' mode
+    const selectedSlugs = Array.isArray(config?.selectedSlugs) ? config!.selectedSlugs : [];
+    if (selectedSlugs.length > 0) {
+      const resolved: ContentCardItem[] = [];
+      for (const slug of selectedSlugs) {
+        const dbMatch = allInsights?.find((ins) => ins.slug === slug || ins.id === slug);
+        if (dbMatch) {
+          resolved.push(insightDetailToInsightItem(dbMatch));
+          continue;
+        }
+        const fbMatch = fallbackInsights.find(
+          (ins) =>
+            ins.slug === slug ||
+            ins.id === slug ||
+            ins.href === `/insights/${slug}` ||
+            ins.href?.endsWith(`/${slug}`)
+        );
+        if (fbMatch) {
+          resolved.push(fbMatch);
+        }
+      }
+      if (resolved.length > 0) {
+        return resolved.slice(0, maxCount);
+      }
+    }
+
+    return fallbackInsights.slice(0, maxCount);
+  } catch (err) {
+    console.warn('[db.service] resolveSolutionInsights fallback:', err);
+    return fallbackInsights.slice(0, maxCount);
+  }
+}
+
+export async function getSolutionsPageData(): Promise<SolutionsHubCmsData> {
+  try {
+    const db = await getDb();
+    let doc: Record<string, unknown> | null = null;
+    if (db) {
+      doc = (await db.collection(COLLECTIONS.PAGES).findOne({ page: 'solutions' })) as Record<
+        string,
+        unknown
+      > | null;
+    }
+
+    const normalized = normalizeSolutionsHubPageData(doc as Partial<SolutionsHubCmsData> | null);
+
+    // Ensure complete normalized document is persisted in MongoDB if missing or lacking new CMS fields
+    if (
+      db &&
+      (!doc ||
+        !doc.heroTitle ||
+        !doc.clientStoriesConfig ||
+        !doc.insightsConfig ||
+        !Array.isArray(doc.faqs) ||
+        doc.faqs.length === 0)
+    ) {
+      await db.collection(COLLECTIONS.PAGES).updateOne(
+        { page: 'solutions' },
+        {
+          $set: {
+            ...normalized,
+            page: 'solutions',
+            updatedAt: new Date(),
+          },
+          $setOnInsert: {
+            createdAt: new Date(),
+          },
+        },
+        { upsert: true }
+      );
+    }
+
+    const [resolvedStories, resolvedInsights] = await Promise.all([
+      resolveSolutionClientStories(normalized.clientStoriesConfig, normalized.spotlightStories || []),
+      resolveSolutionInsights(normalized.insightsConfig, normalized.insightsList),
+    ]);
+
+    return {
+      ...normalized,
+      spotlightStories: resolvedStories,
+      insightsList: resolvedInsights,
+    };
+  } catch (err) {
+    console.warn('[db.service] getSolutionsPageData fallback:', err);
+    return normalizeSolutionsHubPageData(defaultSolutionsHubCmsData);
+  }
+}
+
+export async function getSolutionFeaturePageData(
+  slugOrPage: string
+): Promise<SolutionFeatureCmsData> {
+  const featureSlug = extractSolutionFeatureSlug(slugOrPage) || 'application-management';
+  const pageKey = `solutions-${featureSlug}`;
+  const defaultData = getDefaultSolutionFeatureCmsData(featureSlug);
+
+  try {
+    const db = await getDb();
+    let doc: Record<string, unknown> | null = null;
+    if (db) {
+      doc = (await db.collection(COLLECTIONS.PAGES).findOne({ page: pageKey })) as Record<
+        string,
+        unknown
+      > | null;
+    }
+
+    const normalized = normalizeSolutionFeaturePageData(
+      featureSlug,
+      doc as Partial<SolutionFeatureCmsData> | null
+    );
+
+    // Auto-persist complete normalized document into MongoDB if missing or incomplete
+    if (
+      db &&
+      (!doc ||
+        !doc.hero ||
+        !doc.clientStoriesConfig ||
+        !doc.insightsConfig ||
+        !Array.isArray(doc.offerings) ||
+        doc.offerings.length === 0)
+    ) {
+      await db.collection(COLLECTIONS.PAGES).updateOne(
+        { page: pageKey },
+        {
+          $set: {
+            ...normalized,
+            page: pageKey,
+            updatedAt: new Date(),
+          },
+          $setOnInsert: {
+            createdAt: new Date(),
+          },
+        },
+        { upsert: true }
+      );
+    }
+
+    const [resolvedStories, resolvedInsights] = await Promise.all([
+      resolveSolutionClientStories(normalized.clientStoriesConfig, normalized.clientStories),
+      resolveSolutionInsights(normalized.insightsConfig, normalized.insights),
+    ]);
+
+    return {
+      ...normalized,
+      clientStories: resolvedStories,
+      insights: resolvedInsights,
+    };
+  } catch (err) {
+    console.warn(`[db.service] getSolutionFeaturePageData fallback for ${pageKey}:`, err);
+    return normalizeSolutionFeaturePageData(featureSlug, defaultData);
+  }
+}
+
+/**
+ * Ensures the Solutions Overview Hub ('solutions') and all 9 Solution Feature pages
+ * ('solutions-<slug>') are seeded and normalized in MongoDB 'page_contents'.
+ */
+export async function ensureAllSolutionsPagesSeeded(): Promise<void> {
+  try {
+    await getSolutionsPageData();
+    for (const slug of SOLUTION_FEATURE_SLUGS) {
+      await getSolutionFeaturePageData(slug);
+    }
+  } catch (err) {
+    console.warn('[db.service] ensureAllSolutionsPagesSeeded warning:', err);
+  }
 }
 
 export async function getIndustriesPageData(): Promise<IndustriesPageContent> {
@@ -795,6 +1101,177 @@ export async function getCareersPageData(): Promise<CareersHubData> {
   const raw = await getPageContent<CareersHubData>('careers', careersHubData);
   return normalizeCareersPageData(raw);
 }
+
+/**
+ * Normalizes the Insights Hub Page content from MongoDB, merging with static canonical defaults
+ * so no section or field is ever undefined or empty.
+ */
+export function normalizeInsightsPageData(raw?: Partial<InsightsHubPageData> | null): InsightsHubPageData {
+  const src = raw && typeof raw === 'object' ? raw : {};
+
+  const pickBi = (
+    custom: { en?: string; ar?: string } | undefined | null,
+    fallback: { en: string; ar: string }
+  ): { en: string; ar: string } => ({
+    en:
+      custom && typeof custom.en === 'string' && custom.en.trim()
+        ? custom.en
+        : fallback.en,
+    ar:
+      custom && typeof custom.ar === 'string' && custom.ar.trim()
+        ? custom.ar
+        : fallback.ar,
+  });
+
+  const pickStr = (custom: string | undefined | null, fallback: string): string =>
+    typeof custom === 'string' && custom.trim() ? custom.trim() : fallback;
+
+  return {
+    hero: {
+      ...insightsHubPageData.hero,
+      ...(src.hero || {}),
+      enabled: src.hero?.enabled !== false,
+      badge: pickBi(src.hero?.badge, insightsHubPageData.hero.badge),
+      title: pickBi(src.hero?.title, insightsHubPageData.hero.title),
+      titleHighlight: pickBi(src.hero?.titleHighlight, insightsHubPageData.hero.titleHighlight),
+      description: pickBi(src.hero?.description, insightsHubPageData.hero.description),
+      primaryCtaLabel: pickBi(src.hero?.primaryCtaLabel, insightsHubPageData.hero.primaryCtaLabel),
+      primaryCtaHref: pickStr(src.hero?.primaryCtaHref, insightsHubPageData.hero.primaryCtaHref),
+      secondaryCtaLabel: pickBi(
+        src.hero?.secondaryCtaLabel,
+        insightsHubPageData.hero.secondaryCtaLabel
+      ),
+      secondaryCtaHref: pickStr(
+        src.hero?.secondaryCtaHref,
+        insightsHubPageData.hero.secondaryCtaHref
+      ),
+      heroImage: pickStr(src.hero?.heroImage, insightsHubPageData.hero.heroImage),
+      heroImageAlt: pickBi(src.hero?.heroImageAlt, insightsHubPageData.hero.heroImageAlt),
+    },
+    exploreSection: {
+      ...insightsHubPageData.exploreSection,
+      ...(src.exploreSection || {}),
+      enabled: src.exploreSection?.enabled !== false,
+      badge: pickBi(src.exploreSection?.badge, insightsHubPageData.exploreSection.badge),
+      title: pickBi(src.exploreSection?.title, insightsHubPageData.exploreSection.title),
+      subtitle: pickBi(src.exploreSection?.subtitle, insightsHubPageData.exploreSection.subtitle),
+      categories:
+        Array.isArray(src.exploreSection?.categories) && src.exploreSection.categories.length > 0
+          ? src.exploreSection.categories.map((cat, idx) => {
+              const fbCat =
+                insightsHubPageData.exploreSection.categories.find(
+                  (c) => c.slug === cat?.slug
+                ) || insightsHubPageData.exploreSection.categories[idx];
+              const slugVal = pickStr(cat?.slug, fbCat?.slug || `category-${idx + 1}`);
+              return {
+                slug: slugVal,
+                label: pickBi(
+                  cat?.label,
+                  fbCat?.label || { en: slugVal, ar: slugVal }
+                ),
+              };
+            })
+          : insightsHubPageData.exploreSection.categories,
+      emptyTitle: pickBi(
+        src.exploreSection?.emptyTitle,
+        insightsHubPageData.exploreSection.emptyTitle
+      ),
+      emptySubtitle: pickBi(
+        src.exploreSection?.emptySubtitle,
+        insightsHubPageData.exploreSection.emptySubtitle
+      ),
+      loadMoreText: pickBi(
+        src.exploreSection?.loadMoreText,
+        insightsHubPageData.exploreSection.loadMoreText
+      ),
+    },
+    newsletterSection: {
+      ...insightsHubPageData.newsletterSection,
+      ...(src.newsletterSection || {}),
+      enabled: src.newsletterSection?.enabled !== false,
+      badge: pickBi(
+        src.newsletterSection?.badge,
+        insightsHubPageData.newsletterSection.badge
+      ),
+      title: pickBi(
+        src.newsletterSection?.title,
+        insightsHubPageData.newsletterSection.title
+      ),
+      subtitle: pickBi(
+        src.newsletterSection?.subtitle,
+        insightsHubPageData.newsletterSection.subtitle
+      ),
+      emailPlaceholder: pickBi(
+        src.newsletterSection?.emailPlaceholder,
+        insightsHubPageData.newsletterSection.emailPlaceholder
+      ),
+      submitButtonText: pickBi(
+        src.newsletterSection?.submitButtonText,
+        insightsHubPageData.newsletterSection.submitButtonText
+      ),
+      successMessage: pickBi(
+        src.newsletterSection?.successMessage,
+        insightsHubPageData.newsletterSection.successMessage
+      ),
+      privacyDisclaimer: pickBi(
+        src.newsletterSection?.privacyDisclaimer,
+        insightsHubPageData.newsletterSection.privacyDisclaimer
+      ),
+      image: pickStr(
+        src.newsletterSection?.image,
+        insightsHubPageData.newsletterSection.image
+      ),
+      imageAlt: pickBi(
+        src.newsletterSection?.imageAlt,
+        insightsHubPageData.newsletterSection.imageAlt
+      ),
+    },
+    contactSection: {
+      ...insightsHubPageData.contactSection,
+      ...(src.contactSection || {}),
+      enabled: src.contactSection?.enabled !== false,
+    },
+  };
+}
+
+export async function getInsightsPageData(): Promise<InsightsHubPageData> {
+  try {
+    const db = await getDb();
+    if (!db) return normalizeInsightsPageData(insightsHubPageData);
+
+    const doc = await db.collection(COLLECTIONS.PAGES).findOne({ page: 'insights' });
+    const normalized = normalizeInsightsPageData(doc as Partial<InsightsHubPageData> | null);
+
+    // Ensure the complete normalized page document is persisted in MongoDB if missing or incomplete
+    if (
+      !doc ||
+      !doc.hero?.title?.en ||
+      !doc.exploreSection?.title?.en ||
+      !doc.newsletterSection?.title?.en
+    ) {
+      await db.collection(COLLECTIONS.PAGES).updateOne(
+        { page: 'insights' },
+        {
+          $set: {
+            ...normalized,
+            page: 'insights',
+            updatedAt: new Date(),
+          },
+          $setOnInsert: {
+            createdAt: new Date(),
+          },
+        },
+        { upsert: true }
+      );
+    }
+
+    return normalized;
+  } catch (err) {
+    console.warn('[db.service] getInsightsPageData fallback:', err);
+    return normalizeInsightsPageData(insightsHubPageData);
+  }
+}
+
 
 export async function getDbHowWeDoItOfferings(): Promise<HowWeDoItOfferingItem[]> {
   try {

@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React from 'react';
 import Image from 'next/image';
@@ -81,9 +81,16 @@ export function CapabilityCard({
 
       {/* Bottom: Description + Capability Highlights */}
       <div>
-        <p className="text-xs sm:text-[12px] leading-relaxed text-slate-600 mb-5 font-normal">
-          {description}
-        </p>
+        {/<[a-z][\s\S]*>/i.test(description || '') ? (
+          <div
+            className="text-xs sm:text-[12px] leading-relaxed text-slate-600 mb-5 font-normal [&_p]:mb-1.5 [&_p:last-child]:mb-0"
+            dangerouslySetInnerHTML={{ __html: description }}
+          />
+        ) : (
+          <p className="text-xs sm:text-[12px] leading-relaxed text-slate-600 mb-5 font-normal">
+            {description}
+          </p>
+        )}
 
         {highlights && highlights.length > 0 && (
           <div className="pt-4 border-t border-black/[0.05]">

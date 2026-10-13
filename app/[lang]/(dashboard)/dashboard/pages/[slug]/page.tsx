@@ -49,6 +49,14 @@ import {
   type CareerFaqItem,
   type CareerFilterOption,
 } from '@/app/[lang]/(site)/careers/_careers/data/careers.data';
+import { insightsHubPageData } from '@/app/[lang]/(site)/insights/_insights/data/insights.data';
+import type { InsightsHubCategoryFilter } from '@/app/[lang]/(site)/insights/_insights/types';
+import {
+  normalizeSolutionsHubPageData,
+  normalizeSolutionFeaturePageData,
+  isSolutionPageSlug,
+} from '@/app/[lang]/(site)/solutions/_solutions/data/solutions-cms.data';
+import { SolutionsPageCmsEditor } from '@dashboard-shared/components/editor/solutions-page-cms-editor';
 import Link from 'next/link';
 
 export default function UniversalPageCmsEditor() {
@@ -649,12 +657,160 @@ export default function UniversalPageCmsEditor() {
                     : careersHubData.faqs.items,
               },
             });
+          } else if (slug === 'insights') {
+            const pickBi = (
+              custom: { en?: string; ar?: string } | undefined | null,
+              fallback: { en: string; ar: string }
+            ) => ({
+              en:
+                custom && typeof custom.en === 'string' && custom.en.trim()
+                  ? custom.en
+                  : fallback.en,
+              ar:
+                custom && typeof custom.ar === 'string' && custom.ar.trim()
+                  ? custom.ar
+                  : fallback.ar,
+            });
+            const pickStr = (custom: string | undefined | null, fallback: string) =>
+              typeof custom === 'string' && custom.trim() ? custom.trim() : fallback;
+
+            setPageData({
+              ...insightsHubPageData,
+              ...c,
+              hero: {
+                ...insightsHubPageData.hero,
+                ...(c.hero || {}),
+                enabled: c.hero?.enabled !== false,
+                badge: pickBi(c.hero?.badge, insightsHubPageData.hero.badge),
+                title: pickBi(c.hero?.title, insightsHubPageData.hero.title),
+                titleHighlight: pickBi(
+                  c.hero?.titleHighlight,
+                  insightsHubPageData.hero.titleHighlight
+                ),
+                description: pickBi(c.hero?.description, insightsHubPageData.hero.description),
+                primaryCtaLabel: pickBi(
+                  c.hero?.primaryCtaLabel,
+                  insightsHubPageData.hero.primaryCtaLabel
+                ),
+                primaryCtaHref: pickStr(
+                  c.hero?.primaryCtaHref,
+                  insightsHubPageData.hero.primaryCtaHref
+                ),
+                secondaryCtaLabel: pickBi(
+                  c.hero?.secondaryCtaLabel,
+                  insightsHubPageData.hero.secondaryCtaLabel
+                ),
+                secondaryCtaHref: pickStr(
+                  c.hero?.secondaryCtaHref,
+                  insightsHubPageData.hero.secondaryCtaHref
+                ),
+                heroImage: pickStr(c.hero?.heroImage, insightsHubPageData.hero.heroImage),
+                heroImageAlt: pickBi(c.hero?.heroImageAlt, insightsHubPageData.hero.heroImageAlt),
+              },
+              exploreSection: {
+                ...insightsHubPageData.exploreSection,
+                ...(c.exploreSection || {}),
+                enabled: c.exploreSection?.enabled !== false,
+                badge: pickBi(
+                  c.exploreSection?.badge,
+                  insightsHubPageData.exploreSection.badge
+                ),
+                title: pickBi(
+                  c.exploreSection?.title,
+                  insightsHubPageData.exploreSection.title
+                ),
+                subtitle: pickBi(
+                  c.exploreSection?.subtitle,
+                  insightsHubPageData.exploreSection.subtitle
+                ),
+                categories:
+                  Array.isArray(c.exploreSection?.categories) &&
+                  c.exploreSection.categories.length > 0
+                    ? c.exploreSection.categories
+                    : insightsHubPageData.exploreSection.categories,
+                emptyTitle: pickBi(
+                  c.exploreSection?.emptyTitle,
+                  insightsHubPageData.exploreSection.emptyTitle
+                ),
+                emptySubtitle: pickBi(
+                  c.exploreSection?.emptySubtitle,
+                  insightsHubPageData.exploreSection.emptySubtitle
+                ),
+                loadMoreText: pickBi(
+                  c.exploreSection?.loadMoreText,
+                  insightsHubPageData.exploreSection.loadMoreText
+                ),
+              },
+              newsletterSection: {
+                ...insightsHubPageData.newsletterSection,
+                ...(c.newsletterSection || {}),
+                enabled: c.newsletterSection?.enabled !== false,
+                badge: pickBi(
+                  c.newsletterSection?.badge,
+                  insightsHubPageData.newsletterSection.badge
+                ),
+                title: pickBi(
+                  c.newsletterSection?.title,
+                  insightsHubPageData.newsletterSection.title
+                ),
+                subtitle: pickBi(
+                  c.newsletterSection?.subtitle,
+                  insightsHubPageData.newsletterSection.subtitle
+                ),
+                emailPlaceholder: pickBi(
+                  c.newsletterSection?.emailPlaceholder,
+                  insightsHubPageData.newsletterSection.emailPlaceholder
+                ),
+                submitButtonText: pickBi(
+                  c.newsletterSection?.submitButtonText,
+                  insightsHubPageData.newsletterSection.submitButtonText
+                ),
+                successMessage: pickBi(
+                  c.newsletterSection?.successMessage,
+                  insightsHubPageData.newsletterSection.successMessage
+                ),
+                privacyDisclaimer: pickBi(
+                  c.newsletterSection?.privacyDisclaimer,
+                  insightsHubPageData.newsletterSection.privacyDisclaimer
+                ),
+                image: pickStr(
+                  c.newsletterSection?.image,
+                  insightsHubPageData.newsletterSection.image
+                ),
+                imageAlt: pickBi(
+                  c.newsletterSection?.imageAlt,
+                  insightsHubPageData.newsletterSection.imageAlt
+                ),
+              },
+              contactSection: {
+                ...insightsHubPageData.contactSection,
+                ...(c.contactSection || {}),
+                enabled: c.contactSection?.enabled !== false,
+              },
+            });
+          } else if (slug === 'solutions') {
+            setPageData(normalizeSolutionsHubPageData(c));
+          } else if (isSolutionPageSlug(slug)) {
+            setPageData(normalizeSolutionFeaturePageData(slug, c));
           } else {
             setPageData(c);
           }
+        } else if (slug === 'insights') {
+          setPageData(insightsHubPageData);
+        } else if (slug === 'solutions') {
+          setPageData(normalizeSolutionsHubPageData({}));
+        } else if (isSolutionPageSlug(slug)) {
+          setPageData(normalizeSolutionFeaturePageData(slug, {}));
         }
       } catch (err) {
         console.error('Failed to load page content:', err);
+        if (slug === 'insights') {
+          setPageData(insightsHubPageData);
+        } else if (slug === 'solutions') {
+          setPageData(normalizeSolutionsHubPageData({}));
+        } else if (isSolutionPageSlug(slug)) {
+          setPageData(normalizeSolutionFeaturePageData(slug, {}));
+        }
       } finally {
         setLoading(false);
       }
@@ -996,6 +1152,43 @@ export default function UniversalPageCmsEditor() {
             ...(pageData.faqs || {}),
           },
         };
+      } else if (slug === 'insights') {
+        payloadToSave = {
+          ...insightsHubPageData,
+          ...pageData,
+          page: 'insights',
+          hero: {
+            ...insightsHubPageData.hero,
+            ...(pageData.hero || {}),
+          },
+          exploreSection: {
+            ...insightsHubPageData.exploreSection,
+            ...(pageData.exploreSection || {}),
+            categories:
+              Array.isArray(pageData.exploreSection?.categories) &&
+              pageData.exploreSection.categories.length > 0
+                ? pageData.exploreSection.categories
+                : insightsHubPageData.exploreSection.categories,
+          },
+          newsletterSection: {
+            ...insightsHubPageData.newsletterSection,
+            ...(pageData.newsletterSection || {}),
+          },
+          contactSection: {
+            ...insightsHubPageData.contactSection,
+            ...(pageData.contactSection || {}),
+          },
+        };
+      } else if (slug === 'solutions') {
+        payloadToSave = {
+          ...normalizeSolutionsHubPageData(pageData),
+          page: 'solutions',
+        };
+      } else if (isSolutionPageSlug(slug)) {
+        payloadToSave = {
+          ...normalizeSolutionFeaturePageData(slug, pageData),
+          page: slug,
+        };
       }
 
       const res = await fetch(`/api/content/${slug}`, {
@@ -1033,7 +1226,12 @@ export default function UniversalPageCmsEditor() {
   }
 
   // Determine target live page link
-  const livePageHref = slug === 'home' ? `/${lang}` : `/${lang}/${slug}`;
+  const livePageHref =
+    slug === 'home'
+      ? `/${lang}`
+      : isSolutionPageSlug(slug)
+      ? `/${lang}/solutions/${slug.replace(/^solutions-/, '')}`
+      : `/${lang}/${slug}`;
 
   return (
     <div className="max-w-5xl mx-auto space-y-6 pb-20">
@@ -5838,121 +6036,17 @@ export default function UniversalPageCmsEditor() {
       )}
 
       {/* =================================================================== */}
-      {/* 3. SOLUTIONS / CHALLENGES PAGE SECTIONS BUILDER                   */}
+      {/* 3. SOLUTIONS HUB & 9 FEATURED SOLUTION PAGES BUILDER               */}
       {/* =================================================================== */}
-      {slug === 'solutions' && (
-        <div className="space-y-4">
-          <SectionAccordion
-            number={1}
-            title="Solutions • Hero & Overview"
-            description="Main solutions headline, subtitle, and primary call to action"
-            isOpenDefault={true}
-            onSave={savePage}
-          >
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Hero Title (EN)</label>
-                <input
-                  type="text"
-                  value={pageData.heroTitle?.en || pageData.heroTitle || ''}
-                  onChange={(e) =>
-                    setPageData({
-                      ...pageData,
-                      heroTitle: { ...pageData.heroTitle, en: e.target.value },
-                    })
-                  }
-                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">عنوان الحلول (AR)</label>
-                <input
-                  type="text"
-                  dir="rtl"
-                  value={pageData.heroTitle?.ar || ''}
-                  onChange={(e) =>
-                    setPageData({
-                      ...pageData,
-                      heroTitle: { ...pageData.heroTitle, ar: e.target.value },
-                    })
-                  }
-                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white"
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Subtitle (EN)</label>
-                <input
-                  type="text"
-                  value={pageData.heroSubtitle?.en || ''}
-                  onChange={(e) =>
-                    setPageData({
-                      ...pageData,
-                      heroSubtitle: { ...pageData.heroSubtitle, en: e.target.value },
-                    })
-                  }
-                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">الوصف الفرعي (AR)</label>
-                <input
-                  type="text"
-                  dir="rtl"
-                  value={pageData.heroSubtitle?.ar || ''}
-                  onChange={(e) =>
-                    setPageData({
-                      ...pageData,
-                      heroSubtitle: { ...pageData.heroSubtitle, ar: e.target.value },
-                    })
-                  }
-                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white"
-                />
-              </div>
-            </div>
-          </SectionAccordion>
-
-          <SectionAccordion
-            number={2}
-            title="Solutions • Offerings Grid & Benefits"
-            description="Manage titles for the 9 core technical solutions and growth architecture"
-            onSave={savePage}
-          >
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Offerings Title (EN)</label>
-                <input
-                  type="text"
-                  value={pageData.offeringsTitle?.en || ''}
-                  onChange={(e) =>
-                    setPageData({
-                      ...pageData,
-                      offeringsTitle: { ...pageData.offeringsTitle, en: e.target.value },
-                    })
-                  }
-                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">عنوان الحلول التقنية (AR)</label>
-                <input
-                  type="text"
-                  dir="rtl"
-                  value={pageData.offeringsTitle?.ar || ''}
-                  onChange={(e) =>
-                    setPageData({
-                      ...pageData,
-                      offeringsTitle: { ...pageData.offeringsTitle, ar: e.target.value },
-                    })
-                  }
-                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white"
-                />
-              </div>
-            </div>
-          </SectionAccordion>
-        </div>
+      {(slug === 'solutions' || isSolutionPageSlug(slug)) && (
+        <SolutionsPageCmsEditor
+          slug={slug}
+          lang={lang}
+          pageData={pageData}
+          setPageData={setPageData}
+          onSave={savePage}
+          openMediaPicker={openMediaPicker}
+        />
       )}
 
       {/* =================================================================== */}
@@ -11051,9 +11145,1402 @@ export default function UniversalPageCmsEditor() {
       )}
 
       {/* =================================================================== */}
+      {/* 5C. INSIGHTS HUB PAGE SECTIONS (HERO, EXPLORE/FILTERS, NEWSLETTER)  */}
+      {/* =================================================================== */}
+      {slug === 'insights' && (
+        <div className="space-y-4">
+          {/* 1. HERO BANNER & AWARD MEDALLION */}
+          <SectionAccordion
+            number={1}
+            title="Insights Hub • Hero Banner & Award Medallion"
+            description="Top dark split-hero section with crimson overline badge, dual-part headline, rich description, dual CTAs, and medallion visual"
+            isOpenDefault={true}
+            onSave={savePage}
+          >
+            <div className="space-y-5">
+              <div className="flex items-center justify-between p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+                <div>
+                  <span className="text-xs font-bold text-slate-800 block">
+                    Display Hero Banner Section on Live Insights Hub Page
+                  </span>
+                  <span className="text-[11px] text-slate-500">
+                    Toggle visibility of the top split-hero section
+                  </span>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={pageData.hero?.enabled !== false}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      hero: { ...(pageData.hero || {}), enabled: e.target.checked },
+                    })
+                  }
+                  className="w-4 h-4 accent-persici-crimson rounded cursor-pointer"
+                />
+              </div>
+
+              {/* Overline Badge */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                    Overline Badge (EN)
+                  </label>
+                  <input
+                    type="text"
+                    value={pageData.hero?.badge?.en ?? ''}
+                    onChange={(e) =>
+                      setPageData({
+                        ...pageData,
+                        hero: {
+                          ...(pageData.hero || {}),
+                          badge: { ...(pageData.hero?.badge || {}), en: e.target.value },
+                        },
+                      })
+                    }
+                    className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-semibold"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                    الشارة العلوية (AR)
+                  </label>
+                  <input
+                    type="text"
+                    dir="rtl"
+                    value={pageData.hero?.badge?.ar ?? ''}
+                    onChange={(e) =>
+                      setPageData({
+                        ...pageData,
+                        hero: {
+                          ...(pageData.hero || {}),
+                          badge: { ...(pageData.hero?.badge || {}), ar: e.target.value },
+                        },
+                      })
+                    }
+                    className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-arabic font-semibold"
+                  />
+                </div>
+              </div>
+
+              {/* Main Title + Highlighted Line */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                    Hero Title Line 1 (EN)
+                  </label>
+                  <input
+                    type="text"
+                    value={pageData.hero?.title?.en ?? ''}
+                    onChange={(e) =>
+                      setPageData({
+                        ...pageData,
+                        hero: {
+                          ...(pageData.hero || {}),
+                          title: { ...(pageData.hero?.title || {}), en: e.target.value },
+                        },
+                      })
+                    }
+                    className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-bold"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                    السطر الأول من العنوان الرئيسي (AR)
+                  </label>
+                  <input
+                    type="text"
+                    dir="rtl"
+                    value={pageData.hero?.title?.ar ?? ''}
+                    onChange={(e) =>
+                      setPageData({
+                        ...pageData,
+                        hero: {
+                          ...(pageData.hero || {}),
+                          title: { ...(pageData.hero?.title || {}), ar: e.target.value },
+                        },
+                      })
+                    }
+                    className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-arabic font-bold"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                    Hero Title Line 2 / Highlight (EN)
+                  </label>
+                  <input
+                    type="text"
+                    value={pageData.hero?.titleHighlight?.en ?? ''}
+                    onChange={(e) =>
+                      setPageData({
+                        ...pageData,
+                        hero: {
+                          ...(pageData.hero || {}),
+                          titleHighlight: {
+                            ...(pageData.hero?.titleHighlight || {}),
+                            en: e.target.value,
+                          },
+                        },
+                      })
+                    }
+                    className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-bold text-slate-600"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                    السطر الثاني المميز من العنوان (AR)
+                  </label>
+                  <input
+                    type="text"
+                    dir="rtl"
+                    value={pageData.hero?.titleHighlight?.ar ?? ''}
+                    onChange={(e) =>
+                      setPageData({
+                        ...pageData,
+                        hero: {
+                          ...(pageData.hero || {}),
+                          titleHighlight: {
+                            ...(pageData.hero?.titleHighlight || {}),
+                            ar: e.target.value,
+                          },
+                        },
+                      })
+                    }
+                    className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-arabic font-bold text-slate-600"
+                  />
+                </div>
+              </div>
+
+              {/* Hero Description RichTextEditor */}
+              <RichTextEditor
+                label="Hero Description / Subtitle (Supports Text Alignment & Formatting)"
+                valueEn={pageData.hero?.description?.en ?? ''}
+                valueAr={pageData.hero?.description?.ar ?? ''}
+                onChangeEn={(val) =>
+                  setPageData({
+                    ...pageData,
+                    hero: {
+                      ...(pageData.hero || {}),
+                      description: { ...(pageData.hero?.description || {}), en: val },
+                    },
+                  })
+                }
+                onChangeAr={(val) =>
+                  setPageData({
+                    ...pageData,
+                    hero: {
+                      ...(pageData.hero || {}),
+                      description: { ...(pageData.hero?.description || {}), ar: val },
+                    },
+                  })
+                }
+              />
+
+              {/* Primary & Secondary CTAs */}
+              <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-4">
+                <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
+                  Hero Action Buttons (Primary & Secondary CTAs)
+                </h4>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div>
+                    <label className="block text-[11px] font-bold text-slate-600 uppercase mb-1">
+                      Primary Button Label (EN)
+                    </label>
+                    <input
+                      type="text"
+                      value={pageData.hero?.primaryCtaLabel?.en ?? ''}
+                      onChange={(e) =>
+                        setPageData({
+                          ...pageData,
+                          hero: {
+                            ...(pageData.hero || {}),
+                            primaryCtaLabel: {
+                              ...(pageData.hero?.primaryCtaLabel || {}),
+                              en: e.target.value,
+                            },
+                          },
+                        })
+                      }
+                      className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg bg-white"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-bold text-slate-600 uppercase mb-1">
+                      نص الزر الرئيسي (AR)
+                    </label>
+                    <input
+                      type="text"
+                      dir="rtl"
+                      value={pageData.hero?.primaryCtaLabel?.ar ?? ''}
+                      onChange={(e) =>
+                        setPageData({
+                          ...pageData,
+                          hero: {
+                            ...(pageData.hero || {}),
+                            primaryCtaLabel: {
+                              ...(pageData.hero?.primaryCtaLabel || {}),
+                              ar: e.target.value,
+                            },
+                          },
+                        })
+                      }
+                      className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg bg-white font-arabic"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-bold text-slate-600 uppercase mb-1">
+                      Primary Button Link / Anchor
+                    </label>
+                    <input
+                      type="text"
+                      value={pageData.hero?.primaryCtaHref ?? '#insights-grid'}
+                      onChange={(e) =>
+                        setPageData({
+                          ...pageData,
+                          hero: {
+                            ...(pageData.hero || {}),
+                            primaryCtaHref: e.target.value,
+                          },
+                        })
+                      }
+                      className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg bg-white font-mono"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div>
+                    <label className="block text-[11px] font-bold text-slate-600 uppercase mb-1">
+                      Secondary Button Label (EN)
+                    </label>
+                    <input
+                      type="text"
+                      value={pageData.hero?.secondaryCtaLabel?.en ?? ''}
+                      onChange={(e) =>
+                        setPageData({
+                          ...pageData,
+                          hero: {
+                            ...(pageData.hero || {}),
+                            secondaryCtaLabel: {
+                              ...(pageData.hero?.secondaryCtaLabel || {}),
+                              en: e.target.value,
+                            },
+                          },
+                        })
+                      }
+                      className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg bg-white"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-bold text-slate-600 uppercase mb-1">
+                      نص الزر الثانوي (AR)
+                    </label>
+                    <input
+                      type="text"
+                      dir="rtl"
+                      value={pageData.hero?.secondaryCtaLabel?.ar ?? ''}
+                      onChange={(e) =>
+                        setPageData({
+                          ...pageData,
+                          hero: {
+                            ...(pageData.hero || {}),
+                            secondaryCtaLabel: {
+                              ...(pageData.hero?.secondaryCtaLabel || {}),
+                              ar: e.target.value,
+                            },
+                          },
+                        })
+                      }
+                      className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg bg-white font-arabic"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-bold text-slate-600 uppercase mb-1">
+                      Secondary Button Link / Route
+                    </label>
+                    <input
+                      type="text"
+                      value={pageData.hero?.secondaryCtaHref ?? '/contact'}
+                      onChange={(e) =>
+                        setPageData({
+                          ...pageData,
+                          hero: {
+                            ...(pageData.hero || {}),
+                            secondaryCtaHref: e.target.value,
+                          },
+                        })
+                      }
+                      className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg bg-white font-mono"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Hero Image & Alt Text */}
+              <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-3">
+                <label className="block text-xs font-bold text-slate-700 uppercase">
+                  Hero Visual / Award Medallion Image
+                </label>
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                  {(pageData.hero?.heroImage || insightsHubPageData.hero.heroImage) && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={pageData.hero?.heroImage || insightsHubPageData.hero.heroImage}
+                      alt={pageData.hero?.heroImageAlt?.en || 'Hero Award preview'}
+                      className="w-20 h-24 object-cover rounded-xl border border-slate-200 shrink-0 bg-slate-900"
+                    />
+                  )}
+                  <div className="flex-1 w-full flex flex-col sm:flex-row gap-3">
+                    <input
+                      type="text"
+                      value={pageData.hero?.heroImage ?? insightsHubPageData.hero.heroImage}
+                      onChange={(e) =>
+                        setPageData({
+                          ...pageData,
+                          hero: { ...(pageData.hero || {}), heroImage: e.target.value },
+                        })
+                      }
+                      className="flex-1 px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-mono"
+                      placeholder="/images/insights/insights-hero-award.webp"
+                    />
+                    <button
+                      type="button"
+                      onClick={() =>
+                        openMediaPicker(
+                          (url: string) =>
+                            setPageData({
+                              ...pageData,
+                              hero: { ...(pageData.hero || {}), heroImage: url },
+                            }),
+                          'image'
+                        )
+                      }
+                      className="px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-semibold flex items-center gap-2 shrink-0"
+                    >
+                      <TbPhoto className="w-4 h-4" />
+                      <span>Browse R2 Media</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+                  <div>
+                    <label className="block text-[11px] font-bold text-slate-600 uppercase mb-1">
+                      Hero Image Alt Text (EN)
+                    </label>
+                    <input
+                      type="text"
+                      value={pageData.hero?.heroImageAlt?.en ?? ''}
+                      onChange={(e) =>
+                        setPageData({
+                          ...pageData,
+                          hero: {
+                            ...(pageData.hero || {}),
+                            heroImageAlt: {
+                              ...(pageData.hero?.heroImageAlt || {}),
+                              en: e.target.value,
+                            },
+                          },
+                        })
+                      }
+                      className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg bg-white"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-bold text-slate-600 uppercase mb-1">
+                      النص البديل للصورة (AR)
+                    </label>
+                    <input
+                      type="text"
+                      dir="rtl"
+                      value={pageData.hero?.heroImageAlt?.ar ?? ''}
+                      onChange={(e) =>
+                        setPageData({
+                          ...pageData,
+                          hero: {
+                            ...(pageData.hero || {}),
+                            heroImageAlt: {
+                              ...(pageData.hero?.heroImageAlt || {}),
+                              ar: e.target.value,
+                            },
+                          },
+                        })
+                      }
+                      className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg bg-white font-arabic"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </SectionAccordion>
+
+          {/* 2. EXPLORE ALL CONTENT & CATEGORY FILTER BAR */}
+          <SectionAccordion
+            number={2}
+            title="Insights Hub • Explore All Content & Category Filter Tabs"
+            description="Section badge, main heading, rich subtitle, interactive category filter tabs, empty-state labels, and link to Blogs & Insights Manager"
+            isOpenDefault={false}
+            onSave={savePage}
+          >
+            <div className="space-y-5">
+              <div className="flex items-center justify-between p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+                <div>
+                  <span className="text-xs font-bold text-slate-800 block">
+                    Display Explore All Content &amp; Filter Grid Section on Live Page
+                  </span>
+                  <span className="text-[11px] text-slate-500">
+                    Toggle visibility of the main filterable insights grid section
+                  </span>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={pageData.exploreSection?.enabled !== false}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      exploreSection: {
+                        ...(pageData.exploreSection || {}),
+                        enabled: e.target.checked,
+                      },
+                    })
+                  }
+                  className="w-4 h-4 accent-persici-crimson rounded cursor-pointer"
+                />
+              </div>
+              {/* Direct Shortcut Banner to Blogs & Insights Manager */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-xl bg-red-50/70 border border-red-200">
+                <div>
+                  <h4 className="text-xs font-bold text-slate-900">
+                    Published & Draft Insights / Blogs Feed
+                  </h4>
+                  <p className="text-xs text-slate-600 mt-0.5">
+                    Individual articles, research reports, categories, published/draft status, rich sections, AI Overviews, and detail page design toggles are managed in the <strong>Blogs &amp; Insights</strong> tab.
+                  </p>
+                </div>
+                <Link
+                  href={`/${lang}/dashboard/content/insights`}
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-persici-crimson text-white text-xs font-semibold hover:bg-red-700 transition-colors shrink-0"
+                >
+                  <TbExternalLink className="w-4 h-4" />
+                  <span>Open Blogs &amp; Insights Manager</span>
+                </Link>
+              </div>
+
+              {/* Section Badge & Heading */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                    Section Badge (EN)
+                  </label>
+                  <input
+                    type="text"
+                    value={pageData.exploreSection?.badge?.en ?? ''}
+                    onChange={(e) =>
+                      setPageData({
+                        ...pageData,
+                        exploreSection: {
+                          ...(pageData.exploreSection || {}),
+                          badge: {
+                            ...(pageData.exploreSection?.badge || {}),
+                            en: e.target.value,
+                          },
+                        },
+                      })
+                    }
+                    className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-semibold"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                    شارة القسم (AR)
+                  </label>
+                  <input
+                    type="text"
+                    dir="rtl"
+                    value={pageData.exploreSection?.badge?.ar ?? ''}
+                    onChange={(e) =>
+                      setPageData({
+                        ...pageData,
+                        exploreSection: {
+                          ...(pageData.exploreSection || {}),
+                          badge: {
+                            ...(pageData.exploreSection?.badge || {}),
+                            ar: e.target.value,
+                          },
+                        },
+                      })
+                    }
+                    className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-arabic font-semibold"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                    All Insights Section Title (EN)
+                  </label>
+                  <input
+                    type="text"
+                    value={pageData.exploreSection?.title?.en ?? ''}
+                    onChange={(e) =>
+                      setPageData({
+                        ...pageData,
+                        exploreSection: {
+                          ...(pageData.exploreSection || {}),
+                          title: {
+                            ...(pageData.exploreSection?.title || {}),
+                            en: e.target.value,
+                          },
+                        },
+                      })
+                    }
+                    className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-bold"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                    عنوان قسم جميع الرؤى (AR)
+                  </label>
+                  <input
+                    type="text"
+                    dir="rtl"
+                    value={pageData.exploreSection?.title?.ar ?? ''}
+                    onChange={(e) =>
+                      setPageData({
+                        ...pageData,
+                        exploreSection: {
+                          ...(pageData.exploreSection || {}),
+                          title: {
+                            ...(pageData.exploreSection?.title || {}),
+                            ar: e.target.value,
+                          },
+                        },
+                      })
+                    }
+                    className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-arabic font-bold"
+                  />
+                </div>
+              </div>
+
+              <RichTextEditor
+                label="Section Subtitle / Description (Supports Text Alignment & Formatting)"
+                valueEn={pageData.exploreSection?.subtitle?.en ?? ''}
+                valueAr={pageData.exploreSection?.subtitle?.ar ?? ''}
+                onChangeEn={(val) =>
+                  setPageData({
+                    ...pageData,
+                    exploreSection: {
+                      ...(pageData.exploreSection || {}),
+                      subtitle: {
+                        ...(pageData.exploreSection?.subtitle || {}),
+                        en: val,
+                      },
+                    },
+                  })
+                }
+                onChangeAr={(val) =>
+                  setPageData({
+                    ...pageData,
+                    exploreSection: {
+                      ...(pageData.exploreSection || {}),
+                      subtitle: {
+                        ...(pageData.exploreSection?.subtitle || {}),
+                        ar: val,
+                      },
+                    },
+                  })
+                }
+              />
+
+              {/* Category Filter Tabs Repeater */}
+              <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
+                      Category Filter Tabs (All Insights / Article / Research / Custom)
+                    </h4>
+                    <p className="text-[11px] text-slate-500 mt-0.5">
+                      Keep slug <code className="font-mono bg-white px-1 rounded">all</code> for the default &ldquo;All&rdquo; tab. Any custom category slug you add here can also be assigned to articles in the Blogs &amp; Insights Manager.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const current: InsightsHubCategoryFilter[] = Array.isArray(
+                        pageData.exploreSection?.categories
+                      )
+                        ? pageData.exploreSection.categories
+                        : [];
+                      setPageData({
+                        ...pageData,
+                        exploreSection: {
+                          ...(pageData.exploreSection || {}),
+                          categories: [
+                            ...current,
+                            {
+                              slug: `category-${current.length + 1}`,
+                              label: { en: 'New Category', ar: 'تصنيف جديد' },
+                            },
+                          ],
+                        },
+                      });
+                    }}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900 text-white text-xs font-semibold hover:bg-slate-800"
+                  >
+                    <TbPlus className="w-3.5 h-3.5" />
+                    <span>Add Filter Tab</span>
+                  </button>
+                </div>
+
+                <div className="space-y-2.5">
+                  {(pageData.exploreSection?.categories || []).map(
+                    (cat: InsightsHubCategoryFilter, idx: number) => (
+                      <div
+                        key={idx}
+                        className="grid grid-cols-1 md:grid-cols-12 gap-2.5 items-center bg-white p-3 rounded-xl border border-slate-200"
+                      >
+                        <div className="md:col-span-3">
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">
+                            Filter Slug (e.g. all, article, research)
+                          </label>
+                          <input
+                            type="text"
+                            value={cat.slug ?? ''}
+                            onChange={(e) => {
+                              const updated = [...(pageData.exploreSection?.categories || [])];
+                              updated[idx] = { ...updated[idx], slug: e.target.value };
+                              setPageData({
+                                ...pageData,
+                                exploreSection: {
+                                  ...(pageData.exploreSection || {}),
+                                  categories: updated,
+                                },
+                              });
+                            }}
+                            className="w-full px-2.5 py-1.5 text-xs border border-slate-200 rounded-lg font-mono bg-slate-50"
+                          />
+                        </div>
+                        <div className="md:col-span-4">
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">
+                            Tab Label (EN)
+                          </label>
+                          <input
+                            type="text"
+                            value={cat.label?.en ?? ''}
+                            onChange={(e) => {
+                              const updated = [...(pageData.exploreSection?.categories || [])];
+                              updated[idx] = {
+                                ...updated[idx],
+                                label: { ...(updated[idx]?.label || {}), en: e.target.value },
+                              };
+                              setPageData({
+                                ...pageData,
+                                exploreSection: {
+                                  ...(pageData.exploreSection || {}),
+                                  categories: updated,
+                                },
+                              });
+                            }}
+                            className="w-full px-2.5 py-1.5 text-xs border border-slate-200 rounded-lg"
+                          />
+                        </div>
+                        <div className="md:col-span-4">
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">
+                            اسم التبويب (AR)
+                          </label>
+                          <input
+                            type="text"
+                            dir="rtl"
+                            value={cat.label?.ar ?? ''}
+                            onChange={(e) => {
+                              const updated = [...(pageData.exploreSection?.categories || [])];
+                              updated[idx] = {
+                                ...updated[idx],
+                                label: { ...(updated[idx]?.label || {}), ar: e.target.value },
+                              };
+                              setPageData({
+                                ...pageData,
+                                exploreSection: {
+                                  ...(pageData.exploreSection || {}),
+                                  categories: updated,
+                                },
+                              });
+                            }}
+                            className="w-full px-2.5 py-1.5 text-xs border border-slate-200 rounded-lg font-arabic"
+                          />
+                        </div>
+                        <div className="md:col-span-1 flex items-center justify-end gap-1 pt-4">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const updated = (pageData.exploreSection?.categories || []).filter(
+                                (_: unknown, i: number) => i !== idx
+                              );
+                              setPageData({
+                                ...pageData,
+                                exploreSection: {
+                                  ...(pageData.exploreSection || {}),
+                                  categories: updated,
+                                },
+                              });
+                            }}
+                            className="p-1.5 text-red-500 hover:bg-red-50 rounded-lg"
+                            title="Remove filter tab"
+                          >
+                            <TbTrash className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+                    )
+                  )}
+                </div>
+              </div>
+
+              {/* Load More & Empty State Copy */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                    Load More Indicator Text (EN)
+                  </label>
+                  <input
+                    type="text"
+                    value={pageData.exploreSection?.loadMoreText?.en ?? ''}
+                    onChange={(e) =>
+                      setPageData({
+                        ...pageData,
+                        exploreSection: {
+                          ...(pageData.exploreSection || {}),
+                          loadMoreText: {
+                            ...(pageData.exploreSection?.loadMoreText || {}),
+                            en: e.target.value,
+                          },
+                        },
+                      })
+                    }
+                    className="w-full px-3.5 py-2 text-xs border border-slate-200 rounded-xl bg-white"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                    نص تحميل المزيد (AR)
+                  </label>
+                  <input
+                    type="text"
+                    dir="rtl"
+                    value={pageData.exploreSection?.loadMoreText?.ar ?? ''}
+                    onChange={(e) =>
+                      setPageData({
+                        ...pageData,
+                        exploreSection: {
+                          ...(pageData.exploreSection || {}),
+                          loadMoreText: {
+                            ...(pageData.exploreSection?.loadMoreText || {}),
+                            ar: e.target.value,
+                          },
+                        },
+                      })
+                    }
+                    className="w-full px-3.5 py-2 text-xs border border-slate-200 rounded-xl bg-white font-arabic"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                    Empty Filter State Title (EN)
+                  </label>
+                  <input
+                    type="text"
+                    value={pageData.exploreSection?.emptyTitle?.en ?? ''}
+                    onChange={(e) =>
+                      setPageData({
+                        ...pageData,
+                        exploreSection: {
+                          ...(pageData.exploreSection || {}),
+                          emptyTitle: {
+                            ...(pageData.exploreSection?.emptyTitle || {}),
+                            en: e.target.value,
+                          },
+                        },
+                      })
+                    }
+                    className="w-full px-3.5 py-2 text-xs border border-slate-200 rounded-xl bg-white"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                    عنوان حالة عدم وجود نتائج (AR)
+                  </label>
+                  <input
+                    type="text"
+                    dir="rtl"
+                    value={pageData.exploreSection?.emptyTitle?.ar ?? ''}
+                    onChange={(e) =>
+                      setPageData({
+                        ...pageData,
+                        exploreSection: {
+                          ...(pageData.exploreSection || {}),
+                          emptyTitle: {
+                            ...(pageData.exploreSection?.emptyTitle || {}),
+                            ar: e.target.value,
+                          },
+                        },
+                      })
+                    }
+                    className="w-full px-3.5 py-2 text-xs border border-slate-200 rounded-xl bg-white font-arabic"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                    Empty Filter State Subtitle (EN)
+                  </label>
+                  <input
+                    type="text"
+                    value={pageData.exploreSection?.emptySubtitle?.en ?? ''}
+                    onChange={(e) =>
+                      setPageData({
+                        ...pageData,
+                        exploreSection: {
+                          ...(pageData.exploreSection || {}),
+                          emptySubtitle: {
+                            ...(pageData.exploreSection?.emptySubtitle || {}),
+                            en: e.target.value,
+                          },
+                        },
+                      })
+                    }
+                    className="w-full px-3.5 py-2 text-xs border border-slate-200 rounded-xl bg-white"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                    وصف حالة عدم وجود نتائج (AR)
+                  </label>
+                  <input
+                    type="text"
+                    dir="rtl"
+                    value={pageData.exploreSection?.emptySubtitle?.ar ?? ''}
+                    onChange={(e) =>
+                      setPageData({
+                        ...pageData,
+                        exploreSection: {
+                          ...(pageData.exploreSection || {}),
+                          emptySubtitle: {
+                            ...(pageData.exploreSection?.emptySubtitle || {}),
+                            ar: e.target.value,
+                          },
+                        },
+                      })
+                    }
+                    className="w-full px-3.5 py-2 text-xs border border-slate-200 rounded-xl bg-white font-arabic"
+                  />
+                </div>
+              </div>
+            </div>
+          </SectionAccordion>
+
+          {/* 3. BLOG / NEWSLETTER SECTION (PERSICI DISPATCH) */}
+          <SectionAccordion
+            number={3}
+            title="Insights Hub • Blog & Practical Guides Newsletter (Persici Dispatch)"
+            description="Split newsletter subscription section with badge, headline, rich description, form labels, privacy disclaimer, and editorial visual"
+            isOpenDefault={false}
+            onSave={savePage}
+          >
+            <div className="space-y-5">
+              <div className="flex items-center justify-between p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+                <div>
+                  <span className="text-xs font-bold text-slate-800 block">
+                    Display Blog &amp; Practical Guides Newsletter Section on Live Page
+                  </span>
+                  <span className="text-[11px] text-slate-500">
+                    Toggle visibility of the Persici Dispatch newsletter subscription section
+                  </span>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={pageData.newsletterSection?.enabled !== false}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      newsletterSection: {
+                        ...(pageData.newsletterSection || {}),
+                        enabled: e.target.checked,
+                      },
+                    })
+                  }
+                  className="w-4 h-4 accent-persici-crimson rounded cursor-pointer"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                    Section Badge (EN)
+                  </label>
+                  <input
+                    type="text"
+                    value={pageData.newsletterSection?.badge?.en ?? ''}
+                    onChange={(e) =>
+                      setPageData({
+                        ...pageData,
+                        newsletterSection: {
+                          ...(pageData.newsletterSection || {}),
+                          badge: {
+                            ...(pageData.newsletterSection?.badge || {}),
+                            en: e.target.value,
+                          },
+                        },
+                      })
+                    }
+                    className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-semibold"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                    شارة القسم (AR)
+                  </label>
+                  <input
+                    type="text"
+                    dir="rtl"
+                    value={pageData.newsletterSection?.badge?.ar ?? ''}
+                    onChange={(e) =>
+                      setPageData({
+                        ...pageData,
+                        newsletterSection: {
+                          ...(pageData.newsletterSection || {}),
+                          badge: {
+                            ...(pageData.newsletterSection?.badge || {}),
+                            ar: e.target.value,
+                          },
+                        },
+                      })
+                    }
+                    className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-arabic font-semibold"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                    Headline (EN)
+                  </label>
+                  <input
+                    type="text"
+                    value={pageData.newsletterSection?.title?.en ?? ''}
+                    onChange={(e) =>
+                      setPageData({
+                        ...pageData,
+                        newsletterSection: {
+                          ...(pageData.newsletterSection || {}),
+                          title: {
+                            ...(pageData.newsletterSection?.title || {}),
+                            en: e.target.value,
+                          },
+                        },
+                      })
+                    }
+                    className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-bold"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                    العنوان الرئيسي (AR)
+                  </label>
+                  <input
+                    type="text"
+                    dir="rtl"
+                    value={pageData.newsletterSection?.title?.ar ?? ''}
+                    onChange={(e) =>
+                      setPageData({
+                        ...pageData,
+                        newsletterSection: {
+                          ...(pageData.newsletterSection || {}),
+                          title: {
+                            ...(pageData.newsletterSection?.title || {}),
+                            ar: e.target.value,
+                          },
+                        },
+                      })
+                    }
+                    className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-arabic font-bold"
+                  />
+                </div>
+              </div>
+
+              <RichTextEditor
+                label="Newsletter Subtitle / Pitch (Supports Text Alignment & Formatting)"
+                valueEn={pageData.newsletterSection?.subtitle?.en ?? ''}
+                valueAr={pageData.newsletterSection?.subtitle?.ar ?? ''}
+                onChangeEn={(val) =>
+                  setPageData({
+                    ...pageData,
+                    newsletterSection: {
+                      ...(pageData.newsletterSection || {}),
+                      subtitle: {
+                        ...(pageData.newsletterSection?.subtitle || {}),
+                        en: val,
+                      },
+                    },
+                  })
+                }
+                onChangeAr={(val) =>
+                  setPageData({
+                    ...pageData,
+                    newsletterSection: {
+                      ...(pageData.newsletterSection || {}),
+                      subtitle: {
+                        ...(pageData.newsletterSection?.subtitle || {}),
+                        ar: val,
+                      },
+                    },
+                  })
+                }
+              />
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                    Email Input Placeholder (EN / AR)
+                  </label>
+                  <div className="space-y-2">
+                    <input
+                      type="text"
+                      value={pageData.newsletterSection?.emailPlaceholder?.en ?? ''}
+                      onChange={(e) =>
+                        setPageData({
+                          ...pageData,
+                          newsletterSection: {
+                            ...(pageData.newsletterSection || {}),
+                            emailPlaceholder: {
+                              ...(pageData.newsletterSection?.emailPlaceholder || {}),
+                              en: e.target.value,
+                            },
+                          },
+                        })
+                      }
+                      className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg bg-white"
+                      placeholder="English placeholder"
+                    />
+                    <input
+                      type="text"
+                      dir="rtl"
+                      value={pageData.newsletterSection?.emailPlaceholder?.ar ?? ''}
+                      onChange={(e) =>
+                        setPageData({
+                          ...pageData,
+                          newsletterSection: {
+                            ...(pageData.newsletterSection || {}),
+                            emailPlaceholder: {
+                              ...(pageData.newsletterSection?.emailPlaceholder || {}),
+                              ar: e.target.value,
+                            },
+                          },
+                        })
+                      }
+                      className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg bg-white font-arabic"
+                      placeholder="النص التوضيحي للبريد"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                    Submit Button Text (EN / AR)
+                  </label>
+                  <div className="space-y-2">
+                    <input
+                      type="text"
+                      value={pageData.newsletterSection?.submitButtonText?.en ?? ''}
+                      onChange={(e) =>
+                        setPageData({
+                          ...pageData,
+                          newsletterSection: {
+                            ...(pageData.newsletterSection || {}),
+                            submitButtonText: {
+                              ...(pageData.newsletterSection?.submitButtonText || {}),
+                              en: e.target.value,
+                            },
+                          },
+                        })
+                      }
+                      className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg bg-white"
+                      placeholder="Subscribe"
+                    />
+                    <input
+                      type="text"
+                      dir="rtl"
+                      value={pageData.newsletterSection?.submitButtonText?.ar ?? ''}
+                      onChange={(e) =>
+                        setPageData({
+                          ...pageData,
+                          newsletterSection: {
+                            ...(pageData.newsletterSection || {}),
+                            submitButtonText: {
+                              ...(pageData.newsletterSection?.submitButtonText || {}),
+                              ar: e.target.value,
+                            },
+                          },
+                        })
+                      }
+                      className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg bg-white font-arabic"
+                      placeholder="اشترك الآن"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                    Success Confirmation Message (EN / AR)
+                  </label>
+                  <div className="space-y-2">
+                    <input
+                      type="text"
+                      value={pageData.newsletterSection?.successMessage?.en ?? ''}
+                      onChange={(e) =>
+                        setPageData({
+                          ...pageData,
+                          newsletterSection: {
+                            ...(pageData.newsletterSection || {}),
+                            successMessage: {
+                              ...(pageData.newsletterSection?.successMessage || {}),
+                              en: e.target.value,
+                            },
+                          },
+                        })
+                      }
+                      className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg bg-white"
+                      placeholder="English confirmation"
+                    />
+                    <input
+                      type="text"
+                      dir="rtl"
+                      value={pageData.newsletterSection?.successMessage?.ar ?? ''}
+                      onChange={(e) =>
+                        setPageData({
+                          ...pageData,
+                          newsletterSection: {
+                            ...(pageData.newsletterSection || {}),
+                            successMessage: {
+                              ...(pageData.newsletterSection?.successMessage || {}),
+                              ar: e.target.value,
+                            },
+                          },
+                        })
+                      }
+                      className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg bg-white font-arabic"
+                      placeholder="رسالة التأكيد بالعربية"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <RichTextEditor
+                label="Privacy Disclaimer Copy (Supports Links & Formatting)"
+                valueEn={pageData.newsletterSection?.privacyDisclaimer?.en ?? ''}
+                valueAr={pageData.newsletterSection?.privacyDisclaimer?.ar ?? ''}
+                onChangeEn={(val) =>
+                  setPageData({
+                    ...pageData,
+                    newsletterSection: {
+                      ...(pageData.newsletterSection || {}),
+                      privacyDisclaimer: {
+                        ...(pageData.newsletterSection?.privacyDisclaimer || {}),
+                        en: val,
+                      },
+                    },
+                  })
+                }
+                onChangeAr={(val) =>
+                  setPageData({
+                    ...pageData,
+                    newsletterSection: {
+                      ...(pageData.newsletterSection || {}),
+                      privacyDisclaimer: {
+                        ...(pageData.newsletterSection?.privacyDisclaimer || {}),
+                        ar: val,
+                      },
+                    },
+                  })
+                }
+              />
+
+              {/* Newsletter Image & Alt */}
+              <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-3">
+                <label className="block text-xs font-bold text-slate-700 uppercase">
+                  Newsletter Editorial Feature Image
+                </label>
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                  {(pageData.newsletterSection?.image || insightsHubPageData.newsletterSection.image) && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={pageData.newsletterSection?.image || insightsHubPageData.newsletterSection.image}
+                      alt={pageData.newsletterSection?.imageAlt?.en || 'Newsletter feature preview'}
+                      className="w-20 h-20 object-cover rounded-xl border border-slate-200 shrink-0 bg-slate-900"
+                    />
+                  )}
+                  <div className="flex-1 w-full flex flex-col sm:flex-row gap-3">
+                    <input
+                      type="text"
+                      value={
+                        pageData.newsletterSection?.image ??
+                        insightsHubPageData.newsletterSection.image
+                      }
+                      onChange={(e) =>
+                        setPageData({
+                          ...pageData,
+                          newsletterSection: {
+                            ...(pageData.newsletterSection || {}),
+                            image: e.target.value,
+                          },
+                        })
+                      }
+                      className="flex-1 px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-mono"
+                    />
+                    <button
+                      type="button"
+                      onClick={() =>
+                        openMediaPicker(
+                          (url: string) =>
+                            setPageData({
+                              ...pageData,
+                              newsletterSection: {
+                                ...(pageData.newsletterSection || {}),
+                                image: url,
+                              },
+                            }),
+                          'image'
+                        )
+                      }
+                      className="px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-semibold flex items-center gap-2 shrink-0"
+                    >
+                      <TbPhoto className="w-4 h-4" />
+                      <span>Browse R2 Media</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-[11px] font-bold text-slate-600 uppercase mb-1">
+                      Image Alt Text (EN)
+                    </label>
+                    <input
+                      type="text"
+                      value={pageData.newsletterSection?.imageAlt?.en ?? ''}
+                      onChange={(e) =>
+                        setPageData({
+                          ...pageData,
+                          newsletterSection: {
+                            ...(pageData.newsletterSection || {}),
+                            imageAlt: {
+                              ...(pageData.newsletterSection?.imageAlt || {}),
+                              en: e.target.value,
+                            },
+                          },
+                        })
+                      }
+                      className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg bg-white"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-bold text-slate-600 uppercase mb-1">
+                      النص البديل للصورة (AR)
+                    </label>
+                    <input
+                      type="text"
+                      dir="rtl"
+                      value={pageData.newsletterSection?.imageAlt?.ar ?? ''}
+                      onChange={(e) =>
+                        setPageData({
+                          ...pageData,
+                          newsletterSection: {
+                            ...(pageData.newsletterSection || {}),
+                            imageAlt: {
+                              ...(pageData.newsletterSection?.imageAlt || {}),
+                              ar: e.target.value,
+                            },
+                          },
+                        })
+                      }
+                      className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg bg-white font-arabic"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </SectionAccordion>
+
+          {/* 4. SHARED BOTTOM CONTACT SECTION */}
+          <SectionAccordion
+            number={4}
+            title="Insights Hub • Shared Bottom Contact Section"
+            description="Toggle visibility of the bottom lead-generation contact section on the Insights Hub page"
+            isOpenDefault={false}
+            onSave={savePage}
+          >
+            <div className="space-y-4">
+              <div className="flex items-center justify-between p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+                <div>
+                  <span className="text-xs font-bold text-slate-800 block">
+                    Display Shared Bottom Contact Section on Live Insights Hub Page
+                  </span>
+                  <span className="text-[11px] text-slate-500">
+                    Toggle visibility of the bottom lead-generation contact form on the Insights Hub page
+                  </span>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={pageData.contactSection?.enabled !== false}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      contactSection: {
+                        ...(pageData.contactSection || {}),
+                        enabled: e.target.checked,
+                      },
+                    })
+                  }
+                  className="w-4 h-4 accent-persici-crimson rounded cursor-pointer"
+                />
+              </div>
+
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-xl bg-slate-50 border border-slate-200">
+                <div>
+                  <h4 className="text-xs font-bold text-slate-900">
+                    Shared Bottom Contact Form &amp; Advisor Cards
+                  </h4>
+                  <p className="text-xs text-slate-600 mt-0.5">
+                    To edit its form fields, labels, or advisor cards globally, open the Shared Contact Section manager.
+                  </p>
+                </div>
+                <Link
+                  href={`/${lang}/dashboard/shared-contact`}
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-900 text-white text-xs font-semibold hover:bg-slate-800 transition-colors shrink-0"
+                >
+                  <TbExternalLink className="w-4 h-4" />
+                  <span>Edit Shared Contact Section</span>
+                </Link>
+              </div>
+            </div>
+          </SectionAccordion>
+        </div>
+      )}
+
+      {/* =================================================================== */}
       {/* 6. UNIVERSAL / CUSTOM SECTIONS FALLBACK BUILDER                     */}
       {/* =================================================================== */}
-      {!['home', 'about', 'solutions', 'contact', 'client-stories', 'careers'].includes(slug) && (
+      {!['home', 'about', 'solutions', 'contact', 'client-stories', 'careers', 'insights'].includes(slug) &&
+        !isSolutionPageSlug(slug) && (
         <div className="space-y-4">
           <SectionAccordion
             number={1}

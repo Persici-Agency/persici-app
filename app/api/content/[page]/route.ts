@@ -6,6 +6,13 @@ import {
   normalizeContactPageData,
   normalizeClientStoriesPageData,
   normalizeCareersPageData,
+  normalizeInsightsPageData,
+  getInsightsPageData,
+  getSolutionsPageData,
+  getSolutionFeaturePageData,
+  normalizeSolutionsHubPageData,
+  normalizeSolutionFeaturePageData,
+  isSolutionPageSlug,
 } from '@shared/services/db.service';
 import { getSessionUser } from '@/lib/auth/jwt';
 import { isRoleAllowed } from '@/lib/auth/rbac';
@@ -23,6 +30,7 @@ import { aboutPageData } from '@/app/[lang]/(site)/about/_about/data/about.data'
 import { contactPageData } from '@/app/[lang]/(site)/contact/_contact/data/contact.data';
 import { clientStoriesHubPageData } from '@/app/[lang]/(site)/client-stories/_client-stories/data/client-stories.data';
 import { careersHubData } from '@/app/[lang]/(site)/careers/_careers/data/careers.data';
+import { insightsHubPageData } from '@/app/[lang]/(site)/insights/_insights/data/insights.data';
 
 export const runtime = 'nodejs';
 
@@ -37,6 +45,7 @@ const FALLBACK_PAGES: Record<string, object> = {
   'how-we-do-it': howWeDoItPageContent,
   about: aboutPageData,
   careers: careersHubData,
+  insights: insightsHubPageData,
   'shared-contact': defaultSharedContactData,
   'contact-section': defaultSharedContactData,
 };
@@ -51,6 +60,34 @@ export async function GET(
 ) {
   try {
     const { page } = await params;
+
+    if (page === 'insights') {
+      const content = await getInsightsPageData();
+      return NextResponse.json({
+        success: true,
+        page,
+        content,
+      });
+    }
+
+    if (page === 'solutions') {
+      const content = await getSolutionsPageData();
+      return NextResponse.json({
+        success: true,
+        page,
+        content,
+      });
+    }
+
+    if (isSolutionPageSlug(page)) {
+      const content = await getSolutionFeaturePageData(page);
+      return NextResponse.json({
+        success: true,
+        page,
+        content,
+      });
+    }
+
     const fallback = FALLBACK_PAGES[page] || {};
 
     const rawContent = await getPageContent(page, fallback);
@@ -63,7 +100,9 @@ export async function GET(
             ? normalizeClientStoriesPageData(rawContent)
             : page === 'careers'
               ? normalizeCareersPageData(rawContent)
-              : rawContent;
+              : page === 'insights'
+                ? normalizeInsightsPageData(rawContent)
+                : rawContent;
     return NextResponse.json({
       success: true,
       page,
@@ -107,7 +146,19 @@ export async function PUT(
       );
     }
 
-    const updated = await updatePageContent(page, body);
+    const rawPayload =
+      body.content && typeof body.content === 'object' && !body.hero
+        ? body.content
+        : body;
+
+    const payload =
+      page === 'solutions'
+        ? normalizeSolutionsHubPageData(rawPayload)
+        : isSolutionPageSlug(page)
+          ? normalizeSolutionFeaturePageData(page, rawPayload)
+          : rawPayload;
+
+    const updated = await updatePageContent(page, payload);
 
     // Trigger instant cache revalidation across EN and AR routes
     if (updated) {

@@ -3,149 +3,193 @@
 import React from 'react';
 import { FeaturedClientStories, InsightsSection, FaqSection, ClientReviewSection } from '@shared';
 import type { Dictionary } from '@dictionaries';
-import { uxProductDesignData } from '../data/ux-product-design.data';
+import {
+  getDefaultSolutionFeatureCmsData,
+  type SolutionFeatureCmsData,
+} from '../../../_solutions/data/solutions-cms.data';
 import { UxOfferingsGrid } from './ux-offerings-grid';
 import { UxVerticalsSection } from './ux-verticals-section';
 import { UxTechStackSection } from './ux-tech-stack-section';
 import { SolutionsHeroSection } from '../../../_solutions/components/solutions-hero-section';
 import { SolutionsWhyItMatters } from '../../../_solutions/components/solutions-why-it-matters';
 import { SolutionsBenefitsStrip } from '../../../_solutions/components/solutions-benefits-strip';
-
 import { SolutionsDeliveryEngine } from '../../../_solutions/components/solutions-delivery-engine';
-
-
 import { HomeContactSection } from '../../../../_home/components/home-contact-section';
 
-interface UxProductDesignViewProps {
+export interface UxProductDesignViewProps {
   lang: string;
   dict: Dictionary;
+  data?: SolutionFeatureCmsData;
 }
 
-export function UxProductDesignView({ lang, dict }: UxProductDesignViewProps) {
-  const isRtl = lang === 'ar';
-  const data = uxProductDesignData;
+export function UxProductDesignView({ lang, dict, data: propData }: UxProductDesignViewProps) {
+  const l = lang as 'en' | 'ar';
+  const data = propData || getDefaultSolutionFeatureCmsData('ux-and-product-design');
 
-  const offeringsTitle = data.offeringsTitle[lang as 'en' | 'ar'] || data.offeringsTitle.en;
-  const offeringsSubtitle = data.offeringsSubtitle[lang as 'en' | 'ar'] || data.offeringsSubtitle.en;
+  const offeringsBadge = data.offeringsBadge?.[l] || data.offeringsBadge?.en;
+  const offeringsTitle = data.offeringsTitle[l] || data.offeringsTitle.en;
+  const offeringsSubtitle = data.offeringsSubtitle[l] || data.offeringsSubtitle.en;
 
-  const whyTitle = data.whyItMatters.title[lang as 'en' | 'ar'] || data.whyItMatters.title.en;
-  const whyText = data.whyItMatters.text[lang as 'en' | 'ar'] || data.whyItMatters.text.en;
+  const whyTitle = data.whyItMatters.title[l] || data.whyItMatters.title.en;
+  const whyText = data.whyItMatters.text[l] || data.whyItMatters.text.en;
 
-  const benefitsTitle = data.benefitsStrip.title[lang as 'en' | 'ar'] || data.benefitsStrip.title.en;
+  const benefitsTitle = data.benefitsStrip.title[l] || data.benefitsStrip.title.en;
 
-  const verticalsTitle = data.verticalsTitle[lang as 'en' | 'ar'] || data.verticalsTitle.en;
-  const verticalsSubtitle = data.verticalsSubtitle[lang as 'en' | 'ar'] || data.verticalsSubtitle.en;
+  const verticalsBadge = data.verticalsBadge?.[l] || data.verticalsBadge?.en;
+  const verticalsTitle = data.verticalsTitle[l] || data.verticalsTitle.en;
+  const verticalsSubtitle = data.verticalsSubtitle[l] || data.verticalsSubtitle.en;
 
-  const techTitle = data.techStackTitle[lang as 'en' | 'ar'] || data.techStackTitle.en;
-  const techSubtitle = data.techStackSubtitle[lang as 'en' | 'ar'] || data.techStackSubtitle.en;
+  const techBadge = data.techStackBadge?.[l] || data.techStackBadge?.en;
+  const techTitle = data.techStackTitle[l] || data.techStackTitle.en;
+  const techSubtitle = data.techStackSubtitle[l] || data.techStackSubtitle.en;
 
-  const deliveryTitle = data.delivery.title[lang as 'en' | 'ar'] || data.delivery.title.en;
-  const deliverySubtitle = data.delivery.subtitle[lang as 'en' | 'ar'] || data.delivery.subtitle.en;
+  const deliveryTitle = data.delivery.title[l] || data.delivery.title.en;
+  const deliverySubtitle = data.delivery.subtitle[l] || data.delivery.subtitle.en;
 
-  const faqsTitle = data.faqsTitle[lang as 'en' | 'ar'] || data.faqsTitle.en;
-  const faqsSubtitle = data.faqsSubtitle[lang as 'en' | 'ar'] || data.faqsSubtitle.en;
+  const faqsTitle = data.faqsTitle[l] || data.faqsTitle.en;
+  const faqsSubtitle = data.faqsSubtitle[l] || data.faqsSubtitle.en;
+
+  const csConfig = data.clientStoriesConfig;
+  const insConfig = data.insightsConfig;
 
   return (
     <div className="flex flex-col min-h-screen">
       {/* 1. Hero Banner */}
-      <SolutionsHeroSection
-        title={data.hero.title}
-        subtitle={data.hero.subtitle}
-        tag={data.hero.tag}
-        secondaryTag={data.hero.secondaryTag}
-        image={data.hero.image}
-        ctaText={data.hero.ctaText}
-        ctaHref={data.hero.ctaHref}
-        lang={lang}
-      />
+      {data.hero.enabled !== false && (
+        <SolutionsHeroSection
+          title={data.hero.title}
+          subtitle={data.hero.subtitle}
+          tag={data.hero.tag}
+          secondaryTag={data.hero.secondaryTag}
+          image={data.hero.image}
+          ctaText={data.hero.ctaText}
+          ctaHref={data.hero.ctaHref}
+          lang={lang}
+        />
+      )}
 
-      {/* 2. Core Capabilities Grid (6 Cards, Responsive 3-col with Centered Remainder) */}
-      <UxOfferingsGrid
-        offerings={data.offerings}
-        title={offeringsTitle}
-        subtitle={offeringsSubtitle}
-        lang={lang}
-      />
+      {/* 2. Core Capabilities Grid */}
+      {data.offeringsEnabled !== false && (
+        <UxOfferingsGrid
+          badge={offeringsBadge}
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          offerings={data.offerings as any}
+          title={offeringsTitle}
+          subtitle={offeringsSubtitle}
+          lang={lang}
+        />
+      )}
 
-      {/* 3. Why It Matters (Split Layout + Image) */}
-      <SolutionsWhyItMatters
-        title={whyTitle}
-        text={whyText}
-        image={data.whyItMatters.image}
-        lang={lang}
-      />
+      {/* 3. Why It Matters */}
+      {data.whyItMatters.enabled !== false && (
+        <SolutionsWhyItMatters
+          title={whyTitle}
+          text={whyText}
+          image={data.whyItMatters.image}
+          metric1Val={data.whyItMatters.metric1Val}
+          metric1Label={data.whyItMatters.metric1Label}
+          metric2Val={data.whyItMatters.metric2Val}
+          metric2Label={data.whyItMatters.metric2Label}
+          lang={lang}
+        />
+      )}
 
-      {/* 4. Strategic Benefits Strip (Banner with 4 Strategic Pillars) */}
-      <SolutionsBenefitsStrip
-        title={benefitsTitle}
-        image={data.benefitsStrip.image}
-        benefits={data.benefitsStrip.benefits}
-        lang={lang}
-      />
+      {/* 4. Strategic Benefits Strip */}
+      {data.benefitsStrip.enabled !== false && (
+        <SolutionsBenefitsStrip
+          title={benefitsTitle}
+          image={data.benefitsStrip.image}
+          benefits={data.benefitsStrip.benefits}
+          lang={lang}
+        />
+      )}
 
-      {/* 5. Domain Verticals (01-05 Monospace Badges & Checklists) */}
-      <UxVerticalsSection
-        verticals={data.verticals}
-        title={verticalsTitle}
-        subtitle={verticalsSubtitle}
-        lang={lang}
-      />
+      {/* 5. Domain Verticals */}
+      {data.verticalsEnabled !== false && (
+        <UxVerticalsSection
+          badge={verticalsBadge}
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          verticals={data.verticals as any}
+          title={verticalsTitle}
+          subtitle={verticalsSubtitle}
+          lang={lang}
+        />
+      )}
 
-      {/* 6. Technology Stack (Dark #0E121B Matrix) */}
-      <UxTechStackSection
-        pods={data.techStackPods}
-        title={techTitle}
-        subtitle={techSubtitle}
-        lang={lang}
-      />
+      {/* 6. Technology Stack */}
+      {data.techStackEnabled !== false && (
+        <UxTechStackSection
+          badge={techBadge}
+          pods={data.techStackPods}
+          title={techTitle}
+          subtitle={techSubtitle}
+          lang={lang}
+        />
+      )}
 
-      {/* 7. Featured Client Stories (Stacked Sticky Cards + Scroll Scale-Out) */}
-      <FeaturedClientStories
-        stories={data.clientStories}
-        sectionBadge={isRtl ? 'قصص النجاح المميزة' : 'Featured Client Stories'}
-        sectionTitle={isRtl ? 'تجارب رقمية استثنائية ونمو متسارع في التحويل' : 'Transformative Digital Products & Proven User Growth'}
-        sectionSubtitle={isRtl ? 'اكتشف كيف ساهمت منهجية بيرسيشي في تصميم المنتجات في مضاعفة تحويلات كبرى المنصات والعلامات الإقليمية.' : 'See how human-centered UX architecture and living design systems scale top regional and global digital brands.'}
-        lang={lang}
-      />
+      {/* 7. Featured Client Stories */}
+      {csConfig?.enabled !== false && (
+        <FeaturedClientStories
+          stories={data.clientStories}
+          sectionBadge={csConfig?.badge}
+          sectionTitle={csConfig?.title}
+          sectionSubtitle={csConfig?.subtitle}
+          lang={lang}
+        />
+      )}
 
-      {/* 8. How We Deliver Differently (Diagonal Brand Gradient) */}
-      <SolutionsDeliveryEngine
-        title={deliveryTitle}
-        subtitle={deliverySubtitle}
-        image={data.delivery.image}
-        pillars={data.delivery.pillars}
-        lang={lang}
-      />
+      {/* 8. How We Deliver Differently */}
+      {data.delivery.enabled !== false && (
+        <SolutionsDeliveryEngine
+          badge={data.delivery.badge}
+          title={deliveryTitle}
+          subtitle={deliverySubtitle}
+          image={data.delivery.image}
+          pillars={data.delivery.pillars}
+          lang={lang}
+        />
+      )}
 
-      {/* 9. Solutions Insights (Dynamic 2-Card ContentCarousel) */}
-      <InsightsSection
-        items={data.insights}
-        title={isRtl ? 'رؤى وأفكار في تصميم المنتجات وتجربة المستخدم' : 'Insights & Strategic Product Architecture'}
-        subtitle={isRtl ? 'أحدث الدراسات العملية لمنهجيات التصميم، وتقليل الإرهاق المعرفي، وربط فيجما بكود الواجهات.' : 'Actionable playbooks on living design systems, cognitive friction elimination, and Figma-to-code architectures.'}
-        lang={lang}
-      />
+      {/* 9. Solutions Insights */}
+      {insConfig?.enabled !== false && (
+        <InsightsSection
+          items={data.insights}
+          title={insConfig?.title}
+          subtitle={insConfig?.subtitle}
+          ctaText={insConfig?.ctaText}
+          ctaHref={insConfig?.ctaHref}
+          lang={lang}
+        />
+      )}
 
       {/* 10. Executive Client Review */}
-      <ClientReviewSection
-        quoteText={data.clientReview.quote}
-        quoteAuthor={data.clientReview.author}
-        quoteRole={data.clientReview.role}
-        badge={data.clientReview.badge}
-        lang={lang}
-      />
+      {data.clientReview.enabled !== false && (
+        <ClientReviewSection
+          quoteText={data.clientReview.quote}
+          quoteAuthor={data.clientReview.author}
+          quoteRole={data.clientReview.role}
+          quoteAvatar={data.clientReview.avatar}
+          badge={data.clientReview.badge}
+          lang={lang}
+        />
+      )}
 
       {/* 11. Enterprise FAQs Accordion */}
-      <FaqSection
-        faqs={data.faqs}
-        title={faqsTitle}
-        subtitle={faqsSubtitle}
-        lang={lang}
-      />
+      {data.faqsEnabled !== false && (
+        <FaqSection
+          faqs={data.faqs}
+          title={faqsTitle}
+          subtitle={faqsSubtitle}
+          lang={lang}
+        />
+      )}
 
       {/* 12. Global Contact Section */}
-      <div id="contact">
-        <HomeContactSection dict={dict} lang={lang} />
-      </div>
+      {data.contactEnabled !== false && (
+        <div id="contact">
+          <HomeContactSection dict={dict} lang={lang} />
+        </div>
+      )}
     </div>
   );
 }

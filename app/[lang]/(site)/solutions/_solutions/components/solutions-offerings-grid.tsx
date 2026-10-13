@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState } from 'react';
 import Link from 'next/link';
@@ -32,9 +32,16 @@ export function SolutionsOfferingsGrid({
           <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-slate-900">
             {title}
           </h2>
-          <p className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed">
-            {subtitle}
-          </p>
+          {/<[a-z][\s\S]*>/i.test(subtitle || '') ? (
+            <div
+              className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed [&_p]:mb-2 [&_p:last-child]:mb-0"
+              dangerouslySetInnerHTML={{ __html: subtitle }}
+            />
+          ) : (
+            <p className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed">
+              {subtitle}
+            </p>
+          )}
         </FadeUp>
 
         {/* 4 Cards Per Row on Wide Screens, Compact Sizing & Center Justification */}
@@ -102,9 +109,16 @@ export function SolutionsOfferingsGrid({
 
                     {/* Bottom: Description + Kinetic Link */}
                     <div>
-                      <p className="text-xs sm:text-[12px] leading-relaxed text-slate-600 line-clamp-3 mb-5">
-                        {itemDesc}
-                      </p>
+                      {/<[a-z][\s\S]*>/i.test(itemDesc || '') ? (
+                        <div
+                          className="text-xs sm:text-[12px] leading-relaxed text-slate-600 line-clamp-3 mb-5 [&_p]:mb-1"
+                          dangerouslySetInnerHTML={{ __html: itemDesc }}
+                        />
+                      ) : (
+                        <p className="text-xs sm:text-[12px] leading-relaxed text-slate-600 line-clamp-3 mb-5">
+                          {itemDesc}
+                        </p>
+                      )}
 
                       <div className="pt-3 border-t border-persici-black/5">
                         <Link

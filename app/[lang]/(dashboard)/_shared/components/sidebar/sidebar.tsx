@@ -147,6 +147,7 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
     contact: isRtl ? 'اتصل بنا' : 'Contact Us',
     clientStories: isRtl ? 'قصص النجاح' : 'Client Stories Hub',
     careersPage: isRtl ? 'بوابة الوظائف (Careers Hub)' : 'Careers Hub Page',
+    insightsPage: isRtl ? 'بوابة الرؤى والأبحاث (Insights Hub)' : 'Insights Hub Page',
     solutions: isRtl ? 'الحلول (10)' : 'Solutions (10)',
     solutionsHub: isRtl ? 'الرئيسية للحلول' : 'Overview Hub',
     aiIntegration: isRtl ? 'تكامل الذكاء الاصطناعي' : 'AI Integration',
@@ -358,6 +359,16 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
                   }`}
                 >
                   {t.careersPage}
+                </Link>
+                <Link
+                  href={getHref(`/${lang}/dashboard/pages/insights`)}
+                  className={`block px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                    isActive('/dashboard/pages/insights')
+                      ? 'bg-white/15 text-white font-semibold'
+                      : 'text-white/60 hover:text-white'
+                  }`}
+                >
+                  {t.insightsPage}
                 </Link>
 
                 {/* Sub-Accordion: Solutions */}

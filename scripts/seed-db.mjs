@@ -108,24 +108,24 @@ async function seed() {
     );
     console.log(`   ✓ Root Admin Account configured: ${adminEmail}`);
 
-    // Dynamic import of master shared data, about data, contact data, client stories data, & careers data
+    // Dynamic import of master shared data, about data, contact data, client stories data, careers data, & insights data
     const sharedDataModule = await import('../app/[lang]/(site)/_shared/data.ts');
     const aboutDataModule = await import('../app/[lang]/(site)/about/_about/data/about.data.ts');
     const contactDataModule = await import('../app/[lang]/(site)/contact/_contact/data/contact.data.ts');
     const clientStoriesModule = await import('../app/[lang]/(site)/client-stories/_client-stories/data/client-stories.data.ts');
     const careersDataModule = await import('../app/[lang]/(site)/careers/_careers/data/careers.data.ts');
+    const insightsDataModule = await import('../app/[lang]/(site)/insights/_insights/data/insights.data.ts');
+    const solutionsCmsModule = await import('../app/[lang]/(site)/solutions/_solutions/data/solutions-cms.data.ts');
     const {
       homePageContent,
       servicesPageContent,
       workPageContent,
-      solutionsPageContent,
       solutionsOfferingsList,
       industriesPageContent,
       industriesOfferingsList,
       howWeDoItPageContent,
       howWeDoItOfferingsList,
       servicesList,
-      insightsArticles,
       clientLogos,
       reviewsList,
       defaultTestimonials,
@@ -136,6 +136,16 @@ async function seed() {
     const { contactPageData } = contactDataModule;
     const { clientStoriesData, clientStoriesHubPageData } = clientStoriesModule;
     const { careersHubData, careerOpenings } = careersDataModule;
+    const {
+      insightsData,
+      insightsHubPageData,
+      DEFAULT_INSIGHT_SECTION_VISIBILITY,
+    } = insightsDataModule;
+    const {
+      defaultSolutionsHubCmsData,
+      SOLUTION_FEATURE_SLUGS,
+      getDefaultSolutionFeatureCmsData,
+    } = solutionsCmsModule;
 
     // 1. Seed Page Contents
     console.log('\n📄 Seeding page_contents collection...');
@@ -149,8 +159,13 @@ async function seed() {
       { page: 'work', data: workPageContent },
       { page: 'client-stories', data: clientStoriesHubPageData },
       { page: 'careers', data: careersHubData },
+      { page: 'insights', data: insightsHubPageData },
       { page: 'contact', data: contactPageData },
-      { page: 'solutions', data: solutionsPageContent },
+      { page: 'solutions', data: defaultSolutionsHubCmsData },
+      ...SOLUTION_FEATURE_SLUGS.map((slug) => ({
+        page: `solutions-${slug}`,
+        data: getDefaultSolutionFeatureCmsData(slug),
+      })),
       { page: 'industries', data: industriesPageContent },
       { page: 'how-we-do-it', data: howWeDoItPageContent },
       { page: 'shared-contact', data: defaultSharedContactData },
@@ -271,20 +286,47 @@ async function seed() {
     }
     console.log(`   ✓ Seeded ${servicesList.length} growth services.`);
 
-    // 6. Seed Insights Articles
+    // 6. Seed Insights Articles (Canonical 9 Persici Thought Leadership & Research Articles)
     console.log('\n📰 Seeding insights articles collection...');
     const insightsCol = db.collection('insights');
     await insightsCol.createIndex({ slug: 1 }, { unique: true });
-    for (const item of insightsArticles) {
-      const { id, ...rest } = item;
-      void id;
+
+    // Remove legacy fake placeholder insight items
+    const legacyFakeInsightSlugs = [
+      'scaling-meta-ads-2026',
+      'shopify-headless-cro',
+      'first-party-data-retention',
+    ];
+    const delInsightsRes = await insightsCol.deleteMany({
+      slug: { $in: legacyFakeInsightSlugs },
+    });
+    if (delInsightsRes.deletedCount > 0) {
+      console.log(`   ✓ Purged ${delInsightsRes.deletedCount} legacy placeholder insight records.`);
+    }
+
+    for (let idx = 0; idx < insightsData.length; idx++) {
+      const item = insightsData[idx];
       await insightsCol.updateOne(
         { slug: item.slug },
-        { $set: { ...rest, updatedAt: new Date() }, $setOnInsert: { createdAt: new Date() } },
+        {
+          $set: {
+            ...item,
+            isActive: item.isActive !== false,
+            sectionVisibility: {
+              ...DEFAULT_INSIGHT_SECTION_VISIBILITY,
+              ...(item.sectionVisibility || {}),
+            },
+            sortOrder: idx + 1,
+            updatedAt: new Date(baseTime - idx * 1000),
+          },
+          $setOnInsert: {
+            createdAt: new Date(baseTime - idx * 1000),
+          },
+        },
         { upsert: true }
       );
     }
-    console.log(`   ✓ Seeded ${insightsArticles.length} insight articles.`);
+    console.log(`   ✓ Seeded ${insightsData.length} real Persici insight & research articles.`);
 
     // 7. Seed Client Logos (Canonical sequence)
     console.log('\n🤝 Seeding client_logos collection...');

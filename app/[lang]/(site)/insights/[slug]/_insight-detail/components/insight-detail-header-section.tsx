@@ -1,8 +1,9 @@
-﻿'use client';
+'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
-import type { InsightDetail } from '../../../_insights/types';
+import type { InsightDetail, InsightSectionVisibility } from '../../../_insights/types';
+import { DEFAULT_INSIGHT_SECTION_VISIBILITY } from '../../../_insights/data/insights.data';
 import { sectionContainer } from '@shared/constants';
 import { FadeUp } from '@shared/components';
 import {
@@ -22,6 +23,7 @@ import {
 export interface InsightDetailHeaderSectionProps {
   insight: InsightDetail;
   lang: string;
+  visibility?: InsightSectionVisibility;
 }
 
 const monthsEnToAr: Record<string, string> = {
@@ -53,16 +55,28 @@ function formatDisplayDate(dateStr: string | undefined, isRtl: boolean): string 
   return localized;
 }
 
-export function InsightDetailHeaderSection({ insight, lang }: InsightDetailHeaderSectionProps) {
+export function InsightDetailHeaderSection({
+  insight,
+  lang,
+  visibility,
+}: InsightDetailHeaderSectionProps) {
   const isRtl = lang === 'ar';
+  const vis = {
+    ...DEFAULT_INSIGHT_SECTION_VISIBILITY,
+    ...(insight.sectionVisibility || {}),
+    ...(visibility || {}),
+  };
+
   const [copied, setCopied] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   const title = insight.title[lang as 'en' | 'ar'] || insight.title.en;
-  const subtitle = insight.subtitle
-    ? insight.subtitle[lang as 'en' | 'ar'] || insight.subtitle.en
-    : null;
+  const subtitle =
+    vis.showSubtitle !== false && insight.subtitle
+      ? insight.subtitle[lang as 'en' | 'ar'] || insight.subtitle.en
+      : null;
+  const isSubtitleHtml = subtitle ? /<[a-z][\s\S]*>/i.test(subtitle) : false;
   const categoryLabel = insight.category[lang as 'en' | 'ar'] || insight.category.en;
 
   // Close dropdown on outside click
@@ -139,6 +153,12 @@ export function InsightDetailHeaderSection({ insight, lang }: InsightDetailHeade
     }
   };
 
+  const showMetadataRow =
+    vis.showDate !== false ||
+    vis.showCategoryBadge !== false ||
+    vis.showReadTime !== false ||
+    vis.showShareMenu !== false;
+
   return (
     <header
       dir={isRtl ? 'rtl' : 'ltr'}
@@ -147,77 +167,79 @@ export function InsightDetailHeaderSection({ insight, lang }: InsightDetailHeade
       <div className={sectionContainer}>
         <div className="max-w-4xl mx-auto">
           {/* Breadcrumb Navigation Sequence */}
-          <FadeUp delay={0} duration={600} distance={12}>
-            <nav aria-label={isRtl ? 'مسار التنقل' : 'Breadcrumb'} className="mb-6">
-              <ol className="flex items-center flex-wrap gap-1.5 sm:gap-2 text-xs sm:text-[12px] font-medium text-slate-500">
-                {/* 1. Home */}
-                <li className="inline-flex items-center">
-                  <Link
-                    href={`/${lang}`}
-                    className="inline-flex items-center gap-1.5 hover:text-persici-crimson transition-colors cursor-pointer"
+          {vis.showBreadcrumbs !== false && (
+            <FadeUp delay={0} duration={600} distance={12}>
+              <nav aria-label={isRtl ? 'مسار التنقل' : 'Breadcrumb'} className="mb-6">
+                <ol className="flex items-center flex-wrap gap-1.5 sm:gap-2 text-xs sm:text-[12px] font-medium text-slate-500">
+                  {/* 1. Home */}
+                  <li className="inline-flex items-center">
+                    <Link
+                      href={`/${lang}`}
+                      className="inline-flex items-center gap-1.5 hover:text-persici-crimson transition-colors cursor-pointer"
+                    >
+                      <TbHome className="h-3.5 w-3.5 shrink-0" />
+                      <span>{isRtl ? 'الرئيسية' : 'Home'}</span>
+                    </Link>
+                  </li>
+
+                  {/* Separator */}
+                  <li aria-hidden="true" className="text-slate-300 select-none">
+                    {isRtl ? (
+                      <TbChevronLeft className="h-3.5 w-3.5" />
+                    ) : (
+                      <TbChevronRight className="h-3.5 w-3.5" />
+                    )}
+                  </li>
+
+                  {/* 2. Insights */}
+                  <li className="inline-flex items-center">
+                    <Link
+                      href={`/${lang}/insights`}
+                      className="hover:text-persici-crimson transition-colors cursor-pointer"
+                    >
+                      {isRtl ? 'الرؤى والدراسات' : 'Insights'}
+                    </Link>
+                  </li>
+
+                  {/* Separator */}
+                  <li aria-hidden="true" className="text-slate-300 select-none">
+                    {isRtl ? (
+                      <TbChevronLeft className="h-3.5 w-3.5" />
+                    ) : (
+                      <TbChevronRight className="h-3.5 w-3.5" />
+                    )}
+                  </li>
+
+                  {/* 3. Category */}
+                  <li className="inline-flex items-center">
+                    <Link
+                      href={`/${lang}/insights#explore`}
+                      className="hover:text-persici-crimson transition-colors cursor-pointer"
+                    >
+                      {categoryLabel}
+                    </Link>
+                  </li>
+
+                  {/* Separator */}
+                  <li aria-hidden="true" className="text-slate-300 select-none">
+                    {isRtl ? (
+                      <TbChevronLeft className="h-3.5 w-3.5" />
+                    ) : (
+                      <TbChevronRight className="h-3.5 w-3.5" />
+                    )}
+                  </li>
+
+                  {/* 4. Current Article Title */}
+                  <li
+                    aria-current="page"
+                    className="inline-flex items-center font-semibold text-slate-900 max-w-[180px] sm:max-w-[320px] md:max-w-[420px] truncate"
                   >
-                    <TbHome className="h-3.5 w-3.5 shrink-0" />
-                    <span>{isRtl ? 'الرئيسية' : 'Home'}</span>
-                  </Link>
-                </li>
-
-                {/* Separator */}
-                <li aria-hidden="true" className="text-slate-300 select-none">
-                  {isRtl ? (
-                    <TbChevronLeft className="h-3.5 w-3.5" />
-                  ) : (
-                    <TbChevronRight className="h-3.5 w-3.5" />
-                  )}
-                </li>
-
-                {/* 2. Insights */}
-                <li className="inline-flex items-center">
-                  <Link
-                    href={`/${lang}/insights`}
-                    className="hover:text-persici-crimson transition-colors cursor-pointer"
-                  >
-                    {isRtl ? 'الرؤى والدراسات' : 'Insights'}
-                  </Link>
-                </li>
-
-                {/* Separator */}
-                <li aria-hidden="true" className="text-slate-300 select-none">
-                  {isRtl ? (
-                    <TbChevronLeft className="h-3.5 w-3.5" />
-                  ) : (
-                    <TbChevronRight className="h-3.5 w-3.5" />
-                  )}
-                </li>
-
-                {/* 3. Category */}
-                <li className="inline-flex items-center">
-                  <Link
-                    href={`/${lang}/insights#explore`}
-                    className="hover:text-persici-crimson transition-colors cursor-pointer"
-                  >
-                    {categoryLabel}
-                  </Link>
-                </li>
-
-                {/* Separator */}
-                <li aria-hidden="true" className="text-slate-300 select-none">
-                  {isRtl ? (
-                    <TbChevronLeft className="h-3.5 w-3.5" />
-                  ) : (
-                    <TbChevronRight className="h-3.5 w-3.5" />
-                  )}
-                </li>
-
-                {/* 4. Current Article Title */}
-                <li
-                  aria-current="page"
-                  className="inline-flex items-center font-semibold text-slate-900 max-w-[180px] sm:max-w-[320px] md:max-w-[420px] truncate"
-                >
-                  <span className="truncate">{title}</span>
-                </li>
-              </ol>
-            </nav>
-          </FadeUp>
+                    <span className="truncate">{title}</span>
+                  </li>
+                </ol>
+              </nav>
+            </FadeUp>
+          )}
 
           {/* Main Title H1 */}
           <FadeUp delay={100} duration={750} distance={20} blur={true}>
@@ -229,39 +251,59 @@ export function InsightDetailHeaderSection({ insight, lang }: InsightDetailHeade
           {/* Subtitle */}
           {subtitle && (
             <FadeUp delay={200} duration={750} distance={16}>
-              <p className="mt-6 text-lg sm:text-xl text-slate-600 leading-relaxed font-normal">
-                {subtitle}
-              </p>
+              {isSubtitleHtml ? (
+                <div
+                  className="mt-6 text-lg sm:text-xl text-slate-600 leading-relaxed font-normal [&_p]:mb-2 [&_p:last-child]:mb-0"
+                  dangerouslySetInnerHTML={{ __html: subtitle }}
+                />
+              ) : (
+                <p className="mt-6 text-lg sm:text-xl text-slate-600 leading-relaxed font-normal">
+                  {subtitle}
+                </p>
+              )}
             </FadeUp>
           )}
 
           {/* Metadata Row: Date, Category Pill, Share Button with Dropdown */}
-          <FadeUp delay={300} duration={700} distance={14}>
-            <div className="mt-8 pt-6 border-t border-slate-200 flex flex-wrap items-center justify-between gap-4 text-xs sm:text-sm text-slate-500 font-mono">
-              <div className="flex items-center gap-3 sm:gap-4 flex-wrap">
-                <span className="font-medium text-slate-700 tabular-nums">
-                  {formatDisplayDate(insight.date, isRtl)}
-                </span>
-                <span className="text-slate-300">•</span>
-                <span className="inline-flex items-center rounded-full bg-persici-crimson/10 text-persici-crimson font-sans font-semibold px-3 py-1 text-xs">
-                  {categoryLabel}
-                </span>
-                <span className="text-slate-300">•</span>
-                <span className="font-sans text-slate-500">{insight.readTime}</span>
-              </div>
+          {showMetadataRow && (
+            <FadeUp delay={300} duration={700} distance={14}>
+              <div className="mt-8 pt-6 border-t border-slate-200 flex flex-wrap items-center justify-between gap-4 text-xs sm:text-sm text-slate-500 font-mono">
+                <div className="flex items-center gap-3 sm:gap-4 flex-wrap">
+                  {vis.showDate !== false && (
+                    <span className="font-medium text-slate-700 tabular-nums">
+                      {formatDisplayDate(insight.date, isRtl)}
+                    </span>
+                  )}
+                  {vis.showDate !== false && vis.showCategoryBadge !== false && (
+                    <span className="text-slate-300">•</span>
+                  )}
+                  {vis.showCategoryBadge !== false && (
+                    <span className="inline-flex items-center rounded-full bg-persici-crimson/10 text-persici-crimson font-sans font-semibold px-3 py-1 text-xs">
+                      {categoryLabel}
+                    </span>
+                  )}
+                  {(vis.showDate !== false || vis.showCategoryBadge !== false) &&
+                    vis.showReadTime !== false && (
+                      <span className="text-slate-300">•</span>
+                    )}
+                  {vis.showReadTime !== false && (
+                    <span className="font-sans text-slate-500">{insight.readTime}</span>
+                  )}
+                </div>
 
-              {/* Clean Share Button Link (Without Border or Background) with Dropdown */}
-              <div className="relative z-50" ref={dropdownRef}>
-                <button
-                  type="button"
-                  onClick={() => setDropdownOpen((prev) => !prev)}
-                  className="inline-flex items-center gap-1.5 font-sans text-xs sm:text-sm font-semibold text-slate-600 hover:text-persici-crimson transition-colors bg-transparent border-0 p-0 shadow-none cursor-pointer select-none focus:outline-none"
-                  aria-label={isRtl ? 'مشاركة الرؤية' : 'Share this insight'}
-                  aria-expanded={dropdownOpen}
-                >
-                  <TbShare className="h-4 w-4" />
-                  <span>{isRtl ? 'مشاركة' : 'Share'}</span>
-                </button>
+                {/* Clean Share Button Link (Without Border or Background) with Dropdown */}
+                {vis.showShareMenu !== false && (
+                  <div className="relative z-50" ref={dropdownRef}>
+                    <button
+                      type="button"
+                      onClick={() => setDropdownOpen((prev) => !prev)}
+                      className="inline-flex items-center gap-1.5 font-sans text-xs sm:text-sm font-semibold text-slate-600 hover:text-persici-crimson transition-colors bg-transparent border-0 p-0 shadow-none cursor-pointer select-none focus:outline-none"
+                      aria-label={isRtl ? 'مشاركة الرؤية' : 'Share this insight'}
+                      aria-expanded={dropdownOpen}
+                    >
+                      <TbShare className="h-4 w-4" />
+                      <span>{isRtl ? 'مشاركة' : 'Share'}</span>
+                    </button>
 
                 {/* Dropdown Menu */}
                 {dropdownOpen && (
@@ -347,11 +389,14 @@ export function InsightDetailHeaderSection({ insight, lang }: InsightDetailHeade
                     </div>
                   </div>
                 )}
+                  </div>
+                )}
               </div>
-            </div>
-          </FadeUp>
+            </FadeUp>
+          )}
         </div>
       </div>
     </header>
   );
 }
+

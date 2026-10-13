@@ -3,7 +3,10 @@
 import React from 'react';
 import { FeaturedClientStories, InsightsSection, FaqSection, ClientReviewSection } from '@shared';
 import type { Dictionary } from '@dictionaries';
-import { ecommerceGrowthData } from '../data/ecommerce-growth.data';
+import {
+  getDefaultSolutionFeatureCmsData,
+  type SolutionFeatureCmsData,
+} from '../../../_solutions/data/solutions-cms.data';
 import { EcommercePartnerShowcase } from './ecommerce-partner-showcase';
 import { EcommerceOfferingsGrid } from './ecommerce-offerings-grid';
 import { EcommerceVerticalsSection } from './ecommerce-verticals-section';
@@ -11,152 +14,200 @@ import { EcommerceTechStackSection } from './ecommerce-tech-stack-section';
 import { SolutionsHeroSection } from '../../../_solutions/components/solutions-hero-section';
 import { SolutionsWhyItMatters } from '../../../_solutions/components/solutions-why-it-matters';
 import { SolutionsBenefitsStrip } from '../../../_solutions/components/solutions-benefits-strip';
-
 import { SolutionsDeliveryEngine } from '../../../_solutions/components/solutions-delivery-engine';
-
-
 import { HomeContactSection } from '../../../../_home/components/home-contact-section';
 
-interface EcommerceGrowthViewProps {
+export interface EcommerceGrowthViewProps {
   lang: string;
   dict: Dictionary;
+  data?: SolutionFeatureCmsData;
 }
 
-export function EcommerceGrowthView({ lang, dict }: EcommerceGrowthViewProps) {
-  const isRtl = lang === 'ar';
-  const data = ecommerceGrowthData;
+export function EcommerceGrowthView({ lang, dict, data: propData }: EcommerceGrowthViewProps) {
+  const l = lang as 'en' | 'ar';
+  const data = propData || getDefaultSolutionFeatureCmsData('ecommerce-growth');
 
-  const offeringsTitle = data.offeringsTitle[lang as 'en' | 'ar'] || data.offeringsTitle.en;
-  const offeringsSubtitle = data.offeringsSubtitle[lang as 'en' | 'ar'] || data.offeringsSubtitle.en;
+  const offeringsBadge = data.offeringsBadge?.[l] || data.offeringsBadge?.en;
+  const offeringsTitle = data.offeringsTitle[l] || data.offeringsTitle.en;
+  const offeringsSubtitle = data.offeringsSubtitle[l] || data.offeringsSubtitle.en;
 
-  const whyTitle = data.whyItMatters.title[lang as 'en' | 'ar'] || data.whyItMatters.title.en;
-  const whyText = data.whyItMatters.text[lang as 'en' | 'ar'] || data.whyItMatters.text.en;
+  const whyTitle = data.whyItMatters.title[l] || data.whyItMatters.title.en;
+  const whyText = data.whyItMatters.text[l] || data.whyItMatters.text.en;
 
-  const benefitsTitle = data.benefitsStrip.title[lang as 'en' | 'ar'] || data.benefitsStrip.title.en;
+  const benefitsTitle = data.benefitsStrip.title[l] || data.benefitsStrip.title.en;
 
-  const verticalsTitle = data.verticalsTitle[lang as 'en' | 'ar'] || data.verticalsTitle.en;
-  const verticalsSubtitle = data.verticalsSubtitle[lang as 'en' | 'ar'] || data.verticalsSubtitle.en;
+  const verticalsBadge = data.verticalsBadge?.[l] || data.verticalsBadge?.en;
+  const verticalsTitle = data.verticalsTitle[l] || data.verticalsTitle.en;
+  const verticalsSubtitle = data.verticalsSubtitle[l] || data.verticalsSubtitle.en;
 
-  const techTitle = data.techStackTitle[lang as 'en' | 'ar'] || data.techStackTitle.en;
-  const techSubtitle = data.techStackSubtitle[lang as 'en' | 'ar'] || data.techStackSubtitle.en;
+  const techBadge = data.techStackBadge?.[l] || data.techStackBadge?.en;
+  const techTitle = data.techStackTitle[l] || data.techStackTitle.en;
+  const techSubtitle = data.techStackSubtitle[l] || data.techStackSubtitle.en;
 
-  const deliveryTitle = data.delivery.title[lang as 'en' | 'ar'] || data.delivery.title.en;
-  const deliverySubtitle = data.delivery.subtitle[lang as 'en' | 'ar'] || data.delivery.subtitle.en;
+  const deliveryTitle = data.delivery.title[l] || data.delivery.title.en;
+  const deliverySubtitle = data.delivery.subtitle[l] || data.delivery.subtitle.en;
 
-  const faqsTitle = data.faqsTitle[lang as 'en' | 'ar'] || data.faqsTitle.en;
-  const faqsSubtitle = data.faqsSubtitle[lang as 'en' | 'ar'] || data.faqsSubtitle.en;
+  const faqsTitle = data.faqsTitle[l] || data.faqsTitle.en;
+  const faqsSubtitle = data.faqsSubtitle[l] || data.faqsSubtitle.en;
+
+  const csConfig = data.clientStoriesConfig;
+  const insConfig = data.insightsConfig;
 
   return (
     <div className="flex flex-col min-h-screen">
       {/* 1. Hero Banner */}
-      <SolutionsHeroSection
-        title={data.hero.title}
-        subtitle={data.hero.subtitle}
-        tag={data.hero.tag}
-        secondaryTag={data.hero.secondaryTag}
-        image={data.hero.image}
-        ctaText={data.hero.ctaText}
-        ctaHref={data.hero.ctaHref}
-        lang={lang}
-      />
+      {data.hero.enabled !== false && (
+        <SolutionsHeroSection
+          title={data.hero.title}
+          subtitle={data.hero.subtitle}
+          tag={data.hero.tag}
+          secondaryTag={data.hero.secondaryTag}
+          image={data.hero.image}
+          ctaText={data.hero.ctaText}
+          ctaHref={data.hero.ctaHref}
+          lang={lang}
+        />
+      )}
 
-      {/* 2. Official Platforms & Partner Showcase with Video */}
-      <EcommercePartnerShowcase
-        badge={data.partnerShowcase.badge[lang as 'en' | 'ar'] || data.partnerShowcase.badge.en}
-        title={data.partnerShowcase.title[lang as 'en' | 'ar'] || data.partnerShowcase.title.en}
-        description={data.partnerShowcase.description[lang as 'en' | 'ar'] || data.partnerShowcase.description.en}
-        video={data.partnerShowcase.video}
-        partners={data.partnerShowcase.partners}
-        lang={lang}
-      />
+      {/* Official Platforms & Partner Showcase with Video */}
+      {data.partnerShowcase && data.partnerShowcase.enabled !== false && (
+        <EcommercePartnerShowcase
+          badge={data.partnerShowcase.badge[l] || data.partnerShowcase.badge.en}
+          title={data.partnerShowcase.title[l] || data.partnerShowcase.title.en}
+          description={data.partnerShowcase.description[l] || data.partnerShowcase.description.en}
+          partnersHeading={
+            data.partnerShowcase.partnersHeading
+              ? data.partnerShowcase.partnersHeading[l] || data.partnerShowcase.partnersHeading.en
+              : undefined
+          }
+          video={data.partnerShowcase.video}
+          partners={data.partnerShowcase.partners}
+          lang={lang}
+        />
+      )}
 
-      {/* 3. Core Capabilities Grid (6 Cards, 4-col with Centered Remainder) */}
-      <EcommerceOfferingsGrid
-        offerings={data.offerings}
-        title={offeringsTitle}
-        subtitle={offeringsSubtitle}
-        lang={lang}
-      />
+      {/* 2. Core Capabilities Grid */}
+      {data.offeringsEnabled !== false && (
+        <EcommerceOfferingsGrid
+          badge={offeringsBadge}
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          offerings={data.offerings as any}
+          title={offeringsTitle}
+          subtitle={offeringsSubtitle}
+          lang={lang}
+        />
+      )}
 
-      {/* 4. Why It Matters (Split Layout + sapient-tab-tl Image) */}
-      <SolutionsWhyItMatters
-        title={whyTitle}
-        text={whyText}
-        image={data.whyItMatters.image}
-        lang={lang}
-      />
+      {/* 3. Why It Matters */}
+      {data.whyItMatters.enabled !== false && (
+        <SolutionsWhyItMatters
+          title={whyTitle}
+          text={whyText}
+          image={data.whyItMatters.image}
+          metric1Val={data.whyItMatters.metric1Val}
+          metric1Label={data.whyItMatters.metric1Label}
+          metric2Val={data.whyItMatters.metric2Val}
+          metric2Label={data.whyItMatters.metric2Label}
+          lang={lang}
+        />
+      )}
 
-      {/* 5. Strategic Benefits Strip (sapient-wide-strip Banner) */}
-      <SolutionsBenefitsStrip
-        title={benefitsTitle}
-        image={data.benefitsStrip.image}
-        benefits={data.benefitsStrip.benefits}
-        lang={lang}
-      />
+      {/* 4. Strategic Benefits Strip */}
+      {data.benefitsStrip.enabled !== false && (
+        <SolutionsBenefitsStrip
+          title={benefitsTitle}
+          image={data.benefitsStrip.image}
+          benefits={data.benefitsStrip.benefits}
+          lang={lang}
+        />
+      )}
 
-      {/* 6. Domain Verticals (01-05 Monospace Badges & Checklists) */}
-      <EcommerceVerticalsSection
-        verticals={data.verticals}
-        title={verticalsTitle}
-        subtitle={verticalsSubtitle}
-        lang={lang}
-      />
+      {/* 5. Domain Verticals */}
+      {data.verticalsEnabled !== false && (
+        <EcommerceVerticalsSection
+          badge={verticalsBadge}
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          verticals={data.verticals as any}
+          title={verticalsTitle}
+          subtitle={verticalsSubtitle}
+          lang={lang}
+        />
+      )}
 
-      {/* 7. Technology Stack (Dark #0E121B Matrix) */}
-      <EcommerceTechStackSection
-        pods={data.techStackPods}
-        title={techTitle}
-        subtitle={techSubtitle}
-        lang={lang}
-      />
+      {/* 6. Technology Stack */}
+      {data.techStackEnabled !== false && (
+        <EcommerceTechStackSection
+          badge={techBadge}
+          pods={data.techStackPods}
+          title={techTitle}
+          subtitle={techSubtitle}
+          lang={lang}
+        />
+      )}
 
-      {/* 8. Featured Client Stories (Stacked Sticky Cards + Scroll Scale-Out) */}
-      <FeaturedClientStories
-        stories={data.clientStories}
-        sectionBadge={isRtl ? 'قصص النجاح المميزة' : 'Featured Client Stories'}
-        sectionTitle={isRtl ? 'نتائج أعمال استثنائية ونمو متسارع في المبيعات' : 'Transformative E-Commerce Growth & Proven Scalability'}
-        sectionSubtitle={isRtl ? 'اكتشف كيف قادت استراتيجيات بيرسيشي كبرى المتاجر الخليجية إلى مضاعفة الإيرادات وهوامش الأرباح.' : 'See how our full-funnel commerce architecture scales top GCC and global retail brands.'}
-        lang={lang}
-      />
+      {/* 7. Featured Client Stories */}
+      {csConfig?.enabled !== false && (
+        <FeaturedClientStories
+          stories={data.clientStories}
+          sectionBadge={csConfig?.badge}
+          sectionTitle={csConfig?.title}
+          sectionSubtitle={csConfig?.subtitle}
+          lang={lang}
+        />
+      )}
 
-      {/* 9. How We Deliver Differently (Diagonal Brand Gradient) */}
-      <SolutionsDeliveryEngine
-        title={deliveryTitle}
-        subtitle={deliverySubtitle}
-        image={data.delivery.image}
-        pillars={data.delivery.pillars}
-        lang={lang}
-      />
+      {/* 8. How We Deliver Differently */}
+      {data.delivery.enabled !== false && (
+        <SolutionsDeliveryEngine
+          badge={data.delivery.badge}
+          title={deliveryTitle}
+          subtitle={deliverySubtitle}
+          image={data.delivery.image}
+          pillars={data.delivery.pillars}
+          lang={lang}
+        />
+      )}
 
-      {/* 10. Solutions Insights (Dynamic 2-Card ContentCarousel) */}
-      <InsightsSection
-        items={data.insights}
-        title={isRtl ? 'رؤى وأفكار في التجارة الرقمية والنمو' : 'Insights & Strategic Commerce Architecture'}
-        subtitle={isRtl ? 'أحدث الدراسات والتحليلات العملية لهندسة المتاجر، وتحسين معدلات التحويل، ومضاعفة ولاء العملاء.' : 'Tactical playbooks and cutting-edge perspectives on headless commerce, CRO, and compounding retention.'}
-        lang={lang}
-      />
+      {/* 9. Solutions Insights */}
+      {insConfig?.enabled !== false && (
+        <InsightsSection
+          items={data.insights}
+          title={insConfig?.title}
+          subtitle={insConfig?.subtitle}
+          ctaText={insConfig?.ctaText}
+          ctaHref={insConfig?.ctaHref}
+          lang={lang}
+        />
+      )}
 
-      {/* 11. Executive Client Review */}
-      <ClientReviewSection
-        quoteText={data.clientReview.quote}
-        quoteAuthor={data.clientReview.author}
-        quoteRole={data.clientReview.role}
-        badge={data.clientReview.badge}
-        lang={lang}
-      />
+      {/* 10. Executive Client Review */}
+      {data.clientReview.enabled !== false && (
+        <ClientReviewSection
+          quoteText={data.clientReview.quote}
+          quoteAuthor={data.clientReview.author}
+          quoteRole={data.clientReview.role}
+          quoteAvatar={data.clientReview.avatar}
+          badge={data.clientReview.badge}
+          lang={lang}
+        />
+      )}
 
-      {/* 12. Enterprise FAQs Accordion */}
-      <FaqSection
-        faqs={data.faqs}
-        title={faqsTitle}
-        subtitle={faqsSubtitle}
-        lang={lang}
-      />
+      {/* 11. Enterprise FAQs Accordion */}
+      {data.faqsEnabled !== false && (
+        <FaqSection
+          faqs={data.faqs}
+          title={faqsTitle}
+          subtitle={faqsSubtitle}
+          lang={lang}
+        />
+      )}
 
-      {/* 13. Global Contact Section */}
-      <div id="contact">
-        <HomeContactSection dict={dict} lang={lang} />
-      </div>
+      {/* 12. Global Contact Section */}
+      {data.contactEnabled !== false && (
+        <div id="contact">
+          <HomeContactSection dict={dict} lang={lang} />
+        </div>
+      )}
     </div>
   );
 }

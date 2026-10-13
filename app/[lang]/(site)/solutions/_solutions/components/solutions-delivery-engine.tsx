@@ -1,9 +1,10 @@
-﻿import React from 'react';
+import React from 'react';
 import type { SolutionExecutionPillar } from '@shared/types';
 import { sectionContainer } from '@shared/constants';
 import { ShapedImageContainer, FadeUp } from '@shared';
 
 interface SolutionsDeliveryEngineProps {
+  badge?: string | { en: string; ar: string };
   title: string;
   subtitle: string;
   image: string;
@@ -13,6 +14,7 @@ interface SolutionsDeliveryEngineProps {
 }
 
 export function SolutionsDeliveryEngine({
+  badge,
   title,
   subtitle,
   image,
@@ -21,6 +23,11 @@ export function SolutionsDeliveryEngine({
   className,
 }: SolutionsDeliveryEngineProps) {
   const isRtl = lang === 'ar';
+  const badgeText =
+    (typeof badge === 'string'
+      ? badge
+      : badge?.[lang as 'en' | 'ar'] || badge?.en) ||
+    (isRtl ? 'إطار العمل التنفيذي' : 'Execution Framework');
 
   return (
     <section className={`${className || 'pt-16 pb-14 sm:pt-20 sm:pb-16 lg:pt-24 lg:pb-20'} bg-white text-slate-900 relative overflow-hidden`}>
@@ -28,14 +35,21 @@ export function SolutionsDeliveryEngine({
         {/* Section Header with FadeUp */}
         <FadeUp delay={0} duration={700} distance={20} className="max-w-3xl mb-12 sm:mb-16">
           <span className="text-xs sm:text-sm font-semibold uppercase tracking-widest text-persici-crimson block mb-3">
-            {isRtl ? 'إطار العمل التنفيذي' : 'Execution Framework'}
+            {badgeText}
           </span>
           <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-slate-900 leading-tight">
             {title}
           </h2>
-          <p className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed font-normal">
-            {subtitle}
-          </p>
+          {/<[a-z][\s\S]*>/i.test(subtitle || '') ? (
+            <div
+              className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed font-normal [&_p]:mb-2 [&_p:last-child]:mb-0"
+              dangerouslySetInnerHTML={{ __html: subtitle }}
+            />
+          ) : (
+            <p className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed font-normal">
+              {subtitle}
+            </p>
+          )}
         </FadeUp>
 
         {/* Two-Column Grid: Mockup + Pillars */}
@@ -82,9 +96,16 @@ export function SolutionsDeliveryEngine({
                           {pillarTitle}
                         </h3>
                       </div>
-                      <p className="mt-2.5 text-sm sm:text-base leading-relaxed text-slate-600 pl-10 rtl:pl-0 rtl:pr-10">
-                        {pillarDesc}
-                      </p>
+                      {/<[a-z][\s\S]*>/i.test(pillarDesc || '') ? (
+                        <div
+                          className="mt-2.5 text-sm sm:text-base leading-relaxed text-slate-600 pl-10 rtl:pl-0 rtl:pr-10 [&_p]:mb-2 [&_p:last-child]:mb-0"
+                          dangerouslySetInnerHTML={{ __html: pillarDesc }}
+                        />
+                      ) : (
+                        <p className="mt-2.5 text-sm sm:text-base leading-relaxed text-slate-600 pl-10 rtl:pl-0 rtl:pr-10">
+                          {pillarDesc}
+                        </p>
+                      )}
                     </div>
                   );
                 })}

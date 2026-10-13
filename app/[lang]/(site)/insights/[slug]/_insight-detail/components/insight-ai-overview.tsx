@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState } from 'react';
 import type { InsightDetail } from '../../../_insights/types';
@@ -27,9 +27,28 @@ export function InsightAiOverview({ insight, lang }: InsightAiOverviewProps) {
 
   const title = insight.title[lang as 'en' | 'ar'] || insight.title.en;
 
-  const handleGenerate = async () => {
+  const handleGenerate = async (forceLive = false) => {
     setIsOpen(true);
     setIsLoading(true);
+
+    const curatedSummary =
+      insight.aiOverview?.summary?.[lang as 'en' | 'ar'] ||
+      insight.aiOverview?.summary?.en ||
+      '';
+    const curatedTakeaways = Array.isArray(insight.aiOverview?.keyTakeaways)
+      ? insight.aiOverview.keyTakeaways
+          .map((t) => t?.[lang as 'en' | 'ar'] || t?.en || '')
+          .filter(Boolean)
+      : [];
+
+    if (!forceLive && curatedSummary.trim().length > 0) {
+      await new Promise((r) => setTimeout(r, 350));
+      setSummary(curatedSummary);
+      setKeyTakeaways(curatedTakeaways);
+      setAiSource('synthesizer');
+      setIsLoading(false);
+      return;
+    }
 
     try {
       // Extract the content directly from the designated article content container ID
@@ -77,18 +96,16 @@ export function InsightAiOverview({ insight, lang }: InsightAiOverviewProps) {
       console.warn('[InsightAiOverview] Failed to fetch live overview, using dataset fallback:', err);
       // Fallback from dataset
       const defaultSummary =
-        insight.aiOverview?.summary[lang as 'en' | 'ar'] ||
-        insight.aiOverview?.summary.en ||
+        curatedSummary ||
         (insight.excerpt[lang as 'en' | 'ar'] || insight.excerpt.en);
       const defaultTakeaways =
-        insight.aiOverview?.keyTakeaways.map(
-          (t) => t[lang as 'en' | 'ar'] || t.en
-        ) ||
-        insight.sections.slice(0, 3).map((sec) => {
-          const h = sec.heading[lang as 'en' | 'ar'] || sec.heading.en;
-          const p = (sec.paragraphs[lang as 'en' | 'ar'] || sec.paragraphs.en)[0] || '';
-          return `${h}: ${p.slice(0, 110)}...`;
-        });
+        curatedTakeaways.length > 0
+          ? curatedTakeaways
+          : insight.sections.slice(0, 3).map((sec) => {
+              const h = sec.heading[lang as 'en' | 'ar'] || sec.heading.en;
+              const p = (sec.paragraphs[lang as 'en' | 'ar'] || sec.paragraphs.en)[0] || '';
+              return `${h}: ${p.replace(/<[^>]*>/g, '').slice(0, 110)}...`;
+            });
 
       setSummary(defaultSummary);
       setKeyTakeaways(defaultTakeaways);
@@ -104,7 +121,7 @@ export function InsightAiOverview({ insight, lang }: InsightAiOverviewProps) {
       <div className="flex items-center gap-3 flex-wrap">
         <button
           type="button"
-          onClick={handleGenerate}
+          onClick={() => handleGenerate(Boolean(summary))}
           disabled={isLoading}
           className="inline-flex items-center gap-2 rounded-full border border-persici-crimson/30 bg-persici-crimson/10 px-5 py-2.5 text-xs sm:text-sm font-semibold text-persici-crimson shadow-2xs hover:bg-persici-crimson hover:text-white transition-all duration-300 cursor-pointer active:scale-98 disabled:opacity-75 select-none group"
           aria-label={
@@ -180,7 +197,7 @@ export function InsightAiOverview({ insight, lang }: InsightAiOverviewProps) {
               {/* Refresh button */}
               <button
                 type="button"
-                onClick={handleGenerate}
+                onClick={() => handleGenerate(true)}
                 disabled={isLoading}
                 title={isRtl ? 'إعادة التوليد' : 'Regenerate'}
                 className="p-1 rounded-md text-slate-400 hover:text-slate-700 transition-colors cursor-pointer"
@@ -210,9 +227,16 @@ export function InsightAiOverview({ insight, lang }: InsightAiOverviewProps) {
               </div>
             ) : summary ? (
               <>
-                <p className="text-sm sm:text-[13px] font-medium leading-relaxed text-slate-800">
-                  {summary}
-                </p>
+                {/<[a-z][\s\S]*>/i.test(summary) ? (
+                  <div
+                    className="text-sm sm:text-[13px] font-medium leading-relaxed text-slate-800 [&_p]:mb-2 [&_p:last-child]:mb-0"
+                    dangerouslySetInnerHTML={{ __html: summary }}
+                  />
+                ) : (
+                  <p className="text-sm sm:text-[13px] font-medium leading-relaxed text-slate-800">
+                    {summary}
+                  </p>
+                )}
 
                 {/* Key Takeaways */}
                 {keyTakeaways.length > 0 && (
