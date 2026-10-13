@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React from 'react';
 import Image from 'next/image';
@@ -15,13 +15,20 @@ export function AboutHeritageCard({ data, lang }: AboutHeritageCardProps) {
   const title = data.title[lang as 'en' | 'ar'] || data.title.en;
   const description = data.description[lang as 'en' | 'ar'] || data.description.en;
   const ctaLabel = data.cta[lang as 'en' | 'ar'] || data.cta.en;
+  const bgImage = data.bgImage || '/about/heritage-bg.jpg';
+  const hasHtml = (str: string) => /<[a-z][\s\S]*>/i.test(str);
+  const resolveHref = (href: string) => {
+    if (!href) return '#';
+    if (href.startsWith('#') || href.startsWith('http') || href.startsWith(`/${lang}`)) return href;
+    return `/${lang}${href.startsWith('/') ? href : `/${href}`}`;
+  };
 
   return (
     <section className="relative py-20 sm:py-28 lg:py-36 overflow-hidden">
       {/* High-Impact Architectural Background matching Publicis Sapient reference */}
       <div className="absolute inset-0 z-0">
         <Image
-          src="/about/heritage-bg.jpg"
+          src={bgImage}
           alt="Architectural background"
           fill
           className="object-cover object-center"
@@ -42,9 +49,16 @@ export function AboutHeritageCard({ data, lang }: AboutHeritageCardProps) {
                 </h2>
 
                 {/* Narrative Description */}
-                <p className="font-secondary text-base sm:text-lg text-slate-600 leading-relaxed font-normal max-w-xl mb-10">
-                  {description}
-                </p>
+                {hasHtml(description) ? (
+                  <div
+                    className="font-secondary text-base sm:text-lg text-slate-600 leading-relaxed font-normal max-w-xl mb-10 [&_a]:text-persici-crimson [&_a]:underline [&_ul]:list-disc [&_ul]:ms-5 [&_ol]:list-decimal [&_ol]:ms-5"
+                    dangerouslySetInnerHTML={{ __html: description }}
+                  />
+                ) : (
+                  <p className="font-secondary text-base sm:text-lg text-slate-600 leading-relaxed font-normal max-w-xl mb-10">
+                    {description}
+                  </p>
+                )}
 
                 {/* Thin Full-Width Divider Line */}
                 <div className="border-t border-slate-200/90 w-full mb-8 sm:mb-10" />
@@ -67,16 +81,18 @@ export function AboutHeritageCard({ data, lang }: AboutHeritageCardProps) {
                 </div>
 
                 {/* Home Button placed at the END of the container */}
-                <div className="flex justify-end rtl:justify-start pt-2">
-                  <HomeButton
-                    href={`/${lang}${data.cta.href}`}
-                    title={ctaLabel}
-                    currentLang={lang}
-                    isLangEffectIcon
-                    className="bg-white hover:bg-persici-black text-persici-black hover:text-white border border-persici-black/80 px-7 py-2.5 text-xs font-semibold shadow-none transition-all"
-                    iconClassName="bg-black/5 group-hover:bg-white text-black"
-                  />
-                </div>
+                {data.cta.enabled !== false && ctaLabel && (
+                  <div className="flex justify-end rtl:justify-start pt-2">
+                    <HomeButton
+                      href={resolveHref(data.cta.href)}
+                      title={ctaLabel}
+                      currentLang={lang}
+                      isLangEffectIcon
+                      className="bg-white hover:bg-persici-black text-persici-black hover:text-white border border-persici-black/80 px-7 py-2.5 text-xs font-semibold shadow-none transition-all"
+                      iconClassName="bg-black/5 group-hover:bg-white text-black"
+                    />
+                  </div>
+                )}
               </div>
 
               {/* Right Column: Portrait Collaboration Photography in Rounded Chassis */}

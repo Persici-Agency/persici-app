@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
@@ -11,6 +11,7 @@ export type { TestimonialItem, DarkTestimonialCardProps };
 
 export function DarkTestimonialCard({
   dict,
+  lang,
   autoPlayInterval = 5000,
   className,
   testimonials: customTestimonials,
@@ -18,10 +19,20 @@ export function DarkTestimonialCard({
   const showcase = dict.partnerShowcase;
   const defaultList = getHomeDefaultTestimonials();
 
-  const testimonials: TestimonialItem[] =
+  const rawTestimonials =
     customTestimonials ||
     (showcase as unknown as { testimonials?: TestimonialItem[] })?.testimonials ||
     defaultList;
+
+  const isAr = lang === 'ar';
+  const testimonials = rawTestimonials.map((t: any) => ({
+    ...t,
+    author: t.author?.[isAr ? 'ar' : 'en'] || (isAr ? t.authorAr : t.authorEn) || t.author,
+    role: t.role?.[isAr ? 'ar' : 'en'] || (isAr ? t.roleAr : t.roleEn) || t.role,
+    company: t.company?.[isAr ? 'ar' : 'en'] || (isAr ? t.companyAr : t.companyEn) || t.company,
+    quote: t.quote?.[isAr ? 'ar' : 'en'] || (isAr ? t.quoteAr : t.quoteEn) || t.quote,
+    metric: t.metric?.[isAr ? 'ar' : 'en'] || (isAr ? t.metricAr : t.metricEn) || t.metric,
+  }));
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
@@ -76,6 +87,8 @@ export function DarkTestimonialCard({
               <Image
                 src={
                   current.avatar ||
+                  current.photo ||
+                  current.image ||
                   'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80'
                 }
                 alt={current.author}
@@ -87,7 +100,35 @@ export function DarkTestimonialCard({
               <span className="block font-primary text-base font-semibold tracking-wider text-white">
                 {current.company}
               </span>
-              <div className="flex text-xs text-amber-400">★★★★★</div>
+              {(() => {
+                const ratingVal =
+                  typeof current.rating === 'number'
+                    ? current.rating
+                    : parseFloat(String(current.rating || '5.0')) || 5.0;
+                return (
+                  <div className="flex items-center gap-1.5 mt-0.5">
+                    <div className="flex text-xs text-amber-400">
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <span
+                          key={i}
+                          className={
+                            ratingVal >= i + 0.8
+                              ? 'text-amber-400'
+                              : ratingVal >= i + 0.3
+                              ? 'text-amber-400/80'
+                              : 'text-white/20'
+                          }
+                        >
+                          {ratingVal >= i + 0.3 ? '★' : '☆'}
+                        </span>
+                      ))}
+                    </div>
+                    <span className="font-mono text-[11px] font-bold text-white/90">
+                      {ratingVal.toFixed(1)}
+                    </span>
+                  </div>
+                );
+              })()}
             </div>
           </div>
 

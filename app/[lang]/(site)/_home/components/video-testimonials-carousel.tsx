@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Image from 'next/image';
@@ -10,7 +10,9 @@ import { sectionHeading } from '../../_shared';
 
 export interface VideoTestimonialsCarouselProps {
   dict: Dictionary;
-  testimonials?: VideoTestimonialItem[];
+  lang?: string;
+  title?: string;
+  testimonials?: VideoTestimonialItem[] | any[];
   autoPlay?: boolean;
   autoPlayInterval?: number;
   pauseOnHover?: boolean;
@@ -21,6 +23,8 @@ export interface VideoTestimonialsCarouselProps {
 
 export function VideoTestimonialsCarousel({
   dict,
+  lang,
+  title,
   testimonials,
   autoPlay = true,
   autoPlayInterval = 5000,
@@ -29,22 +33,72 @@ export function VideoTestimonialsCarousel({
   showDots = true,
   showArrows = true,
 }: VideoTestimonialsCarouselProps) {
+  const isAr = lang === 'ar';
   const [currentPage, setCurrentPage] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [activeModalItem, setActiveModalItem] = useState<VideoTestimonialItem | null>(null);
 
-  const baseItems = testimonials || getHomeVideoTestimonials();
+  const baseItems =
+    testimonials && testimonials.length > 0
+      ? testimonials
+      : getHomeVideoTestimonials();
 
-  // Combine database items with dictionary localization if available
-  const items = baseItems.map((item, idx) => {
+  // Combine items prioritizing database/custom fields over dictionary fallback
+  const items = baseItems.map((item: any, idx: number) => {
     const dictKey = `client${idx + 1}` as keyof typeof dict.clientVideos;
     const localized = (dict.clientVideos?.[dictKey] || {}) as Partial<VideoTestimonialItem>;
+
+    const name =
+      item.name?.[isAr ? 'ar' : 'en'] ||
+      (isAr ? item.nameAr : item.nameEn) ||
+      item.name ||
+      item.clientName ||
+      localized.name ||
+      'Client';
+
+    const role =
+      item.role?.[isAr ? 'ar' : 'en'] ||
+      (isAr ? item.roleAr : item.roleEn) ||
+      item.role ||
+      item.clientRole ||
+      localized.role ||
+      '';
+
+    const company =
+      item.company?.[isAr ? 'ar' : 'en'] ||
+      (isAr ? item.companyAr : item.companyEn) ||
+      item.company ||
+      localized.company ||
+      '';
+
+    const quote =
+      item.quote?.[isAr ? 'ar' : 'en'] ||
+      (isAr ? item.quoteAr : item.quoteEn) ||
+      item.quote ||
+      localized.quote ||
+      '';
+
+    const image =
+      item.image ||
+      item.posterUrl ||
+      item.avatar ||
+      'https://images.unsplash.com/photo-1556742049-0a67e557224f?auto=format&fit=crop&w=600&q=80';
+
+    const videoUrl = item.videoUrl || '';
+    const category = item.category || (isAr ? 'قصة نجاح' : 'Success Story');
+    const duration = item.duration || '0:45';
+
     return {
       ...item,
-      name: localized.name || item.name,
-      role: localized.role || item.role,
-      company: localized.company || item.company,
-      quote: localized.quote || item.quote,
+      id: item.id || `video-${idx}`,
+      name,
+      role,
+      company,
+      quote,
+      image,
+      videoUrl,
+      category,
+      duration,
     };
   });
 
@@ -107,7 +161,7 @@ export function VideoTestimonialsCarousel({
         <div className="mb-10 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
           <div>
             <h2 className={sectionHeading + ' text-white'}>
-              {dict.clientVideos.title}
+              {title || dict.clientVideos.title}
             </h2>
             <p className="mt-2 text-sm text-white/60">
               Page {currentPage + 1} of {totalPages} • {items.length} Client Stories

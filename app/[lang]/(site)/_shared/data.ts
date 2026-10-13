@@ -1521,6 +1521,89 @@ export const homePageContent: HomePageContent = {
   },
 };
 
+export const defaultSharedContactData: any = {
+  page: 'shared-contact',
+  leftTitle: {
+    en: 'Ready to accelerate your digital future?',
+    ar: 'جاهز لتسريع مستقبلك الرقمي؟',
+  },
+  title: {
+    en: 'Get in touch',
+    ar: 'تواصل معنا',
+  },
+  subtitle: {
+    en: 'Submit the form below and our digital transformation experts will reach out.',
+    ar: 'أرسل بياناتك وسيتواصل معك أحد خبرائنا في التحول الرقمي والتكنولوجيا.',
+  },
+  trustedBy: {
+    en: 'Trusted by visionary leaders and high-growth enterprises.',
+    ar: 'موثوق بنا من قِبل قادة التحول والمؤسسات الرائدة في المنطقة.',
+  },
+  bgImage: '/images/footer/footer.gif',
+  showLogosSwiper: true,
+  captchaEnabled: true,
+  captchaSiteKey: process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI',
+  successTitle: {
+    en: 'Thank you for reaching out!',
+    ar: 'شكراً لتواصلك معنا!',
+  },
+  successMessage: {
+    en: 'We have received your message. One of our senior growth strategists will review your inquiry and connect with you within 24 hours.',
+    ar: 'لقد استلمنا رسالتك. سيقوم أحد كبار خبراء النمو الاستراتيجي لدينا بمراجعة استفسارك والتواصل معك خلال 24 ساعة.',
+  },
+  points: [
+    {
+      en: 'Modernize legacy systems and accelerate digital transformation',
+      ar: 'تحديث الأنظمة القديمة وتسريع مسار التحول الرقمي الشامل',
+    },
+    {
+      en: 'Deploy custom enterprise AI models, automations, and data pipelines',
+      ar: 'نشر نماذج وأدوات الذكاء الاصطناعي المخصصة والأتمتة الذكية وهندسة البيانات',
+    },
+    {
+      en: 'Architect scalable web/mobile applications and resilient cloud infrastructure',
+      ar: 'هندسة تطبيقات الويب والجوال القابلة للتوسع والبنية التحتية السحابية',
+    },
+    {
+      en: 'Accelerate growth with integrated UX design, digital strategy, and performance media',
+      ar: 'تسريع النمو بتكامل تصميم تجربة المستخدم والاستراتيجية الرقمية وإعلانات الأداء',
+    },
+  ],
+  countries: [
+    'United Arab Emirates',
+    'Saudi Arabia',
+    'Qatar',
+    'Kuwait',
+    'Bahrain',
+    'Oman',
+    'Egypt',
+    'Jordan',
+    'United Kingdom',
+    'United States',
+    'Germany',
+    'France',
+    'Other',
+  ],
+  reasons: [
+    { id: 'transformation', labelEn: 'Digital Transformation & Strategy', labelAr: 'التحول الرقمي والاستراتيجية' },
+    { id: 'ai-automation', labelEn: 'Enterprise AI & Automation', labelAr: 'الذكاء الاصطناعي والأتمتة المؤسسية' },
+    { id: 'custom-software', labelEn: 'Custom Software & Mobile Apps', labelAr: 'تطوير البرمجيات وتطبيقات الجوال' },
+    { id: 'cloud-devops', labelEn: 'Cloud Infrastructure & DevOps', labelAr: 'البنية التحتية السحابية والديف أوبس' },
+    { id: 'performance-marketing', labelEn: 'Performance Media & CRO', labelAr: 'التسويق الرقمي الموجه وتحسين التحويل' },
+    { id: 'general-inquiry', labelEn: 'General Agency Inquiry', labelAr: 'استفسار عام عن خدمات الوكالة' },
+  ],
+  fields: [
+    { id: 'firstName', name: 'firstName', labelEn: 'First name', labelAr: 'الاسم الأول', type: 'text', required: true },
+    { id: 'lastName', name: 'lastName', labelEn: 'Last name', labelAr: 'اسم العائلة', type: 'text', required: true },
+    { id: 'company', name: 'company', labelEn: 'Company', labelAr: 'الشركة / المؤسسة', type: 'text', required: true },
+    { id: 'email', name: 'email', labelEn: 'Corporate Email', labelAr: 'البريد الإلكتروني للعمل', type: 'email', required: true },
+    { id: 'country', name: 'country', labelEn: 'Country', labelAr: 'الدولة', type: 'select', required: true },
+    { id: 'jobTitle', name: 'jobTitle', labelEn: 'Job Title', labelAr: 'المسمى الوظيفي', type: 'text', required: true },
+    { id: 'reason', name: 'reason', labelEn: 'Reason for contacting', labelAr: 'سبب التواصل', type: 'select', required: false },
+    { id: 'message', name: 'message', labelEn: 'Message', labelAr: 'تفاصيل الرسالة أو المشروع', type: 'textarea', required: false },
+  ],
+};
+
 export const servicesPageContent: ServicesPageContent = {
   page: 'services',
   heroTitle: {

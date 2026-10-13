@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState } from 'react';
 import Image from 'next/image';
@@ -8,14 +8,60 @@ import type { PartnerShowcaseData } from '@shared/types';
 
 export function VideoPreviewModal({
   dict,
+  lang,
   showcase: customShowcase,
 }: {
   dict: Dictionary;
-  showcase?: PartnerShowcaseData;
+  lang?: string;
+  showcase?: any;
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const defaultShowcase = getHomePartnerShowcase();
   const showcase = customShowcase || defaultShowcase;
+
+  const isAr = lang === 'ar';
+  const speakerName =
+    showcase?.videoSpeaker?.[isAr ? 'ar' : 'en'] ||
+    (isAr ? showcase?.videoSpeakerAr : showcase?.videoSpeakerEn) ||
+    showcase?.videoSpeaker ||
+    dict.partnerShowcase.videoSpeaker;
+
+  const speakerRole =
+    showcase?.videoRole?.[isAr ? 'ar' : 'en'] ||
+    (isAr ? showcase?.videoRoleAr : showcase?.videoRoleEn) ||
+    showcase?.videoRole ||
+    dict.partnerShowcase.videoRole;
+
+  const quote =
+    showcase?.quote?.[isAr ? 'ar' : 'en'] ||
+    (isAr ? showcase?.quoteAr : showcase?.quoteEn) ||
+    showcase?.quote ||
+    dict.partnerShowcase.quote;
+
+  const author =
+    showcase?.author?.[isAr ? 'ar' : 'en'] ||
+    (isAr ? showcase?.authorAr : showcase?.authorEn) ||
+    showcase?.author ||
+    dict.partnerShowcase.author;
+
+  const company =
+    showcase?.company?.[isAr ? 'ar' : 'en'] ||
+    (isAr ? showcase?.companyAr : showcase?.companyEn) ||
+    showcase?.company ||
+    dict.partnerShowcase.company;
+
+  const title =
+    showcase?.title?.[isAr ? 'ar' : 'en'] ||
+    (isAr ? showcase?.titleAr : showcase?.titleEn) ||
+    showcase?.title ||
+    dict.partnerShowcase.title;
+
+  const coverImage = showcase?.videoCoverImage || defaultShowcase.videoCoverImage;
+  const videoUrl = showcase?.videoUrl || defaultShowcase.videoUrl;
+  const speakerAvatar =
+    showcase?.speakerAvatar ||
+    defaultShowcase.speakerAvatar ||
+    'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80';
 
   return (
     <>
@@ -24,8 +70,8 @@ export function VideoPreviewModal({
         className="group relative aspect-[16/10] w-full cursor-pointer overflow-hidden rounded-3xl border border-black/5 bg-persici-black shadow-xl"
       >
         <Image
-          src={showcase.videoCoverImage}
-          alt="Persici Growth Strategy Session"
+          src={coverImage}
+          alt={title || 'Persici Growth Strategy Session'}
           fill
           sizes="(max-width: 1024px) 100vw, 50vw"
           className="object-cover opacity-90 transition-transform duration-500 group-hover:scale-105"
@@ -36,18 +82,18 @@ export function VideoPreviewModal({
         <div className="absolute bottom-6 start-6 flex items-center gap-3">
           <div className="relative h-10 w-10 overflow-hidden rounded-full border border-white/30">
             <Image
-              src={showcase.speakerAvatar || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80'}
-              alt={dict.partnerShowcase.videoSpeaker}
+              src={speakerAvatar}
+              alt={speakerName}
               fill
               className="object-cover"
             />
           </div>
           <div>
             <div className="text-xs font-semibold text-white">
-              {dict.partnerShowcase.videoSpeaker}
+              {speakerName}
             </div>
             <div className="text-[9.5px] text-white/70">
-              {dict.partnerShowcase.videoRole}
+              {speakerRole}
             </div>
           </div>
         </div>
@@ -72,7 +118,7 @@ export function VideoPreviewModal({
           >
             <div className="flex items-center justify-between pb-3">
               <h4 className="font-primary text-sm font-medium">
-                {dict.partnerShowcase.title}
+                {title}
               </h4>
               <button
                 type="button"
@@ -83,25 +129,37 @@ export function VideoPreviewModal({
               </button>
             </div>
             <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-black">
-              <Image
-                src={showcase.videoCoverImage}
-                alt="Growth Preview"
-                fill
-                className="object-cover opacity-60"
-              />
-              <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-persici-crimson text-white shadow-xl animate-pulse">
-                  <svg className="h-8 w-8 fill-current ms-1" viewBox="0 0 24 24">
-                    <path d="M8 5v14l11-7z" />
-                  </svg>
-                </div>
-                <p className="mt-4 text-sm font-medium text-white/90">
-                  {dict.partnerShowcase.quote}
-                </p>
-                <span className="mt-2 text-xs text-persici-blush">
-                  {dict.partnerShowcase.author} — {dict.partnerShowcase.company}
-                </span>
-              </div>
+              {videoUrl ? (
+                <video
+                  src={videoUrl}
+                  poster={coverImage}
+                  controls
+                  autoPlay
+                  className="h-full w-full object-contain"
+                />
+              ) : (
+                <>
+                  <Image
+                    src={coverImage}
+                    alt="Growth Preview"
+                    fill
+                    className="object-cover opacity-60"
+                  />
+                  <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
+                    <div className="flex h-16 w-16 items-center justify-center rounded-full bg-persici-crimson text-white shadow-xl animate-pulse">
+                      <svg className="h-8 w-8 fill-current ms-1" viewBox="0 0 24 24">
+                        <path d="M8 5v14l11-7z" />
+                      </svg>
+                    </div>
+                    <p className="mt-4 text-sm font-medium text-white/90">
+                      {quote}
+                    </p>
+                    <span className="mt-2 text-xs text-persici-blush">
+                      {author} — {company}
+                    </span>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>

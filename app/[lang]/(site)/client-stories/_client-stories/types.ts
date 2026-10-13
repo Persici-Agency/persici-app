@@ -79,6 +79,7 @@ export interface ClientStoryDetail {
   services: LocalizedString[];
   region: LocalizedString;
   date: string;
+  link?: string;
 
   // High-res Featured Media
   heroImage: string;
@@ -112,3 +113,36 @@ export interface ClientStoryDetail {
   // Related Stories (Slugs)
   relatedSlugs: string[];
 }
+
+export interface ClientStoriesHubCategoryFilter {
+  slug: StoryCategorySlug;
+  label: LocalizedString;
+}
+
+export interface ClientStoriesHubPageData {
+  hero: {
+    badge: LocalizedString;
+    title: LocalizedString;
+    titleHighlight: LocalizedString;
+    subtitle: LocalizedString;
+    primaryCtaLabel: LocalizedString;
+    primaryCtaHref: string;
+    secondaryCtaLabel: LocalizedString;
+    secondaryCtaHref: string;
+  };
+  featuredSection: {
+    badge: LocalizedString;
+    title: LocalizedString;
+    subtitle: LocalizedString;
+    ctaLabel: LocalizedString;
+  };
+  allStoriesSection: {
+    badge: LocalizedString;
+    title: LocalizedString;
+    subtitle: LocalizedString;
+    emptyTitle: LocalizedString;
+    emptySubtitle: LocalizedString;
+    categories: ClientStoriesHubCategoryFilter[];
+  };
+}
+

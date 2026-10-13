@@ -1,18 +1,26 @@
-﻿'use client';
+'use client';
 
 import React, { useState } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
 import { sectionContainer } from '@shared/constants';
 import { FadeUp } from '@shared/components';
 import { TbCheck, TbLoader2, TbArrowRight, TbArrowLeft } from 'react-icons/tb';
+import type { InsightsHubPageData } from '../types';
+import { insightsHubPageData } from '../data/insights.data';
 
 export interface InsightsBlogNewsletterSectionProps {
   lang: string;
+  newsletter?: InsightsHubPageData['newsletterSection'];
 }
 
-export function InsightsBlogNewsletterSection({ lang }: InsightsBlogNewsletterSectionProps) {
+export function InsightsBlogNewsletterSection({
+  lang,
+  newsletter,
+}: InsightsBlogNewsletterSectionProps) {
   const isRtl = lang === 'ar';
+  const locale = (lang === 'ar' ? 'ar' : 'en') as 'en' | 'ar';
+  const data = newsletter || insightsHubPageData.newsletterSection;
+
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
@@ -29,7 +37,6 @@ export function InsightsBlogNewsletterSection({ lang }: InsightsBlogNewsletterSe
     setErrorMessage('');
 
     try {
-      // Simulate API call or call newsletter subscription endpoint
       await new Promise((resolve) => setTimeout(resolve, 800));
       setStatus('success');
       setEmail('');
@@ -38,6 +45,20 @@ export function InsightsBlogNewsletterSection({ lang }: InsightsBlogNewsletterSe
       setErrorMessage(isRtl ? 'حدث خطأ، يرجى المحاولة لاحقاً' : 'Something went wrong. Please try again.');
     }
   };
+
+  const badgeText = data.badge?.[locale] || data.badge?.en || '';
+  const titleText = data.title?.[locale] || data.title?.en || '';
+  const subtitleText = data.subtitle?.[locale] || data.subtitle?.en || '';
+  const isSubtitleHtml = /<[a-z][\s\S]*>/i.test(subtitleText);
+
+  const emailPlaceholder = data.emailPlaceholder?.[locale] || data.emailPlaceholder?.en || '';
+  const submitButtonText = data.submitButtonText?.[locale] || data.submitButtonText?.en || '';
+  const successMessage = data.successMessage?.[locale] || data.successMessage?.en || '';
+  const privacyDisclaimer = data.privacyDisclaimer?.[locale] || data.privacyDisclaimer?.en || '';
+  const isPrivacyHtml = /<[a-z][\s\S]*>/i.test(privacyDisclaimer);
+
+  const imageSrc = data.image || '/images/insights/persici-dispatch-staircase.webp';
+  const imageAlt = data.imageAlt?.[locale] || data.imageAlt?.en || 'Persici Dispatch';
 
   return (
     <section
@@ -49,25 +70,36 @@ export function InsightsBlogNewsletterSection({ lang }: InsightsBlogNewsletterSe
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
           {/* Left Column: Heading, Subtitle & Subscription Form */}
           <div className="lg:col-span-7 flex flex-col items-start text-start">
-            <FadeUp delay={0} duration={700} distance={16}>
-              <span className="font-mono text-xs font-semibold uppercase tracking-wider text-persici-crimson mb-2 block">
-                {isRtl ? 'النشرة المعرفية' : 'Persici Dispatch'}
-              </span>
-            </FadeUp>
+            {badgeText && (
+              <FadeUp delay={0} duration={700} distance={16}>
+                <span className="font-mono text-xs font-semibold uppercase tracking-wider text-persici-crimson mb-2 block">
+                  {badgeText}
+                </span>
+              </FadeUp>
+            )}
 
-            <FadeUp delay={120} duration={850} distance={24} blur={true}>
-              <h2 className="font-primary text-4xl sm:text-5xl lg:text-6xl font-medium text-slate-900 tracking-tight">
-                {isRtl ? 'المدونة المعرفية' : 'Blog'}
-              </h2>
-            </FadeUp>
+            {titleText && (
+              <FadeUp delay={120} duration={850} distance={24} blur={true}>
+                <h2 className="font-primary text-4xl sm:text-5xl lg:text-6xl font-medium text-slate-900 tracking-tight">
+                  {titleText}
+                </h2>
+              </FadeUp>
+            )}
 
-            <FadeUp delay={240} duration={800} distance={20}>
-              <p className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed max-w-xl">
-                {isRtl
-                  ? 'من الصحافة، أدلة تطبيقية، وما نتعلمه أثناء بناء المنصات البرمجية الرائدة ونمو العلامات التجارية.'
-                  : "From the press, practical guides and what we're learning as we build."}
-              </p>
-            </FadeUp>
+            {subtitleText && (
+              <FadeUp delay={240} duration={800} distance={20}>
+                {isSubtitleHtml ? (
+                  <div
+                    className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed max-w-xl [&_p]:mb-2 [&_p:last-child]:mb-0"
+                    dangerouslySetInnerHTML={{ __html: subtitleText }}
+                  />
+                ) : (
+                  <p className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed max-w-xl">
+                    {subtitleText}
+                  </p>
+                )}
+              </FadeUp>
+            )}
 
             {/* Newsletter Form */}
             <FadeUp delay={360} duration={750} distance={18} className="w-full">
@@ -75,11 +107,7 @@ export function InsightsBlogNewsletterSection({ lang }: InsightsBlogNewsletterSe
                 {status === 'success' ? (
                   <div className="flex items-center gap-3 rounded-2xl bg-emerald-50 border border-emerald-200 p-4 text-emerald-800">
                     <TbCheck className="h-5 w-5 shrink-0 text-emerald-600" />
-                    <span className="text-sm font-semibold">
-                      {isRtl
-                        ? 'شكراً لاشتراكك! ستصلك أحدث الرؤى والأدلة مباشرة إلى بريدك.'
-                        : 'Thank you for subscribing! You will receive our latest insights and practical guides.'}
-                    </span>
+                    <span className="text-sm font-semibold">{successMessage}</span>
                   </div>
                 ) : (
                   <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3">
@@ -88,7 +116,7 @@ export function InsightsBlogNewsletterSection({ lang }: InsightsBlogNewsletterSe
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        placeholder={isRtl ? 'أدخل بريدك الإلكتروني' : 'Enter your email'}
+                        placeholder={emailPlaceholder}
                         aria-label={isRtl ? 'البريد الإلكتروني' : 'Email address'}
                         className="w-full rounded-full border border-slate-300 bg-white px-5 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-persici-crimson focus:outline-none focus:ring-2 focus:ring-persici-crimson/20 transition-all shadow-xs"
                       />
@@ -102,7 +130,7 @@ export function InsightsBlogNewsletterSection({ lang }: InsightsBlogNewsletterSe
                         <TbLoader2 className="h-4 w-4 animate-spin" />
                       ) : (
                         <>
-                          <span>{isRtl ? 'اشتراك' : 'Submit'}</span>
+                          <span>{submitButtonText}</span>
                           {isRtl ? (
                             <TbArrowLeft className="h-4 w-4" />
                           ) : (
@@ -119,25 +147,18 @@ export function InsightsBlogNewsletterSection({ lang }: InsightsBlogNewsletterSe
                 )}
 
                 {/* Privacy Disclaimer */}
-                <p className="mt-4 text-xs text-slate-500 leading-relaxed">
-                  {isRtl ? (
-                    <>
-                      بإرسال هذا النموذج، فإنك توافق على تلقي النشرات المعرفية والاتصالات التسويقية من بيرسيشي. يمكنك إلغاء الاشتراك في أي وقت. للمزيد من التفاصيل، راجع{' '}
-                      <Link href={`/${lang}/privacy`} className="text-slate-700 underline hover:text-persici-crimson">
-                        سياسة الخصوصية
-                      </Link>
-                      .
-                    </>
+                {privacyDisclaimer && (
+                  isPrivacyHtml ? (
+                    <div
+                      className="mt-4 text-xs text-slate-500 leading-relaxed [&_a]:text-slate-700 [&_a]:underline hover:[&_a]:text-persici-crimson"
+                      dangerouslySetInnerHTML={{ __html: privacyDisclaimer }}
+                    />
                   ) : (
-                    <>
-                      By submitting this form you are agreeing to receive marketing communications about products, services, and events from Persici. You may unsubscribe at any time. For more information, please refer to our{' '}
-                      <Link href={`/${lang}/privacy`} className="text-slate-700 underline hover:text-persici-crimson">
-                        Privacy Policy
-                      </Link>
-                      .
-                    </>
-                  )}
-                </p>
+                    <p className="mt-4 text-xs text-slate-500 leading-relaxed">
+                      {privacyDisclaimer}
+                    </p>
+                  )
+                )}
               </div>
             </FadeUp>
           </div>
@@ -147,8 +168,8 @@ export function InsightsBlogNewsletterSection({ lang }: InsightsBlogNewsletterSe
             <FadeUp delay={200} duration={850} distance={30}>
               <div className="relative w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] lg:w-[380px] lg:h-[380px] rounded-3xl overflow-hidden shadow-2xl border border-slate-200/80 group">
                 <Image
-                  src="/images/insights/persici-dispatch-staircase.webp"
-                  alt={isRtl ? 'درج حلزوني أحمر رمزي للنمو' : 'Modern architectural crimson spiral staircase looking upwards to skylight'}
+                  src={imageSrc}
+                  alt={imageAlt}
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-105"
                   sizes="(max-width: 768px) 100vw, 400px"
@@ -162,3 +183,4 @@ export function InsightsBlogNewsletterSection({ lang }: InsightsBlogNewsletterSe
     </section>
   );
 }
+

@@ -2,11 +2,8 @@ import { notFound } from 'next/navigation';
 import { getDictionary, hasLocale } from '@dictionaries';
 import { createMetadata } from '@lib/metadata';
 import type { Locale } from '@lib/i18n';
-import {
-  getAllClientStories,
-  getClientStoryBySlug,
-  getRelatedClientStories,
-} from '../_client-stories/data/client-stories.data';
+import { getAllClientStories } from '../_client-stories/data/client-stories.data';
+import { getProjectBySlugFromDb, getRelatedProjectsFromDb } from '@/lib/projects-server';
 import { ClientStoryDetailView } from './_client-story-detail/components/client-story-detail-view';
 
 type PageProps = {
@@ -34,7 +31,7 @@ export async function generateMetadata({ params }: PageProps) {
   const { lang, slug } = await params;
   if (!hasLocale(lang)) return {};
 
-  const story = getClientStoryBySlug(slug);
+  const story = await getProjectBySlugFromDb(slug);
   if (!story) return {};
 
   const title = story.title[lang as 'en' | 'ar'] || story.title.en;
@@ -53,11 +50,11 @@ export default async function ClientStoryDetailPage({ params }: PageProps) {
   const { lang, slug } = await params;
   if (!hasLocale(lang)) notFound();
 
-  const story = getClientStoryBySlug(slug);
+  const story = await getProjectBySlugFromDb(slug);
   if (!story) notFound();
 
   const dict = await getDictionary(lang);
-  const relatedStories = getRelatedClientStories(slug, 3);
+  const relatedStories = await getRelatedProjectsFromDb(slug, 3);
 
   return (
     <ClientStoryDetailView

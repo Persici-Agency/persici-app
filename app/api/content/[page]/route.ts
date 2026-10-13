@@ -1,11 +1,48 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getPageContent, updatePageContent } from '@shared/services/db.service';
+import {
+  getPageContent,
+  updatePageContent,
+  normalizeAboutPageData,
+  normalizeContactPageData,
+  normalizeClientStoriesPageData,
+  normalizeCareersPageData,
+  normalizeInsightsPageData,
+  getInsightsPageData,
+  getSolutionsPageData,
+  getSolutionFeaturePageData,
+  normalizeSolutionsHubPageData,
+  normalizeSolutionFeaturePageData,
+  isSolutionPageSlug,
+  getIndustriesPageData,
+  getIndustryFeaturePageData,
+  normalizeIndustriesHubPageData,
+  normalizeIndustryFeaturePageData,
+  isIndustryPageSlug,
+  extractIndustryFeatureSlug,
+  getHowWeDoItPageData,
+  getHowWeDoItFeaturePageData,
+  normalizeHowWeDoItHubPageData,
+  normalizeHowWeDoItFeaturePageData,
+  isHowWeDoItPageSlug,
+  extractHowWeDoItFeatureSlug,
+} from '@shared/services/db.service';
+import { getSessionUser } from '@/lib/auth/jwt';
+import { isRoleAllowed } from '@/lib/auth/rbac';
+import { revalidatePageContent } from '@/lib/revalidate';
 import {
   homePageContent,
   servicesPageContent,
   workPageContent,
-  contactPageContent,
+  solutionsPageContent,
+  industriesPageContent,
+  howWeDoItPageContent,
+  defaultSharedContactData,
 } from '@shared/data';
+import { aboutPageData } from '@/app/[lang]/(site)/about/_about/data/about.data';
+import { contactPageData } from '@/app/[lang]/(site)/contact/_contact/data/contact.data';
+import { clientStoriesHubPageData } from '@/app/[lang]/(site)/client-stories/_client-stories/data/client-stories.data';
+import { careersHubData } from '@/app/[lang]/(site)/careers/_careers/data/careers.data';
+import { insightsHubPageData } from '@/app/[lang]/(site)/insights/_insights/data/insights.data';
 
 export const runtime = 'nodejs';
 
@@ -13,7 +50,16 @@ const FALLBACK_PAGES: Record<string, object> = {
   home: homePageContent,
   services: servicesPageContent,
   work: workPageContent,
-  contact: contactPageContent,
+  'client-stories': clientStoriesHubPageData,
+  contact: contactPageData,
+  solutions: solutionsPageContent,
+  industries: industriesPageContent,
+  'how-we-do-it': howWeDoItPageContent,
+  about: aboutPageData,
+  careers: careersHubData,
+  insights: insightsHubPageData,
+  'shared-contact': defaultSharedContactData,
+  'contact-section': defaultSharedContactData,
 };
 
 /**
@@ -26,16 +72,85 @@ export async function GET(
 ) {
   try {
     const { page } = await params;
-    const fallback = FALLBACK_PAGES[page];
 
-    if (!fallback) {
-      return NextResponse.json(
-        { error: `Page '${page}' not found in registered content pages.` },
-        { status: 404 }
-      );
+    if (page === 'insights') {
+      const content = await getInsightsPageData();
+      return NextResponse.json({
+        success: true,
+        page,
+        content,
+      });
     }
 
-    const content = await getPageContent(page, fallback);
+    if (page === 'solutions') {
+      const content = await getSolutionsPageData();
+      return NextResponse.json({
+        success: true,
+        page,
+        content,
+      });
+    }
+
+    if (isSolutionPageSlug(page)) {
+      const content = await getSolutionFeaturePageData(page);
+      return NextResponse.json({
+        success: true,
+        page,
+        content,
+      });
+    }
+
+    if (page === 'industries') {
+      const content = await getIndustriesPageData();
+      return NextResponse.json({
+        success: true,
+        page,
+        content,
+      });
+    }
+
+    if (isIndustryPageSlug(page)) {
+      const content = await getIndustryFeaturePageData(page);
+      return NextResponse.json({
+        success: true,
+        page,
+        content,
+      });
+    }
+
+    if (page === 'how-we-do-it') {
+      const content = await getHowWeDoItPageData();
+      return NextResponse.json({
+        success: true,
+        page,
+        content,
+      });
+    }
+
+    if (isHowWeDoItPageSlug(page)) {
+      const content = await getHowWeDoItFeaturePageData(page);
+      return NextResponse.json({
+        success: true,
+        page,
+        content,
+      });
+    }
+
+    const fallback = FALLBACK_PAGES[page] || {};
+
+    const rawContent = await getPageContent(page, fallback);
+    const content =
+      page === 'about'
+        ? normalizeAboutPageData(rawContent)
+        : page === 'contact'
+          ? normalizeContactPageData(rawContent)
+          : page === 'client-stories'
+            ? normalizeClientStoriesPageData(rawContent)
+            : page === 'careers'
+              ? normalizeCareersPageData(rawContent)
+              : page === 'insights'
+                ? normalizeInsightsPageData(rawContent)
+                : rawContent;
     return NextResponse.json({
       success: true,
       page,
@@ -44,7 +159,7 @@ export async function GET(
   } catch (error) {
     console.error('[API /api/content/[page] GET] Error:', error);
     return NextResponse.json(
-      { error: 'Failed to retrieve page content', details: String(error) },
+      { error: 'Failed to retrieve page content' },
       { status: 500 }
     );
   }
@@ -53,6 +168,8 @@ export async function GET(
 /**
  * PUT /api/content/[page]
  * Updates page sections from the dashboard.
+ * PROTECTED: Requires 'admin' or 'editor' role (or 'hr' for careers).
+ * Triggers instant on-demand ISR cache revalidation.
  */
 export async function PUT(
   request: NextRequest,
@@ -60,6 +177,14 @@ export async function PUT(
 ) {
   try {
     const { page } = await params;
+    const user = await getSessionUser();
+    const allowedRoles = page === 'careers' ? (['admin', 'editor', 'hr'] as const) : (['admin', 'editor'] as const);
+    if (!user || !isRoleAllowed(user.role, [...allowedRoles])) {
+      return NextResponse.json(
+        { error: 'Unauthorized. Only Admins and Editors can update page content.' },
+        { status: 403 }
+      );
+    }
     const body = await request.json();
 
     if (!body || typeof body !== 'object') {
@@ -69,19 +194,60 @@ export async function PUT(
       );
     }
 
-    const updated = await updatePageContent(page, body);
+    const rawPayload =
+      body.content && typeof body.content === 'object' && !body.hero
+        ? body.content
+        : body;
+
+    // Normalize canonical page key if a legacy alias was used
+    const canonicalIndustrySlug =
+      page !== 'industries' && isIndustryPageSlug(page)
+        ? extractIndustryFeatureSlug(page)
+        : null;
+    const canonicalHowWeDoItSlug =
+      page !== 'how-we-do-it' && isHowWeDoItPageSlug(page)
+        ? extractHowWeDoItFeatureSlug(page)
+        : null;
+    const targetPageKey = canonicalIndustrySlug
+      ? `industries-${canonicalIndustrySlug}`
+      : canonicalHowWeDoItSlug
+        ? `how-we-do-it-${canonicalHowWeDoItSlug}`
+        : page;
+
+    const payload =
+      page === 'solutions'
+        ? normalizeSolutionsHubPageData(rawPayload)
+        : isSolutionPageSlug(page)
+          ? normalizeSolutionFeaturePageData(page, rawPayload)
+          : page === 'industries'
+            ? normalizeIndustriesHubPageData(rawPayload)
+            : isIndustryPageSlug(page)
+              ? normalizeIndustryFeaturePageData(page, rawPayload)
+              : page === 'how-we-do-it'
+                ? normalizeHowWeDoItHubPageData(rawPayload)
+                : isHowWeDoItPageSlug(page)
+                  ? normalizeHowWeDoItFeaturePageData(canonicalHowWeDoItSlug || 'strategy-consulting', rawPayload)
+                  : rawPayload;
+
+    const updated = await updatePageContent(targetPageKey, payload);
+
+    // Trigger instant cache revalidation across EN and AR routes
+    if (updated) {
+      revalidatePageContent(targetPageKey);
+    }
 
     return NextResponse.json({
       success: updated,
       message: updated
-        ? `Page '${page}' content updated successfully.`
-        : `Database not connected; update simulated.`,
-      page,
+        ? `Page '${targetPageKey}' updated and published successfully.`
+        : `Database update failed.`,
+      page: targetPageKey,
+      revalidated: updated,
     });
   } catch (error) {
     console.error('[API /api/content/[page] PUT] Error:', error);
     return NextResponse.json(
-      { error: 'Failed to update page content', details: String(error) },
+      { error: 'Failed to update page content' },
       { status: 500 }
     );
   }

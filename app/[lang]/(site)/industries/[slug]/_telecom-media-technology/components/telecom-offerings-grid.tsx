@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState } from 'react';
 import type { TelecomOfferingItem } from '../data/telecom-media-technology.data';
@@ -10,6 +10,7 @@ interface TelecomOfferingsGridProps {
   offerings: TelecomOfferingItem[];
   title: string;
   subtitle: string;
+  badge?: string;
   lang: string;
 }
 
@@ -17,6 +18,7 @@ export function TelecomOfferingsGrid({
   offerings,
   title,
   subtitle,
+  badge,
   lang,
 }: TelecomOfferingsGridProps) {
   const isRtl = lang === 'ar';
@@ -28,7 +30,7 @@ export function TelecomOfferingsGrid({
         {/* Section Header */}
         <FadeUp delay={0} duration={700} distance={20} className="text-center max-w-3xl mx-auto mb-14 sm:mb-20">
           <span className="text-xs sm:text-sm font-semibold uppercase tracking-widest text-persici-crimson block mb-3">
-            {isRtl ? 'القدرات والحلول المتخصصة' : 'Core Capabilities'}
+            {badge || (isRtl ? 'القدرات والحلول المتخصصة' : 'Core Capabilities')}
           </span>
           <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-slate-900">
             {title}

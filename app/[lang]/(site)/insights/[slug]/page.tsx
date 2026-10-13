@@ -2,7 +2,8 @@ import { notFound } from 'next/navigation';
 import { getDictionary, hasLocale } from '@dictionaries';
 import { createMetadata } from '@lib/metadata';
 import type { Locale } from '@lib/i18n';
-import { getAllInsights, getInsightBySlug } from '../_insights/data/insights.data';
+import { getAllInsightsFromDb, getInsightBySlugFromDb } from '@/lib/insights-server';
+import { getSharedContactData } from '@shared/services/db.service';
 import { InsightDetailView } from './_insight-detail';
 
 type PageProps = {
@@ -13,7 +14,7 @@ type PageProps = {
 };
 
 export async function generateStaticParams() {
-  const insights = getAllInsights();
+  const insights = await getAllInsightsFromDb(true);
   const locales = ['en', 'ar'];
   const params: { lang: string; slug: string }[] = [];
 
@@ -30,11 +31,12 @@ export async function generateMetadata({ params }: PageProps) {
   const { lang, slug } = await params;
   if (!hasLocale(lang)) return {};
 
-  const insight = getInsightBySlug(slug);
+  const insight = await getInsightBySlugFromDb(slug);
   if (!insight) return {};
 
   const title = insight.title[lang as 'en' | 'ar'] || insight.title.en;
-  const description = insight.excerpt[lang as 'en' | 'ar'] || insight.excerpt.en;
+  const rawDescription = insight.excerpt[lang as 'en' | 'ar'] || insight.excerpt.en || '';
+  const description = rawDescription.replace(/<[^>]*>/g, '');
 
   return createMetadata({
     title,
@@ -48,16 +50,20 @@ export default async function InsightDetailPage({ params }: PageProps) {
   const { lang, slug } = await params;
   if (!hasLocale(lang)) notFound();
 
-  const insight = getInsightBySlug(slug);
+  const [insight, dict, sharedContact] = await Promise.all([
+    getInsightBySlugFromDb(slug),
+    getDictionary(lang),
+    getSharedContactData(),
+  ]);
   if (!insight) notFound();
-
-  const dict = await getDictionary(lang);
 
   return (
     <InsightDetailView
       insight={insight}
       lang={lang}
       dict={dict}
+      sharedContact={sharedContact}
     />
   );
 }
+

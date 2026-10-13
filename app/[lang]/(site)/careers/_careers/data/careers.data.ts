@@ -24,14 +24,43 @@ export interface CareerFaqItem {
   answer: LocalizedString;
 }
 
+export interface CareerFilterOption {
+  slug: string;
+  label: LocalizedString;
+}
+
+export interface CareerSectionVisibility {
+  showDepartmentBadge?: boolean;
+  showLocationBadge?: boolean;
+  showWorkPolicyBadge?: boolean;
+  showTypeBadge?: boolean;
+  showExperienceBadge?: boolean;
+  showSalary?: boolean;
+  showPostedDate?: boolean;
+  showSummary?: boolean;
+  showMission?: boolean;
+  showResponsibilities?: boolean;
+  showRequirements?: boolean;
+  showPreferredQualifications?: boolean;
+  showTechStack?: boolean;
+  showBenefits?: boolean;
+  showSidebarSpecs?: boolean;
+  showVisaSupport?: boolean;
+  showWorkstation?: boolean;
+  showShareCard?: boolean;
+  showConciergeCard?: boolean;
+  showApplicationForm?: boolean;
+  showRelatedRoles?: boolean;
+}
+
 export interface CareerJobOpening {
   id: string;
   slug: string;
   title: LocalizedString;
   department: LocalizedString;
-  departmentSlug: 'engineering' | 'growth' | 'creative' | 'strategy' | 'data';
+  departmentSlug: string;
   location: LocalizedString;
-  locationSlug: 'dubai' | 'riyadh' | 'amman' | 'remote';
+  locationSlug: string;
   type: LocalizedString;
   experience: LocalizedString;
   workPolicy: LocalizedString;
@@ -46,13 +75,36 @@ export interface CareerJobOpening {
   preferredQualifications: LocalizedString[];
   techStack: string[];
   benefits: LocalizedString[];
+  visaSponsorship?: LocalizedString;
+  workstation?: LocalizedString;
+  contactEmail?: string;
+  customSectionTitles?: {
+    mission?: LocalizedString;
+    responsibilities?: LocalizedString;
+    requirements?: LocalizedString;
+    preferredQualifications?: LocalizedString;
+    techStack?: LocalizedString;
+    benefits?: LocalizedString;
+  };
+  sectionVisibility?: CareerSectionVisibility;
 }
 
 export interface CareersHubData {
   hero: {
+    enabled?: boolean;
     badge: LocalizedString;
     title: LocalizedString;
     description: LocalizedString;
+    primaryCta?: {
+      text: LocalizedString;
+      href: string;
+      enabled?: boolean;
+    };
+    secondaryCta?: {
+      text: LocalizedString;
+      href: string;
+      enabled?: boolean;
+    };
     stats: Array<{
       value: string;
       number?: number;
@@ -62,6 +114,7 @@ export interface CareersHubData {
     }>;
   };
   culture: {
+    enabled?: boolean;
     badge: LocalizedString;
     title: LocalizedString;
     description: LocalizedString;
@@ -72,24 +125,47 @@ export interface CareersHubData {
     }>;
   };
   perks: {
+    enabled?: boolean;
     badge: LocalizedString;
     title: LocalizedString;
     subtitle: LocalizedString;
     items: CareerPerk[];
   };
   process: {
+    enabled?: boolean;
     badge: LocalizedString;
     title: LocalizedString;
     subtitle: LocalizedString;
     steps: CareerProcessStep[];
   };
+  openPositions: {
+    enabled?: boolean;
+    badge: LocalizedString;
+    title: LocalizedString;
+    subtitle: LocalizedString;
+    searchPlaceholder: LocalizedString;
+    departmentLabel: LocalizedString;
+    locationLabel: LocalizedString;
+    stackLabel: LocalizedString;
+    highPriorityBadge: LocalizedString;
+    applyCtaText: LocalizedString;
+    emptyTitle: LocalizedString;
+    emptySubtitle: LocalizedString;
+    resetButtonText: LocalizedString;
+    departments: CareerFilterOption[];
+    locations: CareerFilterOption[];
+  };
   spontaneous: {
+    enabled?: boolean;
     badge: LocalizedString;
     title: LocalizedString;
     description: LocalizedString;
     ctaText: LocalizedString;
+    email?: string;
+    emailSubject?: LocalizedString;
   };
   faqs: {
+    enabled?: boolean;
     badge: LocalizedString;
     title: LocalizedString;
     subtitle: LocalizedString;
@@ -676,6 +752,7 @@ export const careerOpenings: CareerJobOpening[] = [
 // ============================================================================
 export const careersHubData: CareersHubData = {
   hero: {
+    enabled: true,
     badge: {
       en: 'The Persici Collective • Careers & Culture',
       ar: 'مجتمع برسيسي • الوظائف وثقافة العمل',
@@ -687,6 +764,22 @@ export const careersHubData: CareersHubData = {
     description: {
       en: 'We are a high-velocity collective of engineers, growth tacticians, and brand visionaries. We build iconic digital platforms, deploy proprietary AI workflows, and scale premier brands across the GCC, Scandinavia, and Europe.',
       ar: 'نحن نخبة من المهندسين ومبتكري النمو وصناع الهويات البصرية الأكثر طموحاً. نبني منصات رقمية فارقة، وننشر أنظمة ذكاء اصطناعي رائدة، ونقود نمو أبرز العلامات التجارية في الخليج وأوروبا.',
+    },
+    primaryCta: {
+      text: {
+        en: 'Explore Open Positions',
+        ar: 'استكشف الوظائف الشاغرة',
+      },
+      href: '#open-positions',
+      enabled: true,
+    },
+    secondaryCta: {
+      text: {
+        en: 'Culture & Total Rewards',
+        ar: 'ثقافة العمل والمزايا',
+      },
+      href: '#culture',
+      enabled: true,
     },
     stats: [
       {
@@ -729,6 +822,7 @@ export const careersHubData: CareersHubData = {
     ],
   },
   culture: {
+    enabled: true,
     badge: {
       en: 'Life at Persici',
       ar: 'الحياة في برسيسي',
@@ -789,6 +883,7 @@ export const careersHubData: CareersHubData = {
     ],
   },
   perks: {
+    enabled: true,
     badge: {
       en: 'Executive Benefits & Total Rewards',
       ar: 'المزايا التنفيذية والمكافآت الشاملة',
@@ -901,6 +996,7 @@ export const careersHubData: CareersHubData = {
     ],
   },
   process: {
+    enabled: true,
     badge: {
       en: 'Our Hiring Transparency',
       ar: 'شفافية مسار التوظيف لدينا',
@@ -976,7 +1072,74 @@ export const careersHubData: CareersHubData = {
       },
     ],
   },
+  openPositions: {
+    enabled: true,
+    badge: {
+      en: 'Open Positions',
+      ar: 'فرص العمل الحالية',
+    },
+    title: {
+      en: 'Find Your Role in the Collective',
+      ar: 'انضم إلى نخبة البناة والمبتكرين',
+    },
+    subtitle: {
+      en: 'Explore active openings across our innovation hubs in Dubai, Riyadh, Amman, and global remote.',
+      ar: 'استكشف الوظائف المتاحة في مقراتنا العالمية بدبي والرياض وعمّان وعن بُعد.',
+    },
+    searchPlaceholder: {
+      en: 'Search by role title, tech stack, or keyword...',
+      ar: 'ابحث بالمسمى الوظيفي، التقنية، أو القسم...',
+    },
+    departmentLabel: {
+      en: 'Department:',
+      ar: 'القسم:',
+    },
+    locationLabel: {
+      en: 'Location:',
+      ar: 'المقر:',
+    },
+    stackLabel: {
+      en: 'Stack:',
+      ar: 'التقنيات:',
+    },
+    highPriorityBadge: {
+      en: 'High Priority',
+      ar: 'مطلوبة بشدة',
+    },
+    applyCtaText: {
+      en: 'View Role & Apply',
+      ar: 'تفاصيل الوظيفة والتقديم',
+    },
+    emptyTitle: {
+      en: 'No Matching Openings Found',
+      ar: 'لم نجد وظائف مطابقة للبحث',
+    },
+    emptySubtitle: {
+      en: 'Try adjusting your department or location filters, or submit a spontaneous application to join our talent network.',
+      ar: 'جرّب تغيير مرشحات القسم أو المقر، أو أرسل لنا طلباً عاماً وسنتواصل معك فور توفر فرصة مناسبة.',
+    },
+    resetButtonText: {
+      en: 'Reset All Filters',
+      ar: 'إعادة ضبط كافة المرشحات',
+    },
+    departments: [
+      { slug: 'all', label: { en: 'All Departments', ar: 'كافة الأقسام' } },
+      { slug: 'engineering', label: { en: 'Engineering & AI', ar: 'الهندسة والذكاء الاصطناعي' } },
+      { slug: 'growth', label: { en: 'Growth Marketing', ar: 'التسويق الأدائي والنمو' } },
+      { slug: 'creative', label: { en: 'Creative & Brand', ar: 'الإبداع والهوية' } },
+      { slug: 'strategy', label: { en: 'Client Strategy', ar: 'استراتيجيات العملاء' } },
+      { slug: 'data', label: { en: 'AI & Data', ar: 'البيانات والذكاء الاصطناعي' } },
+    ],
+    locations: [
+      { slug: 'all', label: { en: 'All Hubs', ar: 'كافة المقرات' } },
+      { slug: 'dubai', label: { en: 'Dubai HQ', ar: 'مقر دبي' } },
+      { slug: 'riyadh', label: { en: 'Riyadh Hub', ar: 'مقر الرياض' } },
+      { slug: 'amman', label: { en: 'Amman Hub', ar: 'مقر عمّان' } },
+      { slug: 'remote', label: { en: 'Global Remote', ar: 'عن بُعد' } },
+    ],
+  },
   spontaneous: {
+    enabled: true,
     badge: {
       en: 'Open Talent Collective',
       ar: 'باب الانضمام مفتوح دائماً',
@@ -993,8 +1156,14 @@ export const careersHubData: CareersHubData = {
       en: 'Submit a Spontaneous Application',
       ar: 'قدم طلب انضمام عام للوكالة',
     },
+    email: 'hr@persiciagency.com',
+    emailSubject: {
+      en: 'Spontaneous Application — Persici Talent Collective',
+      ar: 'طلب انضمام عام لنخبة برسيسي',
+    },
   },
   faqs: {
+    enabled: true,
     badge: {
       en: 'Candidate Inquiries',
       ar: 'استفسارات المرشحين الشائعة',

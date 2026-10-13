@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React from 'react';
 import { TbCircleCheck } from 'react-icons/tb';
@@ -60,9 +60,16 @@ export function IndustryCard({
         </h3>
 
         {/* Description */}
-        <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal mb-6">
-          {description}
-        </p>
+        {/<[a-z][\s\S]*>/i.test(description || '') ? (
+          <div
+            className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal mb-6 [&_p]:mb-1.5 [&_p:last-child]:mb-0"
+            dangerouslySetInnerHTML={{ __html: description }}
+          />
+        ) : (
+          <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal mb-6">
+            {description}
+          </p>
+        )}
       </div>
 
       {/* Capabilities Checklist */}

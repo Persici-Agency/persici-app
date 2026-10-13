@@ -1,16 +1,20 @@
-﻿'use client';
+'use client';
 
 import React, { useState } from 'react';
 import type { Dictionary } from '@dictionaries';
-import { experienceTransformationData } from '../data/experience-transformation.data';
 import { SolutionsHeroSection } from '../../../../solutions/_solutions/components/solutions-hero-section';
 import { HowWeDoItSubNavbar } from '../../_components/how-we-do-it-sub-navbar';
 import { SolutionsWhyItMatters } from '../../../../solutions/_solutions/components/solutions-why-it-matters';
 import { SolutionsBenefitsStrip } from '../../../../solutions/_solutions/components/solutions-benefits-strip';
 import {
+  type HowWeDoItFeatureCmsData,
+  getDefaultHowWeDoItFeatureCmsData,
+} from '../../../_how-we-do-it/data/how-we-do-it-cms.data';
+import {
   CapabilityCard,
   TechInfrastructureCard,
   FeaturedClientStories,
+  InsightsSection,
   ClientReviewSection,
   FaqSection,
 } from '@shared';
@@ -18,17 +22,19 @@ import { sectionContainer, sectionPaddingY } from '@shared/constants';
 import { HomeContactSection } from '../../../../_home/components/home-contact-section';
 
 interface ExperienceTransformationViewProps {
+  data?: HowWeDoItFeatureCmsData;
   lang: string;
   dict: Dictionary;
 }
 
 export function ExperienceTransformationView({
+  data: cmsData,
   lang,
   dict,
 }: ExperienceTransformationViewProps) {
   const isAr = lang === 'ar';
   const [isPaused, setIsPaused] = useState(false);
-  const data = experienceTransformationData;
+  const data = cmsData || getDefaultHowWeDoItFeatureCmsData('experience-transformation');
 
   const offeringsTitle = data.offeringsTitle[isAr ? 'ar' : 'en'];
   const offeringsSubtitle = data.offeringsSubtitle[isAr ? 'ar' : 'en'];
@@ -38,8 +44,13 @@ export function ExperienceTransformationView({
 
   const benefitsTitle = data.benefitsStrip.title[isAr ? 'ar' : 'en'];
 
-  const quoteText = data.quote.text[isAr ? 'ar' : 'en'];
-  const quoteRole = data.quote.role[isAr ? 'ar' : 'en'];
+  const quoteText = data.quote?.text
+    ? (data.quote.text[isAr ? 'ar' : 'en'] || data.quote.text.en)
+    : (data.clientReview?.quote ? (data.clientReview.quote[isAr ? 'ar' : 'en'] || data.clientReview.quote.en) : '');
+  const quoteAuthor = data.quote?.author || data.clientReview?.author || '';
+  const quoteRole = data.quote?.role
+    ? (data.quote.role[isAr ? 'ar' : 'en'] || data.quote.role.en)
+    : (data.clientReview?.role ? (data.clientReview.role[isAr ? 'ar' : 'en'] || data.clientReview.role.en) : '');
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -156,12 +167,16 @@ export function ExperienceTransformationView({
                 {isAr ? 'منظومة أدوات التجربة' : 'Experience Architecture'}
               </div>
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-primary font-medium text-white tracking-tight leading-tight mb-5">
-                {isAr ? 'منظومة التصميم وأنظمة رموز الواجهات' : 'Design Systems & Experience Toolchains'}
+                {data.techStackPodsTitle
+                  ? (data.techStackPodsTitle[isAr ? 'ar' : 'en'] || data.techStackPodsTitle.en)
+                  : (isAr ? 'منظومة التصميم وأنظمة رموز الواجهات' : 'Design Systems & Experience Toolchains')}
               </h2>
               <p className="text-base sm:text-lg text-slate-300 font-secondary leading-relaxed">
-                {isAr
-                  ? 'نوظف أرقى مكتبات المكونات ورموز التصميم لتوحيد الهوية وتسريع إطلاق الواجهات.'
-                  : 'Tokenized component libraries and research platforms driving cohesive, frictionless customer interactions.'}
+                {data.techStackPodsSubtitle
+                  ? (data.techStackPodsSubtitle[isAr ? 'ar' : 'en'] || data.techStackPodsSubtitle.en)
+                  : (isAr
+                    ? 'نوظف أرقى مكتبات المكونات ورموز التصميم لتوحيد الهوية وتسريع إطلاق الواجهات.'
+                    : 'Tokenized component libraries and research platforms driving cohesive, frictionless customer interactions.')}
               </p>
             </div>
 
@@ -189,14 +204,36 @@ export function ExperienceTransformationView({
       </div>
 
       {/* 7. Featured Client Stories */}
-      <div id="stories">
-        <FeaturedClientStories lang={lang} />
-      </div>
+      {data.clientStoriesConfig?.enabled !== false && (
+        <div id="stories">
+          <FeaturedClientStories
+            stories={data.clientStories}
+            sectionBadge={data.clientStoriesConfig?.badge}
+            sectionTitle={data.clientStoriesConfig?.title}
+            sectionSubtitle={data.clientStoriesConfig?.subtitle}
+            lang={lang}
+          />
+        </div>
+      )}
+
+      {/* 7B. Latest Insights / Blogs Carousel */}
+      {data.insightsConfig?.enabled !== false && (
+        <div id="insights">
+          <InsightsSection
+            items={data.insights}
+            title={data.insightsConfig?.title}
+            subtitle={data.insightsConfig?.subtitle}
+            ctaText={data.insightsConfig?.ctaText}
+            ctaHref={data.insightsConfig?.ctaHref || '/insights'}
+            lang={lang}
+          />
+        </div>
+      )}
 
       {/* 8. Executive Client Review */}
       <ClientReviewSection
         quoteText={quoteText}
-        quoteAuthor={data.quote.author}
+        quoteAuthor={quoteAuthor}
         quoteRole={quoteRole}
         lang={lang}
       />
@@ -204,8 +241,8 @@ export function ExperienceTransformationView({
       {/* 9. Enterprise FAQs Accordion */}
       <div id="faqs">
         <FaqSection
-          title={{ en: 'Frequently Asked Questions', ar: 'الأسئلة الأكثر شيوعاً' }}
-          subtitle={{
+          title={data.faqsTitle || { en: 'Frequently Asked Questions', ar: 'الأسئلة الأكثر شيوعاً' }}
+          subtitle={data.faqsSubtitle || {
             en: 'Answers on human-centered design, design systems, and omnichannel experience transformation.',
             ar: 'إجابات واضحة حول التصميم المتمحور حول الإنسان، وأنظمة التصميم المؤسسية، وتحول تجارب العملاء.',
           }}
@@ -215,9 +252,11 @@ export function ExperienceTransformationView({
       </div>
 
       {/* 10. Contact & Discovery Form */}
-      <div id="contact">
-        <HomeContactSection lang={lang} dict={dict} />
-      </div>
+      {data.contactSection?.enabled !== false && (
+        <div id="contact">
+          <HomeContactSection lang={lang} dict={dict} />
+        </div>
+      )}
     </div>
   );
 }

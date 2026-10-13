@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useRef, useEffect } from 'react';
 import { sectionContainer, sectionPaddingY } from '@shared/constants';
@@ -282,9 +282,16 @@ export function InsightsSection({
               <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-medium text-slate-900 tracking-tight leading-[1.15] mb-4">
                 {headingText}
               </h2>
-              <p className="text-base sm:text-lg text-slate-600 leading-relaxed font-normal mb-8 max-w-sm">
-                {descText}
-              </p>
+              {/<[a-z][\s\S]*>/i.test(descText || '') ? (
+                <div
+                  className="text-base sm:text-lg text-slate-600 leading-relaxed font-normal mb-8 max-w-sm [&_p]:mb-2 [&_p:last-child]:mb-0"
+                  dangerouslySetInnerHTML={{ __html: descText }}
+                />
+              ) : (
+                <p className="text-base sm:text-lg text-slate-600 leading-relaxed font-normal mb-8 max-w-sm">
+                  {descText}
+                </p>
+              )}
               <div>
                 <HomeButton
                   href={finalHref}

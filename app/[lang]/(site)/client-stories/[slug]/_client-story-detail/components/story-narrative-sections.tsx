@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import type { ClientStoryDetail, StoryNarrativeSection } from '../../../_client-stories/types';
 import { TbCheck, TbQuote } from 'react-icons/tb';
 
@@ -28,7 +28,15 @@ export function StoryNarrativeSections({ story, lang }: StoryNarrativeSectionsPr
         {/* Paragraphs */}
         <div className="space-y-5 text-base sm:text-lg text-slate-700 leading-relaxed font-normal">
           {section.paragraphs.map((p, idx) => {
-            const pText = p[lang as 'en' | 'ar'] || p.en;
+            const pText = p[lang as 'en' | 'ar'] || p.en || '';
+            if (pText.includes('<') && pText.includes('>')) {
+              return (
+                <div
+                  key={idx}
+                  dangerouslySetInnerHTML={{ __html: pText }}
+                />
+              );
+            }
             return <p key={idx}>{pText}</p>;
           })}
         </div>
@@ -51,12 +59,25 @@ export function StoryNarrativeSections({ story, lang }: StoryNarrativeSectionsPr
         )}
 
         {/* Pull Quote if present */}
-        {section.quote && (
+        {section.quote && (section.quote.text?.en || section.quote.text?.ar) && (
           <blockquote className="mt-8 rounded-2xl border-s-4 border-persici-crimson bg-slate-50/80 p-6 sm:p-8 shadow-xs">
             <TbQuote className="h-8 w-8 text-persici-crimson/30 mb-2" />
-            <p className="font-primary text-lg sm:text-xl font-medium italic text-slate-800 leading-relaxed">
-              &ldquo;{section.quote.text[lang as 'en' | 'ar'] || section.quote.text.en}&rdquo;
-            </p>
+            {(() => {
+              const qText = section.quote.text[lang as 'en' | 'ar'] || section.quote.text.en || '';
+              if (qText.includes('<') && qText.includes('>')) {
+                return (
+                  <div
+                    className="font-primary text-lg sm:text-xl font-medium italic text-slate-800 leading-relaxed"
+                    dangerouslySetInnerHTML={{ __html: qText }}
+                  />
+                );
+              }
+              return (
+                <p className="font-primary text-lg sm:text-xl font-medium italic text-slate-800 leading-relaxed">
+                  &ldquo;{qText}&rdquo;
+                </p>
+              );
+            })()}
             <footer className="mt-4 flex items-center gap-2">
               <span className="font-semibold text-sm text-slate-900">{section.quote.author}</span>
               {section.quote.role && (

@@ -7,8 +7,29 @@ interface AiOverviewResponse {
   keyTakeaways: string[];
 }
 
+const aiOverviewIps = new Map<string, { count: number; timestamp: number }>();
+function checkAiRateLimit(ip: string): boolean {
+  const now = Date.now();
+  const record = aiOverviewIps.get(ip);
+  if (!record || now - record.timestamp > 10 * 60 * 1000) {
+    aiOverviewIps.set(ip, { count: 1, timestamp: now });
+    return true;
+  }
+  if (record.count >= 10) return false;
+  record.count += 1;
+  return true;
+}
+
 export async function POST(request: NextRequest) {
   try {
+    const ip = request.headers.get('x-forwarded-for') || '127.0.0.1';
+    if (!checkAiRateLimit(ip)) {
+      return NextResponse.json(
+        { error: 'AI Overview generation quota exceeded. Please try again in 10 minutes.' },
+        { status: 429 }
+      );
+    }
+
     const body = await request.json().catch(() => null);
 
     if (!body || !body.content) {
@@ -18,7 +39,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { title = '', content = '', lang = 'en' } = body;
+    const title = String(body.title || '').slice(0, 200);
+    const content = String(body.content || '').slice(0, 8000);
+    const lang = body.lang === 'ar' ? 'ar' : 'en';
     const isRtl = lang === 'ar';
     const apiKey = process.env.GEMINI_API_KEY;
 
@@ -43,7 +66,7 @@ Your output must be strictly valid JSON matching this schema:
 Article Title: "${title}"
 
 Article Sections Content:
-${content.slice(0, 12000)}`;
+${content}`;
 
         const geminiRes = await fetch(
           `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
@@ -92,7 +115,6 @@ ${content.slice(0, 12000)}`;
     }
 
     // 2. Fallback synthesis when GEMINI_API_KEY is not yet added in .env
-    // Intelligently parse paragraphs and headings from the provided content
     const lines = content
       .split('\n')
       .map((l: string) => l.trim())
@@ -134,12 +156,11 @@ ${content.slice(0, 12000)}`;
       summary: fallbackSummary,
       keyTakeaways,
       source: 'synthesizer',
-      note: 'Waiting for GEMINI_API_KEY in .env',
     });
   } catch (error) {
     console.error('[API /api/insights/ai-overview POST] Error:', error);
     return NextResponse.json(
-      { error: 'Failed to generate AI overview', details: String(error) },
+      { error: 'Failed to generate AI overview' },
       { status: 500 }
     );
   }

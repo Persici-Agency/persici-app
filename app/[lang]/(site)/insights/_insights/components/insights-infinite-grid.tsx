@@ -1,15 +1,21 @@
-﻿'use client';
+'use client';
 
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import type { InsightDetail, InsightCategorySlug } from '../types';
+import type {
+  InsightDetail,
+  InsightCategorySlug,
+  InsightsHubPageData,
+} from '../types';
+import { insightsHubPageData } from '../data/insights.data';
 import { InsightMinimalCard } from './insight-minimal-card';
-import { InsightsFilterBar } from './insights-filter-bar';
+import { InsightsFilterBar, INSIGHT_FILTER_CATEGORIES, type FilterCategoryOption } from './insights-filter-bar';
 import { TbLoader2, TbFolderOff } from 'react-icons/tb';
 
 export interface InsightsInfiniteGridProps {
   initialInsights: InsightDetail[];
   lang: string;
   initialCategory?: InsightCategorySlug;
+  exploreSection?: InsightsHubPageData['exploreSection'];
 }
 
 const PAGE_SIZE = 9;
@@ -18,11 +24,49 @@ export function InsightsInfiniteGrid({
   initialInsights,
   lang,
   initialCategory = 'all',
+  exploreSection,
 }: InsightsInfiniteGridProps) {
   const isRtl = lang === 'ar';
+  const locale = (lang === 'ar' ? 'ar' : 'en') as 'en' | 'ar';
+  const explore = exploreSection || insightsHubPageData.exploreSection;
+
   const [selectedCategory, setSelectedCategory] = useState<InsightCategorySlug>(initialCategory);
   const [visibleCount, setVisibleCount] = useState<number>(PAGE_SIZE);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
+
+  // Merge configured categories with any custom categories present on active insights
+  const filterCategories = useMemo<FilterCategoryOption[]>(() => {
+    const base =
+      Array.isArray(explore.categories) && explore.categories.length > 0
+        ? explore.categories
+        : INSIGHT_FILTER_CATEGORIES;
+    const map = new Map<string, FilterCategoryOption>();
+    base.forEach((cat) => {
+      if (cat?.slug) {
+        map.set(cat.slug, {
+          slug: cat.slug,
+          label: {
+            en: cat.label?.en || cat.slug,
+            ar: cat.label?.ar || cat.label?.en || cat.slug,
+          },
+        });
+      }
+    });
+
+    initialInsights.forEach((item) => {
+      if (item.categorySlug && !map.has(item.categorySlug)) {
+        map.set(item.categorySlug, {
+          slug: item.categorySlug,
+          label: {
+            en: item.category?.en || item.categorySlug,
+            ar: item.category?.ar || item.category?.en || item.categorySlug,
+          },
+        });
+      }
+    });
+
+    return Array.from(map.values());
+  }, [explore.categories, initialInsights]);
 
   // Filter insights based on selected category
   const filteredInsights = useMemo(() => {
@@ -34,16 +78,19 @@ export function InsightsInfiniteGrid({
   const counts = useMemo(() => {
     const map: Partial<Record<InsightCategorySlug, number>> = {
       all: initialInsights.length,
-      article: 0,
-      research: 0,
     };
+    filterCategories.forEach((cat) => {
+      if (cat.slug !== 'all') {
+        map[cat.slug] = 0;
+      }
+    });
     initialInsights.forEach((item) => {
-      if (item.categorySlug && map[item.categorySlug] !== undefined) {
+      if (item.categorySlug) {
         map[item.categorySlug] = (map[item.categorySlug] || 0) + 1;
       }
     });
     return map;
-  }, [initialInsights]);
+  }, [initialInsights, filterCategories]);
 
   // Reset visible count on category change
   const handleCategoryChange = (slug: InsightCategorySlug) => {
@@ -84,6 +131,21 @@ export function InsightsInfiniteGrid({
     };
   }, [hasMore, filteredInsights.length]);
 
+  const emptyTitle =
+    explore.emptyTitle?.[locale] ||
+    explore.emptyTitle?.en ||
+    (isRtl ? 'لا توجد محتويات في هذا التصنيف' : 'No insights in this category');
+  const emptySubtitle =
+    explore.emptySubtitle?.[locale] ||
+    explore.emptySubtitle?.en ||
+    (isRtl
+      ? 'يرجى اختيار تصنيف آخر للاطلاع على مقالاتنا وأبحاثنا'
+      : 'Please select another category to view our articles and research');
+  const loadMoreLabel =
+    explore.loadMoreText?.[locale] ||
+    explore.loadMoreText?.en ||
+    (isRtl ? 'عرض المزيد' : 'Load more insights');
+
   return (
     <div className="w-full">
       {/* Category Filter Pills */}
@@ -92,6 +154,7 @@ export function InsightsInfiniteGrid({
           activeCategory={selectedCategory}
           onSelectCategory={handleCategoryChange}
           counts={counts}
+          categories={filterCategories}
           lang={lang}
         />
       </div>
@@ -112,14 +175,8 @@ export function InsightsInfiniteGrid({
       ) : (
         <div className="flex flex-col items-center justify-center py-20 text-center rounded-3xl border border-dashed border-slate-200 bg-slate-50/50">
           <TbFolderOff className="h-12 w-12 text-slate-400 mb-3" />
-          <h4 className="text-lg font-medium text-slate-800">
-            {isRtl ? 'لا توجد محتويات في هذا التصنيف' : 'No insights in this category'}
-          </h4>
-          <p className="text-sm text-slate-500 mt-1">
-            {isRtl
-              ? 'يرجى اختيار تصنيف آخر للاطلاع على مقالاتنا وأبحاثنا'
-              : 'Please select another category to view our articles and research'}
-          </p>
+          <h4 className="text-lg font-medium text-slate-800">{emptyTitle}</h4>
+          <p className="text-sm text-slate-500 mt-1">{emptySubtitle}</p>
         </div>
       )}
 
@@ -134,8 +191,8 @@ export function InsightsInfiniteGrid({
             <TbLoader2 className="h-4 w-4 animate-spin text-persici-crimson" />
             <span>
               {isRtl
-                ? `عرض المزيد (${visibleCount} من ${filteredInsights.length})`
-                : `Load more insights (${visibleCount} of ${filteredInsights.length})`}
+                ? `${loadMoreLabel} (${visibleCount} من ${filteredInsights.length})`
+                : `${loadMoreLabel} (${visibleCount} of ${filteredInsights.length})`}
             </span>
           </button>
         </div>
@@ -143,3 +200,4 @@ export function InsightsInfiniteGrid({
     </div>
   );
 }
+

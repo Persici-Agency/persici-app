@@ -2,11 +2,23 @@ import type { IndustryOfferingItem, IndustriesPageContent } from '@shared/types'
 import { industriesOfferingsList, industriesPageContent } from '@shared/data';
 import {
   getIndustriesPageData,
+  getIndustryFeaturePageData,
   getDbIndustries,
   getDbIndustryBySlug,
+  type IndustriesHubCmsData,
+  type IndustryFeatureCmsData,
 } from '@shared/services/db.service';
+import {
+  defaultIndustriesHubCmsData,
+  getDefaultIndustryFeatureCmsData,
+} from '../data/industries-cms.data';
 
-export type { IndustryOfferingItem, IndustriesPageContent };
+export type {
+  IndustryOfferingItem,
+  IndustriesPageContent,
+  IndustriesHubCmsData,
+  IndustryFeatureCmsData,
+};
 export { industriesOfferingsList, industriesPageContent };
 
 export async function fetchIndustriesList(): Promise<IndustryOfferingItem[]> {
@@ -26,11 +38,28 @@ export async function fetchIndustryBySlug(slug: string): Promise<IndustryOfferin
   }
 }
 
-export async function fetchIndustriesPageData(): Promise<IndustriesPageContent> {
+export async function fetchIndustriesPageData(): Promise<IndustriesHubCmsData> {
   try {
     return await getIndustriesPageData();
   } catch (error) {
     console.error('[fetchIndustriesPageData] Error fetching, falling back to static data:', error);
-    return industriesPageContent;
+    return defaultIndustriesHubCmsData;
+  }
+}
+
+export async function fetchIndustryFeaturePageData(
+  slug: string
+): Promise<IndustryFeatureCmsData> {
+  try {
+    return await getIndustryFeaturePageData(slug);
+  } catch (error) {
+    console.error(
+      `[fetchIndustryFeaturePageData] Error fetching '${slug}', falling back to static data:`,
+      error
+    );
+    return (
+      getDefaultIndustryFeatureCmsData(slug) ||
+      getDefaultIndustryFeatureCmsData('consumer-products')!
+    );
   }
 }

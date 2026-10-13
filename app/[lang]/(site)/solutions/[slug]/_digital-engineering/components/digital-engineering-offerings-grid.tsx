@@ -8,6 +8,7 @@ import { FadeUp } from '@shared';
 
 interface DigitalEngineeringOfferingsGridProps {
   offerings: DigitalEngineeringOfferingItem[];
+  badge?: string;
   title: string;
   subtitle: string;
   lang: string;
@@ -15,6 +16,7 @@ interface DigitalEngineeringOfferingsGridProps {
 
 export function DigitalEngineeringOfferingsGrid({
   offerings,
+  badge,
   title,
   subtitle,
   lang,
@@ -28,14 +30,21 @@ export function DigitalEngineeringOfferingsGrid({
         {/* Section Header */}
         <FadeUp delay={0} duration={700} distance={20} className="text-center max-w-3xl mx-auto mb-14 sm:mb-20">
           <span className="text-xs sm:text-sm font-semibold uppercase tracking-widest text-persici-crimson block mb-3">
-            {isRtl ? 'القدرات والحلول الهندسية' : 'Core Capabilities'}
+            {badge || (isRtl ? 'القدرات والحلول الهندسية' : 'Core Capabilities')}
           </span>
           <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-slate-900">
             {title}
           </h2>
-          <p className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed font-normal">
-            {subtitle}
-          </p>
+          {/<[a-z][\s\S]*>/i.test(subtitle || "") ? (
+            <div
+              className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed font-normal [&_p]:mb-2 [&_p:last-child]:mb-0"
+              dangerouslySetInnerHTML={{ __html: subtitle }}
+            />
+          ) : (
+            <p className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed font-normal">
+              {subtitle}
+            </p>
+          )}
         </FadeUp>
 
         {/* 6 Cards */}

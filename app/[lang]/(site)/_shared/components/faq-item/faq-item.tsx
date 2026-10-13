@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState } from 'react';
 
@@ -92,6 +92,7 @@ export function FaqItem({
 
   const resolvedQuestion = resolveText(question);
   const resolvedAnswer = resolveText(answer);
+  const hasHtml = (str: string) => /<[a-z][\s\S]*>/i.test(str);
 
   const uid = id || `faq-item-${index}`;
   const btnId = `${uid}-btn`;
@@ -133,9 +134,16 @@ export function FaqItem({
         }`}
       >
         <div className="overflow-hidden">
-          <div className="px-5 sm:px-6 pb-6 text-sm sm:text-base leading-relaxed text-slate-600 border-t border-black/5 pt-4">
-            {resolvedAnswer}
-          </div>
+          {hasHtml(resolvedAnswer) ? (
+            <div
+              className="px-5 sm:px-6 pb-6 text-sm sm:text-base leading-relaxed text-slate-600 border-t border-black/5 pt-4 [&_a]:text-persici-crimson [&_a]:underline [&_ul]:list-disc [&_ul]:ms-5 [&_ol]:list-decimal [&_ol]:ms-5"
+              dangerouslySetInnerHTML={{ __html: resolvedAnswer }}
+            />
+          ) : (
+            <div className="px-5 sm:px-6 pb-6 text-sm sm:text-base leading-relaxed text-slate-600 border-t border-black/5 pt-4">
+              {resolvedAnswer}
+            </div>
+          )}
         </div>
       </div>
     </div>

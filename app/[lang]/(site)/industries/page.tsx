@@ -8,8 +8,17 @@ export async function generateMetadata({ params }: PageProps<'/[lang]/industries
   const { lang } = await params;
   if (!hasLocale(lang)) return {};
   const content = await fetchIndustriesPageData();
-  const title = content.heroTitle[lang as 'en' | 'ar'] || content.heroTitle.en;
-  const description = content.heroSubtitle[lang as 'en' | 'ar'] || content.heroSubtitle.en;
+  const l = lang as 'en' | 'ar';
+  const title =
+    content.seo?.title?.[l] ||
+    content.seo?.title?.en ||
+    content.heroTitle[l] ||
+    content.heroTitle.en;
+  const description =
+    content.seo?.description?.[l] ||
+    content.seo?.description?.en ||
+    content.heroSubtitle[l] ||
+    content.heroSubtitle.en;
 
   return createMetadata({
     title,
@@ -27,4 +36,3 @@ export default async function IndustriesPage({ params }: PageProps<'/[lang]/indu
 
   return <IndustriesView content={content} lang={lang} dict={dict} />;
 }
-

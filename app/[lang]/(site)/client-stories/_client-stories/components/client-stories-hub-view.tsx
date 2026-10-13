@@ -1,5 +1,5 @@
-﻿import React from 'react';
-import type { ClientStoryDetail } from '../types';
+import React from 'react';
+import type { ClientStoryDetail, ClientStoriesHubPageData } from '../types';
 import type { Dictionary } from '@dictionaries';
 import { sectionContainer } from '@shared/constants';
 import { ClientStoriesHeroSection } from './client-stories-hero-section';
@@ -7,15 +7,27 @@ import { ClientStoriesInfiniteGrid } from './client-stories-infinite-grid';
 import { FeaturedClientStories } from '@shared/components/featured-client-stories';
 import { FadeUp } from '@shared/components';
 import { HomeContactSection } from '../../../_home/components/home-contact-section';
+import { clientStoriesHubPageData } from '../data/client-stories.data';
 
 export interface ClientStoriesHubViewProps {
   stories: ClientStoryDetail[];
+  pageContent?: ClientStoriesHubPageData;
   lang: string;
   dict: Dictionary;
 }
 
-export function ClientStoriesHubView({ stories, lang, dict }: ClientStoriesHubViewProps) {
+export function ClientStoriesHubView({
+  stories,
+  pageContent,
+  lang,
+  dict,
+}: ClientStoriesHubViewProps) {
   const isRtl = lang === 'ar';
+  const hub = pageContent || clientStoriesHubPageData;
+
+  const featuredCtaText = isRtl
+    ? hub.featuredSection?.ctaLabel?.ar || 'استكشف قصة النجاح'
+    : hub.featuredSection?.ctaLabel?.en || 'Explore Case Study';
 
   // Extract featured stories for the sticky stacked cards section
   const featuredStoriesList = stories
@@ -40,27 +52,51 @@ export function ClientStoriesHubView({ stories, lang, dict }: ClientStoriesHubVi
           label: m.label,
         })),
         image: s.heroImage,
-        ctaText: isRtl ? 'استكشف قصة النجاح' : 'Explore Case Study',
+        ctaText: featuredCtaText,
         ctaHref: `/${lang}/client-stories/${s.slug}`,
       };
     });
 
+  const allBadge = isRtl
+    ? hub.allStoriesSection?.badge?.ar || 'الدليل الكامل'
+    : hub.allStoriesSection?.badge?.en || 'All Case Studies';
+  const allTitle = isRtl
+    ? hub.allStoriesSection?.title?.ar || 'استكشف جميع قصص النجاح'
+    : hub.allStoriesSection?.title?.en || 'Explore all client stories';
+  const allSubtitle = isRtl
+    ? hub.allStoriesSection?.subtitle?.ar ||
+      'تصفح محفظة مشاريعنا المتنوعة عبر البرمجيات المتقدمة، وهندسة العلامات التجارية، وحملات النمو الاستراتيجية.'
+    : hub.allStoriesSection?.subtitle?.en ||
+      'Browse our complete catalog of enterprise engagements across advanced software platforms, iconic brand systems, and performance marketing.';
+  const isAllSubtitleHtml = allSubtitle.includes('<') && allSubtitle.includes('>');
+
   return (
     <div dir={isRtl ? 'rtl' : 'ltr'} className="min-h-screen bg-white">
       {/* 1. Hero Banner */}
-      <ClientStoriesHeroSection lang={lang} />
+      <ClientStoriesHeroSection lang={lang} hero={hub.hero} />
 
       {/* 2. Featured Stories (Stacked Sticky Cards) */}
       {featuredStoriesList.length > 0 && (
         <FeaturedClientStories
           lang={lang}
           stories={featuredStoriesList}
-          sectionBadge={isRtl ? 'أعمال استثنائية مختارة' : 'Featured Case Studies'}
-          sectionTitle={isRtl ? 'قصص نجاح صنعت فارقاً حقيقياً' : 'Transforming Ambition into Impact'}
+          sectionBadge={
+            hub.featuredSection?.badge || {
+              en: 'Featured Case Studies',
+              ar: 'أعمال استثنائية مختارة',
+            }
+          }
+          sectionTitle={
+            hub.featuredSection?.title || {
+              en: 'Transforming Ambition into Impact',
+              ar: 'قصص نجاح صنعت فارقاً حقيقياً',
+            }
+          }
           sectionSubtitle={
-            isRtl
-              ? 'مشاريع رائدة قمنا بتنفيذها مع كبرى الشركات الإقليمية والعالمية لإعادة تعريف تجارب المستخدم وتحقيق عوائد استثنائية.'
-              : 'Spotlighting milestone collaborations where bold engineering, bespoke design, and strategic vision delivered measurable business value.'
+            hub.featuredSection?.subtitle || {
+              en: 'Spotlighting milestone collaborations where bold engineering, bespoke design, and strategic vision delivered measurable business value.',
+              ar: 'مشاريع رائدة قمنا بتنفيذها مع كبرى الشركات الإقليمية والعالمية لإعادة تعريف تجارب المستخدم وتحقيق عوائد استثنائية.',
+            }
           }
           backgroundType="default"
         />
@@ -77,25 +113,36 @@ export function ClientStoriesHubView({ stories, lang, dict }: ClientStoriesHubVi
           <div className="max-w-3xl mx-auto text-center mb-12 sm:mb-16">
             <FadeUp delay={0} duration={700} distance={16}>
               <span className="font-mono text-xs font-semibold uppercase tracking-wider text-persici-crimson mb-2 block">
-                {isRtl ? 'الدليل الكامل' : 'All Case Studies'}
+                {allBadge}
               </span>
             </FadeUp>
             <FadeUp delay={120} duration={850} distance={24} blur={true}>
               <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-medium text-slate-900 tracking-tight">
-                {isRtl ? 'استكشف جميع قصص النجاح' : 'Explore all client stories'}
+                {allTitle}
               </h2>
             </FadeUp>
             <FadeUp delay={240} duration={750} distance={20}>
-              <p className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed max-w-2xl mx-auto">
-                {isRtl
-                  ? 'تصفح محفظة مشاريعنا المتنوعة عبر البرمجيات المتقدمة، وهندسة العلامات التجارية، وحملات النمو الاستراتيجية.'
-                  : 'Browse our complete catalog of enterprise engagements across advanced software platforms, iconic brand systems, and performance marketing.'}
-              </p>
+              {isAllSubtitleHtml ? (
+                <div
+                  className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed max-w-2xl mx-auto"
+                  dangerouslySetInnerHTML={{ __html: allSubtitle }}
+                />
+              ) : (
+                <p className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed max-w-2xl mx-auto">
+                  {allSubtitle}
+                </p>
+              )}
             </FadeUp>
           </div>
 
           {/* Filter Bar + 3-Column Infinite Grid */}
-          <ClientStoriesInfiniteGrid initialStories={stories} lang={lang} />
+          <ClientStoriesInfiniteGrid
+            initialStories={stories}
+            lang={lang}
+            categories={hub.allStoriesSection?.categories}
+            emptyTitle={hub.allStoriesSection?.emptyTitle}
+            emptySubtitle={hub.allStoriesSection?.emptySubtitle}
+          />
         </div>
       </section>
 
@@ -104,3 +151,4 @@ export function ClientStoriesHubView({ stories, lang, dict }: ClientStoriesHubVi
     </div>
   );
 }
+

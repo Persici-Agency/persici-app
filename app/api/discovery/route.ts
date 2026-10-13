@@ -1,18 +1,42 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { saveDiscoverySubmission } from '@shared/services/db.service';
 import { getDb, COLLECTIONS } from '@/lib/mongodb';
+import { getSessionUser } from '@/lib/auth/jwt';
+import { isRoleAllowed } from '@/lib/auth/rbac';
 import type { DiscoveryFormData } from '@shared/types';
 
 export const runtime = 'nodejs';
 
+const discoveryIps = new Map<string, { count: number; timestamp: number }>();
+function checkRateLimit(ip: string): boolean {
+  const now = Date.now();
+  const record = discoveryIps.get(ip);
+  if (!record || now - record.timestamp > 10 * 60 * 1000) {
+    discoveryIps.set(ip, { count: 1, timestamp: now });
+    return true;
+  }
+  if (record.count >= 6) return false;
+  record.count += 1;
+  return true;
+}
+
 /**
  * GET /api/discovery
  * Retrieves discovery call leads for the dashboard.
+ * PROTECTED: Requires 'admin' or 'media buying' role.
  */
 export async function GET(request: NextRequest) {
   try {
+    const user = await getSessionUser();
+    if (!user || !isRoleAllowed(user.role, ['admin', 'media buying'])) {
+      return NextResponse.json(
+        { error: 'Unauthorized. An authenticated administrative session is required.' },
+        { status: 401 }
+      );
+    }
+
     const { searchParams } = new URL(request.url);
-    const limit = parseInt(searchParams.get('limit') || '50', 10);
+    const limit = Math.min(parseInt(searchParams.get('limit') || '50', 10), 200);
 
     const db = await getDb();
     if (!db) {
@@ -20,7 +44,7 @@ export async function GET(request: NextRequest) {
         success: true,
         count: 0,
         leads: [],
-        note: 'MongoDB not connected. Connect MongoDB to view saved leads.',
+        note: 'MongoDB not connected.',
       });
     }
 
@@ -42,7 +66,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('[API /api/discovery GET] Error:', error);
     return NextResponse.json(
-      { error: 'Failed to retrieve discovery leads', details: String(error) },
+      { error: 'Failed to retrieve discovery leads' },
       { status: 500 }
     );
   }
@@ -54,6 +78,14 @@ export async function GET(request: NextRequest) {
  */
 export async function POST(request: NextRequest) {
   try {
+    const ip = request.headers.get('x-forwarded-for') || '127.0.0.1';
+    if (!checkRateLimit(ip)) {
+      return NextResponse.json(
+        { error: 'Too many requests. Please wait a few moments before trying again.' },
+        { status: 429 }
+      );
+    }
+
     const body = (await request.json().catch(() => null)) as DiscoveryFormData | null;
 
     if (!body || !body.email || !body.firstName) {
@@ -72,10 +104,10 @@ export async function POST(request: NextRequest) {
     }
 
     const result = await saveDiscoverySubmission({
-      firstName: body.firstName.trim(),
-      lastName: body.lastName?.trim() || '',
-      email: body.email.trim(),
-      website: body.website?.trim() || '',
+      firstName: body.firstName.trim().slice(0, 50),
+      lastName: (body.lastName || '').trim().slice(0, 50),
+      email: body.email.trim().toLowerCase().slice(0, 150),
+      website: (body.website || '').trim().slice(0, 200),
       revenue: body.revenue || 'Not specified',
     });
 
@@ -90,7 +122,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('[API /api/discovery POST] Error:', error);
     return NextResponse.json(
-      { error: 'Failed to process discovery request', details: String(error) },
+      { error: 'Failed to process discovery request' },
       { status: 500 }
     );
   }

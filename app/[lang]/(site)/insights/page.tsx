@@ -2,7 +2,9 @@ import { getDictionary, hasLocale } from '@dictionaries';
 import { notFound } from 'next/navigation';
 import { createMetadata } from '@lib/metadata';
 import type { Locale } from '@lib/i18n';
-import { getAllInsights, InsightsHubView } from './_insights';
+import { InsightsHubView } from './_insights';
+import { getAllInsightsFromDb } from '@/lib/insights-server';
+import { getInsightsPageData, getSharedContactData } from '@shared/services/db.service';
 
 export async function generateMetadata({ params }: PageProps<'/[lang]/insights'>) {
   const { lang } = await params;
@@ -24,8 +26,22 @@ export async function generateMetadata({ params }: PageProps<'/[lang]/insights'>
 export default async function InsightsPage({ params }: PageProps<'/[lang]/insights'>) {
   const { lang } = await params;
   if (!hasLocale(lang)) notFound();
-  const dict = await getDictionary(lang);
-  const insights = getAllInsights();
 
-  return <InsightsHubView insights={insights} lang={lang} dict={dict} />;
+  const [dict, insights, pageContent, sharedContact] = await Promise.all([
+    getDictionary(lang),
+    getAllInsightsFromDb(true),
+    getInsightsPageData(),
+    getSharedContactData(),
+  ]);
+
+  return (
+    <InsightsHubView
+      insights={insights}
+      lang={lang}
+      dict={dict}
+      pageContent={pageContent}
+      sharedContact={sharedContact}
+    />
+  );
 }
+

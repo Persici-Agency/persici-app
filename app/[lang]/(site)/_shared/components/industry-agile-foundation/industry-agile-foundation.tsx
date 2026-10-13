@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState } from 'react';
 import { sectionContainer, sectionPaddingY } from '@shared/constants';
@@ -7,7 +7,10 @@ import { cn } from '@shared/utils';
 import type { IndustryAgileFoundation } from '@shared/types';
 
 export interface IndustryAgileFoundationProps {
-  foundation: IndustryAgileFoundation;
+  foundation: IndustryAgileFoundation & {
+    sectionBadge?: { en: string; ar: string };
+  };
+  sectionBadge?: string | { en: string; ar: string };
   lang: string;
   className?: string;
 }
@@ -25,6 +28,7 @@ export interface IndustryAgileFoundationProps {
  */
 export function IndustryAgileFoundationSection({
   foundation,
+  sectionBadge,
   lang,
   className = '',
 }: IndustryAgileFoundationProps) {
@@ -34,6 +38,14 @@ export function IndustryAgileFoundationSection({
   const title = foundation.title[lang as 'en' | 'ar'] || foundation.title.en;
   const subtitle = foundation.subtitle[lang as 'en' | 'ar'] || foundation.subtitle.en;
   const diagramBadge = foundation.diagramBadge[lang as 'en' | 'ar'] || foundation.diagramBadge.en;
+  const rawBadge = sectionBadge || foundation.sectionBadge;
+  const sectionBadgeText = rawBadge
+    ? typeof rawBadge === 'string'
+      ? rawBadge
+      : rawBadge[lang as 'en' | 'ar'] || rawBadge.en
+    : isRtl
+    ? 'الأساس المعماري الرشيق'
+    : 'Architectural Blueprint';
 
   const p0 = foundation.pillars[0];
   const p1 = foundation.pillars[1];
@@ -143,7 +155,7 @@ export function IndustryAgileFoundationSection({
         {/* Section Header */}
         <FadeUp delay={0} duration={700} distance={20} className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-persici-crimson/10 text-persici-crimson text-xs font-semibold uppercase tracking-wider mb-4">
-            {isRtl ? 'الأساس المعماري الرشيق' : 'Architectural Blueprint'}
+            {sectionBadgeText}
           </div>
           <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-slate-900 leading-tight">
             {title}
@@ -421,4 +433,3 @@ export function IndustryAgileFoundationSection({
     </section>
   );
 }
-

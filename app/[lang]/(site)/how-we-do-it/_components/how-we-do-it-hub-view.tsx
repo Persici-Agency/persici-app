@@ -2,16 +2,16 @@
 
 import React from 'react';
 import type { Dictionary } from '@dictionaries';
-import type { HowWeDoItPageContent } from '@shared/types';
+import type { HowWeDoItHubCmsData } from '../_how-we-do-it/data/how-we-do-it-cms.data';
 import { SolutionsHeroSection } from '../../solutions/_solutions/components/solutions-hero-section';
 import { MethodologyPillarsGrid } from './methodology-pillars-grid';
 import { SpeedEngineSection } from './speed-engine-section';
 import { DeliveryVelocitySection } from './delivery-velocity-section';
-import { FeaturedClientStories, FaqSection, ClientReviewSection } from '@shared';
+import { FeaturedClientStories, InsightsSection, FaqSection, ClientReviewSection } from '@shared';
 import { HomeContactSection } from '../../_home/components/home-contact-section';
 
 interface HowWeDoItHubViewProps {
-  content: HowWeDoItPageContent;
+  content: HowWeDoItHubCmsData;
   lang: string;
   dict: Dictionary;
 }
@@ -78,7 +78,27 @@ export function HowWeDoItHubView({
       />
 
       {/* 5. Featured Enterprise Client Stories */}
-      <FeaturedClientStories lang={lang} />
+      {content.clientStoriesConfig?.enabled !== false && (
+        <FeaturedClientStories
+          stories={content.clientStories}
+          sectionBadge={content.clientStoriesConfig?.badge}
+          sectionTitle={content.clientStoriesConfig?.title}
+          sectionSubtitle={content.clientStoriesConfig?.subtitle}
+          lang={lang}
+        />
+      )}
+
+      {/* 5B. Latest Insights / Blogs Carousel */}
+      {content.insightsConfig?.enabled !== false && (
+        <InsightsSection
+          items={content.insightsList}
+          title={content.insightsConfig?.title}
+          subtitle={content.insightsConfig?.subtitle}
+          ctaText={content.insightsConfig?.ctaText}
+          ctaHref={content.insightsConfig?.ctaHref || '/insights'}
+          lang={lang}
+        />
+      )}
 
       {/* 6. Executive Client Review */}
       <ClientReviewSection
@@ -97,7 +117,9 @@ export function HowWeDoItHubView({
       />
 
       {/* 8. Global Discovery & Contact Section */}
-      <HomeContactSection lang={lang} dict={dict} />
+      {content.contactSection?.enabled !== false && (
+        <HomeContactSection lang={lang} dict={dict} />
+      )}
     </div>
   );
 }

@@ -6,10 +6,64 @@ import { getHomeHeritageCollage } from '../services';
 export type HeritageSectionProps = {
   lang: string;
   dict: Dictionary;
+  content?: any;
 };
 
-export function HeritageSection({ lang, dict }: HeritageSectionProps) {
-  const collage = getHomeHeritageCollage();
+export function HeritageSection({ lang, dict, content }: HeritageSectionProps) {
+  const isAr = lang === 'ar';
+  const defaultCollage = getHomeHeritageCollage();
+  const collage =
+    (content?.collageImages && content.collageImages.length > 0)
+      ? content.collageImages
+      : (content?.heritageCollage && content.heritageCollage.length > 0)
+      ? content.heritageCollage
+      : defaultCollage;
+
+  const title =
+    content?.title?.[lang] ||
+    (isAr ? (content?.titleAr || content?.heritageTitleAr) : (content?.titleEn || content?.heritageTitleEn)) ||
+    content?.title ||
+    dict.heritage.title;
+
+  const desc1 =
+    content?.desc1?.[lang] ||
+    (isAr ? (content?.desc1Ar || content?.heritageDescAr) : (content?.desc1En || content?.heritageDescEn)) ||
+    content?.desc1 ||
+    dict.heritage.desc1;
+
+  const desc2 =
+    content?.desc2?.[lang] ||
+    (isAr ? content?.desc2Ar : content?.desc2En) ||
+    content?.desc2 ||
+    dict.heritage.desc2;
+
+  const ctaPrimary =
+    content?.ctaPrimaryText?.[lang] ||
+    content?.ctaPrimary?.[lang] ||
+    (isAr ? content?.ctaPrimaryAr : content?.ctaPrimaryEn) ||
+    content?.ctaPrimaryText ||
+    dict.heritage.ctaPrimary;
+
+  const rawPrimaryHref = content?.ctaPrimaryHref || '/contact';
+  const ctaPrimaryHref = rawPrimaryHref.startsWith(`/${lang}`)
+    ? rawPrimaryHref
+    : rawPrimaryHref.startsWith('/')
+    ? `/${lang}${rawPrimaryHref}`
+    : rawPrimaryHref;
+
+  const ctaSecondary =
+    content?.ctaSecondaryText?.[lang] ||
+    content?.ctaSecondary?.[lang] ||
+    (isAr ? content?.ctaSecondaryAr : content?.ctaSecondaryEn) ||
+    content?.ctaSecondaryText ||
+    dict.heritage.ctaSecondary;
+
+  const rawSecondaryHref = content?.ctaSecondaryHref || '/about';
+  const ctaSecondaryHref = rawSecondaryHref.startsWith(`/${lang}`)
+    ? rawSecondaryHref
+    : rawSecondaryHref.startsWith('/')
+    ? `/${lang}${rawSecondaryHref}`
+    : rawSecondaryHref;
 
   return (
     <section className={`relative ${sectionContainer} ${sectionPaddingY}`}>
@@ -22,26 +76,28 @@ export function HeritageSection({ lang, dict }: HeritageSectionProps) {
         {/* Left Column: Copy & CTAs */}
         <FadeUp delay={0} duration={800} distance={24} className="lg:col-span-6">
           <h2 className={sectionHeading}>
-            {dict.heritage.title}
+            {title}
           </h2>
           <p className="pt-5 mt-6 text-sm leading-relaxed text-foreground/75 sm:text-base">
-            {dict.heritage.desc1}
+            {desc1}
           </p>
-          <p className="p-2 mt-4 text-sm leading-relaxed text-foreground/75 sm:text-base">
-            {dict.heritage.desc2}
-          </p>
+          {desc2 && (
+            <p className="p-2 mt-4 text-sm leading-relaxed text-foreground/75 sm:text-base">
+              {desc2}
+            </p>
+          )}
 
           <div className="mt-8 flex flex-wrap items-center gap-4">
             <HomeButton
-              href={`/${lang}/contact`}
-              title={dict.heritage.ctaPrimary}
+              href={ctaPrimaryHref}
+              title={ctaPrimary}
               className="bg-persici-crimson text-white"
               currentLang={lang}
               isLangEffectIcon={true}
             />
             <HomeButton
-              href={`/${lang}/about`}
-              title={dict.heritage.ctaSecondary}
+              href={ctaSecondaryHref}
+              title={ctaSecondary}
               className="border border-black/15 bg-light/30 text-dark"
               iconClassName="bg-dark text-light"
               currentLang={lang}
@@ -67,7 +123,7 @@ export function HeritageSection({ lang, dict }: HeritageSectionProps) {
             )}
 
             {/* Bottom Left & Right Photos */}
-            {collage.slice(1, 3).map((item, idx) => (
+            {collage.slice(1, 3).map((item: any, idx: number) => (
               <div
                 key={item.id || item.src || idx}
                 className="relative aspect-[4/3] sm:aspect-square overflow-hidden rounded-2xl sm:rounded-3xl border border-black/5 shadow-md"

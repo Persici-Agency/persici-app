@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState } from 'react';
 import Link from 'next/link';
@@ -13,6 +13,7 @@ interface IndustriesOfferingsGridProps {
   offerings: IndustryOfferingItem[];
   title: string;
   subtitle: string;
+  badge?: string;
   lang: string;
 }
 
@@ -20,6 +21,7 @@ export function IndustriesOfferingsGrid({
   offerings,
   title,
   subtitle,
+  badge,
   lang,
 }: IndustriesOfferingsGridProps) {
   const isRtl = lang === 'ar';
@@ -31,7 +33,7 @@ export function IndustriesOfferingsGrid({
         {/* Section Header with FadeUp */}
         <FadeUp delay={0} duration={700} distance={20} className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-persici-crimson/10 text-persici-crimson text-xs font-semibold uppercase tracking-wider mb-4">
-            {isRtl ? 'القطاعات المتخصصة' : 'Target Industries'}
+            {badge || (isRtl ? 'القطاعات المتخصصة' : 'Target Industries')}
           </div>
           <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-slate-900">
             {title}

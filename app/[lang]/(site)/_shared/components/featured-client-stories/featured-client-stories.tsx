@@ -494,9 +494,16 @@ export function FeaturedClientStories({
             </FadeUp>
             {secSubtitle && (
               <FadeUp delay={240} duration={750} distance={20}>
-                <p className="mt-4 text-base sm:text-lg text-slate-600">
-                  {secSubtitle}
-                </p>
+                {secSubtitle.includes('<') && secSubtitle.includes('>') ? (
+                  <div
+                    className="mt-4 text-base sm:text-lg text-slate-600"
+                    dangerouslySetInnerHTML={{ __html: secSubtitle }}
+                  />
+                ) : (
+                  <p className="mt-4 text-base sm:text-lg text-slate-600">
+                    {secSubtitle}
+                  </p>
+                )}
               </FadeUp>
             )}
           </div>

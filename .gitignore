@@ -42,3 +42,9 @@ next-env.d.ts
 
 # local documentation & references
 /.doc/
+/_doc/
+
+# sensitive credentials and recovery files
+*-recovery-codes.txt
+*recovery*
+

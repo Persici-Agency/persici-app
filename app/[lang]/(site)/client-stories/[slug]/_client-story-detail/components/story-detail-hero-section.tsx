@@ -75,11 +75,17 @@ export function StoryDetailHeroSection({ story, lang }: StoryDetailHeroSectionPr
           </h1>
 
           {/* Lead Subtitle */}
-          {lead && (
-            <p className="mt-6 text-lg sm:text-xl text-slate-600 leading-relaxed font-normal max-w-4xl">
-              {lead}
-            </p>
-          )}
+          {lead &&
+            (lead.includes('<') && lead.includes('>') ? (
+              <div
+                className="mt-6 text-lg sm:text-xl text-slate-600 leading-relaxed font-normal max-w-4xl"
+                dangerouslySetInnerHTML={{ __html: lead }}
+              />
+            ) : (
+              <p className="mt-6 text-lg sm:text-xl text-slate-600 leading-relaxed font-normal max-w-4xl">
+                {lead}
+              </p>
+            ))}
         </div>
       </div>
     </section>

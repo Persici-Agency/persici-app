@@ -59,9 +59,16 @@ export function SolutionsBenefitsStrip({
                   {itemTitle}
                 </h3>
 
-                <p className="text-sm leading-relaxed text-slate-600">
-                  {itemDesc}
-                </p>
+                {/<[a-z][\s\S]*>/i.test(itemDesc || '') ? (
+                  <div
+                    className="text-sm leading-relaxed text-slate-600 [&_p]:mb-2 [&_p:last-child]:mb-0"
+                    dangerouslySetInnerHTML={{ __html: itemDesc }}
+                  />
+                ) : (
+                  <p className="text-sm leading-relaxed text-slate-600">
+                    {itemDesc}
+                  </p>
+                )}
               </FadeUp>
             );
           })}

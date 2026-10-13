@@ -18,6 +18,12 @@ export function AboutHeroSection({ data, lang }: AboutHeroSectionProps) {
   const subtitle = data.subtitle[lang as 'en' | 'ar'] || data.subtitle.en;
   const primaryCta = data.primaryCta[lang as 'en' | 'ar'] || data.primaryCta.en;
   const secondaryCta = data.secondaryCta[lang as 'en' | 'ar'] || data.secondaryCta.en;
+  const hasHtml = (str: string) => /<[a-z][\s\S]*>/i.test(str);
+  const resolveHref = (href: string) => {
+    if (!href) return '#';
+    if (href.startsWith('#') || href.startsWith('http') || href.startsWith(`/${lang}`)) return href;
+    return `/${lang}${href.startsWith('/') ? href : `/${href}`}`;
+  };
 
   return (
     <section data-header-luminance="light" dir={isRtl ? 'rtl' : 'ltr'} className="relative pt-32 pb-20 sm:pt-40 sm:pb-28 lg:pt-44 lg:pb-36 bg-gradient-to-b from-[#F9F8F6] via-[#FFFAFA] to-white overflow-hidden border-b border-black/[0.04]">
@@ -84,28 +90,39 @@ export function AboutHeroSection({ data, lang }: AboutHeroSectionProps) {
 
           {/* Subtitle / Purpose narrative */}
           <FadeUp delay={200} duration={750} distance={24}>
-            <p className="font-secondary text-lg sm:text-xl lg:text-2xl text-slate-600 leading-relaxed font-normal max-w-3xl mb-10">
-              {subtitle}
-            </p>
+            {hasHtml(subtitle) ? (
+              <div
+                className="font-secondary text-lg sm:text-xl lg:text-2xl text-slate-600 leading-relaxed font-normal max-w-3xl mb-10 [&_a]:text-persici-crimson [&_a]:underline [&_ul]:list-disc [&_ul]:ms-5 [&_ol]:list-decimal [&_ol]:ms-5"
+                dangerouslySetInnerHTML={{ __html: subtitle }}
+              />
+            ) : (
+              <p className="font-secondary text-lg sm:text-xl lg:text-2xl text-slate-600 leading-relaxed font-normal max-w-3xl mb-10">
+                {subtitle}
+              </p>
+            )}
           </FadeUp>
 
           {/* CTA Group */}
           <FadeUp delay={300} duration={700} distance={20}>
             <div className="flex flex-wrap items-center gap-4 sm:gap-6 pt-2">
-              <HomeButton
-                href={data.primaryCta.href}
-                title={primaryCta}
-                currentLang={lang}
-                isLangEffectIcon
-                className="bg-persici-crimson hover:bg-persici-crimson-80 text-white shadow-lg shadow-persici-crimson/25 px-8 py-3 text-sm font-semibold"
-              />
+              {data.primaryCta.enabled !== false && primaryCta && (
+                <HomeButton
+                  href={resolveHref(data.primaryCta.href)}
+                  title={primaryCta}
+                  currentLang={lang}
+                  isLangEffectIcon
+                  className="bg-persici-crimson hover:bg-persici-crimson-80 text-white shadow-lg shadow-persici-crimson/25 px-8 py-3 text-sm font-semibold"
+                />
+              )}
 
-              <Link
-                href={data.secondaryCta.href}
-                className="inline-flex items-center gap-2 rounded-full border border-black/15 bg-white/80 px-7 py-3 text-sm font-medium text-slate-800 backdrop-blur-xs transition-all hover:bg-black/5 hover:border-black/25 active:scale-98"
-              >
-                <span>{secondaryCta}</span>
-              </Link>
+              {data.secondaryCta.enabled !== false && secondaryCta && (
+                <Link
+                  href={resolveHref(data.secondaryCta.href)}
+                  className="inline-flex items-center gap-2 rounded-full border border-black/15 bg-white/80 px-7 py-3 text-sm font-medium text-slate-800 backdrop-blur-xs transition-all hover:bg-black/5 hover:border-black/25 active:scale-98"
+                >
+                  <span>{secondaryCta}</span>
+                </Link>
+              )}
             </div>
           </FadeUp>
         </div>

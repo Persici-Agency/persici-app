@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React from 'react';
 import { TbClock } from 'react-icons/tb';
@@ -30,40 +30,57 @@ export function CareersProcessSection({ data, lang }: CareersProcessSectionProps
             </h2>
           </FadeUp>
           <FadeUp delay={300} duration={700}>
-            <p className="font-secondary text-base sm:text-lg text-foreground/70 leading-relaxed">
-              {data.subtitle[isAr ? 'ar' : 'en']}
-            </p>
+            {/<[a-z][\s\S]*>/i.test(data.subtitle[isAr ? 'ar' : 'en'] || '') ? (
+              <div
+                className="font-secondary text-base sm:text-lg text-foreground/70 leading-relaxed"
+                dangerouslySetInnerHTML={{ __html: data.subtitle[isAr ? 'ar' : 'en'] }}
+              />
+            ) : (
+              <p className="font-secondary text-base sm:text-lg text-foreground/70 leading-relaxed">
+                {data.subtitle[isAr ? 'ar' : 'en']}
+              </p>
+            )}
           </FadeUp>
         </div>
 
         {/* 4-Step Process Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 relative">
-          {data.steps.map((step: CareerProcessStep, idx: number) => (
-            <FadeUp key={step.step} delay={150 + idx * 100} duration={700}>
-              <div className="relative flex flex-col justify-between h-full p-6 sm:p-7 rounded-2xl sm:rounded-3xl bg-[#FFFAFA] border border-black/8 shadow-xs hover:border-persici-crimson/30 hover:shadow-md transition-all duration-300 group">
-                <div>
-                  {/* Step Number & Duration */}
-                  <div className="flex items-center justify-between mb-5">
-                    <span className="font-mono text-2xl sm:text-3xl font-semibold text-persici-crimson">
-                      {step.step}
-                    </span>
-                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/5 text-[9.5px] sm:text-[9.5px] font-medium text-foreground/70">
-                      <TbClock className="w-3.5 h-3.5 text-persici-crimson" />
-                      <span>{step.duration[isAr ? 'ar' : 'en']}</span>
+          {data.steps.map((step: CareerProcessStep, idx: number) => {
+            const stepDesc = step.description[isAr ? 'ar' : 'en'] || '';
+            return (
+              <FadeUp key={step.step || idx} delay={150 + idx * 100} duration={700}>
+                <div className="relative flex flex-col justify-between h-full p-6 sm:p-7 rounded-2xl sm:rounded-3xl bg-[#FFFAFA] border border-black/8 shadow-xs hover:border-persici-crimson/30 hover:shadow-md transition-all duration-300 group">
+                  <div>
+                    {/* Step Number & Duration */}
+                    <div className="flex items-center justify-between mb-5">
+                      <span className="font-mono text-2xl sm:text-3xl font-semibold text-persici-crimson">
+                        {step.step}
+                      </span>
+                      <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/5 text-[9.5px] sm:text-[9.5px] font-medium text-foreground/70">
+                        <TbClock className="w-3.5 h-3.5 text-persici-crimson" />
+                        <span>{step.duration[isAr ? 'ar' : 'en']}</span>
+                      </div>
                     </div>
+
+                    <h3 className="font-primary text-base sm:text-lg font-medium text-foreground mb-2 leading-snug group-hover:text-persici-crimson transition-colors">
+                      {step.title[isAr ? 'ar' : 'en']}
+                    </h3>
+
+                    {/<[a-z][\s\S]*>/i.test(stepDesc) ? (
+                      <div
+                        className="font-secondary text-xs sm:text-sm text-foreground/65 leading-relaxed"
+                        dangerouslySetInnerHTML={{ __html: stepDesc }}
+                      />
+                    ) : (
+                      <p className="font-secondary text-xs sm:text-sm text-foreground/65 leading-relaxed">
+                        {stepDesc}
+                      </p>
+                    )}
                   </div>
-
-                  <h3 className="font-primary text-base sm:text-lg font-medium text-foreground mb-2 leading-snug group-hover:text-persici-crimson transition-colors">
-                    {step.title[isAr ? 'ar' : 'en']}
-                  </h3>
-
-                  <p className="font-secondary text-xs sm:text-sm text-foreground/65 leading-relaxed">
-                    {step.description[isAr ? 'ar' : 'en']}
-                  </p>
                 </div>
-              </div>
-            </FadeUp>
-          ))}
+              </FadeUp>
+            );
+          })}
         </div>
       </div>
     </section>

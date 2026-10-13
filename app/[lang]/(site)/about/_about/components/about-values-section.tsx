@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React from 'react';
 import { sectionContainer, sectionPaddingY, badgePill } from '@shared/constants';
@@ -14,6 +14,12 @@ export function AboutValuesSection({ data, lang }: AboutValuesSectionProps) {
   const badge = data.badge[lang as 'en' | 'ar'] || data.badge.en;
   const title = data.title[lang as 'en' | 'ar'] || data.title.en;
   const subtitle = data.subtitle[lang as 'en' | 'ar'] || data.subtitle.en;
+  const hasHtml = (str: string) => /<[a-z][\s\S]*>/i.test(str);
+  const resolveHref = (href: string) => {
+    if (!href) return '#';
+    if (href.startsWith('#') || href.startsWith('http') || href.startsWith(`/${lang}`)) return href;
+    return `/${lang}${href.startsWith('/') ? href : `/${href}`}`;
+  };
 
   const cards = [data.card1, data.card2];
 
@@ -35,9 +41,16 @@ export function AboutValuesSection({ data, lang }: AboutValuesSectionProps) {
           </FadeUp>
 
           <FadeUp delay={180} duration={750} distance={20}>
-            <p className="font-secondary text-base sm:text-lg text-slate-600 leading-relaxed font-normal">
-              {subtitle}
-            </p>
+            {hasHtml(subtitle) ? (
+              <div
+                className="font-secondary text-base sm:text-lg text-slate-600 leading-relaxed font-normal [&_a]:text-persici-crimson [&_a]:underline"
+                dangerouslySetInnerHTML={{ __html: subtitle }}
+              />
+            ) : (
+              <p className="font-secondary text-base sm:text-lg text-slate-600 leading-relaxed font-normal">
+                {subtitle}
+              </p>
+            )}
           </FadeUp>
         </div>
 
@@ -119,20 +132,29 @@ export function AboutValuesSection({ data, lang }: AboutValuesSectionProps) {
 
                   {/* Bottom: Horizontal Split (Description on start, Button on end) */}
                   <div className="relative z-10 pt-10 sm:pt-14 flex flex-col sm:flex-row sm:items-end justify-between gap-6">
-                    <p className="font-secondary text-sm sm:text-base text-slate-600 leading-relaxed font-normal max-w-sm sm:max-w-md">
-                      {cardDesc}
-                    </p>
-
-                    <div className="shrink-0 flex justify-end rtl:justify-start">
-                      <HomeButton
-                        href={`/${lang}${card.cta.href}`}
-                        title={cardCta}
-                        currentLang={lang}
-                        isLangEffectIcon
-                        className="bg-persici-black hover:bg-persici-crimson text-white px-6 py-2.5 text-xs font-semibold shadow-xs transition-all"
-                        iconClassName="bg-white/20 group-hover:bg-white text-white group-hover:text-persici-crimson"
+                    {hasHtml(cardDesc) ? (
+                      <div
+                        className="font-secondary text-sm sm:text-base text-slate-600 leading-relaxed font-normal max-w-sm sm:max-w-md [&_a]:text-persici-crimson [&_a]:underline [&_ul]:list-disc [&_ul]:ms-5 [&_ol]:list-decimal [&_ol]:ms-5"
+                        dangerouslySetInnerHTML={{ __html: cardDesc }}
                       />
-                    </div>
+                    ) : (
+                      <p className="font-secondary text-sm sm:text-base text-slate-600 leading-relaxed font-normal max-w-sm sm:max-w-md">
+                        {cardDesc}
+                      </p>
+                    )}
+
+                    {card.cta.enabled !== false && cardCta && (
+                      <div className="shrink-0 flex justify-end rtl:justify-start">
+                        <HomeButton
+                          href={resolveHref(card.cta.href)}
+                          title={cardCta}
+                          currentLang={lang}
+                          isLangEffectIcon
+                          className="bg-persici-black hover:bg-persici-crimson text-white px-6 py-2.5 text-xs font-semibold shadow-xs transition-all"
+                          iconClassName="bg-white/20 group-hover:bg-white text-white group-hover:text-persici-crimson"
+                        />
+                      </div>
+                    )}
                   </div>
                 </div>
               </FadeUp>

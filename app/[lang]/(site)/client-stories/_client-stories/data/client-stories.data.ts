@@ -1,4 +1,4 @@
-import type { ClientStoryDetail } from '../types';
+import type { ClientStoryDetail, ClientStoriesHubPageData } from '../types';
 
 /**
  * Master catalog of 16 Persici Client Stories.
@@ -3062,3 +3062,116 @@ export function getRelatedClientStories(currentSlug: string, count = 3): ClientS
 
   return [...sameCategory, ...others].slice(0, count);
 }
+
+/**
+ * Canonical fallback & initial seed data for the Client Stories Hub Page (`/[lang]/client-stories`).
+ * Contains 100% of the exact live text currently rendered on the page.
+ */
+export const clientStoriesHubPageData: ClientStoriesHubPageData = {
+  hero: {
+    badge: {
+      en: 'Client Stories & Impact',
+      ar: 'قصص نجاح عملائنا وشركائنا',
+    },
+    title: {
+      en: 'Transformative work for visionary',
+      ar: 'أعمال تحولية تصنع الفارق',
+    },
+    titleHighlight: {
+      en: 'market leaders',
+      ar: 'لرواد الأعمال',
+    },
+    subtitle: {
+      en: 'Explore how Persici partners with forward-thinking enterprises across the GCC and beyond to engineer iconic brands, robust software platforms, and high-velocity digital growth.',
+      ar: 'اكتشف كيف تشارك بيرسيشي المؤسسات الطموحة في دول الخليج والعالم لهندسة علامات استثنائية، وبناء منصات برمجية متطورة، وتحقيق قفزات نوعية في النمو والإيرادات.',
+    },
+    primaryCtaLabel: {
+      en: 'Explore All Stories',
+      ar: 'استكشف جميع القصص',
+    },
+    primaryCtaHref: '#explore',
+    secondaryCtaLabel: {
+      en: 'Discuss Your Project',
+      ar: 'ناقش مشروعك معنا',
+    },
+    secondaryCtaHref: '#contact',
+  },
+  featuredSection: {
+    badge: {
+      en: 'Featured Case Studies',
+      ar: 'أعمال استثنائية مختارة',
+    },
+    title: {
+      en: 'Transforming Ambition into Impact',
+      ar: 'قصص نجاح صنعت فارقاً حقيقياً',
+    },
+    subtitle: {
+      en: 'Spotlighting milestone collaborations where bold engineering, bespoke design, and strategic vision delivered measurable business value.',
+      ar: 'مشاريع رائدة قمنا بتنفيذها مع كبرى الشركات الإقليمية والعالمية لإعادة تعريف تجارب المستخدم وتحقيق عوائد استثنائية.',
+    },
+    ctaLabel: {
+      en: 'Explore Case Study',
+      ar: 'استكشف قصة النجاح',
+    },
+  },
+  allStoriesSection: {
+    badge: {
+      en: 'All Case Studies',
+      ar: 'الدليل الكامل',
+    },
+    title: {
+      en: 'Explore all client stories',
+      ar: 'استكشف جميع قصص النجاح',
+    },
+    subtitle: {
+      en: 'Browse our complete catalog of enterprise engagements across advanced software platforms, iconic brand systems, and performance marketing.',
+      ar: 'تصفح محفظة مشاريعنا المتنوعة عبر البرمجيات المتقدمة، وهندسة العلامات التجارية، وحملات النمو الاستراتيجية.',
+    },
+    emptyTitle: {
+      en: 'No client stories in this category',
+      ar: 'لا توجد قصص نجاح في هذا التصنيف',
+    },
+    emptySubtitle: {
+      en: 'Please select another category to view our client stories',
+      ar: 'يرجى اختيار تصنيف آخر للاطلاع على أعمالنا',
+    },
+    categories: [
+      {
+        slug: 'all',
+        label: {
+          en: 'All Stories',
+          ar: 'جميع القصص',
+        },
+      },
+      {
+        slug: 'software',
+        label: {
+          en: 'Software & Web Apps',
+          ar: 'البرمجيات وتطبيقات الويب',
+        },
+      },
+      {
+        slug: 'branding',
+        label: {
+          en: 'Branding & Identity',
+          ar: 'الهوية البصرية والتصميم',
+        },
+      },
+      {
+        slug: 'marketing',
+        label: {
+          en: 'Growth & Campaigns',
+          ar: 'الحملات ونمو الأعمال',
+        },
+      },
+      {
+        slug: 'video-production',
+        label: {
+          en: 'Cinematic & Media',
+          ar: 'الإنتاج السينمائي والإعلامي',
+        },
+      },
+    ],
+  },
+};
+

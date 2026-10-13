@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React from 'react';
 import { TbMail } from 'react-icons/tb';
@@ -13,6 +13,11 @@ export interface CareersSpontaneousCtaProps {
 
 export function CareersSpontaneousCta({ data, lang }: CareersSpontaneousCtaProps) {
   const isAr = lang === 'ar';
+  const email = data.email || 'hr@persiciagency.com';
+  const subject =
+    data.emailSubject?.[isAr ? 'ar' : 'en'] ||
+    (isAr ? 'طلب انضمام عام لنخبة برسيسي' : 'Spontaneous Application — Persici Talent Collective');
+  const descText = data.description[isAr ? 'ar' : 'en'] || '';
 
   return (
     <section className={`bg-[#FFFAFA] ${sectionPaddingBottom} relative overflow-hidden`}>
@@ -32,15 +37,20 @@ export function CareersSpontaneousCta({ data, lang }: CareersSpontaneousCtaProps
                 {data.title[isAr ? 'ar' : 'en']}
               </h2>
 
-              <p className="font-secondary text-base sm:text-lg text-white/75 leading-relaxed mb-8 sm:mb-10">
-                {data.description[isAr ? 'ar' : 'en']}
-              </p>
+              {/<[a-z][\s\S]*>/i.test(descText) ? (
+                <div
+                  className="font-secondary text-base sm:text-lg text-white/75 leading-relaxed mb-8 sm:mb-10"
+                  dangerouslySetInnerHTML={{ __html: descText }}
+                />
+              ) : (
+                <p className="font-secondary text-base sm:text-lg text-white/75 leading-relaxed mb-8 sm:mb-10">
+                  {descText}
+                </p>
+              )}
 
               <div className="flex flex-wrap items-center gap-4">
                 <HomeButton
-                  href={`mailto:hr@persiciagency.com?subject=${encodeURIComponent(
-                    isAr ? 'طلب انضمام عام لنخبة برسيسي' : 'Spontaneous Application — Persici Talent Collective'
-                  )}`}
+                  href={`mailto:${email}?subject=${encodeURIComponent(subject)}`}
                   title={data.ctaText[isAr ? 'ar' : 'en']}
                   icon={<TbMail className="w-4 h-4" />}
                   isLangEffectIcon={false}
@@ -48,7 +58,7 @@ export function CareersSpontaneousCta({ data, lang }: CareersSpontaneousCtaProps
                 />
 
                 <div className="inline-flex items-center gap-2 px-4 py-3 rounded-full bg-white/5 border border-white/10 text-xs text-white/70 font-mono">
-                  <span>hr@persiciagency.com</span>
+                  <span>{email}</span>
                 </div>
               </div>
             </div>

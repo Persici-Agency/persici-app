@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React from 'react';
 import type { InsightCategorySlug } from '../types';
@@ -39,6 +39,7 @@ export interface InsightsFilterBarProps {
   activeCategory: InsightCategorySlug;
   onSelectCategory: (slug: InsightCategorySlug) => void;
   counts?: Partial<Record<InsightCategorySlug, number>>;
+  categories?: FilterCategoryOption[];
   lang: string;
   className?: string;
 }
@@ -47,10 +48,15 @@ export function InsightsFilterBar({
   activeCategory,
   onSelectCategory,
   counts = {},
+  categories,
   lang,
   className = '',
 }: InsightsFilterBarProps) {
   const isRtl = lang === 'ar';
+  const categoryList =
+    Array.isArray(categories) && categories.length > 0
+      ? categories
+      : INSIGHT_FILTER_CATEGORIES;
 
   return (
     <div
@@ -58,9 +64,9 @@ export function InsightsFilterBar({
       className={`w-full overflow-x-auto scrollbar-none py-2 flex justify-center ${className}`}
     >
       <div className="flex items-center justify-center flex-wrap gap-2 sm:gap-3 pb-1">
-        {INSIGHT_FILTER_CATEGORIES.map((cat) => {
+        {categoryList.map((cat) => {
           const isActive = activeCategory === cat.slug;
-          const label = isRtl ? cat.label.ar : cat.label.en;
+          const label = isRtl ? cat.label.ar || cat.label.en : cat.label.en || cat.label.ar;
           const count = counts[cat.slug];
 
           return (
@@ -93,3 +99,4 @@ export function InsightsFilterBar({
     </div>
   );
 }
+

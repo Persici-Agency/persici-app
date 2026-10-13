@@ -1,4 +1,7 @@
 import type { Dictionary } from '@dictionaries';
+import type { DashboardUser as AuthDashboardUser } from '@/lib/auth/rbac';
+
+export type UserRole = 'admin' | 'editor' | 'author' | 'media buying' | 'hr';
 
 export interface BaseMongoDocument {
   _id?: string;
@@ -47,19 +50,14 @@ export interface DashboardActivity extends BaseMongoDocument {
   user?: string;
 }
 
-export interface DashboardUser extends BaseMongoDocument {
-  name: string;
-  email: string;
-  role: 'admin' | 'editor' | 'viewer';
-  avatar?: string;
-}
-
 export type DashboardSidebarProps = {
   lang: string;
   dict: Dictionary;
+  user?: AuthDashboardUser | null;
 };
 
 export type DashboardHeaderProps = {
   lang?: string;
   dict: Dictionary;
+  user?: AuthDashboardUser | null;
 };

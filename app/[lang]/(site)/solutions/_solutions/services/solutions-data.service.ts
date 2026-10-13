@@ -1,8 +1,20 @@
 import type { SolutionOfferingItem, SolutionsPageContent } from '@shared/types';
 import { solutionsOfferingsList, solutionsPageContent } from '@shared/data';
-import { getSolutionsPageData, getDbSolutions, getDbSolutionBySlug } from '@shared/services/db.service';
+import {
+  getSolutionsPageData,
+  getSolutionFeaturePageData,
+  getDbSolutions,
+  getDbSolutionBySlug,
+  type SolutionsHubCmsData,
+  type SolutionFeatureCmsData,
+} from '@shared/services/db.service';
 
-export type { SolutionOfferingItem, SolutionsPageContent };
+export type {
+  SolutionOfferingItem,
+  SolutionsPageContent,
+  SolutionsHubCmsData,
+  SolutionFeatureCmsData,
+};
 export { solutionsOfferingsList, solutionsPageContent };
 
 /**
@@ -22,8 +34,17 @@ export async function fetchSolutionsList(): Promise<SolutionOfferingItem[]> {
 /**
  * Fetches full solutions page CMS data with MongoDB priority and fallback.
  */
-export async function fetchSolutionsPageData(): Promise<SolutionsPageContent> {
+export async function fetchSolutionsPageData(): Promise<SolutionsHubCmsData> {
   return getSolutionsPageData();
+}
+
+/**
+ * Fetches full solution feature page CMS data by slug with MongoDB priority and fallback.
+ */
+export async function fetchSolutionFeaturePageData(
+  slug: string
+): Promise<SolutionFeatureCmsData> {
+  return getSolutionFeaturePageData(slug);
 }
 
 /**

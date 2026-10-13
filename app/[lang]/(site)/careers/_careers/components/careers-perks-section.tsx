@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React from 'react';
 import type { IconType } from 'react-icons';
@@ -9,6 +9,12 @@ import {
   TbHeartHandshake,
   TbDeviceLaptop,
   TbSun,
+  TbRocket,
+  TbSparkles,
+  TbAward,
+  TbShieldCheck,
+  TbClock,
+  TbCoin,
 } from 'react-icons/tb';
 import { sectionContainer, sectionPaddingY } from '@shared/constants';
 import { FadeUp } from '@shared';
@@ -26,6 +32,12 @@ const iconMap: Record<string, IconType> = {
   HeartHandshake: TbHeartHandshake,
   Laptop: TbDeviceLaptop,
   Sun: TbSun,
+  Rocket: TbRocket,
+  Sparkles: TbSparkles,
+  Award: TbAward,
+  Shield: TbShieldCheck,
+  Clock: TbClock,
+  Coin: TbCoin,
 };
 
 export function CareersPerksSection({ data, lang }: CareersPerksSectionProps) {
@@ -47,9 +59,16 @@ export function CareersPerksSection({ data, lang }: CareersPerksSectionProps) {
             </h2>
           </FadeUp>
           <FadeUp delay={300} duration={700}>
-            <p className="font-secondary text-base sm:text-lg text-foreground/70 leading-relaxed">
-              {data.subtitle[isAr ? 'ar' : 'en']}
-            </p>
+            {/<[a-z][\s\S]*>/i.test(data.subtitle[isAr ? 'ar' : 'en'] || '') ? (
+              <div
+                className="font-secondary text-base sm:text-lg text-foreground/70 leading-relaxed"
+                dangerouslySetInnerHTML={{ __html: data.subtitle[isAr ? 'ar' : 'en'] }}
+              />
+            ) : (
+              <p className="font-secondary text-base sm:text-lg text-foreground/70 leading-relaxed">
+                {data.subtitle[isAr ? 'ar' : 'en']}
+              </p>
+            )}
           </FadeUp>
         </div>
 
@@ -57,9 +76,10 @@ export function CareersPerksSection({ data, lang }: CareersPerksSectionProps) {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-8">
           {data.items.map((perk: CareerPerk, idx: number) => {
             const IconComp = iconMap[perk.iconName] || TbWorld;
+            const descText = perk.description[isAr ? 'ar' : 'en'] || '';
 
             return (
-              <FadeUp key={perk.id} delay={150 + idx * 80} duration={700}>
+              <FadeUp key={perk.id || idx} delay={150 + idx * 80} duration={700}>
                 <div className="group relative flex flex-col justify-between h-full p-7 sm:p-8 rounded-2xl sm:rounded-3xl bg-white border border-black/8 shadow-xs hover:shadow-xl hover:border-persici-crimson/30 transition-all duration-300">
                   {/* Subtle top indicator on hover */}
                   <div className="absolute top-0 inset-x-8 h-0.5 bg-gradient-to-r from-transparent via-persici-crimson to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-full" />
@@ -78,9 +98,16 @@ export function CareersPerksSection({ data, lang }: CareersPerksSectionProps) {
                       {perk.title[isAr ? 'ar' : 'en']}
                     </h3>
 
-                    <p className="font-secondary text-xs sm:text-sm text-foreground/65 leading-relaxed">
-                      {perk.description[isAr ? 'ar' : 'en']}
-                    </p>
+                    {/<[a-z][\s\S]*>/i.test(descText) ? (
+                      <div
+                        className="font-secondary text-xs sm:text-sm text-foreground/65 leading-relaxed"
+                        dangerouslySetInnerHTML={{ __html: descText }}
+                      />
+                    ) : (
+                      <p className="font-secondary text-xs sm:text-sm text-foreground/65 leading-relaxed">
+                        {descText}
+                      </p>
+                    )}
                   </div>
                 </div>
               </FadeUp>
