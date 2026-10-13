@@ -1,16 +1,20 @@
-﻿'use client';
+'use client';
 
 import React, { useState } from 'react';
 import type { Dictionary } from '@dictionaries';
-import { productManagementData } from '../data/product-management.data';
 import { SolutionsHeroSection } from '../../../../solutions/_solutions/components/solutions-hero-section';
 import { HowWeDoItSubNavbar } from '../../_components/how-we-do-it-sub-navbar';
 import { SolutionsWhyItMatters } from '../../../../solutions/_solutions/components/solutions-why-it-matters';
 import { SolutionsBenefitsStrip } from '../../../../solutions/_solutions/components/solutions-benefits-strip';
 import {
+  type HowWeDoItFeatureCmsData,
+  getDefaultHowWeDoItFeatureCmsData,
+} from '../../../_how-we-do-it/data/how-we-do-it-cms.data';
+import {
   CapabilityCard,
   TechInfrastructureCard,
   FeaturedClientStories,
+  InsightsSection,
   ClientReviewSection,
   FaqSection,
 } from '@shared';
@@ -18,14 +22,19 @@ import { sectionContainer, sectionPaddingY } from '@shared/constants';
 import { HomeContactSection } from '../../../../_home/components/home-contact-section';
 
 interface ProductManagementViewProps {
+  data?: HowWeDoItFeatureCmsData;
   lang: string;
   dict: Dictionary;
 }
 
-export function ProductManagementView({ lang, dict }: ProductManagementViewProps) {
+export function ProductManagementView({
+  data: cmsData,
+  lang,
+  dict,
+}: ProductManagementViewProps) {
   const isAr = lang === 'ar';
   const [isPaused, setIsPaused] = useState(false);
-  const data = productManagementData;
+  const data = cmsData || getDefaultHowWeDoItFeatureCmsData('product-management');
 
   const offeringsTitle = data.offeringsTitle[isAr ? 'ar' : 'en'];
   const offeringsSubtitle = data.offeringsSubtitle[isAr ? 'ar' : 'en'];
@@ -35,8 +44,13 @@ export function ProductManagementView({ lang, dict }: ProductManagementViewProps
 
   const benefitsTitle = data.benefitsStrip.title[isAr ? 'ar' : 'en'];
 
-  const quoteText = data.quote.text[isAr ? 'ar' : 'en'];
-  const quoteRole = data.quote.role[isAr ? 'ar' : 'en'];
+  const quoteText = data.quote?.text
+    ? (data.quote.text[isAr ? 'ar' : 'en'] || data.quote.text.en)
+    : (data.clientReview?.quote ? (data.clientReview.quote[isAr ? 'ar' : 'en'] || data.clientReview.quote.en) : '');
+  const quoteAuthor = data.quote?.author || data.clientReview?.author || '';
+  const quoteRole = data.quote?.role
+    ? (data.quote.role[isAr ? 'ar' : 'en'] || data.quote.role.en)
+    : (data.clientReview?.role ? (data.clientReview.role[isAr ? 'ar' : 'en'] || data.clientReview.role.en) : '');
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -153,12 +167,16 @@ export function ProductManagementView({ lang, dict }: ProductManagementViewProps
                 {isAr ? 'أدوات ومنصات المنتجات' : 'Product Toolchains'}
               </div>
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-primary font-medium text-white tracking-tight leading-tight mb-5">
-                {isAr ? 'منظومة إدارة المنتجات والبيانات' : 'Product Analytics & Roadmapping Toolchains'}
+                {data.techStackPodsTitle
+                  ? (data.techStackPodsTitle[isAr ? 'ar' : 'en'] || data.techStackPodsTitle.en)
+                  : (isAr ? 'منظومة إدارة المنتجات والبيانات' : 'Product Analytics & Roadmapping Toolchains')}
               </h2>
               <p className="text-base sm:text-lg text-slate-300 font-secondary leading-relaxed">
-                {isAr
-                  ? 'نوظف أرقى أدوات تتبع سلوك المستخدمين وبناء النماذج الأولية لضمان تسليم ميزات ذات أثر حقيقي.'
-                  : 'We employ modern user telemetry, behavioral analytics, and roadmapping platforms to ship impactful features.'}
+                {data.techStackPodsSubtitle
+                  ? (data.techStackPodsSubtitle[isAr ? 'ar' : 'en'] || data.techStackPodsSubtitle.en)
+                  : (isAr
+                    ? 'نوظف أرقى أدوات تتبع سلوك المستخدمين وبناء النماذج الأولية لضمان تسليم ميزات ذات أثر حقيقي.'
+                    : 'We leverage modern user telemetry, behavioral analytics, and roadmapping platforms to ship impactful features.')}
               </p>
             </div>
 
@@ -186,14 +204,36 @@ export function ProductManagementView({ lang, dict }: ProductManagementViewProps
       </div>
 
       {/* 7. Featured Client Stories */}
-      <div id="stories">
-        <FeaturedClientStories lang={lang} />
-      </div>
+      {data.clientStoriesConfig?.enabled !== false && (
+        <div id="stories">
+          <FeaturedClientStories
+            stories={data.clientStories}
+            sectionBadge={data.clientStoriesConfig?.badge}
+            sectionTitle={data.clientStoriesConfig?.title}
+            sectionSubtitle={data.clientStoriesConfig?.subtitle}
+            lang={lang}
+          />
+        </div>
+      )}
+
+      {/* 7B. Latest Insights / Blogs Carousel */}
+      {data.insightsConfig?.enabled !== false && (
+        <div id="insights">
+          <InsightsSection
+            items={data.insights}
+            title={data.insightsConfig?.title}
+            subtitle={data.insightsConfig?.subtitle}
+            ctaText={data.insightsConfig?.ctaText}
+            ctaHref={data.insightsConfig?.ctaHref || '/insights'}
+            lang={lang}
+          />
+        </div>
+      )}
 
       {/* 8. Executive Client Review */}
       <ClientReviewSection
         quoteText={quoteText}
-        quoteAuthor={data.quote.author}
+        quoteAuthor={quoteAuthor}
         quoteRole={quoteRole}
         lang={lang}
       />
@@ -201,8 +241,8 @@ export function ProductManagementView({ lang, dict }: ProductManagementViewProps
       {/* 9. Enterprise FAQs Accordion */}
       <div id="faqs">
         <FaqSection
-          title={{ en: 'Frequently Asked Questions', ar: 'الأسئلة الأكثر شيوعاً' }}
-          subtitle={{
+          title={data.faqsTitle || { en: 'Frequently Asked Questions', ar: 'الأسئلة الأكثر شيوعاً' }}
+          subtitle={data.faqsSubtitle || {
             en: 'Common questions on modern product management and our collaborative agile pods.',
             ar: 'إجابات حول منهجيات إدارة المنتجات الحديثة وتكامل فرق العمل الرشيقة.',
           }}
@@ -212,9 +252,11 @@ export function ProductManagementView({ lang, dict }: ProductManagementViewProps
       </div>
 
       {/* 10. Contact & Discovery Form */}
-      <div id="contact">
-        <HomeContactSection lang={lang} dict={dict} />
-      </div>
+      {data.contactSection?.enabled !== false && (
+        <div id="contact">
+          <HomeContactSection lang={lang} dict={dict} />
+        </div>
+      )}
     </div>
   );
 }

@@ -897,6 +897,7 @@ export interface IndustriesPageContent extends BaseMongoDocument {
   deliverySubtitle: LocalizedString;
   deliveryImage: string;
   deliveryPillars: SolutionExecutionPillar[];
+  spotlightStories?: FeaturedClientStoryItem[];
   quoteText: LocalizedString;
   quoteAuthor: string;
   quoteRole: LocalizedString;

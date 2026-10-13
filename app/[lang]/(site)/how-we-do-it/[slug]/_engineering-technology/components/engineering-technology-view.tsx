@@ -1,16 +1,20 @@
-﻿'use client';
+'use client';
 
 import React, { useState } from 'react';
 import type { Dictionary } from '@dictionaries';
-import { engineeringTechnologyData } from '../data/engineering-technology.data';
 import { SolutionsHeroSection } from '../../../../solutions/_solutions/components/solutions-hero-section';
 import { HowWeDoItSubNavbar } from '../../_components/how-we-do-it-sub-navbar';
 import { SolutionsWhyItMatters } from '../../../../solutions/_solutions/components/solutions-why-it-matters';
 import { SolutionsBenefitsStrip } from '../../../../solutions/_solutions/components/solutions-benefits-strip';
 import {
+  type HowWeDoItFeatureCmsData,
+  getDefaultHowWeDoItFeatureCmsData,
+} from '../../../_how-we-do-it/data/how-we-do-it-cms.data';
+import {
   CapabilityCard,
   TechInfrastructureCard,
   FeaturedClientStories,
+  InsightsSection,
   ClientReviewSection,
   FaqSection,
 } from '@shared';
@@ -18,17 +22,19 @@ import { sectionContainer, sectionPaddingY } from '@shared/constants';
 import { HomeContactSection } from '../../../../_home/components/home-contact-section';
 
 interface EngineeringTechnologyViewProps {
+  data?: HowWeDoItFeatureCmsData;
   lang: string;
   dict: Dictionary;
 }
 
 export function EngineeringTechnologyView({
+  data: cmsData,
   lang,
   dict,
 }: EngineeringTechnologyViewProps) {
   const isAr = lang === 'ar';
   const [isPaused, setIsPaused] = useState(false);
-  const data = engineeringTechnologyData;
+  const data = cmsData || getDefaultHowWeDoItFeatureCmsData('engineering-technology');
 
   const offeringsTitle = data.offeringsTitle[isAr ? 'ar' : 'en'];
   const offeringsSubtitle = data.offeringsSubtitle[isAr ? 'ar' : 'en'];
@@ -38,8 +44,13 @@ export function EngineeringTechnologyView({
 
   const benefitsTitle = data.benefitsStrip.title[isAr ? 'ar' : 'en'];
 
-  const quoteText = data.quote.text[isAr ? 'ar' : 'en'];
-  const quoteRole = data.quote.role[isAr ? 'ar' : 'en'];
+  const quoteText = data.quote?.text
+    ? (data.quote.text[isAr ? 'ar' : 'en'] || data.quote.text.en)
+    : (data.clientReview?.quote ? (data.clientReview.quote[isAr ? 'ar' : 'en'] || data.clientReview.quote.en) : '');
+  const quoteAuthor = data.quote?.author || data.clientReview?.author || '';
+  const quoteRole = data.quote?.role
+    ? (data.quote.role[isAr ? 'ar' : 'en'] || data.quote.role.en)
+    : (data.clientReview?.role ? (data.clientReview.role[isAr ? 'ar' : 'en'] || data.clientReview.role.en) : '');
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -156,12 +167,16 @@ export function EngineeringTechnologyView({
                 {isAr ? 'البنى السحابية والهندسية' : 'Cloud Architecture'}
               </div>
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-primary font-medium text-white tracking-tight leading-tight mb-5">
-                {isAr ? 'منظومة التقنيات السحابية وهندسة الحاويات' : 'Cloud-Native & Containerization Ecosystem'}
+                {data.techStackPodsTitle
+                  ? (data.techStackPodsTitle[isAr ? 'ar' : 'en'] || data.techStackPodsTitle.en)
+                  : (isAr ? 'منظومة التقنيات السحابية وهندسة الحاويات' : 'Cloud-Native & Containerization Ecosystem')}
               </h2>
               <p className="text-base sm:text-lg text-slate-300 font-secondary leading-relaxed">
-                {isAr
-                  ? 'بنى تحتية مرنة وعالية الجاهزية تضمن استقرار البرمجيات وقابليتها للتوسع دون حدود.'
-                  : 'High-availability, multi-cloud architectures ensuring frictionless scalability and resilience.'}
+                {data.techStackPodsSubtitle
+                  ? (data.techStackPodsSubtitle[isAr ? 'ar' : 'en'] || data.techStackPodsSubtitle.en)
+                  : (isAr
+                    ? 'بنى تحتية مرنة وعالية الجاهزية تضمن استقرار البرمجيات وقابليتها للتوسع دون حدود.'
+                    : 'High-availability, multi-cloud architectures ensuring frictionless scalability and resilience.')}
               </p>
             </div>
 
@@ -189,14 +204,36 @@ export function EngineeringTechnologyView({
       </div>
 
       {/* 7. Featured Client Stories */}
-      <div id="stories">
-        <FeaturedClientStories lang={lang} />
-      </div>
+      {data.clientStoriesConfig?.enabled !== false && (
+        <div id="stories">
+          <FeaturedClientStories
+            stories={data.clientStories}
+            sectionBadge={data.clientStoriesConfig?.badge}
+            sectionTitle={data.clientStoriesConfig?.title}
+            sectionSubtitle={data.clientStoriesConfig?.subtitle}
+            lang={lang}
+          />
+        </div>
+      )}
+
+      {/* 7B. Latest Insights / Blogs Carousel */}
+      {data.insightsConfig?.enabled !== false && (
+        <div id="insights">
+          <InsightsSection
+            items={data.insights}
+            title={data.insightsConfig?.title}
+            subtitle={data.insightsConfig?.subtitle}
+            ctaText={data.insightsConfig?.ctaText}
+            ctaHref={data.insightsConfig?.ctaHref || '/insights'}
+            lang={lang}
+          />
+        </div>
+      )}
 
       {/* 8. Executive Client Review */}
       <ClientReviewSection
         quoteText={quoteText}
-        quoteAuthor={data.quote.author}
+        quoteAuthor={quoteAuthor}
         quoteRole={quoteRole}
         lang={lang}
       />
@@ -204,8 +241,8 @@ export function EngineeringTechnologyView({
       {/* 9. Enterprise FAQs Accordion */}
       <div id="faqs">
         <FaqSection
-          title={{ en: 'Frequently Asked Questions', ar: 'الأسئلة الأكثر شيوعاً' }}
-          subtitle={{
+          title={data.faqsTitle || { en: 'Frequently Asked Questions', ar: 'الأسئلة الأكثر شيوعاً' }}
+          subtitle={data.faqsSubtitle || {
             en: 'Answers on our cloud-native architectures, migration methodologies, and DevOps engineering.',
             ar: 'إجابات واضحة حول أنظمتنا السحابية الحديثة، ومنهجيات الانتقال الآمن، وأتمتة مسارات DevOps.',
           }}
@@ -215,9 +252,11 @@ export function EngineeringTechnologyView({
       </div>
 
       {/* 10. Contact & Discovery Form */}
-      <div id="contact">
-        <HomeContactSection lang={lang} dict={dict} />
-      </div>
+      {data.contactSection?.enabled !== false && (
+        <div id="contact">
+          <HomeContactSection lang={lang} dict={dict} />
+        </div>
+      )}
     </div>
   );
 }

@@ -4,10 +4,12 @@ import React, { useState } from 'react';
 import { TbChevronDown, TbChevronUp, TbCheck, TbDeviceFloppy } from 'react-icons/tb';
 
 export interface SectionAccordionProps {
-  number: string | number;
+  number?: string | number;
   title: string;
   description?: string;
+  subtitle?: string;
   isOpenDefault?: boolean;
+  defaultOpen?: boolean;
   onSave?: () => Promise<void> | void;
   saving?: boolean;
   children: React.ReactNode;
@@ -17,12 +19,15 @@ export function SectionAccordion({
   number,
   title,
   description,
+  subtitle,
   isOpenDefault = false,
+  defaultOpen,
   onSave,
   saving = false,
   children,
 }: SectionAccordionProps) {
-  const [isOpen, setIsOpen] = useState(isOpenDefault);
+  const [isOpen, setIsOpen] = useState(defaultOpen ?? isOpenDefault);
+  const desc = description ?? subtitle;
   const [justSaved, setJustSaved] = useState(false);
 
   const handleSave = async (e: React.MouseEvent) => {
@@ -41,12 +46,14 @@ export function SectionAccordion({
         className="w-full flex items-center justify-between p-5 sm:px-6 cursor-pointer hover:bg-slate-50/70 transition-colors select-none"
       >
         <div className="flex items-center gap-4">
-          <span className="w-8 h-8 rounded-lg bg-persici-crimson/10 text-persici-crimson border border-persici-crimson/20 flex items-center justify-center text-xs font-bold font-mono">
-            {typeof number === 'number' && number < 10 ? `0${number}` : number}
-          </span>
+          {number !== undefined && (
+            <span className="w-8 h-8 rounded-lg bg-persici-crimson/10 text-persici-crimson border border-persici-crimson/20 flex items-center justify-center text-xs font-bold font-mono">
+              {typeof number === 'number' && number < 10 ? `0${number}` : number}
+            </span>
+          )}
           <div>
             <h3 className="text-base font-bold text-slate-900 tracking-tight">{title}</h3>
-            {description && <p className="text-xs text-slate-500 mt-0.5">{description}</p>}
+            {desc && <p className="text-xs text-slate-500 mt-0.5">{desc}</p>}
           </div>
         </div>
 

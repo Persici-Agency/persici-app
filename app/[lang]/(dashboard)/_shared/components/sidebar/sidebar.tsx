@@ -104,16 +104,16 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
   };
 
   // Accordion open/close state
-  const [openSections, setOpenSections] = useState<Record<string, boolean>>({
+  const [openSections, setOpenSections] = useState<Record<string, boolean>>(() => ({
     pages: true,
-    solutions: false,
-    industries: false,
-    howWeDoIt: false,
+    solutions: pathname.includes('/solutions'),
+    industries: pathname.includes('/industries'),
+    howWeDoIt: pathname.includes('/how-we-do-it'),
     navigation: false,
     careers: true,
     leads: true,
     content: true,
-  });
+  }));
 
   const toggleSection = (key: string) => {
     if (isCollapsed) {
@@ -162,11 +162,11 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
     industries: isRtl ? 'القطاعات والصناعات (7)' : 'Industries (7)',
     industriesHub: isRtl ? 'الرئيسية للقطاعات' : 'Overview Hub',
     consumerProducts: isRtl ? 'المنتجات الاستهلاكية' : 'Consumer Products',
-    energyCommodities: isRtl ? 'الطاقة والسلع' : 'Energy & Commodities',
-    health: isRtl ? 'الرعاية الصحية' : 'Healthcare',
-    publicSector: isRtl ? 'القطاع العام والدفاع' : 'Public Sector & Defense',
-    financialServices: isRtl ? 'الخدمات المالية' : 'Financial Services',
-    techMedia: isRtl ? 'التكنولوجيا والإعلام' : 'Technology & Media',
+    telecomMediaTech: isRtl ? 'الاتصالات والإعلام والتقنية' : 'Telecom, Media & Tech',
+    publicSector: isRtl ? 'القطاع العام والجهات الحكومية' : 'Public Sector',
+    retail: isRtl ? 'قطاع التجزئة والتجارة' : 'Retail',
+    health: isRtl ? 'الرعاية الصحية وعلوم الحياة' : 'Health & Life Sciences',
+    energyCommodities: isRtl ? 'الطاقة والموارد والسلع' : 'Energy & Commodities',
     howWeDoIt: isRtl ? 'كيف نعمل (6)' : 'How We Do It (6)',
     howWeDoItHub: isRtl ? 'الرئيسية لمنهجيتنا' : 'Overview Hub',
     framework: isRtl ? 'إطار التحول الرقمي' : 'Transformation Framework',
@@ -449,26 +449,75 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
 
                   {openSections.industries && (
                     <div className="mt-1 ps-2.5 space-y-1 border-s border-white/10 ms-2 text-[11px]">
-                      <Link href={getHref(`/${lang}/dashboard/pages/industries`)} className="block px-2.5 py-1 text-white/50 hover:text-white">
+                      <Link
+                        href={getHref(`/${lang}/dashboard/pages/industries`)}
+                        className={`block px-2.5 py-1 rounded ${
+                          pathname === `/${lang}/dashboard/pages/industries`
+                            ? 'text-white font-semibold bg-white/10'
+                            : 'text-white/50 hover:text-white'
+                        }`}
+                      >
                         &bull; {t.industriesHub}
                       </Link>
-                      <Link href={getHref(`/${lang}/dashboard/pages/industries-consumer-products`)} className="block px-2.5 py-1 text-white/50 hover:text-white">
+                      <Link
+                        href={getHref(`/${lang}/dashboard/pages/industries-consumer-products`)}
+                        className={`block px-2.5 py-1 rounded ${
+                          isActive('/dashboard/pages/industries-consumer-products')
+                            ? 'text-white font-semibold bg-white/10'
+                            : 'text-white/50 hover:text-white'
+                        }`}
+                      >
                         &bull; {t.consumerProducts}
                       </Link>
-                      <Link href={getHref(`/${lang}/dashboard/pages/industries-energy-commodities`)} className="block px-2.5 py-1 text-white/50 hover:text-white">
-                        &bull; {t.energyCommodities}
+                      <Link
+                        href={getHref(`/${lang}/dashboard/pages/industries-telecom-media-technology`)}
+                        className={`block px-2.5 py-1 rounded ${
+                          isActive('/dashboard/pages/industries-telecom-media-technology')
+                            ? 'text-white font-semibold bg-white/10'
+                            : 'text-white/50 hover:text-white'
+                        }`}
+                      >
+                        &bull; {t.telecomMediaTech}
                       </Link>
-                      <Link href={getHref(`/${lang}/dashboard/pages/industries-health`)} className="block px-2.5 py-1 text-white/50 hover:text-white">
-                        &bull; {t.health}
-                      </Link>
-                      <Link href={getHref(`/${lang}/dashboard/pages/industries-public-sector`)} className="block px-2.5 py-1 text-white/50 hover:text-white">
+                      <Link
+                        href={getHref(`/${lang}/dashboard/pages/industries-public-sector`)}
+                        className={`block px-2.5 py-1 rounded ${
+                          isActive('/dashboard/pages/industries-public-sector')
+                            ? 'text-white font-semibold bg-white/10'
+                            : 'text-white/50 hover:text-white'
+                        }`}
+                      >
                         &bull; {t.publicSector}
                       </Link>
-                      <Link href={getHref(`/${lang}/dashboard/pages/industries-financial-services`)} className="block px-2.5 py-1 text-white/50 hover:text-white">
-                        &bull; {t.financialServices}
+                      <Link
+                        href={getHref(`/${lang}/dashboard/pages/industries-retail`)}
+                        className={`block px-2.5 py-1 rounded ${
+                          isActive('/dashboard/pages/industries-retail')
+                            ? 'text-white font-semibold bg-white/10'
+                            : 'text-white/50 hover:text-white'
+                        }`}
+                      >
+                        &bull; {t.retail}
                       </Link>
-                      <Link href={getHref(`/${lang}/dashboard/pages/industries-technology-media`)} className="block px-2.5 py-1 text-white/50 hover:text-white">
-                        &bull; {t.techMedia}
+                      <Link
+                        href={getHref(`/${lang}/dashboard/pages/industries-health`)}
+                        className={`block px-2.5 py-1 rounded ${
+                          isActive('/dashboard/pages/industries-health')
+                            ? 'text-white font-semibold bg-white/10'
+                            : 'text-white/50 hover:text-white'
+                        }`}
+                      >
+                        &bull; {t.health}
+                      </Link>
+                      <Link
+                        href={getHref(`/${lang}/dashboard/pages/industries-energy-commodities`)}
+                        className={`block px-2.5 py-1 rounded ${
+                          isActive('/dashboard/pages/industries-energy-commodities')
+                            ? 'text-white font-semibold bg-white/10'
+                            : 'text-white/50 hover:text-white'
+                        }`}
+                      >
+                        &bull; {t.energyCommodities}
                       </Link>
                     </div>
                   )}
@@ -496,23 +545,65 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
 
                   {openSections.howWeDoIt && (
                     <div className="mt-1 ps-2.5 space-y-1 border-s border-white/10 ms-2 text-[11px]">
-                      <Link href={getHref(`/${lang}/dashboard/pages/how-we-do-it`)} className="block px-2.5 py-1 text-white/50 hover:text-white">
+                      <Link
+                        href={getHref(`/${lang}/dashboard/pages/how-we-do-it`)}
+                        className={`block px-2.5 py-1 rounded ${
+                          isActive('/dashboard/pages/how-we-do-it')
+                            ? 'text-white font-semibold bg-white/10'
+                            : 'text-white/50 hover:text-white'
+                        }`}
+                      >
                         &bull; {t.howWeDoItHub}
                       </Link>
-                      <Link href={getHref(`/${lang}/dashboard/pages/how-we-do-it-framework`)} className="block px-2.5 py-1 text-white/50 hover:text-white">
+                      <Link
+                        href={getHref(`/${lang}/dashboard/pages/how-we-do-it-strategy-consulting`)}
+                        className={`block px-2.5 py-1 rounded ${
+                          isActive('/dashboard/pages/how-we-do-it-strategy-consulting') || isActive('/dashboard/pages/how-we-do-it-strategy')
+                            ? 'text-white font-semibold bg-white/10'
+                            : 'text-white/50 hover:text-white'
+                        }`}
+                      >
+                        &bull; {t.strategyConsulting}
+                      </Link>
+                      <Link
+                        href={getHref(`/${lang}/dashboard/pages/how-we-do-it-digital-transformation-framework`)}
+                        className={`block px-2.5 py-1 rounded ${
+                          isActive('/dashboard/pages/how-we-do-it-digital-transformation-framework') || isActive('/dashboard/pages/how-we-do-it-framework')
+                            ? 'text-white font-semibold bg-white/10'
+                            : 'text-white/50 hover:text-white'
+                        }`}
+                      >
                         &bull; {t.framework}
                       </Link>
-                      <Link href={getHref(`/${lang}/dashboard/pages/how-we-do-it-engineering`)} className="block px-2.5 py-1 text-white/50 hover:text-white">
-                        &bull; {t.engineering}
-                      </Link>
-                      <Link href={getHref(`/${lang}/dashboard/pages/how-we-do-it-experience`)} className="block px-2.5 py-1 text-white/50 hover:text-white">
-                        &bull; {t.experience}
-                      </Link>
-                      <Link href={getHref(`/${lang}/dashboard/pages/how-we-do-it-product`)} className="block px-2.5 py-1 text-white/50 hover:text-white">
+                      <Link
+                        href={getHref(`/${lang}/dashboard/pages/how-we-do-it-product-management`)}
+                        className={`block px-2.5 py-1 rounded ${
+                          isActive('/dashboard/pages/how-we-do-it-product-management') || isActive('/dashboard/pages/how-we-do-it-product')
+                            ? 'text-white font-semibold bg-white/10'
+                            : 'text-white/50 hover:text-white'
+                        }`}
+                      >
                         &bull; {t.productMgmt}
                       </Link>
-                      <Link href={getHref(`/${lang}/dashboard/pages/how-we-do-it-strategy`)} className="block px-2.5 py-1 text-white/50 hover:text-white">
-                        &bull; {t.strategyConsulting}
+                      <Link
+                        href={getHref(`/${lang}/dashboard/pages/how-we-do-it-engineering-technology`)}
+                        className={`block px-2.5 py-1 rounded ${
+                          isActive('/dashboard/pages/how-we-do-it-engineering-technology') || isActive('/dashboard/pages/how-we-do-it-engineering')
+                            ? 'text-white font-semibold bg-white/10'
+                            : 'text-white/50 hover:text-white'
+                        }`}
+                      >
+                        &bull; {t.engineering}
+                      </Link>
+                      <Link
+                        href={getHref(`/${lang}/dashboard/pages/how-we-do-it-experience-transformation`)}
+                        className={`block px-2.5 py-1 rounded ${
+                          isActive('/dashboard/pages/how-we-do-it-experience-transformation') || isActive('/dashboard/pages/how-we-do-it-experience')
+                            ? 'text-white font-semibold bg-white/10'
+                            : 'text-white/50 hover:text-white'
+                        }`}
+                      >
+                        &bull; {t.experience}
                       </Link>
                     </div>
                   )}

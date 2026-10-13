@@ -13,6 +13,18 @@ import {
   normalizeSolutionsHubPageData,
   normalizeSolutionFeaturePageData,
   isSolutionPageSlug,
+  getIndustriesPageData,
+  getIndustryFeaturePageData,
+  normalizeIndustriesHubPageData,
+  normalizeIndustryFeaturePageData,
+  isIndustryPageSlug,
+  extractIndustryFeatureSlug,
+  getHowWeDoItPageData,
+  getHowWeDoItFeaturePageData,
+  normalizeHowWeDoItHubPageData,
+  normalizeHowWeDoItFeaturePageData,
+  isHowWeDoItPageSlug,
+  extractHowWeDoItFeatureSlug,
 } from '@shared/services/db.service';
 import { getSessionUser } from '@/lib/auth/jwt';
 import { isRoleAllowed } from '@/lib/auth/rbac';
@@ -88,6 +100,42 @@ export async function GET(
       });
     }
 
+    if (page === 'industries') {
+      const content = await getIndustriesPageData();
+      return NextResponse.json({
+        success: true,
+        page,
+        content,
+      });
+    }
+
+    if (isIndustryPageSlug(page)) {
+      const content = await getIndustryFeaturePageData(page);
+      return NextResponse.json({
+        success: true,
+        page,
+        content,
+      });
+    }
+
+    if (page === 'how-we-do-it') {
+      const content = await getHowWeDoItPageData();
+      return NextResponse.json({
+        success: true,
+        page,
+        content,
+      });
+    }
+
+    if (isHowWeDoItPageSlug(page)) {
+      const content = await getHowWeDoItFeaturePageData(page);
+      return NextResponse.json({
+        success: true,
+        page,
+        content,
+      });
+    }
+
     const fallback = FALLBACK_PAGES[page] || {};
 
     const rawContent = await getPageContent(page, fallback);
@@ -151,26 +199,49 @@ export async function PUT(
         ? body.content
         : body;
 
+    // Normalize canonical page key if a legacy alias was used
+    const canonicalIndustrySlug =
+      page !== 'industries' && isIndustryPageSlug(page)
+        ? extractIndustryFeatureSlug(page)
+        : null;
+    const canonicalHowWeDoItSlug =
+      page !== 'how-we-do-it' && isHowWeDoItPageSlug(page)
+        ? extractHowWeDoItFeatureSlug(page)
+        : null;
+    const targetPageKey = canonicalIndustrySlug
+      ? `industries-${canonicalIndustrySlug}`
+      : canonicalHowWeDoItSlug
+        ? `how-we-do-it-${canonicalHowWeDoItSlug}`
+        : page;
+
     const payload =
       page === 'solutions'
         ? normalizeSolutionsHubPageData(rawPayload)
         : isSolutionPageSlug(page)
           ? normalizeSolutionFeaturePageData(page, rawPayload)
-          : rawPayload;
+          : page === 'industries'
+            ? normalizeIndustriesHubPageData(rawPayload)
+            : isIndustryPageSlug(page)
+              ? normalizeIndustryFeaturePageData(page, rawPayload)
+              : page === 'how-we-do-it'
+                ? normalizeHowWeDoItHubPageData(rawPayload)
+                : isHowWeDoItPageSlug(page)
+                  ? normalizeHowWeDoItFeaturePageData(canonicalHowWeDoItSlug || 'strategy-consulting', rawPayload)
+                  : rawPayload;
 
-    const updated = await updatePageContent(page, payload);
+    const updated = await updatePageContent(targetPageKey, payload);
 
     // Trigger instant cache revalidation across EN and AR routes
     if (updated) {
-      revalidatePageContent(page);
+      revalidatePageContent(targetPageKey);
     }
 
     return NextResponse.json({
       success: updated,
       message: updated
-        ? `Page '${page}' updated and published successfully.`
+        ? `Page '${targetPageKey}' updated and published successfully.`
         : `Database update failed.`,
-      page,
+      page: targetPageKey,
       revalidated: updated,
     });
   } catch (error) {

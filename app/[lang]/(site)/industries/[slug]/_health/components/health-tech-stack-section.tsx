@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React from 'react';
 import type { TechStackPod } from '../data/health.data';
@@ -10,6 +10,7 @@ interface HealthTechStackSectionProps {
   pods: TechStackPod[];
   title: string;
   subtitle: string;
+  badge?: string;
   lang: string;
 }
 
@@ -17,6 +18,7 @@ export function HealthTechStackSection({
   pods,
   title,
   subtitle,
+  badge,
   lang,
 }: HealthTechStackSectionProps) {
   const isRtl = lang === 'ar';
@@ -30,7 +32,7 @@ export function HealthTechStackSection({
         {/* Header */}
         <FadeUp delay={0} duration={700} distance={20} className="text-center max-w-3xl mx-auto mb-16 sm:mb-24">
           <span className="text-xs sm:text-sm font-semibold uppercase tracking-widest text-persici-crimson block mb-3">
-            {isRtl ? 'البنية التقنية المتطورة' : 'Infrastructure & Platforms'}
+            {badge || (isRtl ? 'البنية التقنية المتطورة' : 'Infrastructure & Platforms')}
           </span>
           <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-white">
             {title}

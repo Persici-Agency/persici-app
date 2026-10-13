@@ -5,9 +5,7 @@ import {
   servicesPageContent,
   workPageContent,
   solutionsOfferingsList,
-  industriesPageContent,
   industriesOfferingsList,
-  howWeDoItPageContent,
   howWeDoItOfferingsList,
   projectsList,
   servicesList,
@@ -23,10 +21,13 @@ import type { ClientStoriesHubPageData } from '@/app/[lang]/(site)/client-storie
 import { careersHubData, type CareersHubData } from '@/app/[lang]/(site)/careers/_careers/data/careers.data';
 import { insightsHubPageData } from '@/app/[lang]/(site)/insights/_insights/data/insights.data';
 import type { InsightsHubPageData, InsightDetail } from '@/app/[lang]/(site)/insights/_insights/types';
+import type { ContentCardItem } from '@shared/components/content-card';
 import { getAllProjectsFromDb } from '@/lib/projects-server';
 import { getAllInsightsFromDb } from '@/lib/insights-server';
-import { clientStoryToFeaturedItem } from '@shared/data/featured-client-stories.data';
-import type { ContentCardItem } from '@shared/components/content-card';
+import {
+  clientStoryToFeaturedItem,
+  getSolutionsOverviewFeaturedClientStories,
+} from '@shared/data/featured-client-stories.data';
 import {
   SOLUTION_FEATURE_SLUGS,
   isSolutionPageSlug,
@@ -40,6 +41,33 @@ import {
   type SolutionClientStoriesSectionConfig,
   type SolutionInsightsSectionConfig,
 } from '@/app/[lang]/(site)/solutions/_solutions/data/solutions-cms.data';
+import {
+  INDUSTRY_FEATURE_SLUGS,
+  isIndustryPageSlug,
+  extractIndustryFeatureSlug,
+  defaultIndustriesHubCmsData,
+  getDefaultIndustryFeatureCmsData,
+  normalizeIndustriesHubPageData,
+  normalizeIndustryFeaturePageData,
+  type IndustriesHubCmsData,
+  type IndustryFeatureCmsData,
+  type IndustryClientStoriesSectionConfig,
+  type IndustryInsightsSectionConfig,
+} from '@/app/[lang]/(site)/industries/_industries/data/industries-cms.data';
+import {
+  HOW_WE_DO_IT_FEATURE_SLUGS,
+  isHowWeDoItPageSlug,
+  extractHowWeDoItFeatureSlug,
+  defaultHowWeDoItHubCmsData,
+  getDefaultHowWeDoItFeatureCmsData,
+  normalizeHowWeDoItHubPageData,
+  normalizeHowWeDoItFeaturePageData,
+  type HowWeDoItHubCmsData,
+  type HowWeDoItFeatureCmsData,
+  type HowWeDoItClientStoriesSectionConfig,
+  type HowWeDoItInsightsSectionConfig,
+  type HowWeDoItFeatureSlug,
+} from '@/app/[lang]/(site)/how-we-do-it/_how-we-do-it/data/how-we-do-it-cms.data';
 export type {
   ContactPageData,
   ClientStoriesHubPageData,
@@ -49,6 +77,15 @@ export type {
   SolutionFeatureCmsData,
   SolutionClientStoriesSectionConfig,
   SolutionInsightsSectionConfig,
+  IndustriesHubCmsData,
+  IndustryFeatureCmsData,
+  IndustryClientStoriesSectionConfig,
+  IndustryInsightsSectionConfig,
+  HowWeDoItHubCmsData,
+  HowWeDoItFeatureCmsData,
+  HowWeDoItClientStoriesSectionConfig,
+  HowWeDoItInsightsSectionConfig,
+  HowWeDoItFeatureSlug,
 };
 export {
   SOLUTION_FEATURE_SLUGS,
@@ -56,6 +93,16 @@ export {
   extractSolutionFeatureSlug,
   normalizeSolutionsHubPageData,
   normalizeSolutionFeaturePageData,
+  INDUSTRY_FEATURE_SLUGS,
+  isIndustryPageSlug,
+  extractIndustryFeatureSlug,
+  normalizeIndustriesHubPageData,
+  normalizeIndustryFeaturePageData,
+  HOW_WE_DO_IT_FEATURE_SLUGS,
+  isHowWeDoItPageSlug,
+  extractHowWeDoItFeatureSlug,
+  normalizeHowWeDoItHubPageData,
+  normalizeHowWeDoItFeaturePageData,
 };
 import type {
   SharedContactContent,
@@ -391,8 +438,13 @@ export function insightDetailToInsightItem(detail: InsightDetail): ContentCardIt
     id: detail.slug || detail.id,
     slug: detail.slug,
     category: detail.category || { en: 'Article', ar: 'مقال' },
+    badge: detail.category || { en: 'Article', ar: 'مقال' },
     title: detail.title,
-    date: detail.date || { en: '', ar: '' },
+    excerpt: detail.excerpt || detail.subtitle || { en: '', ar: '' },
+    date: detail.date || { en: '2026', ar: '٢٠٢٦' },
+    image:
+      detail.coverImage ||
+      'https://images.unsplash.com/photo-1573164713988-8665fc963095?auto=format&fit=crop&w=1000&q=85',
     href: `/insights/${detail.slug}`,
   };
 }
@@ -419,7 +471,11 @@ export async function resolveSolutionClientStories(
     }
 
     if (mode === 'category') {
-      const catSlug = (config?.categorySlug || 'all').trim().toLowerCase();
+      const rawCat =
+        config?.categorySlug ||
+        (config as unknown as { selectedCategory?: string })?.selectedCategory ||
+        'all';
+      const catSlug = rawCat.trim().toLowerCase();
       const filtered =
         catSlug === 'all' || !catSlug
           ? allProjects
@@ -463,7 +519,7 @@ export async function resolveSolutionInsights(
   config: SolutionInsightsSectionConfig | undefined,
   fallbackInsights: ContentCardItem[]
 ): Promise<ContentCardItem[]> {
-  const maxCount = Math.max(1, Math.min(24, Number(config?.maxCount) || fallbackInsights.length || 4));
+  const maxCount = Math.max(1, Math.min(24, Number(config?.maxCount) || fallbackInsights.length || 3));
   const mode = config?.selectionMode || 'custom';
 
   try {
@@ -482,7 +538,11 @@ export async function resolveSolutionInsights(
       if (!allInsights || allInsights.length === 0) {
         return fallbackInsights.slice(0, maxCount);
       }
-      const catSlug = (config?.categorySlug || 'all').trim().toLowerCase();
+      const rawCat =
+        config?.categorySlug ||
+        (config as unknown as { selectedCategory?: string })?.selectedCategory ||
+        'all';
+      const catSlug = rawCat.trim().toLowerCase();
       const filtered =
         catSlug === 'all' || !catSlug
           ? allInsights
@@ -567,8 +627,13 @@ export async function getSolutionsPageData(): Promise<SolutionsHubCmsData> {
       );
     }
 
+    const fallbackHubStories =
+      normalized.spotlightStories && normalized.spotlightStories.length > 0
+        ? normalized.spotlightStories
+        : getSolutionsOverviewFeaturedClientStories();
+
     const [resolvedStories, resolvedInsights] = await Promise.all([
-      resolveSolutionClientStories(normalized.clientStoriesConfig, normalized.spotlightStories || []),
+      resolveSolutionClientStories(normalized.clientStoriesConfig, fallbackHubStories),
       resolveSolutionInsights(normalized.insightsConfig, normalized.insightsList),
     ]);
 
@@ -662,12 +727,300 @@ export async function ensureAllSolutionsPagesSeeded(): Promise<void> {
   }
 }
 
-export async function getIndustriesPageData(): Promise<IndustriesPageContent> {
-  return getPageContent<IndustriesPageContent>('industries', industriesPageContent);
+export async function getIndustriesPageData(): Promise<IndustriesHubCmsData> {
+  try {
+    const db = await getDb();
+    let doc: Record<string, unknown> | null = null;
+    if (db) {
+      doc = (await db.collection(COLLECTIONS.PAGES).findOne({ page: 'industries' })) as Record<
+        string,
+        unknown
+      > | null;
+    }
+
+    const normalized = normalizeIndustriesHubPageData(
+      doc as Partial<IndustriesHubCmsData> | null
+    );
+
+    // Ensure complete normalized document is persisted in MongoDB if missing or lacking new CMS fields
+    if (
+      db &&
+      (!doc ||
+        !doc.heroTitle ||
+        !doc.clientStoriesConfig ||
+        !doc.insightsConfig ||
+        !Array.isArray(doc.faqs) ||
+        doc.faqs.length === 0)
+    ) {
+      const { _id: _nId, createdAt: _nCreatedAt, ...normSet } = normalized as unknown as Record<string, unknown>;
+      await db.collection(COLLECTIONS.PAGES).updateOne(
+        { page: 'industries' },
+        {
+          $set: {
+            ...normSet,
+            page: 'industries',
+            updatedAt: new Date(),
+          },
+          $setOnInsert: {
+            createdAt: (doc?.createdAt as Date) || new Date(),
+          },
+        },
+        { upsert: true }
+      );
+    }
+
+    const fallbackHubStories =
+      normalized.spotlightStories && normalized.spotlightStories.length > 0
+        ? normalized.spotlightStories
+        : getSolutionsOverviewFeaturedClientStories();
+
+    const [resolvedStories, resolvedInsights] = await Promise.all([
+      resolveSolutionClientStories(normalized.clientStoriesConfig, fallbackHubStories),
+      resolveSolutionInsights(normalized.insightsConfig, normalized.insightsList),
+    ]);
+
+    return {
+      ...normalized,
+      spotlightStories: resolvedStories,
+      insightsList: resolvedInsights,
+    };
+  } catch (err) {
+    console.warn('[db.service] getIndustriesPageData fallback:', err);
+    return normalizeIndustriesHubPageData(defaultIndustriesHubCmsData);
+  }
 }
 
-export async function getHowWeDoItPageData(): Promise<HowWeDoItPageContent> {
-  return getPageContent<HowWeDoItPageContent>('how-we-do-it', howWeDoItPageContent);
+export async function getIndustryFeaturePageData(
+  slugOrPage: string
+): Promise<IndustryFeatureCmsData> {
+  const featureSlug = extractIndustryFeatureSlug(slugOrPage) || 'consumer-products';
+  const pageKey = `industries-${featureSlug}`;
+  const defaultData = getDefaultIndustryFeatureCmsData(featureSlug);
+
+  try {
+    const db = await getDb();
+    let doc: Record<string, unknown> | null = null;
+    if (db) {
+      doc = (await db.collection(COLLECTIONS.PAGES).findOne({ page: pageKey })) as Record<
+        string,
+        unknown
+      > | null;
+    }
+
+    const normalized = normalizeIndustryFeaturePageData(
+      featureSlug,
+      doc as Partial<IndustryFeatureCmsData> | null
+    );
+
+    // Auto-persist complete normalized document into MongoDB if missing or incomplete
+    if (
+      db &&
+      (!doc ||
+        !doc.hero ||
+        !doc.realities ||
+        !doc.agileFoundation ||
+        !doc.clientStoriesConfig ||
+        !doc.insightsConfig ||
+        !Array.isArray(doc.offerings) ||
+        doc.offerings.length === 0)
+    ) {
+      const { _id: _fId, createdAt: _fCreatedAt, ...featSet } = normalized as unknown as Record<string, unknown>;
+      await db.collection(COLLECTIONS.PAGES).updateOne(
+        { page: pageKey },
+        {
+          $set: {
+            ...featSet,
+            page: pageKey,
+            updatedAt: new Date(),
+          },
+          $setOnInsert: {
+            createdAt: (doc?.createdAt as Date) || new Date(),
+          },
+        },
+        { upsert: true }
+      );
+    }
+
+    const [resolvedStories, resolvedInsights] = await Promise.all([
+      resolveSolutionClientStories(normalized.clientStoriesConfig, normalized.clientStories),
+      resolveSolutionInsights(normalized.insightsConfig, normalized.insights),
+    ]);
+
+    return {
+      ...normalized,
+      clientStories: resolvedStories,
+      insights: resolvedInsights,
+    };
+  } catch (err) {
+    console.warn(`[db.service] getIndustryFeaturePageData fallback for ${pageKey}:`, err);
+    return normalizeIndustryFeaturePageData(featureSlug, defaultData);
+  }
+}
+
+/**
+ * Ensures the Industries Overview Hub ('industries') and all 6 Industry Feature pages
+ * ('industries-<slug>') are seeded and normalized in MongoDB 'page_contents'.
+ */
+export async function ensureAllIndustriesPagesSeeded(): Promise<void> {
+  try {
+    await getIndustriesPageData();
+    for (const slug of INDUSTRY_FEATURE_SLUGS) {
+      await getIndustryFeaturePageData(slug);
+    }
+  } catch (err) {
+    console.warn('[db.service] ensureAllIndustriesPagesSeeded warning:', err);
+  }
+}
+
+export async function getHowWeDoItPageData(): Promise<HowWeDoItHubCmsData> {
+  try {
+    const db = await getDb();
+    let doc: Record<string, unknown> | null = null;
+    if (db) {
+      doc = (await db.collection(COLLECTIONS.PAGES).findOne({ page: 'how-we-do-it' })) as Record<
+        string,
+        unknown
+      > | null;
+    }
+
+    const normalized = normalizeHowWeDoItHubPageData(
+      doc as Partial<HowWeDoItHubCmsData> | null
+    );
+
+    // Auto-persist complete normalized document into MongoDB if missing or incomplete
+    if (
+      db &&
+      (!doc ||
+        !doc.heroTitle ||
+        !doc.clientStoriesConfig ||
+        !doc.insightsConfig ||
+        !Array.isArray(doc.offeringsList) ||
+        doc.offeringsList.length === 0)
+    ) {
+      const docToSave: Record<string, unknown> = {
+        ...(normalized as unknown as Record<string, unknown>),
+      };
+      delete docToSave.createdAt;
+      delete docToSave._id;
+      await db.collection(COLLECTIONS.PAGES).updateOne(
+        { page: 'how-we-do-it' },
+        {
+          $set: {
+            ...docToSave,
+            page: 'how-we-do-it',
+            updatedAt: new Date(),
+          },
+          $setOnInsert: {
+            createdAt: new Date(),
+          },
+        },
+        { upsert: true }
+      );
+    }
+
+    const fallbackHubStories =
+      normalized.clientStories && normalized.clientStories.length > 0
+        ? normalized.clientStories
+        : getSolutionsOverviewFeaturedClientStories();
+
+    const [resolvedStories, resolvedInsights] = await Promise.all([
+      resolveSolutionClientStories(normalized.clientStoriesConfig, fallbackHubStories),
+      resolveSolutionInsights(normalized.insightsConfig, normalized.insightsList),
+    ]);
+
+    return {
+      ...normalized,
+      clientStories: resolvedStories,
+      insightsList: resolvedInsights,
+    };
+  } catch (err) {
+    console.warn('[db.service] getHowWeDoItPageData fallback:', err);
+    return normalizeHowWeDoItHubPageData(defaultHowWeDoItHubCmsData);
+  }
+}
+
+export async function getHowWeDoItFeaturePageData(
+  slugOrPage: string
+): Promise<HowWeDoItFeatureCmsData> {
+  const featureSlug = extractHowWeDoItFeatureSlug(slugOrPage) || 'strategy-consulting';
+  const pageKey = `how-we-do-it-${featureSlug}`;
+  const defaultData = getDefaultHowWeDoItFeatureCmsData(featureSlug);
+
+  try {
+    const db = await getDb();
+    let doc: Record<string, unknown> | null = null;
+    if (db) {
+      doc = (await db.collection(COLLECTIONS.PAGES).findOne({ page: pageKey })) as Record<
+        string,
+        unknown
+      > | null;
+    }
+
+    const normalized = normalizeHowWeDoItFeaturePageData(
+      featureSlug,
+      doc as Partial<HowWeDoItFeatureCmsData> | null
+    );
+
+    // Auto-persist complete normalized document into MongoDB if missing or incomplete
+    if (
+      db &&
+      (!doc ||
+        !doc.hero ||
+        !doc.clientStoriesConfig ||
+        !doc.insightsConfig ||
+        !Array.isArray(doc.offerings) ||
+        doc.offerings.length === 0)
+    ) {
+      const docToSave: Record<string, unknown> = {
+        ...(normalized as unknown as Record<string, unknown>),
+      };
+      delete docToSave.createdAt;
+      delete docToSave._id;
+      await db.collection(COLLECTIONS.PAGES).updateOne(
+        { page: pageKey },
+        {
+          $set: {
+            ...docToSave,
+            page: pageKey,
+            updatedAt: new Date(),
+          },
+          $setOnInsert: {
+            createdAt: new Date(),
+          },
+        },
+        { upsert: true }
+      );
+    }
+
+    const [resolvedStories, resolvedInsights] = await Promise.all([
+      resolveSolutionClientStories(normalized.clientStoriesConfig, normalized.clientStories),
+      resolveSolutionInsights(normalized.insightsConfig, normalized.insights),
+    ]);
+
+    return {
+      ...normalized,
+      clientStories: resolvedStories,
+      insights: resolvedInsights,
+    };
+  } catch (err) {
+    console.warn(`[db.service] getHowWeDoItFeaturePageData fallback for ${pageKey}:`, err);
+    return normalizeHowWeDoItFeaturePageData(featureSlug, defaultData);
+  }
+}
+
+/**
+ * Ensures the How We Do It Overview Hub ('how-we-do-it') and all 5 Feature methodology pages
+ * ('how-we-do-it-<slug>') are seeded and normalized in MongoDB 'page_contents'.
+ */
+export async function ensureAllHowWeDoItPagesSeeded(): Promise<void> {
+  try {
+    await getHowWeDoItPageData();
+    for (const slug of HOW_WE_DO_IT_FEATURE_SLUGS) {
+      await getHowWeDoItFeaturePageData(slug);
+    }
+  } catch (err) {
+    console.warn('[db.service] ensureAllHowWeDoItPagesSeeded warning:', err);
+  }
 }
 
 export type { AboutPageData };

@@ -2,7 +2,8 @@ import { getDictionary, hasLocale } from '@dictionaries';
 import { notFound } from 'next/navigation';
 import { createMetadata } from '@lib/metadata';
 import type { Locale } from '@lib/i18n';
-import { SolutionsView, fetchSolutionsPageData } from './_solutions';
+import { SolutionsView } from './_solutions';
+import { fetchSolutionsPageData } from './_solutions/services';
 
 export async function generateMetadata({ params }: PageProps<'/[lang]/solutions'>) {
   const { lang } = await params;

@@ -21,12 +21,34 @@ export function revalidatePageContent(slug?: string): { success: boolean } {
       revalidatePath('/[lang]/solutions', 'page');
       revalidatePath('/en/solutions');
       revalidatePath('/ar/solutions');
+    } else if (slug.startsWith('industries-')) {
+      const featureSlug = slug.replace(/^industries-/, '');
+      revalidatePath('/[lang]/industries/[slug]', 'page');
+      revalidatePath(`/en/industries/${featureSlug}`);
+      revalidatePath(`/ar/industries/${featureSlug}`);
+      revalidatePath('/[lang]/industries', 'page');
+      revalidatePath('/en/industries');
+      revalidatePath('/ar/industries');
+    } else if (slug.startsWith('how-we-do-it-')) {
+      const featureSlug = slug.replace(/^how-we-do-it-/, '');
+      revalidatePath('/[lang]/how-we-do-it/[slug]', 'page');
+      revalidatePath(`/en/how-we-do-it/${featureSlug}`);
+      revalidatePath(`/ar/how-we-do-it/${featureSlug}`);
+      revalidatePath('/[lang]/how-we-do-it', 'page');
+      revalidatePath('/en/how-we-do-it');
+      revalidatePath('/ar/how-we-do-it');
     } else {
       revalidatePath(`/[lang]/${slug}`, 'page');
       revalidatePath(`/en/${slug}`);
       revalidatePath(`/ar/${slug}`);
       if (slug === 'solutions') {
         revalidatePath('/[lang]/solutions/[slug]', 'page');
+      }
+      if (slug === 'industries') {
+        revalidatePath('/[lang]/industries/[slug]', 'page');
+      }
+      if (slug === 'how-we-do-it') {
+        revalidatePath('/[lang]/how-we-do-it/[slug]', 'page');
       }
       if (slug === 'careers') {
         revalidatePath('/[lang]/careers/[slug]', 'page');
@@ -35,11 +57,15 @@ export function revalidatePageContent(slug?: string): { success: boolean } {
         revalidatePath('/[lang]/insights/[slug]', 'page');
         revalidatePath('/[lang]/solutions', 'page');
         revalidatePath('/[lang]/solutions/[slug]', 'page');
+        revalidatePath('/[lang]/industries', 'page');
+        revalidatePath('/[lang]/industries/[slug]', 'page');
       }
       if (slug === 'client-stories' || slug === 'projects') {
         revalidatePath('/[lang]/client-stories/[slug]', 'page');
         revalidatePath('/[lang]/solutions', 'page');
         revalidatePath('/[lang]/solutions/[slug]', 'page');
+        revalidatePath('/[lang]/industries', 'page');
+        revalidatePath('/[lang]/industries/[slug]', 'page');
       }
     }
 

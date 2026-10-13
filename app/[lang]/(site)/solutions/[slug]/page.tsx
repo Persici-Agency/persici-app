@@ -4,7 +4,7 @@ import { createMetadata } from '@lib/metadata';
 import type { Locale } from '@lib/i18n';
 import { locales } from '@lib/i18n';
 import { solutionsOfferingsList } from '@shared/data';
-import { fetchSolutionBySlug, fetchSolutionFeaturePageData } from '../_solutions';
+import { fetchSolutionBySlug, fetchSolutionFeaturePageData } from '../_solutions/services';
 import { isSolutionPageSlug } from '../_solutions/data/solutions-cms.data';
 import { SolutionDetailView } from './_solution-detail';
 import { ApplicationManagementView } from './_application-management';

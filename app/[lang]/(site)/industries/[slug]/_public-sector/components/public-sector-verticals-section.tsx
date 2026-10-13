@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React from 'react';
 import type { PublicSectorVerticalItem } from '../data/public-sector.data';
@@ -17,6 +17,7 @@ interface PublicSectorVerticalsSectionProps {
   verticals: PublicSectorVerticalItem[];
   title: string;
   subtitle: string;
+  badge?: string;
   lang: string;
 }
 
@@ -31,6 +32,7 @@ export function PublicSectorVerticalsSection({
   verticals,
   title,
   subtitle,
+  badge,
   lang,
 }: PublicSectorVerticalsSectionProps) {
   const isRtl = lang === 'ar';
@@ -41,7 +43,7 @@ export function PublicSectorVerticalsSection({
         {/* Section Header */}
         <FadeUp delay={0} duration={700} distance={20} className="text-center max-w-3xl mx-auto mb-14 sm:mb-20">
           <span className="text-xs sm:text-sm font-semibold uppercase tracking-widest text-persici-crimson block mb-3">
-            {isRtl ? 'القطاعات والأسواق المتخصصة' : 'Domain Verticals'}
+            {badge || (isRtl ? 'القطاعات والأسواق المتخصصة' : 'Domain Verticals')}
           </span>
           <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-slate-900">
             {title}

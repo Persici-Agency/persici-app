@@ -4,6 +4,7 @@ import { createMetadata } from '@lib/metadata';
 import type { Locale } from '@lib/i18n';
 import { locales } from '@lib/i18n';
 import { howWeDoItOfferingsList } from '@shared/data';
+import { getHowWeDoItFeaturePageData } from '@shared/services/db.service';
 import { StrategyConsultingView } from './_strategy-consulting';
 import { DigitalTransformationFrameworkView } from './_digital-transformation-framework';
 import { ProductManagementView } from './_product-management';
@@ -29,6 +30,18 @@ export async function generateMetadata({ params }: PageProps) {
   if (!hasLocale(lang)) return {};
 
   const isAr = lang === 'ar';
+  const data = await getHowWeDoItFeaturePageData(slug);
+
+  if (data?.hero?.title) {
+    const title = data.hero.title[isAr ? 'ar' : 'en'] || data.hero.title.en;
+    const description = data.hero.subtitle[isAr ? 'ar' : 'en'] || data.hero.subtitle.en;
+    return createMetadata({
+      title: `${title} — Persici Agency`,
+      description,
+      locale: lang as Locale,
+      path: `/how-we-do-it/${slug}`,
+    });
+  }
 
   if (slug === 'strategy-consulting') {
     const title = isAr ? 'الاستراتيجية والاستشارات' : 'Strategy & Consulting';
@@ -102,25 +115,26 @@ export default async function HowWeDoItSubPage({ params }: PageProps) {
   const { lang, slug } = await params;
   if (!hasLocale(lang)) notFound();
   const dict = await getDictionary(lang);
+  const data = await getHowWeDoItFeaturePageData(slug);
 
   if (slug === 'strategy-consulting') {
-    return <StrategyConsultingView lang={lang} dict={dict} />;
+    return <StrategyConsultingView data={data} lang={lang} dict={dict} />;
   }
 
   if (slug === 'digital-transformation-framework') {
-    return <DigitalTransformationFrameworkView lang={lang} dict={dict} />;
+    return <DigitalTransformationFrameworkView data={data} lang={lang} dict={dict} />;
   }
 
   if (slug === 'product-management') {
-    return <ProductManagementView lang={lang} dict={dict} />;
+    return <ProductManagementView data={data} lang={lang} dict={dict} />;
   }
 
   if (slug === 'engineering-technology') {
-    return <EngineeringTechnologyView lang={lang} dict={dict} />;
+    return <EngineeringTechnologyView data={data} lang={lang} dict={dict} />;
   }
 
   if (slug === 'experience-transformation') {
-    return <ExperienceTransformationView lang={lang} dict={dict} />;
+    return <ExperienceTransformationView data={data} lang={lang} dict={dict} />;
   }
 
   notFound();

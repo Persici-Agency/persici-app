@@ -56,7 +56,21 @@ import {
   normalizeSolutionFeaturePageData,
   isSolutionPageSlug,
 } from '@/app/[lang]/(site)/solutions/_solutions/data/solutions-cms.data';
+import {
+  normalizeIndustriesHubPageData,
+  normalizeIndustryFeaturePageData,
+  isIndustryPageSlug,
+  extractIndustryFeatureSlug,
+} from '@/app/[lang]/(site)/industries/_industries/data/industries-cms.data';
+import {
+  normalizeHowWeDoItHubPageData,
+  normalizeHowWeDoItFeaturePageData,
+  isHowWeDoItPageSlug,
+  extractHowWeDoItFeatureSlug,
+} from '@/app/[lang]/(site)/how-we-do-it/_how-we-do-it/data/how-we-do-it-cms.data';
 import { SolutionsPageCmsEditor } from '@dashboard-shared/components/editor/solutions-page-cms-editor';
+import { IndustriesPageCmsEditor } from '@dashboard-shared/components/editor/industries-page-cms-editor';
+import { HowWeDoItPageCmsEditor } from '@dashboard-shared/components/editor/how-we-do-it-page-cms-editor';
 import Link from 'next/link';
 
 export default function UniversalPageCmsEditor() {
@@ -792,6 +806,14 @@ export default function UniversalPageCmsEditor() {
             setPageData(normalizeSolutionsHubPageData(c));
           } else if (isSolutionPageSlug(slug)) {
             setPageData(normalizeSolutionFeaturePageData(slug, c));
+          } else if (slug === 'industries') {
+            setPageData(normalizeIndustriesHubPageData(c));
+          } else if (isIndustryPageSlug(slug)) {
+            setPageData(normalizeIndustryFeaturePageData(slug, c));
+          } else if (slug === 'how-we-do-it') {
+            setPageData(normalizeHowWeDoItHubPageData(c));
+          } else if (isHowWeDoItPageSlug(slug)) {
+            setPageData(normalizeHowWeDoItFeaturePageData(slug, c));
           } else {
             setPageData(c);
           }
@@ -801,6 +823,14 @@ export default function UniversalPageCmsEditor() {
           setPageData(normalizeSolutionsHubPageData({}));
         } else if (isSolutionPageSlug(slug)) {
           setPageData(normalizeSolutionFeaturePageData(slug, {}));
+        } else if (slug === 'industries') {
+          setPageData(normalizeIndustriesHubPageData({}));
+        } else if (isIndustryPageSlug(slug)) {
+          setPageData(normalizeIndustryFeaturePageData(slug, {}));
+        } else if (slug === 'how-we-do-it') {
+          setPageData(normalizeHowWeDoItHubPageData({}));
+        } else if (isHowWeDoItPageSlug(slug)) {
+          setPageData(normalizeHowWeDoItFeaturePageData(slug, {}));
         }
       } catch (err) {
         console.error('Failed to load page content:', err);
@@ -810,6 +840,14 @@ export default function UniversalPageCmsEditor() {
           setPageData(normalizeSolutionsHubPageData({}));
         } else if (isSolutionPageSlug(slug)) {
           setPageData(normalizeSolutionFeaturePageData(slug, {}));
+        } else if (slug === 'industries') {
+          setPageData(normalizeIndustriesHubPageData({}));
+        } else if (isIndustryPageSlug(slug)) {
+          setPageData(normalizeIndustryFeaturePageData(slug, {}));
+        } else if (slug === 'how-we-do-it') {
+          setPageData(normalizeHowWeDoItHubPageData({}));
+        } else if (isHowWeDoItPageSlug(slug)) {
+          setPageData(normalizeHowWeDoItFeaturePageData(slug, {}));
         }
       } finally {
         setLoading(false);
@@ -1189,6 +1227,28 @@ export default function UniversalPageCmsEditor() {
           ...normalizeSolutionFeaturePageData(slug, pageData),
           page: slug,
         };
+      } else if (slug === 'industries') {
+        payloadToSave = {
+          ...normalizeIndustriesHubPageData(pageData),
+          page: 'industries',
+        };
+      } else if (isIndustryPageSlug(slug)) {
+        const canonicalSlug = `industries-${extractIndustryFeatureSlug(slug) || slug.replace(/^industries-/, '')}`;
+        payloadToSave = {
+          ...normalizeIndustryFeaturePageData(slug, pageData),
+          page: canonicalSlug,
+        };
+      } else if (slug === 'how-we-do-it') {
+        payloadToSave = {
+          ...normalizeHowWeDoItHubPageData(pageData),
+          page: 'how-we-do-it',
+        };
+      } else if (isHowWeDoItPageSlug(slug)) {
+        const canonicalFeatureSlug = extractHowWeDoItFeatureSlug(slug) || slug.replace(/^how-we-do-it-/, '');
+        payloadToSave = {
+          ...normalizeHowWeDoItFeaturePageData(slug, pageData),
+          page: `how-we-do-it-${canonicalFeatureSlug}`,
+        };
       }
 
       const res = await fetch(`/api/content/${slug}`, {
@@ -1231,6 +1291,10 @@ export default function UniversalPageCmsEditor() {
       ? `/${lang}`
       : isSolutionPageSlug(slug)
       ? `/${lang}/solutions/${slug.replace(/^solutions-/, '')}`
+      : isIndustryPageSlug(slug) && slug !== 'industries'
+      ? `/${lang}/industries/${extractIndustryFeatureSlug(slug) || slug.replace(/^industries-/, '')}`
+      : isHowWeDoItPageSlug(slug) && slug !== 'how-we-do-it'
+      ? `/${lang}/how-we-do-it/${extractHowWeDoItFeatureSlug(slug) || slug.replace(/^how-we-do-it-/, '')}`
       : `/${lang}/${slug}`;
 
   return (
@@ -6040,6 +6104,34 @@ export default function UniversalPageCmsEditor() {
       {/* =================================================================== */}
       {(slug === 'solutions' || isSolutionPageSlug(slug)) && (
         <SolutionsPageCmsEditor
+          slug={slug}
+          lang={lang}
+          pageData={pageData}
+          setPageData={setPageData}
+          onSave={savePage}
+          openMediaPicker={openMediaPicker}
+        />
+      )}
+
+      {/* =================================================================== */}
+      {/* 3B. INDUSTRIES HUB & 6 FEATURED INDUSTRY PAGES BUILDER             */}
+      {/* =================================================================== */}
+      {(slug === 'industries' || isIndustryPageSlug(slug)) && (
+        <IndustriesPageCmsEditor
+          slug={slug}
+          lang={lang}
+          pageData={pageData}
+          setPageData={setPageData}
+          onSave={savePage}
+          openMediaPicker={openMediaPicker}
+        />
+      )}
+
+      {/* =================================================================== */}
+      {/* 3C. HOW WE DO IT HUB & 5 FEATURED METHODOLOGY PAGES BUILDER         */}
+      {/* =================================================================== */}
+      {(slug === 'how-we-do-it' || isHowWeDoItPageSlug(slug)) && (
+        <HowWeDoItPageCmsEditor
           slug={slug}
           lang={lang}
           pageData={pageData}
@@ -12539,8 +12631,10 @@ export default function UniversalPageCmsEditor() {
       {/* =================================================================== */}
       {/* 6. UNIVERSAL / CUSTOM SECTIONS FALLBACK BUILDER                     */}
       {/* =================================================================== */}
-      {!['home', 'about', 'solutions', 'contact', 'client-stories', 'careers', 'insights'].includes(slug) &&
-        !isSolutionPageSlug(slug) && (
+      {!['home', 'about', 'solutions', 'industries', 'how-we-do-it', 'contact', 'client-stories', 'careers', 'insights'].includes(slug) &&
+        !isSolutionPageSlug(slug) &&
+        !isIndustryPageSlug(slug) &&
+        !isHowWeDoItPageSlug(slug) && (
         <div className="space-y-4">
           <SectionAccordion
             number={1}
