@@ -4,6 +4,10 @@ const nextConfig: NextConfig = {
   output: 'standalone',
   poweredByHeader: false,
   compress: true,
+  experimental: {
+    cpus: 1,
+    workerThreads: false,
+  },
   serverExternalPackages: ['mongodb', '@aws-sdk/client-s3', 'sharp'],
   images: {
     remotePatterns: [
