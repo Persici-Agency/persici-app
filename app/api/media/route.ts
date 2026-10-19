@@ -19,7 +19,7 @@ export const runtime = 'nodejs';
 
 export type MediaType = 'image' | 'video' | 'document' | 'audio' | 'archive' | 'other';
 
-export function detectMediaType(keyOrFilename: string, mime?: string): MediaType {
+function detectMediaType(keyOrFilename: string, mime?: string): MediaType {
   if (mime) {
     if (mime.startsWith('image/')) return 'image';
     if (mime.startsWith('video/')) return 'video';
