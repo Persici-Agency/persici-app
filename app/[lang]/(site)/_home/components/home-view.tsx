@@ -23,7 +23,7 @@ export function HomeView({ lang, dict, content }: HomeViewProps) {
       <HeroSection lang={lang} dict={dict} content={content?.hero || content} className="" />
 
       {/* 2. Featured Showcase ("Your online growth partner") */}
-      <PartnerShowcaseSection lang={lang} dict={dict} content={content?.partnerShowcase} />
+      {/* <PartnerShowcaseSection lang={lang} dict={dict} content={content?.partnerShowcase} /> */}
 
       {/* 3. Heritage & Agency Story ("Rooted in excellence. Built for growth.") */}
       <HeritageSection lang={lang} dict={dict} content={content?.heritage} />
@@ -32,12 +32,12 @@ export function HomeView({ lang, dict, content }: HomeViewProps) {
       <GrowthServicesSection lang={lang} dict={dict} content={content?.growthServices} />
 
       {/* 5. Meet Clients We Scale (Dark Video Testimonials Carousel) */}
-      <ClientsVideoSection
+      {/* <ClientsVideoSection
         lang={lang}
         dict={dict}
         content={content?.clientVideos}
         testimonials={videoTestimonials}
-      />
+      /> */}
 
       {/* 6. Our Approach to eCommerce Growth */}
       <ApproachSection lang={lang} dict={dict} content={content?.approach} />
