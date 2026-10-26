@@ -17,15 +17,8 @@ import { DigitalEngineeringView } from './_digital-engineering';
 import { SupplyChainView } from './_supply-chain';
 import { CrmManagementView } from './_crm-management';
 
-export async function generateStaticParams() {
-  const params: { lang: string; slug: string }[] = [];
-  for (const lang of locales) {
-    for (const item of solutionsOfferingsList) {
-      params.push({ lang, slug: item.slug });
-    }
-  }
-  return params;
-}
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export async function generateMetadata({
   params,

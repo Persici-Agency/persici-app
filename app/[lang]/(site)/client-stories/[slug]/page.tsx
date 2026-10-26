@@ -2,9 +2,11 @@ import { notFound } from 'next/navigation';
 import { getDictionary, hasLocale } from '@dictionaries';
 import { createMetadata } from '@lib/metadata';
 import type { Locale } from '@lib/i18n';
-import { getAllClientStories } from '../_client-stories/data/client-stories.data';
 import { getProjectBySlugFromDb, getRelatedProjectsFromDb } from '@/lib/projects-server';
 import { ClientStoryDetailView } from './_client-story-detail/components/client-story-detail-view';
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 type PageProps = {
   params: Promise<{
@@ -12,20 +14,6 @@ type PageProps = {
     slug: string;
   }>;
 };
-
-export async function generateStaticParams() {
-  const stories = getAllClientStories();
-  const locales = ['en', 'ar'];
-  const params: { lang: string; slug: string }[] = [];
-
-  for (const lang of locales) {
-    for (const story of stories) {
-      params.push({ lang, slug: story.slug });
-    }
-  }
-
-  return params;
-}
 
 export async function generateMetadata({ params }: PageProps) {
   const { lang, slug } = await params;

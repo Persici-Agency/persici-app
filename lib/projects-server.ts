@@ -16,59 +16,117 @@ import type { Document } from 'mongodb';
 function mapDocToClientStory(d: Document | Record<string, unknown>): ClientStoryDetail {
   const slug = String(d.slug || '');
   const fallback = getClientStoryBySlug(slug);
+
+  const rawTitle = d.title as { en?: string; ar?: string } | undefined;
+  const rawLead = (d.leadSubtitle || d.subtitle) as { en?: string; ar?: string } | undefined;
+  const rawExec = (d.executiveSummary || d.summary) as { en?: string; ar?: string } | undefined;
+  const rawCat = d.category as { en?: string; ar?: string } | undefined;
+  const rawTopic = d.topic as { en?: string; ar?: string } | undefined;
+  const rawRegion = d.region as { en?: string; ar?: string } | undefined;
+
+  const title = {
+    en: rawTitle?.en !== undefined ? rawTitle.en : (fallback?.title?.en || ''),
+    ar: rawTitle?.ar !== undefined ? rawTitle.ar : (fallback?.title?.ar || rawTitle?.en || ''),
+  };
+
+  const leadSubtitle = {
+    en: rawLead?.en !== undefined ? rawLead.en : (fallback?.leadSubtitle?.en || ''),
+    ar: rawLead?.ar !== undefined ? rawLead.ar : (fallback?.leadSubtitle?.ar || rawLead?.en || ''),
+  };
+
+  const executiveSummary = {
+    en: rawExec?.en !== undefined ? rawExec.en : (fallback?.executiveSummary?.en || ''),
+    ar: rawExec?.ar !== undefined ? rawExec.ar : (fallback?.executiveSummary?.ar || rawExec?.en || ''),
+  };
+
+  const category = {
+    en: rawCat?.en !== undefined ? rawCat.en : (fallback?.category?.en || 'Growth & Multi-Channel'),
+    ar: rawCat?.ar !== undefined ? rawCat.ar : (fallback?.category?.ar || 'الحملات ونمو العلامة'),
+  };
+
+  const topic = {
+    en: rawTopic?.en !== undefined ? rawTopic.en : (fallback?.topic?.en || 'Brand Transformation'),
+    ar: rawTopic?.ar !== undefined ? rawTopic.ar : (fallback?.topic?.ar || 'تحول العلامة التجارية'),
+  };
+
+  const region = {
+    en: rawRegion?.en !== undefined ? rawRegion.en : (fallback?.region?.en || 'GCC & MENA'),
+    ar: rawRegion?.ar !== undefined ? rawRegion.ar : (fallback?.region?.ar || 'الخليج والشرق الأوسط'),
+  };
+
+  const metrics = Array.isArray(d.metrics)
+    ? d.metrics
+    : (fallback?.metrics || []);
+
+  const intro = (d.intro && typeof d.intro === 'object')
+    ? (d.intro as unknown as ClientStoryDetail['intro'])
+    : (fallback?.intro || {
+        id: 'intro',
+        title: { en: 'Project Overview', ar: 'نظرة عامة على المشروع' },
+        paragraphs: [{ en: executiveSummary.en, ar: executiveSummary.ar }],
+      });
+
+  const problem = (d.problem && typeof d.problem === 'object')
+    ? (d.problem as unknown as ClientStoryDetail['problem'])
+    : (fallback?.problem || {
+        id: 'the-problem',
+        title: { en: 'The Challenge', ar: 'التحدي والمشكلة' },
+        paragraphs: [{ en: (d.challenge as Record<string, string>)?.en || '', ar: (d.challenge as Record<string, string>)?.ar || '' }],
+      });
+
+  const solution = (d.solution && typeof d.solution === 'object')
+    ? (d.solution as unknown as ClientStoryDetail['solution'])
+    : (fallback?.solution || {
+        id: 'the-solution',
+        title: { en: 'The Solution', ar: 'الحل والنهج المتبع' },
+        paragraphs: [{
+          en: typeof d.solution === 'object' && d.solution && 'en' in d.solution ? String((d.solution as Record<string, unknown>).en) : '',
+          ar: typeof d.solution === 'object' && d.solution && 'ar' in d.solution ? String((d.solution as Record<string, unknown>).ar) : '',
+        }],
+      });
+
+  const impact = (d.impact && typeof d.impact === 'object')
+    ? (d.impact as unknown as ClientStoryDetail['impact'])
+    : (fallback?.impact || {
+        id: 'the-impact',
+        title: { en: 'The Impact', ar: 'الأثر والنتائج' },
+        paragraphs: [{ en: (d.results as Record<string, string>)?.en || '', ar: (d.results as Record<string, string>)?.ar || '' }],
+      });
+
+  const mediaShowcase = (d.mediaShowcase && typeof d.mediaShowcase === 'object')
+    ? (d.mediaShowcase as unknown as ClientStoryDetail['mediaShowcase'])
+    : (fallback?.mediaShowcase || {
+        title: { en: 'Deliverables & Production', ar: 'معرض المخرجات والإنتاج' },
+        description: { en: '', ar: '' },
+      });
+
   return {
-    id: d.id || String(d._id),
-    slug: d.slug,
-    templateType: d.templateType || fallback?.templateType || 'marketing-video-showcase',
-    category: d.category || fallback?.category || { en: 'Growth & Multi-Channel', ar: 'الحملات ونمو العلامة' },
-    categorySlug: d.categorySlug || fallback?.categorySlug || 'marketing',
+    id: (d.id as string) || String(d._id),
+    slug: d.slug as string,
+    templateType: (d.templateType as ClientStoryDetail['templateType']) || fallback?.templateType || 'marketing-video-showcase',
+    category,
+    categorySlug: (d.categorySlug as ClientStoryDetail['categorySlug']) || fallback?.categorySlug || 'marketing',
     featured: Boolean(d.featured !== undefined ? d.featured : fallback?.featured),
-    featuredOrder: d.featuredOrder ?? fallback?.featuredOrder ?? 1,
-    title: d.title || fallback?.title || { en: '', ar: '' },
-    leadSubtitle: d.leadSubtitle || d.subtitle || fallback?.leadSubtitle || { en: '', ar: '' },
-    executiveSummary: d.executiveSummary || d.summary || fallback?.executiveSummary || { en: '', ar: '' },
-    client: d.client || fallback?.client || 'Persici Enterprise Partner',
-    topic: d.topic || fallback?.topic || { en: 'Brand Transformation', ar: 'تحول العلامة التجارية' },
-    services: d.services || fallback?.services || [],
-    region: d.region || fallback?.region || { en: 'GCC & MENA', ar: 'الخليج والشرق الأوسط' },
-    date: d.date || fallback?.date || '2025',
-    link: d.link || fallback?.link,
-    heroImage: d.heroImage || d.featuredImage || fallback?.heroImage || '/images/hero/hero-poster.webp',
-    heroVideo: d.heroVideo || d.videoUrl || fallback?.heroVideo,
-    heroVideoPoster: d.heroVideoPoster || fallback?.heroVideoPoster,
-    metrics: d.metrics && d.metrics.length > 0 ? d.metrics : (fallback?.metrics || []),
-
-    // Core Narrative Sections
-    intro: d.intro || fallback?.intro || {
-      id: 'intro',
-      title: { en: 'Project Overview', ar: 'نظرة عامة على المشروع' },
-      paragraphs: [{ en: d.executiveSummary?.en || d.summary?.en || '', ar: d.executiveSummary?.ar || d.summary?.ar || '' }],
-    },
-    problem: d.problem || fallback?.problem || {
-      id: 'the-problem',
-      title: { en: 'The Challenge', ar: 'التحدي والمشكلة' },
-      paragraphs: [{ en: d.challenge?.en || '', ar: d.challenge?.ar || '' }],
-    },
-    solution: d.solution && typeof d.solution === 'object' && 'title' in d.solution
-      ? d.solution
-      : fallback?.solution || {
-          id: 'the-solution',
-          title: { en: 'The Solution', ar: 'الحل والنهج المتبع' },
-          paragraphs: [{ en: typeof d.solution === 'object' && 'en' in d.solution ? d.solution.en : '', ar: typeof d.solution === 'object' && 'ar' in d.solution ? d.solution.ar : '' }],
-        },
-    impact: d.impact || fallback?.impact || {
-      id: 'the-impact',
-      title: { en: 'The Impact', ar: 'الأثر والنتائج' },
-      paragraphs: [{ en: d.results?.en || '', ar: d.results?.ar || '' }],
-    },
-
-    // Adaptive Media Showcase
-    mediaShowcase: d.mediaShowcase || fallback?.mediaShowcase || {
-      title: { en: 'Deliverables & Production', ar: 'معرض المخرجات والإنتاج' },
-      description: { en: '', ar: '' },
-    },
-
-    relatedSlugs: d.relatedSlugs || fallback?.relatedSlugs || [],
+    featuredOrder: (d.featuredOrder as number) ?? fallback?.featuredOrder ?? 1,
+    title,
+    leadSubtitle,
+    executiveSummary,
+    client: (d.client as string) || fallback?.client || 'Persici Enterprise Partner',
+    topic,
+    services: Array.isArray(d.services) ? (d.services as ClientStoryDetail['services']) : (fallback?.services || []),
+    region,
+    date: (d.date as string) || fallback?.date || '2025',
+    link: (d.link as string) || fallback?.link,
+    heroImage: (d.heroImage as string) || (d.featuredImage as string) || fallback?.heroImage || '/images/hero/hero-poster.webp',
+    heroVideo: (d.heroVideo as string) || (d.videoUrl as string) || fallback?.heroVideo,
+    heroVideoPoster: (d.heroVideoPoster as string) || fallback?.heroVideoPoster,
+    metrics: metrics as ClientStoryDetail['metrics'],
+    intro,
+    problem,
+    solution,
+    impact,
+    mediaShowcase,
+    relatedSlugs: Array.isArray(d.relatedSlugs) ? (d.relatedSlugs as string[]) : (fallback?.relatedSlugs || []),
   };
 }
 

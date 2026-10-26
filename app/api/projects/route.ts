@@ -83,11 +83,15 @@ export async function POST(request: NextRequest) {
 
     revalidatePageContent('work');
     revalidatePageContent('client-stories');
+    revalidatePageContent('solutions');
+    revalidatePageContent('industries');
+    revalidatePageContent('how-we-do-it');
     if (body.slug) {
       try {
         revalidatePath('/[lang]/client-stories/[slug]', 'page');
         revalidatePath(`/en/client-stories/${body.slug}`);
         revalidatePath(`/ar/client-stories/${body.slug}`);
+        revalidatePath('/', 'layout');
       } catch {}
     }
 
@@ -162,11 +166,15 @@ export async function PUT(request: NextRequest) {
 
     revalidatePageContent('work');
     revalidatePageContent('client-stories');
+    revalidatePageContent('solutions');
+    revalidatePageContent('industries');
+    revalidatePageContent('how-we-do-it');
     if (body.slug) {
       try {
         revalidatePath('/[lang]/client-stories/[slug]', 'page');
         revalidatePath(`/en/client-stories/${body.slug}`);
         revalidatePath(`/ar/client-stories/${body.slug}`);
+        revalidatePath('/', 'layout');
       } catch {}
     }
 
@@ -214,11 +222,15 @@ export async function DELETE(request: NextRequest) {
 
     revalidatePageContent('work');
     revalidatePageContent('client-stories');
+    revalidatePageContent('solutions');
+    revalidatePageContent('industries');
+    revalidatePageContent('how-we-do-it');
     if (slug) {
       try {
         revalidatePath('/[lang]/client-stories/[slug]', 'page');
         revalidatePath(`/en/client-stories/${slug}`);
         revalidatePath(`/ar/client-stories/${slug}`);
+        revalidatePath('/', 'layout');
       } catch {}
     }
 

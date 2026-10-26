@@ -5,6 +5,9 @@ import type { Locale } from '@lib/i18n';
 import { SolutionsView } from './_solutions';
 import { fetchSolutionsPageData } from './_solutions/services';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function generateMetadata({ params }: PageProps<'/[lang]/solutions'>) {
   const { lang } = await params;
   if (!hasLocale(lang)) return {};

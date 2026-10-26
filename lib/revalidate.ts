@@ -60,12 +60,26 @@ export function revalidatePageContent(slug?: string): { success: boolean } {
         revalidatePath('/[lang]/industries', 'page');
         revalidatePath('/[lang]/industries/[slug]', 'page');
       }
-      if (slug === 'client-stories' || slug === 'projects') {
+      if (slug === 'client-stories' || slug === 'projects' || slug === 'work') {
         revalidatePath('/[lang]/client-stories/[slug]', 'page');
+        revalidatePath('/[lang]/client-stories', 'page');
+        revalidatePath('/en/client-stories');
+        revalidatePath('/ar/client-stories');
+        revalidatePath('/[lang]/work', 'page');
+        revalidatePath('/en/work');
+        revalidatePath('/ar/work');
         revalidatePath('/[lang]/solutions', 'page');
         revalidatePath('/[lang]/solutions/[slug]', 'page');
+        revalidatePath('/en/solutions');
+        revalidatePath('/ar/solutions');
         revalidatePath('/[lang]/industries', 'page');
         revalidatePath('/[lang]/industries/[slug]', 'page');
+        revalidatePath('/en/industries');
+        revalidatePath('/ar/industries');
+        revalidatePath('/[lang]/how-we-do-it', 'page');
+        revalidatePath('/[lang]/how-we-do-it/[slug]', 'page');
+        revalidatePath('/en/how-we-do-it');
+        revalidatePath('/ar/how-we-do-it');
       }
     }
 

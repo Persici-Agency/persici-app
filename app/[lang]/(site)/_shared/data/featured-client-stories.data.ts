@@ -8,10 +8,11 @@ import { clientStoriesData } from '../../client-stories/_client-stories/data/cli
  * Solutions, Industries, and How We Do It showcase views.
  */
 export function clientStoryToFeaturedItem(story: ClientStoryDetail): FeaturedClientStoryItem {
-  const m1 = story.metrics[0];
-  const m2 = story.metrics[1];
-  const m3 = story.metrics[2];
-  const m4 = story.metrics[3];
+  const metrics = Array.isArray(story.metrics) ? story.metrics : [];
+  const m1 = metrics[0];
+  const m2 = metrics[1];
+  const m3 = metrics[2];
+  const m4 = metrics[3];
 
   return {
     id: story.id || story.slug,
@@ -23,7 +24,7 @@ export function clientStoryToFeaturedItem(story: ClientStoryDetail): FeaturedCli
     description: story.executiveSummary,
     summary: story.executiveSummary,
     client: story.client,
-    metrics: story.metrics.map((m) => ({
+    metrics: metrics.map((m) => ({
       value: m.value,
       label: m.label,
     })),
@@ -63,7 +64,7 @@ clientStoriesData.forEach((story) => {
 });
 
 // 2. Register semantic shorthand keys and legacy alias mappings
-const aliasMappings: Record<string, string> = {
+export const aliasMappings: Record<string, string> = {
   // Real stories semantic aliases
   khazan: 'khazan-crafting-alz-al-lahzat-a-campaign-for-memorable-moments',
   'khazan-fmcg': 'khazan-crafting-alz-al-lahzat-a-campaign-for-memorable-moments',

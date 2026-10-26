@@ -4,6 +4,9 @@ import { createMetadata } from '@lib/metadata';
 import type { Locale } from '@lib/i18n';
 import { WorkView } from './_work';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function generateMetadata({ params }: PageProps<'/[lang]/work'>) {
   const { lang } = await params;
   if (!hasLocale(lang)) return {};

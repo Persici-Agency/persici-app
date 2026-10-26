@@ -5,6 +5,9 @@ import type { Locale } from '@lib/i18n';
 import { getHowWeDoItPageData } from '@shared/services/db.service';
 import { HowWeDoItHubView } from './_components/how-we-do-it-hub-view';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function generateMetadata({ params }: PageProps<'/[lang]/how-we-do-it'>) {
   const { lang } = await params;
   if (!hasLocale(lang)) return {};

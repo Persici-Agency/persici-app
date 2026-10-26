@@ -15,15 +15,8 @@ interface PageProps {
   params: Promise<{ lang: string; slug: string }>;
 }
 
-export async function generateStaticParams() {
-  const params: { lang: string; slug: string }[] = [];
-  for (const lang of locales) {
-    for (const item of howWeDoItOfferingsList) {
-      params.push({ lang, slug: item.slug });
-    }
-  }
-  return params;
-}
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export async function generateMetadata({ params }: PageProps) {
   const { lang, slug } = await params;

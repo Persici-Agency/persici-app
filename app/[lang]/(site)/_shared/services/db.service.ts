@@ -26,6 +26,7 @@ import { getAllProjectsFromDb } from '@/lib/projects-server';
 import { getAllInsightsFromDb } from '@/lib/insights-server';
 import {
   clientStoryToFeaturedItem,
+  aliasMappings,
   getSolutionsOverviewFeaturedClientStories,
 } from '@shared/data/featured-client-stories.data';
 import {
@@ -496,7 +497,10 @@ export async function resolveSolutionClientStories(
     if (selectedSlugs.length > 0) {
       const resolved: FeaturedClientStoryItem[] = [];
       for (const slug of selectedSlugs) {
-        const dbMatch = allProjects.find((p) => p.slug === slug || p.id === slug);
+        const canonical = aliasMappings[slug] || slug;
+        const dbMatch = allProjects.find(
+          (p) => p.slug === slug || p.id === slug || p.slug === canonical || p.id === canonical
+        );
         if (dbMatch) {
           resolved.push(clientStoryToFeaturedItem(dbMatch));
           continue;
@@ -511,7 +515,30 @@ export async function resolveSolutionClientStories(
       }
     }
 
-    return fallbackStories.slice(0, maxCount);
+    // When selectedSlugs is empty or custom mode has fallback items,
+    // hydrate each fallback story with live data from allProjects where matching.
+    const hydrated: FeaturedClientStoryItem[] = [];
+    for (const fb of fallbackStories) {
+      const rawTarget = (fb as unknown as { slug?: string }).slug || fb.id || '';
+      const targetSlug = typeof rawTarget === 'string' ? rawTarget : '';
+      const canonical = targetSlug ? (aliasMappings[targetSlug] || targetSlug) : '';
+      const dbMatch = allProjects.find(
+        (p) =>
+          (targetSlug && (p.slug === targetSlug || p.id === targetSlug)) ||
+          (canonical && (p.slug === canonical || p.id === canonical))
+      );
+      if (dbMatch) {
+        hydrated.push(clientStoryToFeaturedItem(dbMatch));
+      } else {
+        hydrated.push(fb);
+      }
+    }
+
+    if (hydrated.length > 0) {
+      return hydrated.slice(0, maxCount);
+    }
+
+    return allProjects.slice(0, maxCount).map(clientStoryToFeaturedItem);
   } catch (err) {
     console.warn('[db.service] resolveSolutionClientStories fallback:', err);
     return fallbackStories.slice(0, maxCount);

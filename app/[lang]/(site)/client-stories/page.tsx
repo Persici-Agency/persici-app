@@ -6,6 +6,9 @@ import { getAllProjectsFromDb } from '@/lib/projects-server';
 import { getClientStoriesPageData } from '@shared/services/db.service';
 import { ClientStoriesHubView } from './_client-stories/components/client-stories-hub-view';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function generateMetadata({ params }: PageProps<'/[lang]/client-stories'>) {
   const { lang } = await params;
   if (!hasLocale(lang)) return {};
