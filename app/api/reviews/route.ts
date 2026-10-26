@@ -58,6 +58,28 @@ function normalizeReviewDoc(doc: Record<string, unknown> | ReviewItem) {
 }
 
 /**
+ * Synchronizes the canonical reviews collection with the embedded reviews array in page_contents
+ * for the 'home' page. This keeps both storage locations completely identical and in sync.
+ */
+async function syncPageContentsReviews(db: any) {
+  try {
+    const allReviews = await db
+      .collection(COLLECTIONS.REVIEWS)
+      .find({})
+      .sort({ order: 1, createdAt: -1 })
+      .toArray();
+
+    const normalized = allReviews.map(normalizeReviewDoc);
+    await db.collection(COLLECTIONS.PAGES).updateOne(
+      { page: 'home' },
+      { $set: { 'reviews.reviews': normalized } }
+    );
+  } catch (err) {
+    console.warn('[API /api/reviews] Failed to sync page_contents.home.reviews.reviews:', err);
+  }
+}
+
+/**
  * GET /api/reviews
  * Returns all reviews from MongoDB with normalized bilingual fields.
  */
@@ -145,6 +167,7 @@ export async function POST(request: NextRequest) {
     };
 
     const res = await db.collection(COLLECTIONS.REVIEWS).insertOne(newDoc);
+    await syncPageContentsReviews(db);
     revalidatePageContent('home');
 
     return NextResponse.json({
@@ -227,6 +250,7 @@ export async function PUT(request: NextRequest) {
       $set: updatePayload,
     });
 
+    await syncPageContentsReviews(db);
     revalidatePageContent('home');
     return NextResponse.json({ success: true, message: 'Review updated successfully' });
   } catch (error) {
@@ -257,6 +281,7 @@ export async function DELETE(request: NextRequest) {
     const filter = ObjectId.isValid(id) ? { _id: new ObjectId(id) } : { id };
     await db.collection(COLLECTIONS.REVIEWS).deleteOne(filter);
 
+    await syncPageContentsReviews(db);
     revalidatePageContent('home');
     return NextResponse.json({ success: true, message: 'Review removed successfully' });
   } catch (error) {

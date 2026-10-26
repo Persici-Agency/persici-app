@@ -12,12 +12,14 @@ export type ReviewsSectionProps = {
 
 export function ReviewsSection({ lang, dict, content, reviews: customReviews }: ReviewsSectionProps) {
   const isAr = lang === 'ar';
-  const contentReviews = content?.reviews as ReviewItem[] | undefined;
+  const activeCustomReviews = (customReviews || []).filter((r) => r.active !== false);
+  const contentReviews = ((content?.reviews as ReviewItem[]) || []).filter((r) => r.active !== false);
+
   const baseReviews =
-    (contentReviews && contentReviews.length > 0)
-      ? contentReviews
-      : (customReviews && customReviews.length > 0)
-        ? customReviews
+    activeCustomReviews.length > 0
+      ? activeCustomReviews
+      : contentReviews.length > 0
+        ? contentReviews
         : getHomeReviews();
 
   const score = (content?.score as string | undefined) || '5.0';
@@ -56,44 +58,48 @@ export function ReviewsSection({ lang, dict, content, reviews: customReviews }: 
     const dictKey = `r${index + 1}` as keyof typeof dict.reviews;
     const localized = (dict.reviews[dictKey] || {}) as Partial<ReviewItem>;
 
-    const name =
-      (isAr
-        ? (rev.nameAr || (typeof rev.name === 'object' ? rev.name?.ar : '') || localized.name || rev.nameEn || (typeof rev.name === 'string' ? rev.name : ''))
-        : (rev.nameEn || (typeof rev.name === 'object' ? rev.name?.en : '') || (typeof rev.name === 'string' ? rev.name : '') || localized.name || rev.nameAr)
-      );
+    // Priority 1: Exact target language property (nameAr for AR, nameEn for EN)
+    // Priority 2: Structured object property { ar, en }
+    // Priority 3: Fallback language database property / primitive string
+    // Priority 4: Static localized dictionary (only if database has no name)
+    const name = isAr
+      ? (rev.nameAr || (typeof rev.name === 'object' ? rev.name?.ar : '') || rev.nameEn || (typeof rev.name === 'string' ? rev.name : '') || localized.name || '')
+      : (rev.nameEn || (typeof rev.name === 'object' ? rev.name?.en : '') || (typeof rev.name === 'string' ? rev.name : '') || rev.nameAr || localized.name || '');
 
-    const role =
-      (isAr
-        ? (rev.roleAr || (typeof rev.role === 'object' ? rev.role?.ar : '') || localized.role || rev.roleEn || (typeof rev.role === 'string' ? rev.role : ''))
-        : (rev.roleEn || (typeof rev.role === 'object' ? rev.role?.en : '') || (typeof rev.role === 'string' ? rev.role : '') || localized.role || rev.roleAr)
-      );
+    const role = isAr
+      ? (rev.roleAr || (typeof rev.role === 'object' ? rev.role?.ar : '') || rev.roleEn || (typeof rev.role === 'string' ? rev.role : '') || localized.role || '')
+      : (rev.roleEn || (typeof rev.role === 'object' ? rev.role?.en : '') || (typeof rev.role === 'string' ? rev.role : '') || rev.roleAr || localized.role || '');
 
-    const company =
-      (isAr
-        ? (rev.companyAr || (typeof rev.company === 'object' ? rev.company?.ar : '') || localized.company || rev.companyEn || (typeof rev.company === 'string' ? rev.company : ''))
-        : (rev.companyEn || (typeof rev.company === 'object' ? rev.company?.en : '') || (typeof rev.company === 'string' ? rev.company : '') || localized.company || rev.companyAr)
-      );
+    const company = isAr
+      ? (rev.companyAr || (typeof rev.company === 'object' ? rev.company?.ar : '') || rev.companyEn || (typeof rev.company === 'string' ? rev.company : '') || localized.company || '')
+      : (rev.companyEn || (typeof rev.company === 'object' ? rev.company?.en : '') || (typeof rev.company === 'string' ? rev.company : '') || rev.companyAr || localized.company || '');
 
-    const review =
-      (isAr
-        ? (rev.reviewAr || (typeof rev.review === 'object' ? rev.review?.ar : '') || localized.review || rev.reviewEn || (typeof rev.review === 'string' ? rev.review : ''))
-        : (rev.reviewEn || (typeof rev.review === 'object' ? rev.review?.en : '') || (typeof rev.review === 'string' ? rev.review : '') || localized.review || rev.reviewAr)
-      );
+    const review = isAr
+      ? (rev.reviewAr || (typeof rev.review === 'object' ? rev.review?.ar : '') || rev.reviewEn || (typeof rev.review === 'string' ? rev.review : '') || localized.review || '')
+      : (rev.reviewEn || (typeof rev.review === 'object' ? rev.review?.en : '') || (typeof rev.review === 'string' ? rev.review : '') || rev.reviewAr || localized.review || '');
 
-    const verified =
-      (isAr
-        ? (rev.verifiedAr || (typeof rev.verified === 'object' ? rev.verified?.ar : '') || localized.verified || rev.verifiedEn || (typeof rev.verified === 'string' ? rev.verified : '') || 'عميل موثق')
-        : (rev.verifiedEn || (typeof rev.verified === 'object' ? rev.verified?.en : '') || (typeof rev.verified === 'string' ? rev.verified : '') || localized.verified || 'Verified Client')
-      );
+    const verified = isAr
+      ? (rev.verifiedAr || (typeof rev.verified === 'object' ? rev.verified?.ar : '') || (typeof rev.verified === 'string' && rev.verified !== 'Verified Client' ? rev.verified : '') || rev.verifiedEn || localized.verified || 'عميل موثق')
+      : (rev.verifiedEn || (typeof rev.verified === 'object' ? rev.verified?.en : '') || (typeof rev.verified === 'string' && rev.verified !== 'عميل موثق' ? rev.verified : '') || rev.verifiedAr || localized.verified || 'Verified Client');
 
     return {
       ...rev,
       id: rev.id || `rev-${index}`,
       name: name || '',
+      nameEn: rev.nameEn || (typeof rev.name === 'object' ? rev.name?.en : rev.name) || '',
+      nameAr: rev.nameAr || (typeof rev.name === 'object' ? rev.name?.ar : '') || '',
       role: role || '',
+      roleEn: rev.roleEn || (typeof rev.role === 'object' ? rev.role?.en : rev.role) || '',
+      roleAr: rev.roleAr || (typeof rev.role === 'object' ? rev.role?.ar : '') || '',
       company: company || '',
+      companyEn: rev.companyEn || (typeof rev.company === 'object' ? rev.company?.en : rev.company) || '',
+      companyAr: rev.companyAr || (typeof rev.company === 'object' ? rev.company?.ar : '') || '',
       review: review || '',
+      reviewEn: rev.reviewEn || (typeof rev.review === 'object' ? rev.review?.en : rev.review) || '',
+      reviewAr: rev.reviewAr || (typeof rev.review === 'object' ? rev.review?.ar : '') || '',
       verified: verified || '',
+      verifiedEn: rev.verifiedEn || (typeof rev.verified === 'object' ? rev.verified?.en : rev.verified) || 'Verified Client',
+      verifiedAr: rev.verifiedAr || (typeof rev.verified === 'object' ? rev.verified?.ar : '') || 'عميل موثق',
     };
   });
 

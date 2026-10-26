@@ -1809,37 +1809,47 @@ export async function getDbReviews(): Promise<ReviewItem[]> {
     if (items.length === 0) return reviewsList;
     return items.map((doc) => {
       const { _id, ...rest } = doc;
-      const nameEn = (rest.nameEn || (typeof rest.name === 'object' ? rest.name?.en : rest.name) || '').trim();
-      const nameAr = (rest.nameAr || (typeof rest.name === 'object' ? rest.name?.ar : '') || nameEn).trim();
+      const rawNameEn = String(rest.nameEn || (typeof rest.name === 'object' ? rest.name?.en : rest.name) || '').trim();
+      const rawNameAr = String(rest.nameAr || (typeof rest.name === 'object' ? rest.name?.ar : '') || '').trim();
+      const nameEn = rawNameEn || rawNameAr;
+      const nameAr = rawNameAr || rawNameEn;
 
-      const roleEn = (rest.roleEn || (typeof rest.role === 'object' ? rest.role?.en : rest.role) || '').trim();
-      const roleAr = (rest.roleAr || (typeof rest.role === 'object' ? rest.role?.ar : '') || roleEn).trim();
+      const rawRoleEn = String(rest.roleEn || (typeof rest.role === 'object' ? rest.role?.en : rest.role) || '').trim();
+      const rawRoleAr = String(rest.roleAr || (typeof rest.role === 'object' ? rest.role?.ar : '') || '').trim();
+      const roleEn = rawRoleEn || rawRoleAr;
+      const roleAr = rawRoleAr || rawRoleEn;
 
-      const companyEn = (rest.companyEn || (typeof rest.company === 'object' ? rest.company?.en : rest.company) || '').trim();
-      const companyAr = (rest.companyAr || (typeof rest.company === 'object' ? rest.company?.ar : '') || companyEn).trim();
+      const rawCompanyEn = String(rest.companyEn || (typeof rest.company === 'object' ? rest.company?.en : rest.company) || '').trim();
+      const rawCompanyAr = String(rest.companyAr || (typeof rest.company === 'object' ? rest.company?.ar : '') || '').trim();
+      const companyEn = rawCompanyEn || rawCompanyAr;
+      const companyAr = rawCompanyAr || rawCompanyEn;
 
-      const reviewEn = (rest.reviewEn || (typeof rest.review === 'object' ? rest.review?.en : rest.review) || '').trim();
-      const reviewAr = (rest.reviewAr || (typeof rest.review === 'object' ? rest.review?.ar : '') || reviewEn).trim();
+      const rawReviewEn = String(rest.reviewEn || (typeof rest.review === 'object' ? rest.review?.en : rest.review) || '').trim();
+      const rawReviewAr = String(rest.reviewAr || (typeof rest.review === 'object' ? rest.review?.ar : '') || '').trim();
+      const reviewEn = rawReviewEn || rawReviewAr;
+      const reviewAr = rawReviewAr || rawReviewEn;
 
-      const verifiedEn = (rest.verifiedEn || (typeof rest.verified === 'object' ? rest.verified?.en : rest.verified) || 'Verified Client').trim();
-      const verifiedAr = (rest.verifiedAr || (typeof rest.verified === 'object' ? rest.verified?.ar : '') || 'عميل موثق').trim();
+      const rawVerifiedEn = String(rest.verifiedEn || (typeof rest.verified === 'object' ? rest.verified?.en : rest.verified) || '').trim();
+      const rawVerifiedAr = String(rest.verifiedAr || (typeof rest.verified === 'object' ? rest.verified?.ar : '') || '').trim();
+      const verifiedEn = rawVerifiedEn || (rawVerifiedAr === 'عميل موثق' ? 'Verified Client' : rawVerifiedAr) || 'Verified Client';
+      const verifiedAr = rawVerifiedAr || (rawVerifiedEn === 'Verified Client' ? 'عميل موثق' : rawVerifiedEn) || 'عميل موثق';
 
       return {
         ...rest,
         id: _id?.toString(),
-        name: nameEn || nameAr,
+        name: { en: nameEn, ar: nameAr },
         nameEn,
         nameAr,
-        role: roleEn || roleAr,
+        role: { en: roleEn, ar: roleAr },
         roleEn,
         roleAr,
-        company: companyEn || companyAr,
+        company: { en: companyEn, ar: companyAr },
         companyEn,
         companyAr,
-        review: reviewEn || reviewAr,
+        review: { en: reviewEn, ar: reviewAr },
         reviewEn,
         reviewAr,
-        verified: verifiedEn || verifiedAr,
+        verified: { en: verifiedEn, ar: verifiedAr },
         verifiedEn,
         verifiedAr,
         rating: typeof rest.rating === 'number' ? rest.rating : (parseFloat(rest.rating) || 5),

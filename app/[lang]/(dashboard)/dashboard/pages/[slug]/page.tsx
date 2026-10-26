@@ -108,10 +108,16 @@ export default function UniversalPageCmsEditor() {
     const loadContent = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`/api/content/${slug}`);
+        const [res, reviewsRes] = await Promise.all([
+          fetch(`/api/content/${slug}`),
+          slug === 'home' ? fetch('/api/reviews').then((r) => r.json()).catch(() => null) : Promise.resolve(null),
+        ]);
         const data = await res.json();
         if (data.content) {
           const c = data.content;
+          const canonicalReviews = (reviewsRes?.success && Array.isArray(reviewsRes.reviews) && reviewsRes.reviews.length > 0)
+            ? reviewsRes.reviews
+            : null;
           if (slug === 'home') {
             setPageData({
               ...c,
@@ -233,11 +239,12 @@ export default function UniversalPageCmsEditor() {
               reviewsBannerCtaAr: c.reviewsBannerCtaAr || c.reviews?.bannerCtaText?.ar || 'احجز مكالمة استكشافية',
               reviewsBannerCtaHref: c.reviewsBannerCtaHref || c.reviews?.bannerCtaHref || '/contact',
               reviewsList: (
-                (c.reviewsList && c.reviewsList.length > 0)
+                canonicalReviews ||
+                (c.reviewsList && c.reviewsList.length > 0
                   ? c.reviewsList
-                  : (c.reviews?.reviews && c.reviews.reviews.length > 0)
+                  : c.reviews?.reviews && c.reviews.reviews.length > 0
                   ? c.reviews.reviews
-                  : fallbackReviewsList
+                  : fallbackReviewsList)
               ).map((rev: any) => ({
                 ...rev,
                 nameEn: rev.nameEn || (typeof rev.name === 'object' ? rev.name?.en : rev.name) || '',
@@ -3177,6 +3184,23 @@ export default function UniversalPageCmsEditor() {
                   />
                 </div>
               </div>
+            </div>
+
+            {/* Dedicated Reviews Wall Sync Notice */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-3.5 bg-emerald-50/80 border border-emerald-200 rounded-xl">
+              <div className="flex items-center gap-2 text-xs text-emerald-900">
+                <TbSparkles className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span>
+                  Authoritative review cards are managed in the <strong>Reviews Wall</strong> database and automatically synced here.
+                </span>
+              </div>
+              <Link
+                href={`/${lang}/dashboard/content/reviews`}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg text-xs font-semibold shrink-0 transition-colors shadow-2xs"
+              >
+                <span>Open Reviews Wall</span>
+                <TbExternalLink className="w-3.5 h-3.5" />
+              </Link>
             </div>
 
             {/* Reviews List */}

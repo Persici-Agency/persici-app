@@ -5,6 +5,8 @@ import type { Locale } from '@lib/i18n';
 import { getHomePageData, getDbReviews } from '@shared/services/db.service';
 import { HomeView } from './_home';
 
+export const dynamic = 'force-dynamic';
+
 export async function generateMetadata({ params }: PageProps<'/[lang]'>) {
   const { lang } = await params;
   if (!hasLocale(lang)) return {};
