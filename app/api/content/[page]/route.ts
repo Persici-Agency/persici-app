@@ -231,18 +231,21 @@ export async function PUT(
 
     const updated = await updatePageContent(targetPageKey, payload);
 
-    // Trigger instant cache revalidation across EN and AR routes
-    if (updated) {
-      revalidatePageContent(targetPageKey);
+    if (!updated) {
+      return NextResponse.json(
+        { success: false, error: 'Database update failed.' },
+        { status: 500 }
+      );
     }
 
+    // Trigger instant cache revalidation across EN and AR routes
+    revalidatePageContent(targetPageKey);
+
     return NextResponse.json({
-      success: updated,
-      message: updated
-        ? `Page '${targetPageKey}' updated and published successfully.`
-        : `Database update failed.`,
+      success: true,
+      message: `Page '${targetPageKey}' updated and published successfully.`,
       page: targetPageKey,
-      revalidated: updated,
+      revalidated: true,
     });
   } catch (error) {
     console.error('[API /api/content/[page] PUT] Error:', error);

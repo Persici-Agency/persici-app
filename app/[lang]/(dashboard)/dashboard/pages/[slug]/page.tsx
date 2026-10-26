@@ -133,11 +133,18 @@ export default function UniversalPageCmsEditor() {
               heroStars: c.heroStars ?? (c.hero?.ratingScore ? Number(c.hero?.ratingScore) : 5),
               heroScoreTextEn: c.heroScoreTextEn || c.hero?.ratingLabel?.en || '5.0 Rating from 100+ Enterprise Partners',
               heroScoreTextAr: c.heroScoreTextAr || c.hero?.ratingLabel?.ar || 'تقييم 5.0 من أكثر من 100 شريك استراتيجي',
-              heroAvatars: c.heroAvatars || c.hero?.heroAvatars || [
-                'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80',
-                'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80',
-                'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&q=80',
-              ],
+              heroAvatars:
+                (Array.isArray(c.heroAvatars) && c.heroAvatars.length > 0)
+                  ? c.heroAvatars
+                  : (Array.isArray(c.hero?.heroAvatars) && c.hero.heroAvatars.length > 0)
+                  ? c.hero.heroAvatars
+                  : (Array.isArray(c.hero?.avatars) && c.hero.avatars.length > 0)
+                  ? c.hero.avatars
+                  : [
+                      'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80',
+                      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80',
+                      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&q=80',
+                    ],
               partnersTitleEn: c.partnersTitleEn || c.hero?.trustedByTitle?.en || c.hero?.trustedBy?.en || 'Trusted by Global Industry Pioneers',
               partnersTitleAr: c.partnersTitleAr || c.hero?.trustedByTitle?.ar || c.hero?.trustedBy?.ar || 'موثوق من رواد وقادة القطاعات العالمية',
               clientLogos: c.clientLogos || c.hero?.clientLogos || [],
@@ -185,6 +192,16 @@ export default function UniversalPageCmsEditor() {
               growthServicesTitleAr: c.growthServicesTitleAr || c.growthServices?.title?.ar || 'خدمات النمو لدينا',
               growthServicesRatingEn: c.growthServicesRatingEn || c.growthServices?.ratingText?.en || '',
               growthServicesRatingAr: c.growthServicesRatingAr || c.growthServices?.ratingText?.ar || '',
+              growthServicesAvatars:
+                (Array.isArray(c.growthServicesAvatars) && c.growthServicesAvatars.length > 0)
+                  ? c.growthServicesAvatars
+                  : (Array.isArray(c.growthServices?.avatars) && c.growthServices.avatars.length > 0)
+                  ? c.growthServices.avatars
+                  : [
+                      'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80',
+                      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80',
+                      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&q=80',
+                    ],
               servicesBannerEn: c.servicesBannerEn || c.growthServices?.bannerText?.en || '',
               servicesBannerAr: c.servicesBannerAr || c.growthServices?.bannerText?.ar || '',
               servicesBannerCtaEn: c.servicesBannerCtaEn || c.growthServices?.bannerCtaText?.en || 'Book call',
@@ -913,6 +930,7 @@ export default function UniversalPageCmsEditor() {
             },
             clientLogos: pageData.clientLogos || pageData.hero?.clientLogos || [],
             heroAvatars: pageData.heroAvatars || pageData.hero?.heroAvatars || [],
+            avatars: pageData.heroAvatars || pageData.hero?.heroAvatars || [],
           },
           partnerShowcase: {
             ...pageData.partnerShowcase,
@@ -979,6 +997,7 @@ export default function UniversalPageCmsEditor() {
               en: pageData.growthServicesRatingEn || pageData.growthServices?.ratingText?.en || '',
               ar: pageData.growthServicesRatingAr || pageData.growthServices?.ratingText?.ar || '',
             },
+            avatars: pageData.growthServicesAvatars || pageData.growthServices?.avatars || [],
             bannerText: {
               en: pageData.servicesBannerEn || pageData.growthServices?.bannerText?.en || '',
               ar: pageData.servicesBannerAr || pageData.growthServices?.bannerText?.ar || '',
@@ -1107,6 +1126,9 @@ export default function UniversalPageCmsEditor() {
             },
             bgImage: pageData.homeContactBgImage || pageData.homeContact?.bgImage || '',
           },
+          heroAvatars: pageData.heroAvatars || pageData.hero?.heroAvatars || [],
+          growthServicesAvatars: pageData.growthServicesAvatars || pageData.growthServices?.avatars || [],
+          approachTeamMembers: pageData.approachTeamMembers || pageData.approach?.teamMembers || [],
         };
       } else if (slug === 'about') {
         payloadToSave = {
@@ -1302,17 +1324,25 @@ export default function UniversalPageCmsEditor() {
         };
       }
 
+      // Ensure _id and id are stripped before payload is sent
+      delete payloadToSave._id;
+      delete payloadToSave.id;
+
       const res = await fetch(`/api/content/${slug}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payloadToSave),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Failed to save page.');
+      if (!res.ok || data.success === false) {
+        throw new Error(data.error || data.message || 'Failed to save page.');
+      }
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 3500);
     } catch (err: unknown) {
-      setErrorMessage(err instanceof Error ? err.message : 'Save failed.');
+      const msg = err instanceof Error ? err.message : 'Save failed.';
+      setErrorMessage(msg);
+      throw err;
     } finally {
       setSavingAll(false);
     }
@@ -2119,6 +2149,142 @@ export default function UniversalPageCmsEditor() {
               </div>
             </div>
 
+            {/* Growth Services Trust Avatars Stack Manager */}
+            <div className="p-4 bg-white border border-slate-200 rounded-xl space-y-3">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div>
+                  <span className="text-xs font-bold uppercase tracking-wider text-slate-800">
+                    Header Client Trust Avatars ({(pageData.growthServicesAvatars || []).length})
+                  </span>
+                  <p className="text-[11px] text-slate-500">
+                    Client face avatars displayed next to the rating label in the Growth Services section header.
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      openMediaPicker((url) => {
+                        setPageData((prev) => ({
+                          ...prev,
+                          growthServicesAvatars: [...(prev.growthServicesAvatars || []), url],
+                        }));
+                      }, 'image')
+                    }
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-persici-crimson hover:bg-red-600 text-white rounded-lg text-xs font-semibold shadow-xs transition-colors"
+                  >
+                    <TbPhoto className="w-3.5 h-3.5" />
+                    <span>Add from Storage Library (R2)</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const url = prompt('Enter image URL for client avatar:');
+                      if (url && url.trim()) {
+                        setPageData((prev) => ({
+                          ...prev,
+                          growthServicesAvatars: [...(prev.growthServicesAvatars || []), url.trim()],
+                        }));
+                      }
+                    }}
+                    className="inline-flex items-center gap-1 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold border border-slate-200 transition-colors"
+                  >
+                    <TbPlus className="w-3.5 h-3.5" />
+                    <span>Add URL</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Avatar Preview & Reordering Grid */}
+              <div className="flex flex-wrap gap-2.5 items-center pt-2">
+                {(pageData.growthServicesAvatars || []).map((src: string, aIdx: number) => (
+                  <div
+                    key={aIdx}
+                    className="group relative flex items-center gap-2 p-1.5 bg-slate-50 border border-slate-200 rounded-xl shadow-2xs hover:border-slate-300 transition-all"
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={src}
+                      alt={`Avatar ${aIdx + 1}`}
+                      className="w-9 h-9 rounded-full object-cover border border-white shadow-xs shrink-0"
+                    />
+                    <div className="flex items-center gap-0.5">
+                      <button
+                        type="button"
+                        disabled={aIdx === 0}
+                        onClick={() => {
+                          if (aIdx === 0) return;
+                          setPageData((prev) => {
+                            const list = [...(prev.growthServicesAvatars || [])];
+                            const temp = list[aIdx - 1];
+                            list[aIdx - 1] = list[aIdx];
+                            list[aIdx] = temp;
+                            return { ...prev, growthServicesAvatars: list };
+                          });
+                        }}
+                        className="p-1 text-slate-400 hover:text-slate-700 disabled:opacity-20"
+                        title="Move Up"
+                      >
+                        <TbArrowUp className="w-3 h-3" />
+                      </button>
+                      <button
+                        type="button"
+                        disabled={aIdx === (pageData.growthServicesAvatars || []).length - 1}
+                        onClick={() => {
+                          if (aIdx === (pageData.growthServicesAvatars || []).length - 1) return;
+                          setPageData((prev) => {
+                            const list = [...(prev.growthServicesAvatars || [])];
+                            const temp = list[aIdx + 1];
+                            list[aIdx + 1] = list[aIdx];
+                            list[aIdx] = temp;
+                            return { ...prev, growthServicesAvatars: list };
+                          });
+                        }}
+                        className="p-1 text-slate-400 hover:text-slate-700 disabled:opacity-20"
+                        title="Move Down"
+                      >
+                        <TbArrowDown className="w-3 h-3" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          openMediaPicker((url) => {
+                            setPageData((prev) => {
+                              const list = [...(prev.growthServicesAvatars || [])];
+                              list[aIdx] = url;
+                              return { ...prev, growthServicesAvatars: list };
+                            });
+                          }, 'image');
+                        }}
+                        className="p-1 text-slate-400 hover:text-slate-700"
+                        title="Replace Image with R2"
+                      >
+                        <TbPhoto className="w-3 h-3" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setPageData((prev) => {
+                            const list = [...(prev.growthServicesAvatars || [])];
+                            list.splice(aIdx, 1);
+                            return { ...prev, growthServicesAvatars: list };
+                          });
+                        }}
+                        className="p-1 text-slate-400 hover:text-red-600"
+                        title="Remove Avatar"
+                      >
+                        <TbTrash className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+
+                {(!pageData.growthServicesAvatars || pageData.growthServicesAvatars.length === 0) && (
+                  <p className="text-xs text-slate-400 italic py-1">No custom avatars added. Fallback avatars are shown on the live site.</p>
+                )}
+              </div>
+            </div>
+
             {/* Bottom Conversion Banner */}
             <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-3">
               <span className="text-xs font-bold uppercase tracking-wider text-slate-700">
@@ -2876,24 +3042,54 @@ export default function UniversalPageCmsEditor() {
                       Add, remove, and reorder specialist avatars. On the public site, these are centered when few, and smoothly drag-to-scroll horizontally when overflowing.
                     </p>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const existing = pageData.approachTeamMembers || [];
-                      const newAvatar = {
-                        id: `specialist-${Date.now()}`,
-                        name: 'Specialist Member',
-                        role: 'Senior Digital Engineer',
-                        avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
-                        alt: 'Team Specialist',
-                      };
-                      setPageData({ ...pageData, approachTeamMembers: [...existing, newAvatar] });
-                    }}
-                    className="inline-flex items-center gap-1 px-3 py-1.5 bg-slate-900 text-white rounded-lg text-xs font-semibold hover:bg-slate-800 transition-colors"
-                  >
-                    <TbPlus className="w-3.5 h-3.5" />
-                    <span>Add Avatar</span>
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        openMediaPicker((url) => {
+                          const name = prompt('Specialist Name:', 'Team Specialist') || 'Specialist Member';
+                          const role = prompt('Specialist Role / Title:', 'AI & Digital Transformation Specialist') || 'Specialist';
+                          const newAvatar = {
+                            id: `specialist-${Date.now()}`,
+                            name,
+                            role,
+                            avatar: url,
+                            src: url,
+                            alt: `${name} - ${role}`,
+                          };
+                          setPageData((prev) => ({
+                            ...prev,
+                            approachTeamMembers: [...(prev.approachTeamMembers || []), newAvatar],
+                          }));
+                        }, 'image');
+                      }}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-persici-crimson hover:bg-red-600 text-white rounded-lg text-xs font-semibold shadow-xs transition-colors"
+                    >
+                      <TbPhoto className="w-3.5 h-3.5" />
+                      <span>Add from Storage Library (R2)</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const newAvatar = {
+                          id: `specialist-${Date.now()}`,
+                          name: 'Specialist Member',
+                          role: 'Senior Digital Engineer',
+                          avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
+                          src: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
+                          alt: 'Team Specialist',
+                        };
+                        setPageData((prev) => ({
+                          ...prev,
+                          approachTeamMembers: [...(prev.approachTeamMembers || []), newAvatar],
+                        }));
+                      }}
+                      className="inline-flex items-center gap-1 px-3 py-1.5 bg-slate-900 text-white rounded-lg text-xs font-semibold hover:bg-slate-800 transition-colors"
+                    >
+                      <TbPlus className="w-3.5 h-3.5" />
+                      <span>Add Specialist</span>
+                    </button>
+                  </div>
                 </div>
 
                 <div className="space-y-2.5">
@@ -2916,9 +3112,14 @@ export default function UniversalPageCmsEditor() {
                               placeholder="Avatar URL"
                               value={m.avatar || m.src || ''}
                               onChange={(e) => {
-                                const updated = [...(pageData.approachTeamMembers || [])];
-                                updated[mIdx] = { ...m, avatar: e.target.value, src: e.target.value };
-                                setPageData({ ...pageData, approachTeamMembers: updated });
+                                const val = e.target.value;
+                                setPageData((prev) => {
+                                  const updated = [...(prev.approachTeamMembers || [])];
+                                  if (updated[mIdx]) {
+                                    updated[mIdx] = { ...updated[mIdx], avatar: val, src: val };
+                                  }
+                                  return { ...prev, approachTeamMembers: updated };
+                                });
                               }}
                               className="w-full px-2 py-1 text-xs border border-slate-200 rounded font-mono text-[11px]"
                             />
@@ -2926,9 +3127,13 @@ export default function UniversalPageCmsEditor() {
                               type="button"
                               onClick={() =>
                                 openMediaPicker((url) => {
-                                  const updated = [...(pageData.approachTeamMembers || [])];
-                                  updated[mIdx] = { ...m, avatar: url, src: url };
-                                  setPageData({ ...pageData, approachTeamMembers: updated });
+                                  setPageData((prev) => {
+                                    const updated = [...(prev.approachTeamMembers || [])];
+                                    if (updated[mIdx]) {
+                                      updated[mIdx] = { ...updated[mIdx], avatar: url, src: url };
+                                    }
+                                    return { ...prev, approachTeamMembers: updated };
+                                  });
                                 }, 'image')
                               }
                               className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded text-xs font-semibold shrink-0 flex items-center gap-1 border border-slate-200"
@@ -2944,9 +3149,14 @@ export default function UniversalPageCmsEditor() {
                               placeholder="Specialist Name (e.g. Elena Rostova)"
                               value={m.name || ''}
                               onChange={(e) => {
-                                const updated = [...(pageData.approachTeamMembers || [])];
-                                updated[mIdx] = { ...m, name: e.target.value };
-                                setPageData({ ...pageData, approachTeamMembers: updated });
+                                const val = e.target.value;
+                                setPageData((prev) => {
+                                  const updated = [...(prev.approachTeamMembers || [])];
+                                  if (updated[mIdx]) {
+                                    updated[mIdx] = { ...updated[mIdx], name: val };
+                                  }
+                                  return { ...prev, approachTeamMembers: updated };
+                                });
                               }}
                               className="px-2 py-0.5 text-xs border border-slate-200 rounded"
                             />
@@ -2955,9 +3165,14 @@ export default function UniversalPageCmsEditor() {
                               placeholder="Role / Title (e.g. Lead AI Architect)"
                               value={m.role || ''}
                               onChange={(e) => {
-                                const updated = [...(pageData.approachTeamMembers || [])];
-                                updated[mIdx] = { ...m, role: e.target.value };
-                                setPageData({ ...pageData, approachTeamMembers: updated });
+                                const val = e.target.value;
+                                setPageData((prev) => {
+                                  const updated = [...(prev.approachTeamMembers || [])];
+                                  if (updated[mIdx]) {
+                                    updated[mIdx] = { ...updated[mIdx], role: val };
+                                  }
+                                  return { ...prev, approachTeamMembers: updated };
+                                });
                               }}
                               className="px-2 py-0.5 text-xs border border-slate-200 rounded"
                             />
@@ -2971,11 +3186,13 @@ export default function UniversalPageCmsEditor() {
                           disabled={mIdx === 0}
                           onClick={() => {
                             if (mIdx === 0) return;
-                            const updated = [...(pageData.approachTeamMembers || [])];
-                            const temp = updated[mIdx - 1];
-                            updated[mIdx - 1] = updated[mIdx];
-                            updated[mIdx] = temp;
-                            setPageData({ ...pageData, approachTeamMembers: updated });
+                            setPageData((prev) => {
+                              const updated = [...(prev.approachTeamMembers || [])];
+                              const temp = updated[mIdx - 1];
+                              updated[mIdx - 1] = updated[mIdx];
+                              updated[mIdx] = temp;
+                              return { ...prev, approachTeamMembers: updated };
+                            });
                           }}
                           className="p-1 text-slate-400 hover:text-slate-700 disabled:opacity-30"
                           title="Move Up"
@@ -2987,11 +3204,13 @@ export default function UniversalPageCmsEditor() {
                           disabled={mIdx === (pageData.approachTeamMembers || []).length - 1}
                           onClick={() => {
                             if (mIdx === (pageData.approachTeamMembers || []).length - 1) return;
-                            const updated = [...(pageData.approachTeamMembers || [])];
-                            const temp = updated[mIdx + 1];
-                            updated[mIdx + 1] = updated[mIdx];
-                            updated[mIdx] = temp;
-                            setPageData({ ...pageData, approachTeamMembers: updated });
+                            setPageData((prev) => {
+                              const updated = [...(prev.approachTeamMembers || [])];
+                              const temp = updated[mIdx + 1];
+                              updated[mIdx + 1] = updated[mIdx];
+                              updated[mIdx] = temp;
+                              return { ...prev, approachTeamMembers: updated };
+                            });
                           }}
                           className="p-1 text-slate-400 hover:text-slate-700 disabled:opacity-30"
                           title="Move Down"
@@ -3001,9 +3220,11 @@ export default function UniversalPageCmsEditor() {
                         <button
                           type="button"
                           onClick={() => {
-                            const updated = [...(pageData.approachTeamMembers || [])];
-                            updated.splice(mIdx, 1);
-                            setPageData({ ...pageData, approachTeamMembers: updated });
+                            setPageData((prev) => {
+                              const updated = [...(prev.approachTeamMembers || [])];
+                              updated.splice(mIdx, 1);
+                              return { ...prev, approachTeamMembers: updated };
+                            });
                           }}
                           className="p-1 text-slate-400 hover:text-red-600 rounded"
                           title="Remove Avatar"

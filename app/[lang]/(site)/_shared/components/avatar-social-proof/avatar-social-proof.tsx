@@ -43,7 +43,8 @@ export function AvatarSocialProof({
       {avatars && avatars.length > 0 && (
         <div className={cn('flex -space-x-2 rtl:space-x-reverse', avatarContainerClassName)}>
           {avatars.map((item, index) => {
-            const src = typeof item === 'string' ? item : item.src;
+            const src = typeof item === 'string' ? item : (item.src || (item as any).avatar || (item as any).url || '');
+            if (!src) return null;
             const alt = typeof item === 'string' ? `Client avatar ${index + 1}` : (item.alt || `Client avatar ${index + 1}`);
 
             return (

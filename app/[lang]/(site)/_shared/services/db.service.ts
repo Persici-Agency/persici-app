@@ -162,11 +162,14 @@ export async function updatePageContent<T extends object>(
     const db = await getDb();
     if (!db) return false;
 
+    // Strip MongoDB _id, id, and createdAt to prevent "immutable field '_id'" error and "$setOnInsert / $set conflict on 'createdAt'"
+    const { _id, id, createdAt, ...cleanContent } = (content as Record<string, unknown>);
+
     await db.collection(COLLECTIONS.PAGES).updateOne(
       { page: pageSlug },
       {
         $set: {
-          ...content,
+          ...cleanContent,
           page: pageSlug,
           updatedAt: new Date(),
         },

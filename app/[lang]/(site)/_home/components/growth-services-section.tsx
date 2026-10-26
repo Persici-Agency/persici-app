@@ -38,6 +38,15 @@ export function GrowthServicesSection({ lang, dict, content }: GrowthServicesSec
     content?.ratingText ||
     dict.hero.ratingLabel;
 
+  const avatars =
+    (Array.isArray(content?.avatars) && content.avatars.length > 0)
+      ? content.avatars
+      : (Array.isArray(content?.growthServicesAvatars) && content.growthServicesAvatars.length > 0)
+      ? content.growthServicesAvatars
+      : (Array.isArray(content?.heroAvatars) && content.heroAvatars.length > 0)
+      ? content.heroAvatars
+      : socialProofAvatars;
+
   const bannerText =
     content?.bannerText?.[lang] ||
     (isArabic
@@ -130,7 +139,7 @@ export function GrowthServicesSection({ lang, dict, content }: GrowthServicesSec
           </div>
           <div className="flex items-center gap-2">
             <AvatarSocialProof
-              avatars={socialProofAvatars}
+              avatars={avatars}
               ratingLabel={ratingText}
               size="lg"
               starsClassName="text-xl"

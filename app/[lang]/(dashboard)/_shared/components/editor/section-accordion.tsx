@@ -10,7 +10,7 @@ export interface SectionAccordionProps {
   subtitle?: string;
   isOpenDefault?: boolean;
   defaultOpen?: boolean;
-  onSave?: () => Promise<void> | void;
+  onSave?: () => Promise<void | boolean> | void | boolean;
   saving?: boolean;
   children: React.ReactNode;
 }
@@ -33,9 +33,13 @@ export function SectionAccordion({
   const handleSave = async (e: React.MouseEvent) => {
     e.stopPropagation();
     if (!onSave) return;
-    await onSave();
-    setJustSaved(true);
-    setTimeout(() => setJustSaved(false), 2500);
+    try {
+      await onSave();
+      setJustSaved(true);
+      setTimeout(() => setJustSaved(false), 2500);
+    } catch {
+      // Do not display "Saved!" if save failed or threw an error
+    }
   };
 
   return (

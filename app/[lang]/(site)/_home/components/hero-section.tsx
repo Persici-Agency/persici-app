@@ -60,7 +60,16 @@ export function HeroSection({ lang, dict, content, className }: HeroSectionProps
       ? content.hero.clientLogos
       : undefined;
 
-  const avatars = content?.heroAvatars || content?.avatars || socialProofAvatars;
+  const avatars =
+    (Array.isArray(content?.heroAvatars) && content.heroAvatars.length > 0)
+      ? content.heroAvatars
+      : (Array.isArray(content?.avatars) && content.avatars.length > 0)
+      ? content.avatars
+      : (Array.isArray(content?.hero?.heroAvatars) && content.hero.heroAvatars.length > 0)
+      ? content.hero.heroAvatars
+      : (Array.isArray(content?.hero?.avatars) && content.hero.avatars.length > 0)
+      ? content.hero.avatars
+      : socialProofAvatars;
 
   return (
     <section className={cn('relative pt-30 pb-20 sm:pt-55 sm:pb-30', className)}>

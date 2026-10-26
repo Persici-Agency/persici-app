@@ -66,21 +66,30 @@ export function TeamSpecialistsTrack({ teamAvatars }: { teamAvatars: any[] }) {
       className="w-full overflow-x-auto select-none pt-1 pb-1 cursor-grab active:cursor-grabbing [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
     >
       <div className="min-w-full w-max flex items-center justify-center -space-x-2.5 rtl:space-x-reverse px-2">
-        {teamAvatars.map((member: any, idx: number) => (
-          <div
-            key={member.id || idx}
-            className="group relative h-9 w-9 sm:h-12 sm:w-12 shrink-0 overflow-hidden rounded-full border-2 sm:border-3 border-white bg-white shadow-xs transition-transform duration-300 hover:scale-115 hover:z-20 cursor-pointer pointer-events-auto"
-            title={member.role ? `${member.name ? member.name + ' - ' : ''}${member.role}` : member.alt || `Specialist ${idx + 1}`}
-          >
-            <Image
-              src={member.avatar || member.src}
-              alt={member.alt || member.name || `Specialist avatar ${idx + 1}`}
-              fill
-              sizes="64px"
-              className="object-cover pointer-events-none"
-            />
-          </div>
-        ))}
+        {teamAvatars.map((member: any, idx: number) => {
+          const src = typeof member === 'string' ? member : (member?.avatar || member?.src || member?.url || '');
+          if (!src) return null;
+          const name = typeof member === 'string' ? '' : (member?.name || '');
+          const role = typeof member === 'string' ? '' : (member?.role || '');
+          const alt = typeof member === 'string' ? `Specialist ${idx + 1}` : (member?.alt || member?.name || `Specialist ${idx + 1}`);
+          const title = role ? `${name ? name + ' - ' : ''}${role}` : alt;
+
+          return (
+            <div
+              key={typeof member === 'object' && member?.id ? member.id : idx}
+              className="group relative h-9 w-9 sm:h-12 sm:w-12 shrink-0 overflow-hidden rounded-full border-2 sm:border-3 border-white bg-white shadow-xs transition-transform duration-300 hover:scale-115 hover:z-20 cursor-pointer pointer-events-auto"
+              title={title}
+            >
+              <Image
+                src={src}
+                alt={alt}
+                fill
+                sizes="64px"
+                className="object-cover pointer-events-none"
+              />
+            </div>
+          );
+        })}
       </div>
     </div>
   );
