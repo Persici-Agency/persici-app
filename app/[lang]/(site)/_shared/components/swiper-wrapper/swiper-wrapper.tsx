@@ -471,7 +471,7 @@ export function SwiperWrapper<T = unknown>({
             {/* Loop 1 (Primary measurement track) */}
             <div
               ref={loop1Ref}
-              className={cn('flex shrink-0 items-center', gapClass)}
+              className={cn('flex shrink-0 items-center py-4', gapClass)}
               style={isNumericGap ? { gap: `${effectiveGap}px`, paddingRight: `${effectiveGap}px` } : undefined}
             >
               {renderTrackItems(1)}
@@ -479,7 +479,7 @@ export function SwiperWrapper<T = unknown>({
 
             {/* Loop 2 (Seamless loop replica) */}
             <div
-              className={cn('flex shrink-0 items-center', gapClass)}
+              className={cn('flex shrink-0 items-center py-4', gapClass)}
               style={isNumericGap ? { gap: `${effectiveGap}px`, paddingRight: `${effectiveGap}px` } : undefined}
               aria-hidden="true"
             >
@@ -488,7 +488,7 @@ export function SwiperWrapper<T = unknown>({
 
             {/* Loop 3 (Extended buffer for wide monitors & RTL right-scroll) */}
             <div
-              className={cn('flex shrink-0 items-center', gapClass)}
+              className={cn('flex shrink-0 items-center py-4', gapClass)}
               style={isNumericGap ? { gap: `${effectiveGap}px`, paddingRight: `${effectiveGap}px` } : undefined}
               aria-hidden="true"
             >
@@ -497,7 +497,7 @@ export function SwiperWrapper<T = unknown>({
 
             {/* Loop 4 (Extended buffer for ultra-wide monitors) */}
             <div
-              className={cn('flex shrink-0 items-center', gapClass)}
+              className={cn('flex shrink-0 items-center py-4', gapClass)}
               style={isNumericGap ? { gap: `${effectiveGap}px`, paddingRight: `${effectiveGap}px` } : undefined}
               aria-hidden="true"
             >

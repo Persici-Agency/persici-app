@@ -6,92 +6,94 @@ import type { ReviewItem } from '@shared/types';
 export type ReviewsSectionProps = {
   lang: string;
   dict: Dictionary;
-  content?: any;
+  content?: Record<string, unknown>;
   reviews?: ReviewItem[];
 };
 
 export function ReviewsSection({ lang, dict, content, reviews: customReviews }: ReviewsSectionProps) {
   const isAr = lang === 'ar';
+  const contentReviews = content?.reviews as ReviewItem[] | undefined;
   const baseReviews =
-    (content?.reviews && content.reviews.length > 0)
-      ? content.reviews
-      : customReviews || getHomeReviews();
+    (contentReviews && contentReviews.length > 0)
+      ? contentReviews
+      : (customReviews && customReviews.length > 0)
+        ? customReviews
+        : getHomeReviews();
 
-  const score = content?.score || '5.0';
+  const score = (content?.score as string | undefined) || '5.0';
+  const scoreLabelObj = content?.scoreLabel as Record<string, string> | string | undefined;
   const scoreLabel =
-    content?.scoreLabel?.[lang] ||
-    (isAr ? (content?.scoreLabelAr || content?.reviewsScoreTextAr) : (content?.scoreLabelEn || content?.reviewsScoreTextEn)) ||
-    content?.scoreLabel ||
+    (typeof scoreLabelObj === 'object' ? scoreLabelObj[lang] : scoreLabelObj) ||
+    (isAr ? (content?.scoreLabelAr as string || content?.reviewsScoreTextAr as string) : (content?.scoreLabelEn as string || content?.reviewsScoreTextEn as string)) ||
     dict.reviews.scoreLabel;
 
+  const titleObj = content?.title as Record<string, string> | string | undefined;
   const title =
-    content?.title?.[lang] ||
-    (isAr ? content?.titleAr : content?.titleEn) ||
-    content?.title ||
+    (typeof titleObj === 'object' ? titleObj[lang] : titleObj) ||
+    (isAr ? (content?.titleAr as string) : (content?.titleEn as string)) ||
     dict.reviews.title;
 
+  const bannerTextObj = content?.bannerText as Record<string, string> | string | undefined;
   const bannerText =
-    content?.bannerText?.[lang] ||
-    (isAr ? content?.bannerTextAr : content?.bannerTextEn) ||
-    content?.bannerText ||
+    (typeof bannerTextObj === 'object' ? bannerTextObj[lang] : bannerTextObj) ||
+    (isAr ? (content?.bannerTextAr as string) : (content?.bannerTextEn as string)) ||
     dict.reviews.bannerText;
 
+  const bannerCtaObj = (content?.bannerCtaText || content?.bannerCta) as Record<string, string> | string | undefined;
   const bannerCta =
-    content?.bannerCtaText?.[lang] ||
-    content?.bannerCta?.[lang] ||
-    (isAr ? content?.bannerCtaAr : content?.bannerCtaEn) ||
-    content?.bannerCtaText ||
+    (typeof bannerCtaObj === 'object' ? bannerCtaObj[lang] : bannerCtaObj) ||
+    (isAr ? (content?.bannerCtaAr as string) : (content?.bannerCtaEn as string)) ||
     dict.reviews.bannerCta;
 
-  const rawCtaHref = content?.bannerCtaHref || '/contact';
+  const rawCtaHref = (content?.bannerCtaHref as string) || '/contact';
   const bannerCtaHref = rawCtaHref.startsWith(`/${lang}`)
     ? rawCtaHref
     : rawCtaHref.startsWith('/')
-    ? `/${lang}${rawCtaHref}`
-    : rawCtaHref;
+      ? `/${lang}${rawCtaHref}`
+      : rawCtaHref;
 
-  const reviewsList: ReviewItem[] = baseReviews.map((rev: any, index: number) => {
+  const reviewsList: ReviewItem[] = baseReviews.map((rev: ReviewItem, index: number) => {
     const dictKey = `r${index + 1}` as keyof typeof dict.reviews;
     const localized = (dict.reviews[dictKey] || {}) as Partial<ReviewItem>;
 
     const name =
-      rev.name?.[isAr ? 'ar' : 'en'] ||
-      (isAr ? rev.nameAr : rev.nameEn) ||
-      rev.name ||
-      localized.name;
+      (isAr
+        ? (rev.nameAr || (typeof rev.name === 'object' ? rev.name?.ar : '') || localized.name || rev.nameEn || (typeof rev.name === 'string' ? rev.name : ''))
+        : (rev.nameEn || (typeof rev.name === 'object' ? rev.name?.en : '') || (typeof rev.name === 'string' ? rev.name : '') || localized.name || rev.nameAr)
+      );
 
     const role =
-      rev.role?.[isAr ? 'ar' : 'en'] ||
-      (isAr ? rev.roleAr : rev.roleEn) ||
-      rev.role ||
-      localized.role;
+      (isAr
+        ? (rev.roleAr || (typeof rev.role === 'object' ? rev.role?.ar : '') || localized.role || rev.roleEn || (typeof rev.role === 'string' ? rev.role : ''))
+        : (rev.roleEn || (typeof rev.role === 'object' ? rev.role?.en : '') || (typeof rev.role === 'string' ? rev.role : '') || localized.role || rev.roleAr)
+      );
 
     const company =
-      rev.company?.[isAr ? 'ar' : 'en'] ||
-      (isAr ? rev.companyAr : rev.companyEn) ||
-      rev.company ||
-      localized.company;
+      (isAr
+        ? (rev.companyAr || (typeof rev.company === 'object' ? rev.company?.ar : '') || localized.company || rev.companyEn || (typeof rev.company === 'string' ? rev.company : ''))
+        : (rev.companyEn || (typeof rev.company === 'object' ? rev.company?.en : '') || (typeof rev.company === 'string' ? rev.company : '') || localized.company || rev.companyAr)
+      );
 
     const review =
-      rev.review?.[isAr ? 'ar' : 'en'] ||
-      (isAr ? rev.reviewAr : rev.reviewEn) ||
-      rev.review ||
-      localized.review;
+      (isAr
+        ? (rev.reviewAr || (typeof rev.review === 'object' ? rev.review?.ar : '') || localized.review || rev.reviewEn || (typeof rev.review === 'string' ? rev.review : ''))
+        : (rev.reviewEn || (typeof rev.review === 'object' ? rev.review?.en : '') || (typeof rev.review === 'string' ? rev.review : '') || localized.review || rev.reviewAr)
+      );
 
     const verified =
-      rev.verified?.[isAr ? 'ar' : 'en'] ||
-      (isAr ? rev.verifiedAr : rev.verifiedEn) ||
-      rev.verified ||
-      localized.verified;
+      (isAr
+        ? (rev.verifiedAr || (typeof rev.verified === 'object' ? rev.verified?.ar : '') || localized.verified || rev.verifiedEn || (typeof rev.verified === 'string' ? rev.verified : '') || 'عميل موثق')
+        : (rev.verifiedEn || (typeof rev.verified === 'object' ? rev.verified?.en : '') || (typeof rev.verified === 'string' ? rev.verified : '') || localized.verified || 'Verified Client')
+      );
 
     return {
       ...rev,
       id: rev.id || `rev-${index}`,
-      name,
-      role,
-      company,
-      review,
-      verified,
+      name: name || '',
+      role: role || '',
+      company: company || '',
+      review: review || '',
+      verified: verified || '',
     };
   });
 
@@ -105,9 +107,16 @@ export function ReviewsSection({ lang, dict, content, reviews: customReviews }: 
         ? rev.rating
         : parseFloat(String(rev.rating || '')) || parseFloat(score) || 5.0;
 
+    const resolvedName = (typeof rev.name === 'string' ? rev.name : (isAr ? rev.name?.ar : rev.name?.en)) || '';
+    const resolvedRole = (typeof rev.role === 'string' ? rev.role : (isAr ? rev.role?.ar : rev.role?.en)) || '';
+    const resolvedCompany = (typeof rev.company === 'string' ? rev.company : (isAr ? rev.company?.ar : rev.company?.en)) || '';
+    const resolvedReview = (typeof rev.review === 'string' ? rev.review : (isAr ? rev.review?.ar : rev.review?.en)) || '';
+    const resolvedVerified = (typeof rev.verified === 'string' ? rev.verified : (isAr ? rev.verified?.ar : rev.verified?.en)) || '';
+
     return (
       <div
-        key={rev.id || rev.name}
+        key={rev.id || resolvedName}
+        dir={isAr ? 'rtl' : 'ltr'}
         className="group flex h-[240px] w-[310px] sm:h-[250px] sm:w-[380px] md:h-[260px] md:w-[420px] flex-col justify-between rounded-3xl bg-white p-6 shadow-xs transition-all duration-300 hover:border-black/20 hover:shadow-lg text-start select-none"
       >
         <div>
@@ -115,22 +124,22 @@ export function ReviewsSection({ lang, dict, content, reviews: customReviews }: 
           <div className="flex items-start justify-between gap-2">
             <div>
               <h4 className="font-primary text-sm sm:text-base font-medium text-foreground tracking-tight">
-                {rev.name}
+                {resolvedName}
               </h4>
               <p className="text-xs font-medium text-foreground/60 mt-0.5">
-                {rev.role ? `${rev.role} • ${rev.company}` : rev.company}
+                {resolvedRole ? `${resolvedRole} • ${resolvedCompany}` : resolvedCompany}
               </p>
             </div>
-            {rev.verified && (
+            {resolvedVerified && (
               <span className="rounded-full bg-black/5 px-2 py-0.5 text-[9.5px] font-medium text-foreground/60 shrink-0">
-                {rev.verified}
+                {resolvedVerified}
               </span>
             )}
           </div>
 
           {/* Review Quote */}
           <blockquote className="mt-3.5 text-xs sm:text-sm leading-relaxed text-foreground/80 font-normal line-clamp-4">
-            &ldquo;{rev.review}&rdquo;
+            &ldquo;{resolvedReview}&rdquo;
           </blockquote>
         </div>
 
@@ -148,8 +157,8 @@ export function ReviewsSection({ lang, dict, content, reviews: customReviews }: 
                     isFilled
                       ? 'bg-primary text-white shadow-2xs'
                       : isPartial
-                      ? 'bg-primary/70 text-white'
-                      : 'bg-black/5 text-black/30'
+                        ? 'bg-primary/70 text-white'
+                        : 'bg-black/5 text-black/30'
                   )}
                 >
                   ★

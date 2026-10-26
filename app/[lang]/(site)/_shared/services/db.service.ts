@@ -1809,7 +1809,42 @@ export async function getDbReviews(): Promise<ReviewItem[]> {
     if (items.length === 0) return reviewsList;
     return items.map((doc) => {
       const { _id, ...rest } = doc;
-      return { ...rest, id: _id?.toString() } as unknown as ReviewItem;
+      const nameEn = (rest.nameEn || (typeof rest.name === 'object' ? rest.name?.en : rest.name) || '').trim();
+      const nameAr = (rest.nameAr || (typeof rest.name === 'object' ? rest.name?.ar : '') || nameEn).trim();
+
+      const roleEn = (rest.roleEn || (typeof rest.role === 'object' ? rest.role?.en : rest.role) || '').trim();
+      const roleAr = (rest.roleAr || (typeof rest.role === 'object' ? rest.role?.ar : '') || roleEn).trim();
+
+      const companyEn = (rest.companyEn || (typeof rest.company === 'object' ? rest.company?.en : rest.company) || '').trim();
+      const companyAr = (rest.companyAr || (typeof rest.company === 'object' ? rest.company?.ar : '') || companyEn).trim();
+
+      const reviewEn = (rest.reviewEn || (typeof rest.review === 'object' ? rest.review?.en : rest.review) || '').trim();
+      const reviewAr = (rest.reviewAr || (typeof rest.review === 'object' ? rest.review?.ar : '') || reviewEn).trim();
+
+      const verifiedEn = (rest.verifiedEn || (typeof rest.verified === 'object' ? rest.verified?.en : rest.verified) || 'Verified Client').trim();
+      const verifiedAr = (rest.verifiedAr || (typeof rest.verified === 'object' ? rest.verified?.ar : '') || 'عميل موثق').trim();
+
+      return {
+        ...rest,
+        id: _id?.toString(),
+        name: nameEn || nameAr,
+        nameEn,
+        nameAr,
+        role: roleEn || roleAr,
+        roleEn,
+        roleAr,
+        company: companyEn || companyAr,
+        companyEn,
+        companyAr,
+        review: reviewEn || reviewAr,
+        reviewEn,
+        reviewAr,
+        verified: verifiedEn || verifiedAr,
+        verifiedEn,
+        verifiedAr,
+        rating: typeof rest.rating === 'number' ? rest.rating : (parseFloat(rest.rating) || 5),
+        active: rest.active !== false,
+      } as unknown as ReviewItem;
     });
   } catch {
     return reviewsList;

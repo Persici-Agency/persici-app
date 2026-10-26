@@ -1,9 +1,8 @@
 import type { Dictionary } from '@dictionaries';
+import type { ReviewItem, HomePageContent } from '@shared/types';
 import { HeroSection } from './hero-section';
-import { PartnerShowcaseSection } from './partner-showcase-section';
 import { HeritageSection } from './heritage-section';
 import { GrowthServicesSection } from './growth-services-section';
-import { ClientsVideoSection } from './clients-video-section';
 import { ApproachSection } from './approach-section';
 import { ReviewsSection } from './reviews-section';
 import { HomeContactSection } from './home-contact-section';
@@ -11,19 +10,17 @@ import { HomeContactSection } from './home-contact-section';
 export type HomeViewProps = {
   lang: string;
   dict: Dictionary;
-  content?: any;
+  content?: HomePageContent | Record<string, unknown>;
+  reviews?: ReviewItem[];
 };
 
-export function HomeView({ lang, dict, content }: HomeViewProps) {
-  const videoTestimonials = content?.videoTestimonials || content?.clientVideos?.videos;
-
+export function HomeView({ lang, dict, content, reviews }: HomeViewProps) {
   return (
     <div className="relative overflow-hidden">
       {/* 1. Hero Section */}
       <HeroSection lang={lang} dict={dict} content={content?.hero || content} className="" />
 
-      {/* 2. Featured Showcase ("Your online growth partner") */}
-      {/* <PartnerShowcaseSection lang={lang} dict={dict} content={content?.partnerShowcase} /> */}
+      {/* 2. Featured Showcase ("Your online growth partner") - reserved */}
 
       {/* 3. Heritage & Agency Story ("Rooted in excellence. Built for growth.") */}
       <HeritageSection lang={lang} dict={dict} content={content?.heritage} />
@@ -31,19 +28,18 @@ export function HomeView({ lang, dict, content }: HomeViewProps) {
       {/* 4. Our Growth Services (Paid Social, Google Ads, Shopify & CRO) */}
       <GrowthServicesSection lang={lang} dict={dict} content={content?.growthServices} />
 
-      {/* 5. Meet Clients We Scale (Dark Video Testimonials Carousel) */}
-      {/* <ClientsVideoSection
-        lang={lang}
-        dict={dict}
-        content={content?.clientVideos}
-        testimonials={videoTestimonials}
-      /> */}
+      {/* 5. Meet Clients We Scale (Dark Video Testimonials Carousel) - reserved */}
 
       {/* 6. Our Approach to eCommerce Growth */}
       <ApproachSection lang={lang} dict={dict} content={content?.approach} />
 
       {/* 7. Words from Those We Scale (Reviews Wall) */}
-      <ReviewsSection lang={lang} dict={dict} content={content?.reviews} />
+      <ReviewsSection
+        lang={lang}
+        dict={dict}
+        content={content?.reviews as Record<string, unknown> | undefined}
+        reviews={reviews}
+      />
 
       {/* 8. Contact Us / Get In Touch Section (with Animated Crimson Wave Background) */}
       <HomeContactSection lang={lang} dict={dict} content={content?.homeContact} />

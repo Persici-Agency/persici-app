@@ -292,17 +292,29 @@ export interface GrowthTeamMember extends BaseMongoDocument {
   alt?: string;
 }
 
-// 8. Reviews
+// 8. Reviews & Testimonials
 export interface ReviewItem extends BaseMongoDocument {
-  name: string;
-  role?: string;
-  company: string;
-  review: string;
-  verified?: string;
+  name: string | LocalizedString;
+  nameEn?: string;
+  nameAr?: string;
+  role?: string | LocalizedString;
+  roleEn?: string;
+  roleAr?: string;
+  company: string | LocalizedString;
+  companyEn?: string;
+  companyAr?: string;
+  review: string | LocalizedString;
+  reviewEn?: string;
+  reviewAr?: string;
+  verified?: string | LocalizedString;
+  verifiedEn?: string;
+  verifiedAr?: string;
   rating?: number;
   date?: string;
   isVerified?: boolean;
   order?: number;
+  active?: boolean;
+  avatar?: string;
 }
 
 // 9. Discovery Form & Lead Generation

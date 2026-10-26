@@ -232,12 +232,25 @@ export default function UniversalPageCmsEditor() {
               reviewsBannerCtaEn: c.reviewsBannerCtaEn || c.reviews?.bannerCtaText?.en || 'Book a discovery call',
               reviewsBannerCtaAr: c.reviewsBannerCtaAr || c.reviews?.bannerCtaText?.ar || 'احجز مكالمة استكشافية',
               reviewsBannerCtaHref: c.reviewsBannerCtaHref || c.reviews?.bannerCtaHref || '/contact',
-              reviewsList:
+              reviewsList: (
                 (c.reviewsList && c.reviewsList.length > 0)
                   ? c.reviewsList
                   : (c.reviews?.reviews && c.reviews.reviews.length > 0)
                   ? c.reviews.reviews
-                  : fallbackReviewsList,
+                  : fallbackReviewsList
+              ).map((rev: any) => ({
+                ...rev,
+                nameEn: rev.nameEn || (typeof rev.name === 'object' ? rev.name?.en : rev.name) || '',
+                nameAr: rev.nameAr || (typeof rev.name === 'object' ? rev.name?.ar : '') || '',
+                roleEn: rev.roleEn || (typeof rev.role === 'object' ? rev.role?.en : rev.role) || '',
+                roleAr: rev.roleAr || (typeof rev.role === 'object' ? rev.role?.ar : '') || '',
+                companyEn: rev.companyEn || (typeof rev.company === 'object' ? rev.company?.en : rev.company) || '',
+                companyAr: rev.companyAr || (typeof rev.company === 'object' ? rev.company?.ar : '') || '',
+                reviewEn: rev.reviewEn || (typeof rev.review === 'object' ? rev.review?.en : rev.review) || '',
+                reviewAr: rev.reviewAr || (typeof rev.review === 'object' ? rev.review?.ar : '') || '',
+                verifiedEn: rev.verifiedEn || (typeof rev.verified === 'object' ? rev.verified?.en : rev.verified) || 'Verified Client',
+                verifiedAr: rev.verifiedAr || (typeof rev.verified === 'object' ? rev.verified?.ar : '') || 'عميل موثق',
+              })),
 
               // 8. Home Contact
               homeContactLeftTitleEn: c.homeContactLeftTitleEn || c.homeContact?.leftTitle?.en || 'Ready to accelerate your digital future?',
@@ -1033,7 +1046,38 @@ export default function UniversalPageCmsEditor() {
               ar: pageData.reviewsBannerCtaAr || pageData.reviews?.bannerCtaText?.ar || 'احجز مكالمة استكشافية',
             },
             bannerCtaHref: pageData.reviewsBannerCtaHref || pageData.reviews?.bannerCtaHref || '/contact',
-            reviews: pageData.reviewsList || pageData.reviews?.reviews || [],
+            reviews: (pageData.reviewsList || pageData.reviews?.reviews || []).map((rev: any) => {
+              const nameEn = (rev.nameEn || (typeof rev.name === 'object' ? rev.name?.en : rev.name) || '').trim();
+              const nameAr = (rev.nameAr || (typeof rev.name === 'object' ? rev.name?.ar : '') || nameEn).trim();
+              const roleEn = (rev.roleEn || (typeof rev.role === 'object' ? rev.role?.en : rev.role) || '').trim();
+              const roleAr = (rev.roleAr || (typeof rev.role === 'object' ? rev.role?.ar : '') || roleEn).trim();
+              const companyEn = (rev.companyEn || (typeof rev.company === 'object' ? rev.company?.en : rev.company) || '').trim();
+              const companyAr = (rev.companyAr || (typeof rev.company === 'object' ? rev.company?.ar : '') || companyEn).trim();
+              const reviewEn = (rev.reviewEn || (typeof rev.review === 'object' ? rev.review?.en : rev.review) || '').trim();
+              const reviewAr = (rev.reviewAr || (typeof rev.review === 'object' ? rev.review?.ar : '') || reviewEn).trim();
+              const verifiedEn = (rev.verifiedEn || (typeof rev.verified === 'object' ? rev.verified?.en : rev.verified) || 'Verified Client').trim();
+              const verifiedAr = (rev.verifiedAr || (typeof rev.verified === 'object' ? rev.verified?.ar : '') || 'عميل موثق').trim();
+
+              return {
+                ...rev,
+                name: nameEn || nameAr,
+                nameEn,
+                nameAr,
+                role: roleEn || roleAr,
+                roleEn,
+                roleAr,
+                company: companyEn || companyAr,
+                companyEn,
+                companyAr,
+                review: reviewEn || reviewAr,
+                reviewEn,
+                reviewAr,
+                verified: verifiedEn || verifiedAr,
+                verifiedEn,
+                verifiedAr,
+                rating: typeof rev.rating === 'number' ? rev.rating : (parseFloat(rev.rating) || 5),
+              };
+            }),
           },
           homeContact: {
             ...pageData.homeContact,
@@ -3051,7 +3095,7 @@ export default function UniversalPageCmsEditor() {
                   className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg bg-white"
                 />
               </div>
-              <div className="sm:col-span-2">
+              <div>
                 <label className="block text-[11px] font-semibold text-slate-600 mb-1">Score Label (EN)</label>
                 <input
                   type="text"
@@ -3060,37 +3104,92 @@ export default function UniversalPageCmsEditor() {
                   className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg bg-white"
                 />
               </div>
+              <div>
+                <label className="block text-[11px] font-semibold text-slate-600 mb-1">نص التقييم (AR)</label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={pageData.reviewsScoreLabelAr || pageData.reviews?.scoreLabel?.ar || 'تقييم 5.0 من أكثر من 100 شريك استراتيجي'}
+                  onChange={(e) => setPageData({ ...pageData, reviewsScoreLabelAr: e.target.value })}
+                  className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg bg-white font-secondary text-right"
+                />
+              </div>
             </div>
 
             {/* Bottom Conversion Banner Strip */}
             <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-3">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-700">
-                Bottom Conversion Banner Strip
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-700 block">
+                Bottom Conversion Banner Strip (Bilingual)
               </span>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <input
-                  type="text"
-                  placeholder="Banner Text (EN)"
-                  value={pageData.reviewsBannerTextEn || pageData.reviews?.bannerText?.en || ''}
-                  onChange={(e) => setPageData({ ...pageData, reviewsBannerTextEn: e.target.value })}
-                  className="px-3 py-1.5 text-xs border border-slate-200 rounded-lg bg-white"
-                />
-                <input
-                  type="text"
-                  placeholder="Banner CTA Button (e.g. Book a discovery call)"
-                  value={pageData.reviewsBannerCtaEn || pageData.reviews?.bannerCtaText?.en || ''}
-                  onChange={(e) => setPageData({ ...pageData, reviewsBannerCtaEn: e.target.value })}
-                  className="px-3 py-1.5 text-xs border border-slate-200 rounded-lg bg-white"
-                />
+                <div>
+                  <label className="block text-[11px] font-semibold text-slate-600 mb-1">Banner Text (EN)</label>
+                  <input
+                    type="text"
+                    placeholder="Ready to engineer your next-generation digital ecosystem?"
+                    value={pageData.reviewsBannerTextEn || pageData.reviews?.bannerText?.en || ''}
+                    onChange={(e) => setPageData({ ...pageData, reviewsBannerTextEn: e.target.value })}
+                    className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg bg-white"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[11px] font-semibold text-slate-600 mb-1 text-right">نص الشريط التحويلي (AR)</label>
+                  <input
+                    type="text"
+                    dir="rtl"
+                    placeholder="هل أنت مستعد لهندسة منظومتك الرقمية وتطبيقاتك الذكية؟"
+                    value={pageData.reviewsBannerTextAr || pageData.reviews?.bannerText?.ar || ''}
+                    onChange={(e) => setPageData({ ...pageData, reviewsBannerTextAr: e.target.value })}
+                    className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg bg-white font-secondary text-right"
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+                <div>
+                  <label className="block text-[11px] font-semibold text-slate-600 mb-1">Banner CTA (EN)</label>
+                  <input
+                    type="text"
+                    placeholder="Book a discovery call"
+                    value={pageData.reviewsBannerCtaEn || pageData.reviews?.bannerCtaText?.en || ''}
+                    onChange={(e) => setPageData({ ...pageData, reviewsBannerCtaEn: e.target.value })}
+                    className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg bg-white"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[11px] font-semibold text-slate-600 mb-1 text-right">زر الحجز (AR)</label>
+                  <input
+                    type="text"
+                    dir="rtl"
+                    placeholder="احجز مكالمة استكشافية"
+                    value={pageData.reviewsBannerCtaAr || pageData.reviews?.bannerCtaText?.ar || ''}
+                    onChange={(e) => setPageData({ ...pageData, reviewsBannerCtaAr: e.target.value })}
+                    className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg bg-white font-secondary text-right"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[11px] font-semibold text-slate-600 mb-1">CTA Href URL</label>
+                  <input
+                    type="text"
+                    placeholder="/contact"
+                    value={pageData.reviewsBannerCtaHref || pageData.reviews?.bannerCtaHref || '/contact'}
+                    onChange={(e) => setPageData({ ...pageData, reviewsBannerCtaHref: e.target.value })}
+                    className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg bg-white font-mono text-[11px]"
+                  />
+                </div>
               </div>
             </div>
 
             {/* Reviews List */}
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold uppercase tracking-wider text-slate-700">
-                  Reviews Cards ({(pageData.reviewsList || []).length})
-                </span>
+                <div>
+                  <span className="text-xs font-bold uppercase tracking-wider text-slate-700 block">
+                    Reviews Cards ({(pageData.reviewsList || []).length})
+                  </span>
+                  <p className="text-[11px] text-slate-500">
+                    Dual English & Arabic text saved simultaneously for each review.
+                  </p>
+                </div>
                 <button
                   type="button"
                   onClick={() => {
@@ -3101,10 +3200,20 @@ export default function UniversalPageCmsEditor() {
                         ...existing,
                         {
                           name: 'Client Partner',
+                          nameEn: 'Client Partner',
+                          nameAr: 'شريك استراتيجي',
                           role: 'Digital Strategist',
+                          roleEn: 'Digital Strategist',
+                          roleAr: 'خبير استراتيجي رقمي',
                           company: 'Global Enterprise',
+                          companyEn: 'Global Enterprise',
+                          companyAr: 'مؤسسة عالمية',
                           review: 'Persici provided exemplary engineering rigour and accelerated our digital growth significantly.',
+                          reviewEn: 'Persici provided exemplary engineering rigour and accelerated our digital growth significantly.',
+                          reviewAr: 'قدمت لنا بيرسيشي دقة هندسية استثنائية وسرعت من نمونا الرقمي بشكل ملحوظ.',
                           verified: 'Verified Client',
+                          verifiedEn: 'Verified Client',
+                          verifiedAr: 'عميل موثق',
                           rating: 5,
                         },
                       ],
@@ -3118,56 +3227,33 @@ export default function UniversalPageCmsEditor() {
               </div>
 
               {(pageData.reviewsList || []).map((rev: any, idx: number) => (
-                <div key={idx} className="p-3 bg-white border border-slate-200 rounded-xl space-y-2 relative group">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const updated = [...(pageData.reviewsList || [])];
-                      updated.splice(idx, 1);
-                      setPageData({ ...pageData, reviewsList: updated });
-                    }}
-                    className="absolute top-2.5 right-2.5 p-1 text-slate-400 hover:text-red-600 rounded transition-colors"
-                  >
-                    <TbTrash className="w-4 h-4" />
-                  </button>
+                <div key={idx} className="p-4 bg-white border border-slate-200 rounded-2xl space-y-3 relative group shadow-2xs">
+                  <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+                    <span className="text-xs font-bold text-slate-800 flex items-center gap-2">
+                      <span className="flex h-5 w-5 items-center justify-center rounded-full bg-slate-100 text-[11px] font-semibold text-slate-600">
+                        {idx + 1}
+                      </span>
+                      <span>{rev.nameEn || rev.name || `Review #${idx + 1}`}</span>
+                    </span>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-4 gap-2 pr-6">
-                    <input
-                      type="text"
-                      placeholder="Name"
-                      value={rev.name || ''}
-                      onChange={(e) => {
+                    <button
+                      type="button"
+                      onClick={() => {
                         const updated = [...(pageData.reviewsList || [])];
-                        updated[idx] = { ...rev, name: e.target.value };
+                        updated.splice(idx, 1);
                         setPageData({ ...pageData, reviewsList: updated });
                       }}
-                      className="px-2.5 py-1 text-xs border border-slate-200 rounded"
-                    />
-                    <input
-                      type="text"
-                      placeholder="Role & Company"
-                      value={`${rev.role || ''} | ${rev.company || ''}`}
-                      onChange={(e) => {
-                        const [role, comp] = e.target.value.split('|');
-                        const updated = [...(pageData.reviewsList || [])];
-                        updated[idx] = { ...rev, role: role?.trim(), company: comp?.trim() };
-                        setPageData({ ...pageData, reviewsList: updated });
-                      }}
-                      className="px-2.5 py-1 text-xs border border-slate-200 rounded"
-                    />
-                    <input
-                      type="text"
-                      placeholder="Verified Badge"
-                      value={rev.verified || ''}
-                      onChange={(e) => {
-                        const updated = [...(pageData.reviewsList || [])];
-                        updated[idx] = { ...rev, verified: e.target.value };
-                        setPageData({ ...pageData, reviewsList: updated });
-                      }}
-                      className="px-2.5 py-1 text-xs border border-slate-200 rounded"
-                    />
-                    <div className="flex items-center gap-1.5 bg-slate-50 px-2 py-0.5 rounded border border-slate-200">
-                      <span className="text-[11px] font-semibold text-amber-500 whitespace-nowrap">★ Rate</span>
+                      className="p-1 text-slate-400 hover:text-red-600 rounded transition-colors"
+                      title="Remove review"
+                    >
+                      <TbTrash className="w-4 h-4" />
+                    </button>
+                  </div>
+
+                  {/* Rating & Avatar Strip */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+                    <div className="flex items-center gap-1.5 bg-white px-2 py-1 rounded border border-slate-200">
+                      <span className="text-[11px] font-semibold text-amber-500 whitespace-nowrap">★ Rate:</span>
                       <input
                         type="number"
                         min="1"
@@ -3184,47 +3270,175 @@ export default function UniversalPageCmsEditor() {
                         className="w-full px-1.5 py-0.5 text-xs border border-slate-200 rounded font-semibold text-slate-800 bg-white"
                       />
                     </div>
-                  </div>
 
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="text"
-                      placeholder="Client Avatar / Logo URL (Optional)"
-                      value={rev.avatar || ''}
-                      onChange={(e) => {
-                        const updated = [...(pageData.reviewsList || [])];
-                        updated[idx] = { ...rev, avatar: e.target.value };
-                        setPageData({ ...pageData, reviewsList: updated });
-                      }}
-                      className="w-full px-2.5 py-1 text-xs border border-slate-200 rounded font-mono text-[11px]"
-                    />
-                    <button
-                      type="button"
-                      onClick={() =>
-                        openMediaPicker((url) => {
+                    <div className="sm:col-span-2 flex items-center gap-2">
+                      <input
+                        type="text"
+                        placeholder="Avatar URL (Optional)"
+                        value={rev.avatar || ''}
+                        onChange={(e) => {
                           const updated = [...(pageData.reviewsList || [])];
-                          updated[idx] = { ...rev, avatar: url };
+                          updated[idx] = { ...rev, avatar: e.target.value };
                           setPageData({ ...pageData, reviewsList: updated });
-                        }, 'image')
-                      }
-                      className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded text-xs font-semibold shrink-0 flex items-center gap-1 border border-slate-200"
-                    >
-                      <TbPhoto className="w-3.5 h-3.5" />
-                      <span>Pick</span>
-                    </button>
+                        }}
+                        className="w-full px-2.5 py-1 text-xs border border-slate-200 rounded font-mono text-[11px] bg-white"
+                      />
+                      <button
+                        type="button"
+                        onClick={() =>
+                          openMediaPicker((url) => {
+                            const updated = [...(pageData.reviewsList || [])];
+                            updated[idx] = { ...rev, avatar: url };
+                            setPageData({ ...pageData, reviewsList: updated });
+                          }, 'image')
+                        }
+                        className="px-2.5 py-1 bg-white hover:bg-slate-100 text-slate-700 rounded text-xs font-semibold shrink-0 flex items-center gap-1 border border-slate-200"
+                      >
+                        <TbPhoto className="w-3.5 h-3.5" />
+                        <span>Pick</span>
+                      </button>
+                    </div>
                   </div>
 
-                  <textarea
-                    rows={2}
-                    placeholder="Review Quote"
-                    value={rev.review || ''}
-                    onChange={(e) => {
-                      const updated = [...(pageData.reviewsList || [])];
-                      updated[idx] = { ...rev, review: e.target.value };
-                      setPageData({ ...pageData, reviewsList: updated });
-                    }}
-                    className="w-full px-2.5 py-1 text-xs border border-slate-200 rounded"
-                  />
+                  {/* Dual Column: English & Arabic */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+                    {/* English Inputs */}
+                    <div className="p-3 bg-slate-50/70 border border-slate-200 rounded-xl space-y-2">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-blue-700 block">
+                        English Content (EN)
+                      </span>
+                      <div className="grid grid-cols-2 gap-2">
+                        <input
+                          type="text"
+                          placeholder="Client Name (EN)"
+                          value={rev.nameEn || (typeof rev.name === 'string' ? rev.name : '') || ''}
+                          onChange={(e) => {
+                            const updated = [...(pageData.reviewsList || [])];
+                            updated[idx] = { ...rev, nameEn: e.target.value, name: e.target.value };
+                            setPageData({ ...pageData, reviewsList: updated });
+                          }}
+                          className="px-2.5 py-1 text-xs border border-slate-200 rounded bg-white"
+                        />
+                        <input
+                          type="text"
+                          placeholder="Verified Badge (EN)"
+                          value={rev.verifiedEn || (typeof rev.verified === 'string' ? rev.verified : '') || 'Verified Client'}
+                          onChange={(e) => {
+                            const updated = [...(pageData.reviewsList || [])];
+                            updated[idx] = { ...rev, verifiedEn: e.target.value, verified: e.target.value };
+                            setPageData({ ...pageData, reviewsList: updated });
+                          }}
+                          className="px-2.5 py-1 text-xs border border-slate-200 rounded bg-white"
+                        />
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        <input
+                          type="text"
+                          placeholder="Role (EN)"
+                          value={rev.roleEn || (typeof rev.role === 'string' ? rev.role : '') || ''}
+                          onChange={(e) => {
+                            const updated = [...(pageData.reviewsList || [])];
+                            updated[idx] = { ...rev, roleEn: e.target.value, role: e.target.value };
+                            setPageData({ ...pageData, reviewsList: updated });
+                          }}
+                          className="px-2.5 py-1 text-xs border border-slate-200 rounded bg-white"
+                        />
+                        <input
+                          type="text"
+                          placeholder="Company (EN)"
+                          value={rev.companyEn || (typeof rev.company === 'string' ? rev.company : '') || ''}
+                          onChange={(e) => {
+                            const updated = [...(pageData.reviewsList || [])];
+                            updated[idx] = { ...rev, companyEn: e.target.value, company: e.target.value };
+                            setPageData({ ...pageData, reviewsList: updated });
+                          }}
+                          className="px-2.5 py-1 text-xs border border-slate-200 rounded bg-white"
+                        />
+                      </div>
+                      <textarea
+                        rows={3}
+                        placeholder="Review Quote (EN)..."
+                        value={rev.reviewEn || (typeof rev.review === 'string' ? rev.review : '') || ''}
+                        onChange={(e) => {
+                          const updated = [...(pageData.reviewsList || [])];
+                          updated[idx] = { ...rev, reviewEn: e.target.value, review: e.target.value };
+                          setPageData({ ...pageData, reviewsList: updated });
+                        }}
+                        className="w-full px-2.5 py-1.5 text-xs border border-slate-200 rounded bg-white"
+                      />
+                    </div>
+
+                    {/* Arabic Inputs */}
+                    <div className="p-3 bg-emerald-50/50 border border-emerald-200 rounded-xl space-y-2" dir="rtl">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-800 block text-right">
+                        المحتوى بالعربية (AR)
+                      </span>
+                      <div className="grid grid-cols-2 gap-2">
+                        <input
+                          type="text"
+                          dir="rtl"
+                          placeholder="اسم العميل (AR)"
+                          value={rev.nameAr || ''}
+                          onChange={(e) => {
+                            const updated = [...(pageData.reviewsList || [])];
+                            updated[idx] = { ...rev, nameAr: e.target.value };
+                            setPageData({ ...pageData, reviewsList: updated });
+                          }}
+                          className="px-2.5 py-1 text-xs border border-slate-200 rounded bg-white font-secondary text-right"
+                        />
+                        <input
+                          type="text"
+                          dir="rtl"
+                          placeholder="شارة التوثيق (AR)"
+                          value={rev.verifiedAr || 'عميل موثق'}
+                          onChange={(e) => {
+                            const updated = [...(pageData.reviewsList || [])];
+                            updated[idx] = { ...rev, verifiedAr: e.target.value };
+                            setPageData({ ...pageData, reviewsList: updated });
+                          }}
+                          className="px-2.5 py-1 text-xs border border-slate-200 rounded bg-white font-secondary text-right"
+                        />
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        <input
+                          type="text"
+                          dir="rtl"
+                          placeholder="المسمى الوظيفي (AR)"
+                          value={rev.roleAr || ''}
+                          onChange={(e) => {
+                            const updated = [...(pageData.reviewsList || [])];
+                            updated[idx] = { ...rev, roleAr: e.target.value };
+                            setPageData({ ...pageData, reviewsList: updated });
+                          }}
+                          className="px-2.5 py-1 text-xs border border-slate-200 rounded bg-white font-secondary text-right"
+                        />
+                        <input
+                          type="text"
+                          dir="rtl"
+                          placeholder="الشركة / العلامة (AR)"
+                          value={rev.companyAr || ''}
+                          onChange={(e) => {
+                            const updated = [...(pageData.reviewsList || [])];
+                            updated[idx] = { ...rev, companyAr: e.target.value };
+                            setPageData({ ...pageData, reviewsList: updated });
+                          }}
+                          className="px-2.5 py-1 text-xs border border-slate-200 rounded bg-white font-secondary text-right"
+                        />
+                      </div>
+                      <textarea
+                        rows={3}
+                        dir="rtl"
+                        placeholder="نص التقييم والشهادة بالعربية..."
+                        value={rev.reviewAr || ''}
+                        onChange={(e) => {
+                          const updated = [...(pageData.reviewsList || [])];
+                          updated[idx] = { ...rev, reviewAr: e.target.value };
+                          setPageData({ ...pageData, reviewsList: updated });
+                        }}
+                        className="w-full px-2.5 py-1.5 text-xs border border-slate-200 rounded bg-white font-secondary text-right"
+                      />
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>

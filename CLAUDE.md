@@ -81,6 +81,7 @@ Consult the authoritative master documentation in `.doc/` for in-depth specifica
 | [`.doc/reference-insights-and-ai-overview-architecture.md`](file:///i:/Projects/persici-app/.doc/reference-insights-and-ai-overview-architecture.md) | Insights Hub (`/insights`), detail pages, scrollspy rail & Gemini 2.5 Flash AI overview. |
 | [`.doc/reference-careers-and-recruitment-architecture.md`](file:///i:/Projects/persici-app/.doc/reference-careers-and-recruitment-architecture.md) | Careers Hub (`/careers`), job detail pages, application dossier form & R2 CV uploads. |
 | [`.doc/reference-contact-and-email-system.md`](file:///i:/Projects/persici-app/.doc/reference-contact-and-email-system.md) | Contact Us (`/contact`), global growth hubs, appointment pop-up & Hostinger mail. |
+| [`.doc/reference-reviews-and-testimonials-architecture.md`](file:///i:/Projects/persici-app/.doc/reference-reviews-and-testimonials-architecture.md) | Bilingual Reviews & Customer Testimonials Wall (`/dashboard/content/reviews`), Homepage Section 7 editor (`/dashboard/pages/home`), public marquee & full bilingual schema. |
 | [`.doc/reference-about-page-architecture.md`](file:///i:/Projects/persici-app/.doc/reference-about-page-architecture.md) | About Us (`/about`), agency heritage, 10 view sections, 3D origami & milestones. |
 | [`.doc/reference-legal-and-compliance-architecture.md`](file:///i:/Projects/persici-app/.doc/reference-legal-and-compliance-architecture.md) | Privacy policy (`/privacy`), Terms (`/terms`), GDPR/CCPA & UAE/KSA/Jordan compliance. |
 
