@@ -84,6 +84,7 @@ Consult the authoritative master documentation in `.doc/` for in-depth specifica
 | [`.doc/reference-reviews-and-testimonials-architecture.md`](file:///i:/Projects/persici-app/.doc/reference-reviews-and-testimonials-architecture.md) | Bilingual Reviews & Customer Testimonials Wall (`/dashboard/content/reviews`), Homepage Section 7 editor (`/dashboard/pages/home`), public marquee & full bilingual schema. |
 | [`.doc/reference-about-page-architecture.md`](file:///i:/Projects/persici-app/.doc/reference-about-page-architecture.md) | About Us (`/about`), agency heritage, 10 view sections, 3D origami & milestones. |
 | [`.doc/reference-legal-and-compliance-architecture.md`](file:///i:/Projects/persici-app/.doc/reference-legal-and-compliance-architecture.md) | Privacy policy (`/privacy`), Terms (`/terms`), GDPR/CCPA & UAE/KSA/Jordan compliance. |
+| [`.doc/reference-maintenance-and-redirect-architecture.md`](file:///home/mahmoodmubdi/Projects/persici-app/.doc/reference-maintenance-and-redirect-architecture.md) | Site Maintenance Mode & Global Redirect System (`/dashboard/maintenance`), `proxy.ts` edge interception, optional countdown timer & direct URL redirection. |
 
 ---
 

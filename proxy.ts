@@ -3,9 +3,57 @@ import type { NextRequest } from 'next/server';
 import Negotiator from 'negotiator';
 import { match } from '@formatjs/intl-localematcher';
 import { jwtVerify, SignJWT } from 'jose';
+import type { MaintenanceConfig } from '@/lib/maintenance-types';
 
 const locales = ['en', 'ar'];
 const defaultLocale = 'en';
+
+interface GlobalProxyMaintenanceState {
+  __persiciMaintenanceCache?: {
+    config: MaintenanceConfig;
+    fetchedAt: number;
+  };
+}
+
+declare const globalThis: GlobalProxyMaintenanceState & typeof global;
+
+const PROXY_MAINT_TTL_MS = 2500;
+
+async function getActiveMaintenanceConfig(
+  request: NextRequest
+): Promise<MaintenanceConfig | null> {
+  const now = Date.now();
+  const cached = globalThis.__persiciMaintenanceCache;
+  if (cached && now - cached.fetchedAt < PROXY_MAINT_TTL_MS) {
+    return cached.config;
+  }
+
+  try {
+    const apiUrl = new URL('/api/maintenance', request.nextUrl.origin);
+    const res = await fetch(apiUrl, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+      },
+      cache: 'no-store',
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      if (data?.config) {
+        globalThis.__persiciMaintenanceCache = {
+          config: data.config as MaintenanceConfig,
+          fetchedAt: Date.now(),
+        };
+        return data.config as MaintenanceConfig;
+      }
+    }
+  } catch {
+    // Ignore transient edge fetch errors and fall back to last cached state if available
+  }
+
+  return cached?.config || null;
+}
 
 const SESSION_COOKIE_NAME = process.env.SESSION_COOKIE_NAME || 'persici_session';
 const GATE_COOKIE_NAME = process.env.GATE_COOKIE_NAME || 'persici_dashboard_gate';
@@ -62,7 +110,9 @@ export async function proxy(request: NextRequest) {
     pathname.startsWith('/Videos') ||
     pathname.startsWith('/videos') ||
     pathname.startsWith('/images') ||
-    pathname.match(/\.(png|jpg|jpeg|gif|svg|webp|ico|mp4|webm|ogg|css|js)$/i)
+    pathname.startsWith('/fonts') ||
+    pathname.startsWith('/icons') ||
+    pathname.match(/\.(png|jpg|jpeg|gif|svg|webp|ico|mp4|webm|ogg|css|js|woff|woff2|ttf)$/i)
   ) {
     return;
   }
@@ -205,6 +255,52 @@ export async function proxy(request: NextRequest) {
   // 4. Bypass API routes from locale redirection
   if (pathname.startsWith('/api')) {
     return;
+  }
+
+  // 4.5. Site Maintenance Mode & Global Domain Redirect Interceptor
+  const maintConfig = await getActiveMaintenanceConfig(request);
+  if (maintConfig && maintConfig.enabled) {
+    const currentLocale = pathLocale || getLocale(request);
+
+    // MODE B: Direct URL / Domain Redirect
+    if (maintConfig.mode === 'redirect' && maintConfig.redirectUrl) {
+      try {
+        const targetBase = new URL(maintConfig.redirectUrl);
+        let destinationUrl = targetBase;
+
+        if (maintConfig.preservePath) {
+          const basePath = targetBase.pathname.replace(/\/$/, '');
+          const incomingPath = request.nextUrl.pathname.startsWith('/')
+            ? request.nextUrl.pathname
+            : `/${request.nextUrl.pathname}`;
+          destinationUrl = new URL(
+            `${basePath}${incomingPath}${request.nextUrl.search}`,
+            targetBase.origin
+          );
+        }
+
+        // Guard against self-redirect loop if target points to the exact same origin + path
+        const isSelfRedirect =
+          destinationUrl.origin === request.nextUrl.origin &&
+          destinationUrl.pathname === request.nextUrl.pathname;
+
+        if (!isSelfRedirect) {
+          const statusCode = maintConfig.redirectStatusCode === 308 ? 308 : 307;
+          return NextResponse.redirect(destinationUrl, { status: statusCode });
+        }
+      } catch {
+        // If redirect URL is malformed, fall back gracefully to the Maintenance Page
+      }
+    }
+
+    // MODE A: Default Maintenance Mode Page (renders on any route across the site)
+    if (pathname === `/${currentLocale}/maintenance`) {
+      return NextResponse.next();
+    }
+
+    const maintUrl = request.nextUrl.clone();
+    maintUrl.pathname = `/${currentLocale}/maintenance`;
+    return NextResponse.rewrite(maintUrl);
   }
 
   // 5. Internationalization locale redirect

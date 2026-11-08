@@ -1,14 +1,17 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import type { DashboardHeaderProps } from '../../types';
+import type { MaintenanceConfig } from '@/lib/maintenance-types';
 import {
   TbLogout,
   TbGlobe,
   TbExternalLink,
   TbLayoutSidebar,
+  TbTool,
+  TbRoute,
 } from 'react-icons/tb';
 
 export function DashboardHeader({ lang = 'en', user, dict }: DashboardHeaderProps) {
@@ -17,6 +20,36 @@ export function DashboardHeader({ lang = 'en', user, dict }: DashboardHeaderProp
   const searchParams = useSearchParams();
   const passkey = searchParams?.get('passkey') || searchParams?.get('key') || '';
   const [loggingOut, setLoggingOut] = useState(false);
+  const [maintConfig, setMaintConfig] = useState<MaintenanceConfig | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    fetch('/api/maintenance', { cache: 'no-store' })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (active && data?.config) {
+          setMaintConfig(data.config);
+        }
+      })
+      .catch(() => {});
+
+    const handleMaintUpdate = (e: Event) => {
+      const customEvent = e as CustomEvent<MaintenanceConfig>;
+      if (customEvent.detail) {
+        setMaintConfig(customEvent.detail);
+      }
+    };
+
+    window.addEventListener('persici:maintenance-updated', handleMaintUpdate);
+    return () => {
+      active = false;
+      window.removeEventListener('persici:maintenance-updated', handleMaintUpdate);
+    };
+  }, []);
+
+  const maintHref = passkey
+    ? `/${lang}/dashboard/maintenance?passkey=${encodeURIComponent(passkey)}`
+    : `/${lang}/dashboard/maintenance`;
 
   const handleLogout = async () => {
     setLoggingOut(true);
@@ -81,11 +114,37 @@ export function DashboardHeader({ lang = 'en', user, dict }: DashboardHeaderProp
         <div className="h-4 w-px bg-slate-200" />
 
         <div className="flex items-center gap-2">
-          <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+          <span
+            className={`w-2.5 h-2.5 rounded-full animate-pulse ${
+              maintConfig?.enabled ? 'bg-[#D83427]' : 'bg-emerald-500'
+            }`}
+          />
           <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 font-mono">
             {lang === 'ar' ? 'لوحة التحكم الحية' : 'Growth OS Live'}
           </span>
         </div>
+
+        {maintConfig?.enabled && (
+          <Link
+            href={maintHref}
+            className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-mono font-semibold bg-[#FEF7F6] text-[#D83427] border border-[#D83427]/30 hover:bg-[#D83427] hover:text-white transition-colors"
+          >
+            {maintConfig.mode === 'redirect' ? (
+              <TbRoute className="w-3.5 h-3.5" />
+            ) : (
+              <TbTool className="w-3.5 h-3.5" />
+            )}
+            <span>
+              {maintConfig.mode === 'redirect'
+                ? lang === 'ar'
+                  ? 'التحويل المباشر مفعل'
+                  : 'Redirect Mode Active'
+                : lang === 'ar'
+                  ? 'وضع الصيانة مفعل'
+                  : 'Maintenance Active'}
+            </span>
+          </Link>
+        )}
       </div>
 
       {/* Right: Actions & User Capsule */}
