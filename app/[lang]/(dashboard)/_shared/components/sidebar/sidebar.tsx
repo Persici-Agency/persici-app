@@ -28,6 +28,7 @@ import {
   TbForms,
   TbBriefcase,
   TbStar,
+  TbTool,
 } from 'react-icons/tb';
 
 export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
@@ -135,6 +136,7 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
   const canSeeCareersAts = ['admin', 'hr', 'editor'].includes(role);
   const canSeeLeads = ['admin', 'media buying'].includes(role);
   const canSeeContent = ['admin', 'editor', 'author'].includes(role);
+  const canSeeMaintenance = ['admin', 'editor'].includes(role);
   const canSeeUsers = role === 'admin';
   const canSeeSettings = role === 'admin';
 
@@ -192,6 +194,7 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
     insights: isRtl ? 'المدونة والمقالات' : 'Blogs & Insights',
     projects: isRtl ? 'قصص نجاح العملاء' : 'Client Stories',
     reviews: isRtl ? 'التقييمات والشهادات' : 'Reviews & Testimonials',
+    maintenance: isRtl ? 'وضع الصيانة والتوجيه' : 'Maintenance Mode',
     users: isRtl ? 'فريق العمل وصلاحيات RBAC' : 'Team & RBAC Users',
     settings: isRtl ? 'إعدادات النظام والأمان' : 'System Settings',
     collapseBtn: isRtl ? 'طي الشريط الجانبي (Ctrl+B)' : 'Collapse Sidebar (Ctrl+B)',
@@ -944,7 +947,29 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
           </div>
         )}
 
-        {/* 8. Team & RBAC Users */}
+        {/* 10. Maintenance Mode & Global Redirect */}
+        {canSeeMaintenance && (
+          <div className="pt-2">
+            <div className="relative group">
+              <Link
+                href={getHref(`/${lang}/dashboard/maintenance`)}
+                className={`flex items-center ${
+                  isCollapsed ? 'justify-center p-3' : 'gap-3 px-3.5 py-2.5'
+                } rounded-xl text-sm font-medium transition-all ${
+                  isActive('/dashboard/maintenance')
+                    ? 'bg-persici-crimson text-white shadow-lg shadow-persici-crimson/25'
+                    : 'text-white/70 hover:bg-white/5 hover:text-white'
+                }`}
+              >
+                <TbTool className="w-5 h-5 shrink-0" />
+                {!isCollapsed && <span>{t.maintenance}</span>}
+              </Link>
+              {isCollapsed && <div className={tooltipClass}>{t.maintenance}</div>}
+            </div>
+          </div>
+        )}
+
+        {/* 11. Team & RBAC Users */}
         {canSeeUsers && (
           <div className="pt-2">
             <div className="relative group">

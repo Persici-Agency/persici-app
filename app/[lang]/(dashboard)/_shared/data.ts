@@ -12,7 +12,8 @@ export const sidebarLinks: SidebarLink[] = [
   { id: '3', key: 'projects', href: '/dashboard/projects', icon: '💼', order: 3 },
   { id: '4', key: 'services', href: '/dashboard/services', icon: '⚙️', order: 4 },
   { id: '5', key: 'media', href: '/dashboard/media', icon: '🖼️', order: 5 },
-  { id: '6', key: 'settings', href: '/dashboard/settings', icon: '🔧', order: 6 },
+  { id: '6', key: 'maintenance', href: '/dashboard/maintenance', icon: '🛠️', order: 6 },
+  { id: '7', key: 'settings', href: '/dashboard/settings', icon: '🔧', order: 7 },
 ];
 
 export const dashboardOverviewMetrics: DashboardMetric[] = [
