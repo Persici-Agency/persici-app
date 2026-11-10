@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 import {
   TbArticle,
   TbBriefcase,
@@ -16,8 +16,16 @@ import {
 
 export default function ContentHubPage() {
   const params = useParams();
+  const searchParams = useSearchParams();
   const lang = (params?.lang as string) || 'en';
   const isRtl = lang === 'ar';
+  const passkey = searchParams?.get('passkey') || searchParams?.get('key') || '';
+
+  const getHref = (href: string) => {
+    if (!passkey) return href;
+    const sep = href.includes('?') ? '&' : '?';
+    return `${href}${sep}passkey=${encodeURIComponent(passkey)}`;
+  };
 
   const sections = [
     {
@@ -140,7 +148,7 @@ export default function ContentHubPage() {
 
               <div className="pt-6 mt-6 border-t border-slate-100 flex items-center justify-between gap-3">
                 <Link
-                  href={sec.href}
+                  href={getHref(sec.href)}
                   className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900 text-white hover:bg-slate-800 text-xs font-semibold transition-colors shadow-xs"
                 >
                   <span>{sec.ctaLabel}</span>

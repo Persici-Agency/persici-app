@@ -85,6 +85,7 @@ Consult the authoritative master documentation in `.doc/` for in-depth specifica
 | [`.doc/reference-about-page-architecture.md`](file:///i:/Projects/persici-app/.doc/reference-about-page-architecture.md) | About Us (`/about`), agency heritage, 10 view sections, 3D origami & milestones. |
 | [`.doc/reference-legal-and-compliance-architecture.md`](file:///i:/Projects/persici-app/.doc/reference-legal-and-compliance-architecture.md) | Privacy policy (`/privacy`), Terms (`/terms`), GDPR/CCPA & UAE/KSA/Jordan compliance. |
 | [`.doc/reference-maintenance-and-redirect-architecture.md`](file:///home/mahmoodmubdi/Projects/persici-app/.doc/reference-maintenance-and-redirect-architecture.md) | Site Maintenance Mode & Global Redirect System (`/dashboard/maintenance`), `proxy.ts` edge interception, optional countdown timer & direct URL redirection. |
+| [`.doc/reference-leads-media-buying-and-tracking-architecture.md`](file:///home/mahmoodmubdi/Projects/persici-app/.doc/reference-leads-media-buying-and-tracking-architecture.md) | Leads & Media Buying CRM (`/dashboard/leads/*`), Dashboard Home Analytics (`/dashboard`), Google Tag Manager (GTM), Google Analytics 4 (GA4 + Future API setup), Ad Pixels & WPCode-style Custom Code Snippets (`/dashboard/leads/tracking`). |
 
 ---
 

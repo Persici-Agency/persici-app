@@ -1,22 +1,43 @@
-﻿'use client';
+'use client';
 
 import { useState } from 'react';
 import type { Dictionary } from '@dictionaries';
 import { getContactOffices } from '../services';
 import { sectionContainer, inputField, btnArrowIcon } from '@shared';
+import { getStoredAttribution, trackLeadConversion } from '@/lib/tracking-events';
 
 export function ContactFormSection({ dict }: { dict: Dictionary }) {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
   const offices = getContactOffices();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setTimeout(() => {
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: name.trim(),
+          email: email.trim(),
+          message: message.trim(),
+          subject: 'Contact Page Inquiry',
+          attribution: getStoredAttribution(),
+        }),
+      });
+      if (res.ok) {
+        trackLeadConversion('contact', { source: 'contact_page_form' });
+        setSubmitted(true);
+      }
+    } catch (err) {
+      console.error('[ContactFormSection] Submit error:', err);
+    } finally {
       setLoading(false);
-      setSubmitted(true);
-    }, 700);
+    }
   };
 
   return (
@@ -48,6 +69,8 @@ export function ContactFormSection({ dict }: { dict: Dictionary }) {
                   <input
                     type="text"
                     required
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
                     className={inputField}
                     placeholder="Your Name"
                   />
@@ -60,6 +83,8 @@ export function ContactFormSection({ dict }: { dict: Dictionary }) {
                   <input
                     type="email"
                     required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     className={inputField}
                     placeholder="you@brand.com"
                   />
@@ -72,6 +97,8 @@ export function ContactFormSection({ dict }: { dict: Dictionary }) {
                   <textarea
                     rows={4}
                     required
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
                     className={inputField}
                     placeholder="Tell us about your brand, current monthly revenue, and growth objectives..."
                   />

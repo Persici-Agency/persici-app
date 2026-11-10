@@ -190,6 +190,7 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
     appointments: isRtl ? 'مواعيد الجلسات الاستراتيجية' : 'Strategy Appointments',
     discovery: isRtl ? 'جلسات الاستكشاف المؤسسي' : 'Discovery Calls',
     campaignAnalytics: isRtl ? 'تحليلات أداء الحملات' : 'Campaign Analytics',
+    trackingPixels: isRtl ? 'البيكسل والأكواد و GTM/GA4' : 'Pixels, GTM & Code Snippets',
     editorial: isRtl ? 'المدونة والمقالات' : 'Blogs & Insights',
     insights: isRtl ? 'المدونة والمقالات' : 'Blogs & Insights',
     projects: isRtl ? 'قصص نجاح العملاء' : 'Client Stories',
@@ -875,6 +876,16 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
                   }`}
                 >
                   {t.campaignAnalytics}
+                </Link>
+                <Link
+                  href={getHref(`/${lang}/dashboard/leads/tracking`)}
+                  className={`block px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                    isActive('/dashboard/leads/tracking')
+                      ? 'bg-purple-500/20 text-purple-200 font-semibold'
+                      : 'text-white/60 hover:text-white'
+                  }`}
+                >
+                  {t.trackingPixels}
                 </Link>
               </div>
             )}

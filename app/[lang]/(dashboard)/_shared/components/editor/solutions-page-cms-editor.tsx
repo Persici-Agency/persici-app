@@ -678,7 +678,7 @@ export function SolutionsPageCmsEditor({
                 {previewStories.length === 1 ? 'Story' : 'Stories'} Will Be Displayed
               </span>
               <Link
-                href={`/${lang}/dashboard/projects`}
+                href={`/${lang}/dashboard/content/projects`}
                 className="inline-flex items-center gap-1 text-[11px] text-slate-300 hover:text-white underline"
               >
                 <span>Manage All Client Stories</span>
@@ -1414,7 +1414,7 @@ export function SolutionsPageCmsEditor({
                 {previewBlogs.length === 1 ? 'Blog' : 'Blogs'} Will Be Loaded
               </span>
               <Link
-                href={`/${lang}/dashboard/insights`}
+                href={`/${lang}/dashboard/content/insights`}
                 className="inline-flex items-center gap-1 text-[11px] text-slate-300 hover:text-white underline"
               >
                 <span>Manage All Blogs &amp; Insights</span>
