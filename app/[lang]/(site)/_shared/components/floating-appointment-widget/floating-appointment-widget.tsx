@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
 import Image from 'next/image';
@@ -6,6 +6,7 @@ import type { Dictionary } from '@dictionaries';
 import { HomeButton } from '../home-button';
 import { IoCall, IoChevronDown, IoClose } from 'react-icons/io5';
 import { cn } from '@shared/utils';
+import { getStoredAttribution, trackLeadConversion } from '@/lib/tracking-events';
 
 export type FloatingAppointmentWidgetProps = {
   lang: string;
@@ -86,6 +87,7 @@ export function FloatingAppointmentWidget({ lang, dict }: FloatingAppointmentWid
         revenue: form.revenue,
         selectedDate: selectedDayStr,
         selectedTime: selectedTimeSlot,
+        attribution: getStoredAttribution(),
       };
 
       const res = await fetch('/api/appointment', {
@@ -99,6 +101,11 @@ export function FloatingAppointmentWidget({ lang, dict }: FloatingAppointmentWid
         throw new Error(data.error || 'Failed to book appointment. Please try again.');
       }
 
+      trackLeadConversion('appointment', {
+        revenue: form.revenue,
+        selectedDate: selectedDayStr,
+        selectedTime: selectedTimeSlot,
+      });
       setStep('success');
     } catch (err) {
       console.error('[FloatingAppointmentWidget] Booking error:', err);

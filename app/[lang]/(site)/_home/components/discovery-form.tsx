@@ -6,11 +6,13 @@ import type { Dictionary } from '@dictionaries';
 import { HomeButton } from '@shared/components/home-button';
 import { getHomeDiscoveryRevenueOptions } from '../services';
 import type { DiscoveryFormData } from '@shared/types';
+import { getStoredAttribution, trackLeadConversion } from '@/lib/tracking-events';
 
 export function DiscoveryCallForm({ dict }: { dict: Dictionary }) {
   const revenueOptions = getHomeDiscoveryRevenueOptions();
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [formData, setFormData] = useState<DiscoveryFormData>({
     firstName: '',
     lastName: '',
@@ -22,11 +24,39 @@ export function DiscoveryCallForm({ dict }: { dict: Dictionary }) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    // Simulates Next.js 16 Server Action or API route call
-    setTimeout(() => {
-      setLoading(false);
+    setErrorMessage(null);
+
+    try {
+      const payload = {
+        ...formData,
+        name: `${formData.firstName} ${formData.lastName}`.trim(),
+        attribution: getStoredAttribution(),
+      };
+
+      const res = await fetch('/api/discovery', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || 'Failed to submit discovery request.');
+      }
+
+      trackLeadConversion('discovery', {
+        revenue: formData.revenue,
+        website: formData.website,
+      });
       setSubmitted(true);
-    }, 800);
+    } catch (err) {
+      console.error('[DiscoveryCallForm] Submit error:', err);
+      setErrorMessage(
+        err instanceof Error ? err.message : 'Failed to submit discovery request.'
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (submitted) {
@@ -149,6 +179,12 @@ export function DiscoveryCallForm({ dict }: { dict: Dictionary }) {
             </div>
           </div>
         </div>
+
+        {errorMessage && (
+          <div className="rounded-xl bg-red-50 border border-red-200 p-3 text-xs text-red-700 font-medium">
+            {errorMessage}
+          </div>
+        )}
 
         <HomeButton
           type="submit"

@@ -13,6 +13,7 @@ import {
   HomeButton,
 } from '@shared';
 import { defaultSharedContactData } from '@shared/data';
+import { getStoredAttribution, trackLeadConversion } from '@/lib/tracking-events';
 
 export type HomeContactSectionProps = {
   lang: string;
@@ -185,6 +186,7 @@ export function HomeContactSection({ lang, dict, content }: HomeContactSectionPr
         reason: formData.reason.trim(),
         message: formData.message.trim(),
         subject: formData.reason ? `Contact: ${formData.reason}` : 'General Agency Inquiry',
+        attribution: getStoredAttribution(),
       };
 
       const res = await fetch('/api/contact', {
@@ -198,6 +200,11 @@ export function HomeContactSection({ lang, dict, content }: HomeContactSectionPr
         throw new Error(errData.error || 'Failed to submit inquiry. Please try again.');
       }
 
+      trackLeadConversion('contact', {
+        reason: formData.reason || 'General Inquiry',
+        country: formData.country || '',
+        company: formData.company || '',
+      });
       setIsSubmitted(true);
     } catch (err) {
       console.error('[HomeContactSection] Submit error:', err);

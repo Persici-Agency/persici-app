@@ -324,12 +324,34 @@ export interface DiscoveryRevenueOption {
   label?: string;
 }
 
+export interface LeadAttributionInfo {
+  utmSource?: string;
+  utmMedium?: string;
+  utmCampaign?: string;
+  utmTerm?: string;
+  utmContent?: string;
+  gclid?: string;
+  fbclid?: string;
+  ttclid?: string;
+  liFatId?: string;
+  twclid?: string;
+  sccid?: string;
+  referrer?: string;
+  landingPage?: string;
+}
+
 export interface DiscoveryFormData {
   firstName: string;
   lastName: string;
   email: string;
   website: string;
   revenue: string;
+  name?: string;
+  phone?: string;
+  company?: string;
+  timeline?: string;
+  description?: string;
+  attribution?: LeadAttributionInfo;
 }
 
 export interface DiscoverySubmission extends BaseMongoDocument, DiscoveryFormData {
@@ -423,10 +445,12 @@ export interface ContactFormData {
   country?: string;
   jobTitle?: string;
   reason?: string;
+  attribution?: LeadAttributionInfo;
 }
 
 export interface ContactSubmission extends BaseMongoDocument, ContactFormData {
-  status?: 'unread' | 'read' | 'replied';
+  status?: 'unread' | 'read' | 'contacted' | 'replied' | 'qualified' | 'closed';
+  notes?: string;
 }
 
 export interface AppointmentFormData {
@@ -438,10 +462,12 @@ export interface AppointmentFormData {
   selectedTime?: string;
   phone?: string;
   notes?: string;
+  attribution?: LeadAttributionInfo;
 }
 
 export interface AppointmentSubmission extends BaseMongoDocument, AppointmentFormData {
-  status?: 'pending' | 'confirmed' | 'cancelled';
+  status?: 'pending' | 'confirmed' | 'completed' | 'cancelled';
+  adminNotes?: string;
 }
 
 export interface JobApplicationFormData {

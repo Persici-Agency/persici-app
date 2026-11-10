@@ -234,15 +234,23 @@ export async function proxy(request: NextRequest) {
     // =========================================================================
     // CASE 2: No valid passkey in the query parameter!
     // =========================================================================
-    // Check if this is an internal Next.js client transition/data prefetch in an active session
-    const isInternalTransition = Boolean(
-      (request.headers.get('rsc') === '1' || request.headers.get('next-router-prefetch')) &&
-      isGateCookieValid &&
-      sessionUser
-    );
+    // If the operator is already authenticated AND holds a valid ephemeral session gate cookie
+    // in this browser tab, allow RSC data fetches and automatically restore ?passkey= on document navigation
+    if (isGateCookieValid && sessionUser) {
+      const isRscOrPrefetch = Boolean(
+        request.headers.get('rsc') === '1' ||
+          request.headers.get('next-router-prefetch')
+      );
+      if (isRscOrPrefetch) {
+        return NextResponse.next();
+      }
 
-    if (isInternalTransition) {
-      return NextResponse.next();
+      const redirectWithPasskey = request.nextUrl.clone();
+      redirectWithPasskey.pathname = pathLocale
+        ? pathname
+        : `/${currentLocale}${pathWithoutLocale}`;
+      redirectWithPasskey.searchParams.set('passkey', effectivePasskey);
+      return NextResponse.redirect(redirectWithPasskey);
     }
 
     // External or direct visit without ?passkey=... must be completely hidden!
