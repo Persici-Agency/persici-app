@@ -23,7 +23,7 @@ export const revalidate = 0;
 
 export async function generateMetadata({ params }: PageProps) {
   const { lang, slug } = await params;
-  if (!hasLocale(lang)) return {};
+  if (!hasLocale(lang)) notFound();
 
   if (extractIndustryFeatureSlug(slug)) {
     const pageData = await fetchIndustryFeaturePageData(slug);
@@ -39,7 +39,7 @@ export async function generateMetadata({ params }: PageProps) {
   }
 
   const industry = await fetchIndustryBySlug(slug);
-  if (!industry) return {};
+  if (!industry) notFound();
 
   const title = industry.title[lang as 'en' | 'ar'] || industry.title.en;
   const description = industry.description[lang as 'en' | 'ar'] || industry.description.en;

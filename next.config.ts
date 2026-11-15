@@ -4,6 +4,7 @@ const nextConfig: NextConfig = {
   output: 'standalone',
   poweredByHeader: false,
   compress: true,
+  htmlLimitedBots: /.*/,
   experimental: {
     cpus: 1,
     workerThreads: false,

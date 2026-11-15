@@ -29,10 +29,10 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: PageProps) {
   const { lang, slug } = await params;
-  if (!hasLocale(lang)) return {};
+  if (!hasLocale(lang)) notFound();
 
   const insight = await getInsightBySlugFromDb(slug);
-  if (!insight) return {};
+  if (!insight) notFound();
 
   const title = insight.title[lang as 'en' | 'ar'] || insight.title.en;
   const rawDescription = insight.excerpt[lang as 'en' | 'ar'] || insight.excerpt.en || '';

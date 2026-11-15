@@ -1,5 +1,4 @@
-import React from 'react';
-import { NotFoundTemplate } from '../_components/not-found-template';
+import { notFound } from 'next/navigation';
 
 export const metadata = {
   title: '404 - Page Not Found | Persici Agency',
@@ -10,11 +9,6 @@ export const metadata = {
   },
 };
 
-export default async function CatchAllNotFound({
-  params,
-}: {
-  params: Promise<{ lang: string }>;
-}) {
-  const { lang } = await params;
-  return <NotFoundTemplate forcedLang={lang} />;
+export default function CatchAllNotFound() {
+  notFound();
 }

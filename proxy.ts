@@ -8,6 +8,40 @@ import type { MaintenanceConfig } from '@/lib/maintenance-types';
 const locales = ['en', 'ar'];
 const defaultLocale = 'en';
 
+const SINGLE_SEGMENT_PUBLIC_ROUTES = new Set([
+  '/',
+  '/about',
+  '/contact',
+  '/privacy',
+  '/privacy-policy',
+  '/terms',
+  '/terms-of-service',
+  '/maintenance',
+]);
+
+const SECTION_WITH_SLUG_ROUTES = new Set([
+  'solutions',
+  'industries',
+  'how-we-do-it',
+  'client-stories',
+  'insights',
+  'careers',
+  'work',
+]);
+
+function isValidPublicRoute(pathWithoutLocale: string): boolean {
+  if (SINGLE_SEGMENT_PUBLIC_ROUTES.has(pathWithoutLocale)) {
+    return true;
+  }
+
+  const segments = pathWithoutLocale.split('/').filter(Boolean);
+  if (segments.length >= 1 && segments.length <= 2) {
+    return SECTION_WITH_SLUG_ROUTES.has(segments[0]);
+  }
+
+  return false;
+}
+
 interface GlobalProxyMaintenanceState {
   __persiciMaintenanceCache?: {
     config: MaintenanceConfig;
@@ -309,6 +343,18 @@ export async function proxy(request: NextRequest) {
     const maintUrl = request.nextUrl.clone();
     maintUrl.pathname = `/${currentLocale}/maintenance`;
     return NextResponse.rewrite(maintUrl);
+  }
+
+  // 4.75. Enforce true HTTP 404 status for /404, /[lang]/404, and unknown public routes
+  if (
+    pathWithoutLocale === '/404' ||
+    pathWithoutLocale.startsWith('/404/') ||
+    !isValidPublicRoute(pathWithoutLocale)
+  ) {
+    const currentLocale = pathLocale || getLocale(request);
+    const notFoundUrl = request.nextUrl.clone();
+    notFoundUrl.pathname = `/${currentLocale}/404`;
+    return NextResponse.rewrite(notFoundUrl, { status: 404 });
   }
 
   // 5. Internationalization locale redirect

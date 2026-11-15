@@ -24,7 +24,7 @@ export async function generateMetadata({
   params,
 }: PageProps<'/[lang]/solutions/[slug]'>) {
   const { lang, slug } = await params;
-  if (!hasLocale(lang)) return {};
+  if (!hasLocale(lang)) notFound();
 
   if (isSolutionPageSlug(slug)) {
     const pageData = await fetchSolutionFeaturePageData(slug);
@@ -52,7 +52,7 @@ export async function generateMetadata({
   }
 
   const solution = await fetchSolutionBySlug(slug);
-  if (!solution) return {};
+  if (!solution) notFound();
 
   const title = solution.title[lang as 'en' | 'ar'] || solution.title.en;
   const description = solution.description[lang as 'en' | 'ar'] || solution.description.en;
