@@ -18,9 +18,17 @@ interface PageProps {
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
+const VALID_HOW_WE_DO_IT_SLUGS = new Set([
+  'strategy-consulting',
+  'digital-transformation-framework',
+  'product-management',
+  'engineering-technology',
+  'experience-transformation',
+]);
+
 export async function generateMetadata({ params }: PageProps) {
   const { lang, slug } = await params;
-  if (!hasLocale(lang)) return {};
+  if (!hasLocale(lang) || !VALID_HOW_WE_DO_IT_SLUGS.has(slug)) notFound();
 
   const isAr = lang === 'ar';
   const data = await getHowWeDoItFeaturePageData(slug);

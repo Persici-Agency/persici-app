@@ -3,12 +3,15 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { usePathname } from 'next/navigation';
+import { usePathname, useParams } from 'next/navigation';
 import { TbHome, TbMail, TbArrowRight, TbArrowLeft } from 'react-icons/tb';
 
 export function NotFoundTemplate({ forcedLang }: { forcedLang?: string }) {
   const pathname = usePathname() || '';
-  const detectedLang = forcedLang || (pathname.startsWith('/ar') ? 'ar' : 'en');
+  const params = useParams();
+  const detectedLang =
+    forcedLang ||
+    (params?.lang === 'ar' || pathname === '/ar' || pathname.startsWith('/ar/') ? 'ar' : 'en');
   const [currentLang, setCurrentLang] = useState<'en' | 'ar'>(detectedLang === 'ar' ? 'ar' : 'en');
   const isAr = currentLang === 'ar';
   const lang = currentLang;

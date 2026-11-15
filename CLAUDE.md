@@ -52,7 +52,11 @@
     - Service 1 ("Technology & AI Digital Transformation"): **Python** is first, followed by Next.js, React, Flutter, Angular (replacing React Native), Node.js, PHP (Laravel), WordPress, AWS, Docker, GCP, MongoDB, Figma, OpenAI API.
     - Platform vector icons (Salesforce, Adobe, Canva, Python) are mirrored locally and on Cloudflare R2, with resilient React Icon fallbacks.
 
-11. **Mandatory Post-Command `.doc/` Documentation Synchronization Protocol**:
+11. **True HTTP 404 Status Enforcement**:
+    - Never place `app/[lang]/loading.tsx` above dynamic routes that call `notFound()` (prevents `<Suspense>` streaming from flushing `HTTP 200 OK` before `notFound()` executes).
+    - Keep `htmlLimitedBots: /.*/` in `next.config.ts`, enforce `notFound()` in both `generateMetadata()` and page components across all 7 dynamic `[slug]` routes (`solutions`, `industries`, `how-we-do-it`, `client-stories`, `insights`, `careers`, `work`), invoke `notFound()` in `app/[lang]/[...not_found]/page.tsx`, and keep `proxy.ts` rewriting `/404`, `/[lang]/404`, and unknown public paths with `{ status: 404 }`.
+
+12. **Mandatory Post-Command `.doc/` Documentation Synchronization Protocol**:
     - **IMPORTANT (After Every Command / Prompt)**: Every AI agent or developer who implements features, modifies API routes, updates schemas, or alters UI components **MUST immediately update the `.doc/` documentation ecosystem** before concluding the command.
     - If a reference file for the updated subsystem already exists in `.doc/`, update it with the latest changes.
     - If the updated feature or subsystem does not yet have a reference file in `.doc/`, create a new authoritative reference file `.doc/reference-<domain>.md` and register it in `.doc/instructions.md` and `CLAUDE.md`.
@@ -72,7 +76,7 @@ Consult the authoritative master documentation in `.doc/` for in-depth specifica
 | [`.doc/reference-storage-library-and-media-picker-system.md`](file:///i:/Projects/persici-app/.doc/reference-storage-library-and-media-picker-system.md) | Storage Library (Cloudflare R2) (`/dashboard/media`), `MediaStorageBrowser`, `MediaDetailsInspector` (R2 slug renaming), `MediaPreviewModal`, `MediaPickerModal`, pagination & `.scrollbar-thin`. |
 | [`.doc/reference-media-and-r2-asset-pipeline.md`](file:///i:/Projects/persici-app/.doc/reference-media-and-r2-asset-pipeline.md) | Cloudflare R2 object storage, Sharp WebP compression, `lib/storage.ts` S3 operations (`renameFileInR2`), platform icons & client logos. |
 | [`.doc/reference-dashboard-and-cms-architecture.md`](file:///i:/Projects/persici-app/.doc/reference-dashboard-and-cms-architecture.md) | Admin dashboard (`/dashboard`), CMS content editor, Storage Library R2 module, MongoDB Atlas TLS Alert 80 diagnostics & SMTP diagnostics. |
-| [`.doc/reference-error-handling-and-404-architecture.md`](file:///i:/Projects/persici-app/.doc/reference-error-handling-and-404-architecture.md) | Luxury 404 error experience (`/[lang]/404`, `app/not-found.tsx`, `NotFoundTemplate`), catch-all route handling & Stealth 404 firewall. |
+| [`.doc/reference-error-handling-and-404-architecture.md`](file:///i:/Projects/persici-app/.doc/reference-error-handling-and-404-architecture.md) | Luxury 404 error experience (`/[lang]/404`, `app/[lang]/not-found.tsx`, `app/not-found.tsx`, `NotFoundTemplate`), true HTTP `404` status enforcement (`htmlLimitedBots`, `[slug]` `notFound()`, `proxy.ts` route validation), catch-all `notFound()` handling & Stealth 404 firewall. |
 | [`.doc/reference-shared-contact-and-homepage-advanced-controls.md`](file:///i:/Projects/persici-app/.doc/reference-shared-contact-and-homepage-advanced-controls.md) | Shared contact system, homepage advanced controls, dynamic form fields & reCAPTCHA. |
 | [`.doc/reference-client-stories-architecture.md`](file:///i:/Projects/persici-app/.doc/reference-client-stories-architecture.md) | Client Stories Hub (`/client-stories`), 4 showcase templates, video modal & metrics. |
 | [`.doc/reference-solutions-pages-reference.md`](file:///i:/Projects/persici-app/.doc/reference-solutions-pages-reference.md) | Solutions Hub (`/solutions`) & 9 dedicated Solution Feature Pages (`/solutions/[slug]`). |

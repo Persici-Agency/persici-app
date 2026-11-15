@@ -17,10 +17,10 @@ type PageProps = {
 
 export async function generateMetadata({ params }: PageProps) {
   const { lang, slug } = await params;
-  if (!hasLocale(lang)) return {};
+  if (!hasLocale(lang)) notFound();
 
   const story = await getProjectBySlugFromDb(slug);
-  if (!story) return {};
+  if (!story) notFound();
 
   const title = story.title[lang as 'en' | 'ar'] || story.title.en;
   const description =

@@ -7,10 +7,10 @@ import { CareerDetailView } from './_career-detail';
 
 export async function generateMetadata({ params }: PageProps<'/[lang]/careers/[slug]'>) {
   const { lang, slug } = await params;
-  if (!hasLocale(lang)) return {};
+  if (!hasLocale(lang)) notFound();
 
   const job = await getCareerBySlugFromDb(slug);
-  if (!job) return {};
+  if (!job) notFound();
 
   const isAr = lang === 'ar';
 
