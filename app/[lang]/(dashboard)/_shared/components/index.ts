@@ -5,5 +5,6 @@ export * from './editor/rich-text-editor';
 export * from './editor/section-accordion';
 export * from './editor/cta-editor';
 export * from './editor/social-proof-editor';
+export * from './editor/client-logos-editor';
 export * from './media/media-picker-modal';
 export * from './careers/candidate-email-modal';

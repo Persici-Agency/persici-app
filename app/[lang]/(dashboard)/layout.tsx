@@ -47,7 +47,9 @@ export default async function DashboardLayout({
       {/* Main Administrative Workspace */}
       <div className="flex-1 flex flex-col min-w-0 overflow-x-hidden">
         <DashboardHeader dict={dict} user={user} lang={lang} />
-        <main className="p-4 sm:p-6 md:p-8 flex-1 w-full mx-auto">{children}</main>
+        <main className="p-4 sm:p-6 md:p-8 flex-1 w-full">
+          <div className="w-full max-w-[1440px] mx-auto">{children}</div>
+        </main>
       </div>
     </div>
   );

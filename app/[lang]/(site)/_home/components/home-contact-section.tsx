@@ -12,7 +12,7 @@ import {
   SwiperWrapper,
   HomeButton,
 } from '@shared';
-import { defaultSharedContactData } from '@shared/data';
+import { defaultSharedContactData, clientLogos as defaultClientLogos } from '@shared/data';
 import { getStoredAttribution, trackLeadConversion } from '@/lib/tracking-events';
 
 export type HomeContactSectionProps = {
@@ -26,20 +26,29 @@ export function HomeContactSection({ lang, dict, content }: HomeContactSectionPr
   const [sharedData, setSharedData] = useState<any>(content || null);
 
   useEffect(() => {
-    // If content wasn't provided or only has legacy fields, fetch the central shared contact document
-    if (!content || !content.reasons || !content.countries) {
-      fetch('/api/content/shared-contact')
-        .then((res) => (res.ok ? res.json() : null))
-        .then((data) => {
-          if (data && typeof data === 'object') {
-            setSharedData(data);
-          }
-        })
-        .catch(() => {});
-    }
-  }, [content]);
+    fetch('/api/content/shared-contact')
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        const resolved = data?.content || data;
+        if (resolved && typeof resolved === 'object' && Object.keys(resolved).length > 0) {
+          setSharedData(resolved);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
-  const activeContent = sharedData || content || defaultSharedContactData;
+  const activeContent = {
+    ...defaultSharedContactData,
+    ...(content || {}),
+    ...(sharedData || {}),
+  };
+
+  const customContactLogos =
+    Array.isArray(sharedData?.clientLogos) && sharedData.clientLogos.length > 0
+      ? sharedData.clientLogos
+      : Array.isArray(content?.clientLogos) && content.clientLogos.length > 0
+      ? content.clientLogos
+      : defaultClientLogos;
 
   const captchaEnabled = activeContent?.captchaEnabled !== false;
   const captchaSiteKey =
@@ -277,6 +286,7 @@ export function HomeContactSection({ lang, dict, content }: HomeContactSectionPr
                     <div className="w-full overflow-hidden">
                       <SwiperWrapper
                         title={trustedBy}
+                        logos={customContactLogos}
                         showTitle={true}
                         titleClassName="text-center"
                         logoSize="sm"

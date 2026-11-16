@@ -395,7 +395,7 @@ export default function ProjectsManagerPage() {
   });
 
   return (
-    <div className="space-y-6 max-w-7xl pb-16" dir={isRtl ? 'rtl' : 'ltr'}>
+    <div className="w-full max-w-[1440px] mx-auto space-y-6 pb-16" dir={isRtl ? 'rtl' : 'ltr'}>
       {/* 1. Page Master Header */}
       <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200/90 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>

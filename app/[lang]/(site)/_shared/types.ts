@@ -511,6 +511,7 @@ export interface HeroSectionContent {
   ratingScore: string;
   ratingLabel: LocalizedString;
   trustedByTitle: LocalizedString;
+  clientLogos?: ClientLogo[];
 }
 
 export interface PartnerShowcaseSectionContent {
@@ -582,6 +583,7 @@ export interface HomeContactSectionContent {
   trustedBy: LocalizedString;
   title: LocalizedString;
   subtitle: LocalizedString;
+  clientLogos?: ClientLogo[];
 }
 
 export interface DiscoverySectionContent {

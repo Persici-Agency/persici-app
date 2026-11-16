@@ -471,7 +471,7 @@ export default function CareerOpeningsPage() {
   const activeCount = openings.filter((o) => o.isActive !== false).length;
 
   return (
-    <div className="space-y-6">
+    <div className="w-full max-w-[1440px] mx-auto space-y-6 pb-16">
       {/* Page Header */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
         <div>

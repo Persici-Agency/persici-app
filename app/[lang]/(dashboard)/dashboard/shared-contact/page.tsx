@@ -4,6 +4,10 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { SectionAccordion } from '@dashboard-shared/components/editor/section-accordion';
+import {
+  ClientLogosEditor,
+  normalizeLogosList,
+} from '@dashboard-shared/components/editor/client-logos-editor';
 import { MediaPickerModal } from '@dashboard-shared/components/media/media-picker-modal';
 import {
   TbDeviceFloppy,
@@ -70,6 +74,7 @@ export default function SharedContactManagerPage() {
     successMessageAr: '',
     bgImage: '/images/footer/footer.gif',
     showLogosSwiper: true,
+    clientLogos: normalizeLogosList(defaultSharedContactData.clientLogos),
     captchaEnabled: true,
     captchaSiteKey: '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI',
     points: [] as StrategicPoint[],
@@ -80,6 +85,12 @@ export default function SharedContactManagerPage() {
 
   // Media Picker state
   const [mediaPickerOpen, setMediaPickerOpen] = useState(false);
+  const [mediaPickerCallback, setMediaPickerCallback] = useState<((url: string) => void) | null>(null);
+
+  const openMediaPicker = (cb: (url: string) => void) => {
+    setMediaPickerCallback(() => cb);
+    setMediaPickerOpen(true);
+  };
 
   // Load existing content from API
   useEffect(() => {
@@ -91,9 +102,11 @@ export default function SharedContactManagerPage() {
         const data = res.ok ? await res.json() : null;
 
         if (mounted) {
-          const base = data && typeof data === 'object' && Object.keys(data).length > 0
-            ? data
-            : defaultSharedContactData;
+          const rawContent = data?.content || data;
+          const base =
+            rawContent && typeof rawContent === 'object' && Object.keys(rawContent).length > 0
+              ? rawContent
+              : defaultSharedContactData;
 
           setFormData({
             leftTitleEn: base.leftTitle?.en || defaultSharedContactData.leftTitle.en,
@@ -110,6 +123,7 @@ export default function SharedContactManagerPage() {
             successMessageAr: base.successMessage?.ar || defaultSharedContactData.successMessage.ar,
             bgImage: base.bgImage || defaultSharedContactData.bgImage,
             showLogosSwiper: base.showLogosSwiper !== false,
+            clientLogos: normalizeLogosList(base.clientLogos),
             captchaEnabled: base.captchaEnabled !== false,
             captchaSiteKey: base.captchaSiteKey || defaultSharedContactData.captchaSiteKey,
             points: Array.isArray(base.points) && base.points.length > 0 ? base.points : defaultSharedContactData.points,
@@ -163,6 +177,7 @@ export default function SharedContactManagerPage() {
         },
         bgImage: formData.bgImage,
         showLogosSwiper: formData.showLogosSwiper,
+        clientLogos: normalizeLogosList(formData.clientLogos),
         captchaEnabled: formData.captchaEnabled,
         captchaSiteKey: formData.captchaSiteKey,
         points: formData.points,
@@ -199,7 +214,7 @@ export default function SharedContactManagerPage() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6 pb-20">
+    <div className="w-full max-w-[1440px] mx-auto space-y-6 pb-20">
       {/* Top Header & Save All Action */}
       <div className="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-slate-200">
         <div>
@@ -573,7 +588,11 @@ export default function SharedContactManagerPage() {
                 />
                 <button
                   type="button"
-                  onClick={() => setMediaPickerOpen(true)}
+                  onClick={() =>
+                    openMediaPicker((url) => {
+                      setFormData((prev: any) => ({ ...prev, bgImage: url }));
+                    })
+                  }
                   className="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-semibold shrink-0 flex items-center gap-1.5 transition-colors"
                 >
                   <TbPhoto className="w-3.5 h-3.5" />
@@ -605,6 +624,16 @@ export default function SharedContactManagerPage() {
               <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-persici-crimson" />
             </label>
           </div>
+
+          {formData.showLogosSwiper && (
+            <ClientLogosEditor
+              logos={formData.clientLogos}
+              onChange={(updatedLogos) => setFormData({ ...formData, clientLogos: updatedLogos })}
+              onOpenMediaPicker={(cb) => openMediaPicker(cb)}
+              title="Contact Section Client Logos Swiper"
+              subtitle="Drag and drop any logo card to change its order in the Contact Section marquee, replace images, or add new partner logos."
+            />
+          )}
         </div>
       </SectionAccordion>
 
@@ -1034,13 +1063,21 @@ export default function SharedContactManagerPage() {
       {/* Media Picker Modal */}
       <MediaPickerModal
         isOpen={mediaPickerOpen}
-        onClose={() => setMediaPickerOpen(false)}
-        onSelect={(url) => {
-          setFormData({ ...formData, bgImage: url });
+        onClose={() => {
           setMediaPickerOpen(false);
+          setMediaPickerCallback(null);
+        }}
+        onSelect={(url) => {
+          if (mediaPickerCallback) {
+            mediaPickerCallback(url);
+          } else {
+            setFormData({ ...formData, bgImage: url });
+          }
+          setMediaPickerOpen(false);
+          setMediaPickerCallback(null);
         }}
         allowedType="image"
-        title="Select Animated Backdrop Media (GIF / WebP)"
+        title="Select Image or Animated Media (Cloudflare R2)"
       />
     </div>
   );
