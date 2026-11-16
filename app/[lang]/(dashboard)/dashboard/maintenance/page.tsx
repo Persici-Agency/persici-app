@@ -287,7 +287,7 @@ export default function MaintenanceDashboardPage({
 
   if (loading) {
     return (
-      <div className="space-y-6 max-w-6xl animate-pulse">
+      <div className="w-full max-w-[1440px] mx-auto space-y-6 animate-pulse">
         <div className="h-32 bg-white rounded-2xl border border-slate-200" />
         <div className="h-64 bg-white rounded-2xl border border-slate-200" />
       </div>
@@ -295,7 +295,7 @@ export default function MaintenanceDashboardPage({
   }
 
   return (
-    <div className="space-y-6 max-w-6xl pb-12">
+    <div className="w-full max-w-[1440px] mx-auto space-y-6 pb-12">
       {/* Page Title & Quick Actions Header */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
         <div>

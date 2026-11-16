@@ -98,7 +98,7 @@ export default function ContentHubPage() {
   ];
 
   return (
-    <div className="space-y-6 max-w-6xl">
+    <div className="w-full max-w-[1440px] mx-auto space-y-6 pb-16">
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-xs">
         <div>

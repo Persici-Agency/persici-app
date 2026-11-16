@@ -6,6 +6,10 @@ import { SectionAccordion } from '@dashboard-shared/components/editor/section-ac
 import { RichTextEditor } from '@dashboard-shared/components/editor/rich-text-editor';
 import { CtaEditor, type CtaConfig } from '@dashboard-shared/components/editor/cta-editor';
 import { SocialProofEditor, type SocialProofConfig } from '@dashboard-shared/components/editor/social-proof-editor';
+import {
+  ClientLogosEditor,
+  normalizeLogosList,
+} from '@dashboard-shared/components/editor/client-logos-editor';
 import { MediaPickerModal } from '@dashboard-shared/components/media/media-picker-modal';
 import {
   TbDeviceFloppy,
@@ -108,19 +112,34 @@ export default function UniversalPageCmsEditor() {
     const loadContent = async () => {
       setLoading(true);
       try {
-        const [res, reviewsRes] = await Promise.all([
+        const [res, reviewsRes, sharedContactRes] = await Promise.all([
           fetch(`/api/content/${slug}`),
           slug === 'home' ? fetch('/api/reviews').then((r) => r.json()).catch(() => null) : Promise.resolve(null),
+          slug === 'home' ? fetch('/api/content/shared-contact').then((r) => r.json()).catch(() => null) : Promise.resolve(null),
         ]);
         const data = await res.json();
+        const sharedContactDoc = sharedContactRes?.content || sharedContactRes || null;
         if (data.content) {
           const c = data.content;
           const canonicalReviews = (reviewsRes?.success && Array.isArray(reviewsRes.reviews) && reviewsRes.reviews.length > 0)
             ? reviewsRes.reviews
             : null;
           if (slug === 'home') {
+            const rawHeroLogos =
+              Array.isArray(c.clientLogos) && c.clientLogos.length > 0
+                ? c.clientLogos
+                : Array.isArray(c.hero?.clientLogos) && c.hero.clientLogos.length > 0
+                ? c.hero.clientLogos
+                : undefined;
+            const rawContactLogos =
+              Array.isArray(sharedContactDoc?.clientLogos) && sharedContactDoc.clientLogos.length > 0
+                ? sharedContactDoc.clientLogos
+                : Array.isArray(c.homeContact?.clientLogos) && c.homeContact.clientLogos.length > 0
+                ? c.homeContact.clientLogos
+                : undefined;
             setPageData({
               ...c,
+              sharedContactDoc,
               // 1. Hero
               heroTitle: c.heroTitle || c.hero?.title?.en || '',
               heroTitleAr: c.heroTitleAr || c.hero?.title?.ar || '',
@@ -147,7 +166,8 @@ export default function UniversalPageCmsEditor() {
                     ],
               partnersTitleEn: c.partnersTitleEn || c.hero?.trustedByTitle?.en || c.hero?.trustedBy?.en || 'Trusted by Global Industry Pioneers',
               partnersTitleAr: c.partnersTitleAr || c.hero?.trustedByTitle?.ar || c.hero?.trustedBy?.ar || 'موثوق من رواد وقادة القطاعات العالمية',
-              clientLogos: c.clientLogos || c.hero?.clientLogos || [],
+              clientLogos: normalizeLogosList(rawHeroLogos),
+              contactClientLogos: normalizeLogosList(rawContactLogos),
 
               // 2. Partner Showcase
               partnerShowcaseTitleEn: c.partnerShowcaseTitleEn || c.partnerShowcase?.title?.en || '',
@@ -928,10 +948,11 @@ export default function UniversalPageCmsEditor() {
               en: pageData.partnersTitleEn || pageData.hero?.trustedByTitle?.en || pageData.hero?.trustedBy?.en || '',
               ar: pageData.partnersTitleAr || pageData.hero?.trustedByTitle?.ar || pageData.hero?.trustedBy?.ar || '',
             },
-            clientLogos: pageData.clientLogos || pageData.hero?.clientLogos || [],
+            clientLogos: normalizeLogosList(pageData.clientLogos || pageData.hero?.clientLogos),
             heroAvatars: pageData.heroAvatars || pageData.hero?.heroAvatars || [],
             avatars: pageData.heroAvatars || pageData.hero?.heroAvatars || [],
           },
+          clientLogos: normalizeLogosList(pageData.clientLogos || pageData.hero?.clientLogos),
           partnerShowcase: {
             ...pageData.partnerShowcase,
             title: {
@@ -1125,6 +1146,7 @@ export default function UniversalPageCmsEditor() {
               ar: pageData.homeContactSubtitleAr || pageData.homeContact?.subtitle?.ar || 'أرسل بياناتك وسيتواصل معك أحد خبرائنا في التحول الرقمي والتكنولوجيا.',
             },
             bgImage: pageData.homeContactBgImage || pageData.homeContact?.bgImage || '',
+            clientLogos: normalizeLogosList(pageData.contactClientLogos || pageData.homeContact?.clientLogos),
           },
           heroAvatars: pageData.heroAvatars || pageData.hero?.heroAvatars || [],
           growthServicesAvatars: pageData.growthServicesAvatars || pageData.growthServices?.avatars || [],
@@ -1324,15 +1346,35 @@ export default function UniversalPageCmsEditor() {
         };
       }
 
-      // Ensure _id and id are stripped before payload is sent
+      // Ensure _id, id, and temporary helper state are stripped before payload is sent
       delete payloadToSave._id;
       delete payloadToSave.id;
+      delete payloadToSave.sharedContactDoc;
+      delete payloadToSave.contactClientLogos;
 
       const res = await fetch(`/api/content/${slug}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payloadToSave),
       });
+      if (slug === 'home' && Array.isArray(pageData.contactClientLogos)) {
+        const baseShared =
+          pageData.sharedContactDoc && typeof pageData.sharedContactDoc === 'object'
+            ? pageData.sharedContactDoc
+            : {};
+        const sharedPayload = {
+          ...baseShared,
+          page: 'shared-contact',
+          clientLogos: normalizeLogosList(pageData.contactClientLogos),
+        };
+        delete (sharedPayload as Record<string, unknown>)._id;
+        delete (sharedPayload as Record<string, unknown>).id;
+        await fetch('/api/content/shared-contact', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(sharedPayload),
+        }).catch(() => null);
+      }
       const data = await res.json();
       if (!res.ok || data.success === false) {
         throw new Error(data.error || data.message || 'Failed to save page.');
@@ -1379,7 +1421,7 @@ export default function UniversalPageCmsEditor() {
       : `/${lang}/${slug}`;
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6 pb-20">
+    <div className="w-full max-w-[1440px] mx-auto space-y-6 pb-20">
       {/* Top Header & Save All Action */}
       <div className="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-slate-200">
         <div>
@@ -1565,57 +1607,13 @@ export default function UniversalPageCmsEditor() {
                 </div>
               </div>
 
-              <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold uppercase tracking-wider text-slate-700">
-                    Client Logos List ({(pageData.clientLogos || []).length})
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      openMediaPicker((url) => {
-                        const name = prompt('Company / Brand Name:', 'New Partner') || 'Partner';
-                        const existing = pageData.clientLogos || [];
-                        setPageData({
-                          ...pageData,
-                          clientLogos: [...existing, { name, src: url }],
-                        });
-                      }, 'image');
-                    }}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 text-white rounded-lg text-xs font-semibold hover:bg-slate-800"
-                  >
-                    <TbPlus className="w-3.5 h-3.5" />
-                    <span>Add Partner Logo</span>
-                  </button>
-                </div>
-
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 pt-2">
-                  {(pageData.clientLogos || [
-                    { name: 'Accor', src: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/clients/all-accor-live-limitless-logo.webp?v=2' },
-                    { name: 'Mashreq', src: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/clients/mashreq-logo.webp?v=3' },
-                    { name: 'Land of Exotics', src: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/clients/land-of-exotics-logo.webp?v=2' },
-                    { name: 'Meraas', src: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/clients/meraas-logo.webp?v=2' },
-                    { name: '7awi', src: 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev/clients/7awi-logo.webp?v=2' },
-                  ]).map((logo: any, idx: number) => (
-                    <div key={idx} className="relative group border border-slate-200 rounded-lg p-2.5 bg-white flex flex-col items-center justify-center text-center">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={logo.src} alt={logo.name} className="h-9 object-contain mb-1.5" />
-                      <span className="text-[10px] font-semibold text-slate-700 truncate w-full">{logo.name}</span>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          const updated = [...(pageData.clientLogos || [])];
-                          updated.splice(idx, 1);
-                          setPageData({ ...pageData, clientLogos: updated });
-                        }}
-                        className="absolute top-1 right-1 p-1 bg-red-600 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                      >
-                        <TbTrash className="w-3 h-3" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              <ClientLogosEditor
+                logos={pageData.clientLogos}
+                onChange={(updatedLogos) => setPageData({ ...pageData, clientLogos: updatedLogos })}
+                onOpenMediaPicker={(cb) => openMediaPicker(cb, 'image')}
+                title="Hero Client Logos Swiper"
+                subtitle="Drag and drop any logo card to reorder its position in the Hero marquee, click any image to replace it, or add new partner logos."
+              />
             </div>
           </SectionAccordion>
 
@@ -3690,38 +3688,46 @@ export default function UniversalPageCmsEditor() {
           </SectionAccordion>
 
           {/* ================================================================= */}
-          {/* Global Shared Contact Section Notice Banner                       */}
+          {/* Section 8: Global Shared Contact & Contact Swiper Editor          */}
           {/* ================================================================= */}
-          <div className="p-6 bg-gradient-to-r from-slate-900 to-slate-800 rounded-2xl text-white shadow-md border border-slate-700/60 space-y-4">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div className="flex items-center gap-3">
-                <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-persici-crimson text-white font-bold text-sm shadow-sm">
-                  8
-                </span>
+          <SectionAccordion
+            number={8}
+            title="8. Contact Section & Partner Logos Swiper"
+            description="Manage the Contact Section's Client Logos Swiper (drag-and-drop order, add/remove logos) and access the full Global Shared Contact Manager"
+            onSave={savePage}
+          >
+            <div className="p-5 bg-gradient-to-r from-slate-900 to-slate-800 rounded-2xl text-white shadow-sm border border-slate-700/60 space-y-3">
+              <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
                   <h3 className="font-bold text-sm tracking-tight text-white flex items-center gap-2">
                     <span>Global Shared Contact & Discovery Engine</span>
                     <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-white/10 text-slate-200">
-                      Shared Tab
+                      Synced Site-Wide
                     </span>
                   </h3>
-                  <p className="text-xs text-slate-400">Section 8 is globally shared across all site pages</p>
+                  <p className="text-xs text-slate-300 mt-1">
+                    Manage the Contact Section&apos;s Client Logos Swiper directly below, or open the full Shared Contact Manager for form fields, countries, and reCAPTCHA settings.
+                  </p>
                 </div>
+                <Link
+                  href={`/${lang}/dashboard/shared-contact`}
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-persici-crimson hover:bg-red-600 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-persici-crimson/30"
+                >
+                  <TbForms className="w-4 h-4" />
+                  <span>Open Full Shared Contact Manager</span>
+                  <TbChevronRight className="w-3.5 h-3.5 rtl:rotate-180" />
+                </Link>
               </div>
-              <Link
-                href={`/${lang}/dashboard/shared-contact`}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-persici-crimson hover:bg-red-600 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-persici-crimson/30"
-              >
-                <TbForms className="w-4 h-4" />
-                <span>Open Shared Contact Manager</span>
-                <TbChevronRight className="w-3.5 h-3.5 rtl:rotate-180" />
-              </Link>
             </div>
-            <p className="text-xs text-slate-300 leading-relaxed max-w-3xl">
-              The bottom contact section (&ldquo;Ready to accelerate your digital future?&rdquo; & Get in Touch form) is a global component shared across all pages (Home, About, Services, etc.).
-              To manage pitch titles, 4 strategic value points, animated GIF background, partner logos swiper, customizable form fields, countries list, reasons of contact, and Google reCAPTCHA v2 credentials, use the dedicated <strong className="text-white">Shared Contact</strong> tab.
-            </p>
-          </div>
+
+            <ClientLogosEditor
+              logos={pageData.contactClientLogos}
+              onChange={(updatedLogos) => setPageData({ ...pageData, contactClientLogos: updatedLogos })}
+              onOpenMediaPicker={(cb) => openMediaPicker(cb, 'image')}
+              title="Contact Section Client Logos Swiper"
+              subtitle="Drag and drop any logo card to change its position in the Contact Section marquee, replace images, or add new partner logos."
+            />
+          </SectionAccordion>
         </div>
       )}
 

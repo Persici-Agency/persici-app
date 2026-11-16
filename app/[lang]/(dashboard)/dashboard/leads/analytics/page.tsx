@@ -196,7 +196,7 @@ function MediaBuyingAnalyticsContent({ lang }: { lang: string }) {
   ).length;
 
   return (
-    <div className="space-y-6 max-w-7xl" dir={isAr ? 'rtl' : 'ltr'}>
+    <div className="w-full max-w-[1440px] mx-auto space-y-6 pb-16" dir={isAr ? 'rtl' : 'ltr'}>
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
         <div>

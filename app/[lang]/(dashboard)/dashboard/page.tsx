@@ -238,7 +238,7 @@ function DashboardOverviewInner() {
   const discoveryPct = totalLeads > 0 ? Math.round((discoveryCount / totalLeads) * 100) : 0;
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto">
+    <div className="w-full max-w-[1440px] mx-auto space-y-8">
       {/* Welcome Banner */}
       <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-[#131722] to-[#0e0f12] p-6 sm:p-8 text-white shadow-xl border border-white/10">
         <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
@@ -960,7 +960,7 @@ export default function DashboardOverviewPage() {
   return (
     <Suspense
       fallback={
-        <div className="space-y-8 max-w-7xl mx-auto">
+        <div className="w-full max-w-[1440px] mx-auto space-y-8">
           <div className="h-48 rounded-3xl bg-slate-900 animate-pulse" />
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {Array.from({ length: 4 }).map((_, i) => (

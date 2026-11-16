@@ -651,7 +651,7 @@ export default function InsightsManagerPage() {
   const featuredCount = insights.filter((i) => Boolean(i.featured)).length;
 
   return (
-    <div className="space-y-6 max-w-7xl pb-16">
+    <div className="w-full max-w-[1440px] mx-auto space-y-6 pb-16">
       {/* Toast Notification */}
       {toast && (
         <div className="fixed bottom-6 right-6 z-[80] flex items-center gap-2.5 px-4 py-3 rounded-xl bg-slate-900 text-white text-xs font-semibold shadow-2xl border border-slate-700 animate-in fade-in slide-in-from-bottom-4">

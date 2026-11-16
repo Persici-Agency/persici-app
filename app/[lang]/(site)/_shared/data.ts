@@ -1413,6 +1413,7 @@ export const homePageContent: HomePageContent = {
       en: 'Trusted by industry-leading innovators and fast-growing enterprises',
       ar: 'موثوق به من قبل كبرى المؤسسات الرائدة والمبتكرة',
     },
+    clientLogos: clientLogos,
   },
   partnerShowcase: {
     title: {
@@ -1586,6 +1587,7 @@ export const homePageContent: HomePageContent = {
       en: 'Submit the form below and our digital transformation experts will reach out.',
       ar: 'أرسل بياناتك وسيتواصل معك أحد خبرائنا في التحول الرقمي والتكنولوجيا.',
     },
+    clientLogos: clientLogos,
   },
   discovery: {
     title: {
@@ -1629,6 +1631,7 @@ export const defaultSharedContactData: any = {
   },
   bgImage: '/images/footer/footer.gif',
   showLogosSwiper: true,
+  clientLogos: clientLogos,
   captchaEnabled: true,
   captchaSiteKey: process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI',
   successTitle: {
