@@ -88,9 +88,16 @@ export function HeroSection({ lang, dict, content, className }: HeroSectionProps
 
         {/* Subtitle */}
         <FadeUp delay={150} duration={800} distance={24}>
-          <p className="mx-auto mt-6 max-w-2xl text-sm leading-relaxed text-foreground/75 sm:text-base lg:text-lg">
-            {subtitle}
-          </p>
+          {typeof subtitle === 'string' && /<[a-z][\s\S]*>/i.test(subtitle) ? (
+            <div
+              className="mx-auto mt-6 max-w-2xl text-sm leading-relaxed text-foreground/75 sm:text-base lg:text-lg [&_strong]:font-bold [&_b]:font-bold [&_em]:italic [&_u]:underline [&_h2]:text-xl [&_h2]:font-bold [&_h3]:text-lg [&_h3]:font-bold [&_ul]:list-disc [&_ul]:ps-6 [&_ul]:text-start [&_ol]:list-decimal [&_ol]:ps-6 [&_ol]:text-start [&_a]:text-persici-crimson [&_a]:underline"
+              dangerouslySetInnerHTML={{ __html: subtitle }}
+            />
+          ) : (
+            <p className="mx-auto mt-6 max-w-2xl text-sm leading-relaxed text-foreground/75 sm:text-base lg:text-lg">
+              {subtitle}
+            </p>
+          )}
         </FadeUp>
 
         {/* CTA & Rating Row */}

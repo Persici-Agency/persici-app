@@ -78,14 +78,27 @@ export function HeritageSection({ lang, dict, content }: HeritageSectionProps) {
           <h2 className={sectionHeading}>
             {title}
           </h2>
-          <p className="pt-5 mt-6 text-sm leading-relaxed text-foreground/75 sm:text-base">
-            {desc1}
-          </p>
-          {desc2 && (
-            <p className="p-2 mt-4 text-sm leading-relaxed text-foreground/75 sm:text-base">
-              {desc2}
+          {typeof desc1 === 'string' && /<[a-z][\s\S]*>/i.test(desc1) ? (
+            <div
+              className="pt-5 mt-6 text-sm leading-relaxed text-foreground/75 sm:text-base [&_strong]:font-bold [&_b]:font-bold [&_em]:italic [&_u]:underline [&_h2]:text-xl [&_h2]:font-bold [&_h3]:text-lg [&_h3]:font-bold [&_ul]:list-disc [&_ul]:ps-6 [&_ol]:list-decimal [&_ol]:ps-6 [&_a]:text-persici-crimson [&_a]:underline"
+              dangerouslySetInnerHTML={{ __html: desc1 }}
+            />
+          ) : (
+            <p className="pt-5 mt-6 text-sm leading-relaxed text-foreground/75 sm:text-base">
+              {desc1}
             </p>
           )}
+          {desc2 &&
+            (typeof desc2 === 'string' && /<[a-z][\s\S]*>/i.test(desc2) ? (
+              <div
+                className="p-2 mt-4 text-sm leading-relaxed text-foreground/75 sm:text-base [&_strong]:font-bold [&_b]:font-bold [&_em]:italic [&_u]:underline [&_h2]:text-xl [&_h2]:font-bold [&_h3]:text-lg [&_h3]:font-bold [&_ul]:list-disc [&_ul]:ps-6 [&_ol]:list-decimal [&_ol]:ps-6 [&_a]:text-persici-crimson [&_a]:underline"
+                dangerouslySetInnerHTML={{ __html: desc2 }}
+              />
+            ) : (
+              <p className="p-2 mt-4 text-sm leading-relaxed text-foreground/75 sm:text-base">
+                {desc2}
+              </p>
+            ))}
 
           <div className="mt-8 flex flex-wrap items-center gap-4">
             <HomeButton
