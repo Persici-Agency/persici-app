@@ -9,6 +9,7 @@ import {
   checkFileExistsInR2,
   toSeoFilename,
   isR2Configured,
+  type ImageQualityMode,
 } from '@/lib/storage';
 import { getDb, COLLECTIONS } from '@/lib/mongodb';
 import { getSessionUser } from '@/lib/auth/jwt';
@@ -251,6 +252,9 @@ export async function POST(request: NextRequest) {
     const alt = (formData.get('alt') as string) || '';
     const title = (formData.get('title') as string) || '';
     const caption = (formData.get('caption') as string) || '';
+    const rawQualityMode = (formData.get('qualityMode') as string) || 'high-webp';
+    const qualityMode: ImageQualityMode =
+      rawQualityMode === 'reduced-webp' ? 'reduced-webp' : 'high-webp';
     const thumbnailFile = formData.get('thumbnail') as File | null;
     const thumbnailDataUrl = formData.get('thumbnailDataUrl') as string | null;
 
@@ -275,8 +279,10 @@ export async function POST(request: NextRequest) {
     };
 
     if (mediaType === 'image' && !file.name.toLowerCase().endsWith('.svg')) {
-      // Process image through Sharp to convert to high-efficiency WebP
-      uploadResult = await uploadOptimizedImageToR2(fileBuffer, file.name, folder);
+      // Process image through Sharp to convert to WebP respecting qualityMode
+      uploadResult = await uploadOptimizedImageToR2(fileBuffer, file.name, folder, {
+        qualityMode,
+      });
     } else {
       // Direct stream upload for videos, documents, audio, SVG, archives
       uploadResult = await uploadGenericFileToR2(

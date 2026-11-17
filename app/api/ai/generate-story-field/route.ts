@@ -1,0 +1,405 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { getSessionUser } from '@/lib/auth/jwt';
+import { isRoleAllowed } from '@/lib/auth/rbac';
+import { generateStructuredAiJson } from '@/lib/ai-server';
+import type { AiEffectLevel, AiProviderId } from '@/lib/ai-types';
+
+export const runtime = 'nodejs';
+
+export type StoryAiTargetField =
+  | 'all'
+  | 'meta'
+  | 'slug'
+  | 'client'
+  | 'topic'
+  | 'region'
+  | 'services'
+  | 'title'
+  | 'leadSubtitle'
+  | 'executiveSummary'
+  | 'metrics'
+  | 'intro'
+  | 'problem'
+  | 'solution'
+  | 'impact'
+  | 'section_heading'
+  | 'paragraph'
+  | 'bullets'
+  | 'code_block'
+  | 'code_blocks'
+  | 'quote';
+
+export type NarrativeSectionRole = 'intro' | 'problem' | 'solution' | 'impact';
+
+const SECTION_ROLE_GUIDANCE: Record<NarrativeSectionRole, string> = {
+  intro:
+    'SECTION ROLE = OVERVIEW (Section 04): Establish the client organization, brand heritage or market position, strategic vision, and project scope before diving into obstacles. Keep tone authoritative, contextual, and SEO-enriched.',
+  problem:
+    'SECTION ROLE = THE CHALLENGE (Section 05): Focus strictly on business bottlenecks, technical debt, operational friction, fragmented systems, slow performance, or market challenges documented in the reference file. Highlight pain points crisply without repeating solution details.',
+  solution:
+    'SECTION ROLE = THE ENGINEERED SOLUTION (Section 06): Focus strictly on the technical architecture, digital strategy, AI pipelines, design system, cloud infrastructure, or campaign execution delivered by Persici Agency. Name concrete tools, methodologies, and workflows from the reference file.',
+  impact:
+    'SECTION ROLE = THE MEASURABLE IMPACT (Section 07): Focus strictly on quantifiable ROI, conversion lift, performance gains, customer growth, efficiency milestones, and long-term business value achieved from the engagement.',
+};
+
+function buildPromptForTarget(params: {
+  targetField: StoryAiTargetField;
+  referenceText: string;
+  currentStoryContext?: Record<string, unknown>;
+  sectionContext?: NarrativeSectionRole;
+  paragraphIndex?: number;
+  codeBlockIndex?: number;
+  codeLanguage?: string;
+}): { systemPrompt: string; userPrompt: string } {
+  const {
+    targetField,
+    referenceText,
+    currentStoryContext,
+    sectionContext,
+    paragraphIndex,
+    codeBlockIndex,
+    codeLanguage,
+  } = params;
+  const role: NarrativeSectionRole = sectionContext || 'intro';
+  const hasRef = Boolean(referenceText && referenceText.trim().length > 0);
+
+  const baseSystemPrompt = `You are the Principal Editorial, Solutions Architect & SEO Director at Persici Agency — a global leader in enterprise AI, Custom Software Engineering, Digital Transformation, UX Design, and Performance Marketing.
+
+CORE RULES:
+1. GROUNDING RULE: ${
+    hasRef
+      ? 'Rely strictly on the facts, brand names, technologies, deliverables, metrics, and context inside the provided REFERENCE DOCUMENT. Never invent fake client names or fabricated statistical numbers.'
+      : 'Use the provided Client Story metadata (client, title, topic, category, services, and active section context) to produce realistic, production-grade technical output.'
+  }
+2. SIMULTANEOUS BILINGUAL OUTPUT: Every bilingual object must provide authoritative B2B English ("en") and natural, idiomatic Modern Standard Arabic ("ar") suitable for C-suite executives (never literal word-by-word translation).
+3. SEO BEST PRACTICES: Weave high-intent industry keywords naturally into headings, summaries, and narrative prose without keyword stuffing.
+4. HTML FORMATTING FOR RICH TEXT FIELDS: When returning rich text / paragraphs, use clean semantic HTML tags (<p>, <strong>, <ul>, <li>) — no markdown backticks inside JSON strings.
+5. CODE OUTPUT FORMATTING: When generating code blocks, return raw valid code inside the "code" JSON string (escaped newlines \\n) without wrapping it in triple backtick markdown fences.
+6. JSON ONLY: Return strictly valid JSON matching the exact schema requested for the target field.`;
+
+  const storyContextJson = currentStoryContext
+    ? JSON.stringify(
+        {
+          client: currentStoryContext.client,
+          categorySlug: currentStoryContext.categorySlug,
+          templateType: currentStoryContext.templateType,
+          title: currentStoryContext.title,
+          topic: currentStoryContext.topic,
+          services: currentStoryContext.services,
+          executiveSummary: currentStoryContext.executiveSummary,
+          sectionSummary: currentStoryContext[role],
+          region: currentStoryContext.region,
+          date: currentStoryContext.date,
+        },
+        null,
+        2
+      )
+    : '{}';
+
+  let fieldInstructions = '';
+
+  switch (targetField) {
+    case 'meta':
+      fieldInstructions = `TARGET: Extract Case Study Meta & Classification.
+Allowed "categorySlug" values ONLY: "software" | "branding" | "marketing" | "video-production".
+Allowed "templateType" values ONLY: "software-web-app-showcase" | "mobile-app-showcase" | "marketing-video-showcase" | "image-gallery-showcase".
+Return STRICT JSON matching this exact schema:
+{
+  "client": "Exact client organization name from reference",
+  "slug": "seo-friendly-lowercase-hyphenated-slug",
+  "categorySlug": "software",
+  "templateType": "software-web-app-showcase",
+  "topic": { "en": "Industry / Niche in English", "ar": "المجال / الصناعة بالعربية" },
+  "region": { "en": "Geographic market e.g. Saudi Arabia & GCC", "ar": "المنطقة الجغرافية بالعربية" },
+  "date": "Year or Month Year e.g. August 2025",
+  "services": [
+    { "en": "Service 1", "ar": "الخدمة 1" },
+    { "en": "Service 2", "ar": "الخدمة 2" },
+    { "en": "Service 3", "ar": "الخدمة 3" }
+  ]
+}`;
+      break;
+
+    case 'client':
+      fieldInstructions = `TARGET: Client Organization Name.
+Return STRICT JSON: { "client": "Concise official client brand/company name from the reference" }`;
+      break;
+
+    case 'slug':
+      fieldInstructions = `TARGET: High-CTR, clean SEO URL Slug for the client story.
+Must be lowercase ASCII letters, numbers, and single hyphens only (max 6 words, e.g. "accor-enterprise-loyalty-platform").
+Return STRICT JSON: { "slug": "clean-seo-slug" }`;
+      break;
+
+    case 'topic':
+      fieldInstructions = `TARGET: Industry / Topic classification based on the reference.
+Return STRICT JSON: { "topic": { "en": "Industry / Sector (3-6 words)", "ar": "المجال والقطاع بالعربية" } }`;
+      break;
+
+    case 'region':
+      fieldInstructions = `TARGET: Geographic Region / Market served.
+Return STRICT JSON: { "region": { "en": "Region (e.g. UAE & Saudi Arabia)", "ar": "المنطقة بالعربية" } }`;
+      break;
+
+    case 'services':
+      fieldInstructions = `TARGET: 3 to 5 specific Services Delivered derived from the reference document.
+Return STRICT JSON: { "services": [ { "en": "Service Name EN", "ar": "اسم الخدمة بالعربية" } ] }`;
+      break;
+
+    case 'title':
+      fieldInstructions = `TARGET: SEO Primary H1 Case Study Title.
+Best practice: "[Client Name]: [High-Impact Transformation or Key Deliverable]" (approx 55-80 chars, compelling, keyword-rich).
+Return STRICT JSON: { "title": { "en": "SEO Case Study Title EN", "ar": "عنوان دراسة الحالة الرئيسي بالعربية" } }`;
+      break;
+
+    case 'leadSubtitle':
+      fieldInstructions = `TARGET: Lead Subtitle Hook (rendered right under the H1 title).
+Write 1-2 punchy, executive sentences in clean HTML (<p>...</p>, you may use <strong> on key outcome phrases) summarizing the transformation.
+Return STRICT JSON: { "leadSubtitle": { "en": "<p>...</p>", "ar": "<p>...</p>" } }`;
+      break;
+
+    case 'executiveSummary':
+      fieldInstructions = `TARGET: SEO Executive Summary (search snippet & executive intro paragraph).
+Write a crisp 2-4 sentence summary in clean HTML (<p>...</p> with <strong> emphasis on core scope and results) capturing who, what, how, and measurable business outcome.
+Return STRICT JSON: { "executiveSummary": { "en": "<p>...</p>", "ar": "<p>...</p>" } }`;
+      break;
+
+    case 'metrics':
+      fieldInstructions = `TARGET: Key Impact Metrics (2 to 4 CountUp KPI stat cards).
+Extract real quantitative results or strongest verified performance milestones from the reference (format value concisely like "+340%", "3.4x", "99.9%", "-42%", "14.2M+"). Keep labels short (2-4 words).
+Return STRICT JSON:
+{
+  "metrics": [
+    { "value": "+240%", "label": { "en": "Conversion Lift", "ar": "ارتفاع معدل التحويل" } }
+  ]
+}`;
+      break;
+
+    case 'intro':
+    case 'problem':
+    case 'solution':
+    case 'impact':
+      fieldInstructions = `${SECTION_ROLE_GUIDANCE[targetField]}
+Write 2 well-structured rich HTML paragraphs (<p>...</p> using <strong> on key concepts), 3 concise Key Highlight bullet points, and 1 authentic executive pull quote grounded in the reference.
+Return STRICT JSON matching this exact schema:
+{
+  "title": { "en": "Specific Engaging Section Heading EN", "ar": "عنوان القسم المناسب بالعربية" },
+  "paragraphs": [
+    { "en": "<p>Paragraph 1...</p>", "ar": "<p>الفقرة الأولى...</p>" },
+    { "en": "<p>Paragraph 2...</p>", "ar": "<p>الفقرة الثانية...</p>" }
+  ],
+  "bullets": [
+    { "en": "Concise highlight 1", "ar": "نقطة إبراز 1" },
+    { "en": "Concise highlight 2", "ar": "نقطة إبراز 2" },
+    { "en": "Concise highlight 3", "ar": "نقطة إبراز 3" }
+  ],
+  "quote": {
+    "text": { "en": "Executive quote summarizing this phase's truth/impact", "ar": "اقتباس تنفيذي يعكس هذه المرحلة" },
+    "author": "Stakeholder Name or Persici Engineering Lead",
+    "role": { "en": "Role / Organization", "ar": "المنصب / المؤسسة" }
+  }
+}`;
+      break;
+
+    case 'section_heading':
+      fieldInstructions = `${SECTION_ROLE_GUIDANCE[role]}
+TARGET: Write an SEO-friendly, authoritative Section Heading specifically for this section.
+Return STRICT JSON: { "en": "Section Heading EN", "ar": "عنوان القسم بالعربية" }`;
+      break;
+
+    case 'paragraph':
+      fieldInstructions = `${SECTION_ROLE_GUIDANCE[role]}
+TARGET: Write Body Paragraph #${(paragraphIndex ?? 0) + 1} specifically tailored to this section's purpose. Use clean semantic HTML (<p>...</p> with strategic <strong> highlights). Avoid repeating prior sections verbatim.
+Return STRICT JSON: { "en": "<p>...</p>", "ar": "<p>...</p>" }`;
+      break;
+
+    case 'bullets':
+      fieldInstructions = `${SECTION_ROLE_GUIDANCE[role]}
+TARGET: Generate 3 to 5 scannable, high-value Key Highlights / Bullet Points specifically for this section.
+Return STRICT JSON:
+{
+  "bullets": [
+    { "en": "Concise highlight 1", "ar": "نقطة بارزة 1" }
+  ]
+}`;
+      break;
+
+    case 'code_block':
+      fieldInstructions = `${SECTION_ROLE_GUIDANCE[role]}
+TARGET: Generate 1 crisp, realistic, production-quality Code Sample (#${(codeBlockIndex ?? 0) + 1}) directly relevant to the Client Story topic, title, and this section (${role}).
+${codeLanguage ? `REQUIRED LANGUAGE: "${codeLanguage}"` : 'Choose the most appropriate language from: "html", "php", "javascript", "typescript", "react", "nextjs", "css", "python", "sql", "json", "bash".'}
+The bilingual title before the code should clearly name the sample (e.g., "Sample of PHP Code" / "نموذج كود PHP" or "Sample of React Hook" / "نموذج كود React").
+Keep code cleanly indented, realistic (10-28 lines), and free of markdown triple backticks.
+Return STRICT JSON:
+{
+  "title": { "en": "Sample of ... Code", "ar": "نموذج كود ..." },
+  "language": "${codeLanguage || 'typescript'}",
+  "code": "// Raw clean code with newlines"
+}`;
+      break;
+
+    case 'code_blocks':
+      fieldInstructions = `${SECTION_ROLE_GUIDANCE[role]}
+TARGET: Generate 1 to 2 authentic, production-quality Code Samples tailored specifically to this Client Story topic and section (${role}).
+Allowed language ids: "html", "php", "javascript", "typescript", "react", "nextjs", "css", "python", "sql", "json", "bash".
+Each item must include a descriptive bilingual title (e.g., "Sample of HTML Code" / "نموذج كود HTML"), the language id, and clean 10-25 line code.
+Return STRICT JSON:
+{
+  "codeBlocks": [
+    {
+      "title": { "en": "Sample of ... Code", "ar": "نموذج كود ..." },
+      "language": "typescript",
+      "code": "// Raw clean code"
+    }
+  ]
+}`;
+      break;
+
+    case 'quote':
+      fieldInstructions = `${SECTION_ROLE_GUIDANCE[role]}
+TARGET: Generate an authentic Executive Pull Quote (plus author & role from the reference or client team) tailored specifically to this section.
+Return STRICT JSON:
+{
+  "text": { "en": "Quote text EN", "ar": "نص الاقتباس بالعربية" },
+  "author": "Author Name",
+  "role": { "en": "Executive Role EN", "ar": "المسمى الوظيفي بالعربية" }
+}`;
+      break;
+
+    case 'all':
+      fieldInstructions = `TARGET: Generate ALL sections of the complete Persici Client Story from the Reference Document cleanly without cross-section repetition.
+Allowed "categorySlug": "software" | "branding" | "marketing" | "video-production".
+Allowed "templateType": "software-web-app-showcase" | "mobile-app-showcase" | "marketing-video-showcase" | "image-gallery-showcase".
+Return STRICT JSON matching this complete schema:
+{
+  "meta": {
+    "client": "Client Name",
+    "slug": "seo-hyphenated-slug",
+    "categorySlug": "software",
+    "templateType": "software-web-app-showcase",
+    "topic": { "en": "...", "ar": "..." },
+    "region": { "en": "...", "ar": "..." },
+    "date": "2025",
+    "services": [ { "en": "...", "ar": "..." } ]
+  },
+  "title": { "en": "...", "ar": "..." },
+  "leadSubtitle": { "en": "<p>...</p>", "ar": "<p>...</p>" },
+  "executiveSummary": { "en": "<p>...</p>", "ar": "<p>...</p>" },
+  "metrics": [
+    { "value": "+...", "label": { "en": "...", "ar": "..." } }
+  ],
+  "intro": {
+    "title": { "en": "...", "ar": "..." },
+    "paragraphs": [ { "en": "<p>...</p>", "ar": "<p>...</p>" } ],
+    "bullets": [ { "en": "...", "ar": "..." } ],
+    "quote": { "text": { "en": "...", "ar": "..." }, "author": "...", "role": { "en": "...", "ar": "..." } }
+  },
+  "problem": {
+    "title": { "en": "...", "ar": "..." },
+    "paragraphs": [ { "en": "<p>...</p>", "ar": "<p>...</p>" } ],
+    "bullets": [ { "en": "...", "ar": "..." } ],
+    "quote": { "text": { "en": "...", "ar": "..." }, "author": "...", "role": { "en": "...", "ar": "..." } }
+  },
+  "solution": {
+    "title": { "en": "...", "ar": "..." },
+    "paragraphs": [ { "en": "<p>...</p>", "ar": "<p>...</p>" } ],
+    "bullets": [ { "en": "...", "ar": "..." } ],
+    "quote": { "text": { "en": "...", "ar": "..." }, "author": "...", "role": { "en": "...", "ar": "..." } }
+  },
+  "impact": {
+    "title": { "en": "...", "ar": "..." },
+    "paragraphs": [ { "en": "<p>...</p>", "ar": "<p>...</p>" } ],
+    "bullets": [ { "en": "...", "ar": "..." } ],
+    "quote": { "text": { "en": "...", "ar": "..." }, "author": "...", "role": { "en": "...", "ar": "..." } }
+  }
+}`;
+      break;
+  }
+
+  const userPrompt = `CURRENT STORY METADATA CONTEXT:
+${storyContextJson}
+
+GENERATION TASK:
+${fieldInstructions}
+
+REFERENCE DOCUMENT CONTENT:
+"""
+${hasRef ? referenceText.slice(0, 55000) : 'No external reference file attached — rely on CURRENT STORY METADATA CONTEXT and best technical engineering standards.'}
+"""`;
+
+  return { systemPrompt: baseSystemPrompt, userPrompt };
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const user = await getSessionUser();
+    if (!user || !isRoleAllowed(user.role, ['admin', 'editor'])) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+    }
+
+    const body = (await request.json().catch(() => null)) as {
+      targetField?: StoryAiTargetField;
+      referenceText?: string;
+      currentStoryContext?: Record<string, unknown>;
+      sectionContext?: NarrativeSectionRole;
+      paragraphIndex?: number;
+      codeBlockIndex?: number;
+      codeLanguage?: string;
+      providerOverride?: AiProviderId;
+      modelOverride?: string;
+      effectOverride?: AiEffectLevel;
+    } | null;
+
+    const targetField: StoryAiTargetField = body?.targetField || 'title';
+    const isCodeTarget = targetField === 'code_block' || targetField === 'code_blocks';
+    const refText = body?.referenceText?.trim() || '';
+
+    if (!body || (!isCodeTarget && !refText)) {
+      return NextResponse.json(
+        {
+          error:
+            'Please upload a reference file (.pdf, .docx/.doc, .xlsx/.xls, .md, or .txt) first before generating content with AI.',
+          code: 'REFERENCE_REQUIRED',
+        },
+        { status: 400 }
+      );
+    }
+
+    const { systemPrompt, userPrompt } = buildPromptForTarget({
+      targetField,
+      referenceText: refText,
+      currentStoryContext: body.currentStoryContext,
+      sectionContext: body.sectionContext,
+      paragraphIndex: body.paragraphIndex,
+      codeBlockIndex: body.codeBlockIndex,
+      codeLanguage: body.codeLanguage,
+    });
+
+    const storySlug =
+      typeof body.currentStoryContext?.slug === 'string'
+        ? body.currentStoryContext.slug
+        : '';
+
+    const result = await generateStructuredAiJson({
+      systemPrompt,
+      userPrompt,
+      targetField: body.sectionContext ? `${body.sectionContext}:${targetField}` : targetField,
+      storySlug,
+      userId: user.email || user.name,
+      providerOverride: body.providerOverride,
+      modelOverride: body.modelOverride,
+      effectOverride: body.effectOverride,
+    });
+
+    return NextResponse.json({
+      success: true,
+      targetField,
+      result: result.data,
+      usage: result.usage,
+    });
+  } catch (err) {
+    console.error('[API /api/ai/generate-story-field POST] Error:', err);
+    const msg = err instanceof Error ? err.message : 'AI generation failed';
+    return NextResponse.json({ error: msg }, { status: 500 });
+  }
+}

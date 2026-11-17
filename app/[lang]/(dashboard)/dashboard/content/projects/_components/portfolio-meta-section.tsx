@@ -15,11 +15,13 @@ import type {
   StoryTemplateType,
   StoryCategorySlug,
 } from '@/app/[lang]/(site)/client-stories/_client-stories/types';
+import { AiFieldTrigger, type StoryAiFieldControls } from './ai-field-trigger';
 
 interface PortfolioMetaSectionProps {
   story: ClientStoryDetail;
   onChange: (updated: ClientStoryDetail) => void;
   lang: string;
+  aiControls?: StoryAiFieldControls;
 }
 
 const TEMPLATE_OPTIONS: {
@@ -95,6 +97,7 @@ export function PortfolioMetaSection({
   story,
   onChange,
   lang,
+  aiControls,
 }: PortfolioMetaSectionProps) {
   const isRtl = lang === 'ar';
 
@@ -144,18 +147,33 @@ export function PortfolioMetaSection({
 
   return (
     <div id="sec-meta" className="space-y-6 pt-2">
-      <div className="border-b border-slate-200 pb-3">
-        <h4 className="text-base font-bold text-slate-900 flex items-center gap-2">
-          <span className="w-6 h-6 rounded-lg bg-persici-crimson/10 text-persici-crimson text-xs font-mono font-bold flex items-center justify-center">
-            01
-          </span>
-          <span>{isRtl ? 'البيانات الأساسية ونوع العرض' : 'General Settings & Showcase Type'}</span>
-        </h4>
-        <p className="text-xs text-slate-500 mt-1">
-          {isRtl
-            ? 'تحديد المعرف (Slug)، اسم العميل، التصنيف، ونوع القالب التفاعلي المناسب للمشروع.'
-            : 'Configure the unique URL slug, client name, category, and target showcase template.'}
-        </p>
+      <div className="border-b border-slate-200 pb-3 flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h4 className="text-base font-bold text-slate-900 flex items-center gap-2">
+            <span className="w-6 h-6 rounded-lg bg-persici-crimson/10 text-persici-crimson text-xs font-mono font-bold flex items-center justify-center">
+              01
+            </span>
+            <span>{isRtl ? 'البيانات الأساسية ونوع العرض' : 'General Settings & Showcase Type'}</span>
+          </h4>
+          <p className="text-xs text-slate-500 mt-1">
+            {isRtl
+              ? 'تحديد المعرف (Slug)، اسم العميل، التصنيف، ونوع القالب التفاعلي المناسب للمشروع.'
+              : 'Configure the unique URL slug, client name, category, and target showcase template.'}
+          </p>
+        </div>
+
+        {aiControls && (
+          <AiFieldTrigger
+            variant="pill"
+            lang={lang}
+            hasReference={aiControls.hasReference}
+            onMissingReference={aiControls.onMissingReference}
+            isLoading={aiControls.generatingFieldKey === 'meta'}
+            onGenerate={() => aiControls.onGenerateField('meta', { keyLabel: 'meta' })}
+            labelEn="Auto-Fill Meta from Reference"
+            labelAr="تعبئة البيانات الأساسية بالذكاء الاصطناعي"
+          />
+        )}
       </div>
 
       {/* 1. Template Type Selector (Interactive Card Selector) */}
@@ -204,18 +222,29 @@ export function PortfolioMetaSection({
       {/* 2. Slug & Client Name */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <div className="flex items-center justify-between mb-1">
+          <div className="flex flex-wrap items-center justify-between gap-1.5 mb-1">
             <label className="block text-xs font-semibold text-slate-700">
               {isRtl ? 'المعرف الفريد (URL Slug)' : 'Story URL Slug'}
             </label>
-            <button
-              type="button"
-              onClick={handleSlugify}
-              className="text-[11px] text-persici-crimson hover:underline flex items-center gap-1 cursor-pointer font-medium"
-            >
-              <TbSparkles className="w-3 h-3" />
-              <span>{isRtl ? 'توليد من العنوان' : 'Generate from Title'}</span>
-            </button>
+            <div className="flex items-center gap-2">
+              {aiControls && (
+                <AiFieldTrigger
+                  lang={lang}
+                  hasReference={aiControls.hasReference}
+                  onMissingReference={aiControls.onMissingReference}
+                  isLoading={aiControls.generatingFieldKey === 'slug'}
+                  onGenerate={() => aiControls.onGenerateField('slug', { keyLabel: 'slug' })}
+                />
+              )}
+              <button
+                type="button"
+                onClick={handleSlugify}
+                className="text-[11px] text-persici-crimson hover:underline flex items-center gap-1 cursor-pointer font-medium"
+              >
+                <TbSparkles className="w-3 h-3" />
+                <span>{isRtl ? 'من العنوان' : 'From Title'}</span>
+              </button>
+            </div>
           </div>
           <input
             type="text"
@@ -228,9 +257,20 @@ export function PortfolioMetaSection({
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-slate-700 mb-1">
-            {isRtl ? 'اسم العميل / المؤسسة' : 'Client Organization Name'}
-          </label>
+          <div className="flex flex-wrap items-center justify-between gap-1.5 mb-1">
+            <label className="block text-xs font-semibold text-slate-700">
+              {isRtl ? 'اسم العميل / المؤسسة' : 'Client Organization Name'}
+            </label>
+            {aiControls && (
+              <AiFieldTrigger
+                lang={lang}
+                hasReference={aiControls.hasReference}
+                onMissingReference={aiControls.onMissingReference}
+                isLoading={aiControls.generatingFieldKey === 'client'}
+                onGenerate={() => aiControls.onGenerateField('client', { keyLabel: 'client' })}
+              />
+            )}
+          </div>
           <input
             type="text"
             required
@@ -276,7 +316,22 @@ export function PortfolioMetaSection({
       </div>
 
       {/* 4. Topic/Industry (EN & AR) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="space-y-1.5">
+        <div className="flex items-center justify-between">
+          <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+            {isRtl ? 'المجال والصناعة (Topic / Industry)' : 'Topic / Industry (EN & AR)'}
+          </span>
+          {aiControls && (
+            <AiFieldTrigger
+              lang={lang}
+              hasReference={aiControls.hasReference}
+              onMissingReference={aiControls.onMissingReference}
+              isLoading={aiControls.generatingFieldKey === 'topic'}
+              onGenerate={() => aiControls.onGenerateField('topic', { keyLabel: 'topic' })}
+            />
+          )}
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className="block text-xs font-semibold text-slate-700 mb-1">
             {isRtl ? 'المجال / الصناعة (English)' : 'Topic / Industry (EN)'}
@@ -313,9 +368,25 @@ export function PortfolioMetaSection({
           />
         </div>
       </div>
+      </div>
 
       {/* 5. Region (EN & AR) + Date */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="space-y-1.5">
+        <div className="flex items-center justify-between">
+          <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+            {isRtl ? 'المنطقة والتاريخ (Region & Date)' : 'Geographic Region & Date'}
+          </span>
+          {aiControls && (
+            <AiFieldTrigger
+              lang={lang}
+              hasReference={aiControls.hasReference}
+              onMissingReference={aiControls.onMissingReference}
+              isLoading={aiControls.generatingFieldKey === 'region'}
+              onGenerate={() => aiControls.onGenerateField('region', { keyLabel: 'region' })}
+            />
+          )}
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div>
           <label className="block text-xs font-semibold text-slate-700 mb-1">
             {isRtl ? 'المنطقة الجغرافية (EN)' : 'Region (EN)'}
@@ -364,6 +435,7 @@ export function PortfolioMetaSection({
           />
         </div>
       </div>
+      </div>
 
       {/* 6. Featured Toggle & Priority Order */}
       <div className="flex items-center gap-6 p-4 rounded-xl bg-slate-50 border border-slate-200/90">
@@ -400,18 +472,31 @@ export function PortfolioMetaSection({
 
       {/* 7. Services Delivered Repeater */}
       <div>
-        <div className="flex items-center justify-between mb-2">
+        <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
           <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
             {isRtl ? 'الخدمات المقدمة (Services Delivered)' : 'Services Delivered'}
           </label>
-          <button
-            type="button"
-            onClick={handleAddService}
-            className="inline-flex items-center gap-1 text-xs font-semibold text-persici-crimson hover:underline cursor-pointer"
-          >
-            <TbPlus className="w-3.5 h-3.5" />
-            <span>{isRtl ? 'إضافة خدمة' : 'Add Service'}</span>
-          </button>
+          <div className="flex items-center gap-2">
+            {aiControls && (
+              <AiFieldTrigger
+                lang={lang}
+                hasReference={aiControls.hasReference}
+                onMissingReference={aiControls.onMissingReference}
+                isLoading={aiControls.generatingFieldKey === 'services'}
+                onGenerate={() => aiControls.onGenerateField('services', { keyLabel: 'services' })}
+                labelEn="Generate Services List"
+                labelAr="استخراج الخدمات"
+              />
+            )}
+            <button
+              type="button"
+              onClick={handleAddService}
+              className="inline-flex items-center gap-1 text-xs font-semibold text-persici-crimson hover:underline cursor-pointer"
+            >
+              <TbPlus className="w-3.5 h-3.5" />
+              <span>{isRtl ? 'إضافة خدمة' : 'Add Service'}</span>
+            </button>
+          </div>
         </div>
 
         <div className="space-y-2">

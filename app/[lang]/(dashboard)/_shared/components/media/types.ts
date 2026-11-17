@@ -62,10 +62,13 @@ export const TYPE_FILTERS: TypeFilterOption[] = [
   { id: 'archive', labelEn: 'Archives', labelAr: 'الملفات المضغوطة' },
 ];
 
+export type ImageUploadQualityMode = 'high-webp' | 'reduced-webp';
+
 export interface MediaStorageBrowserProps {
   mode?: 'standalone' | 'picker';
   allowedType?: 'all' | MediaType;
   defaultFolder?: string;
+  defaultQualityMode?: ImageUploadQualityMode;
   onSelect?: (url: string, item: MediaItem) => void;
   onClose?: () => void;
   className?: string;

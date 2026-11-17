@@ -8,12 +8,14 @@ import {
 } from 'react-icons/tb';
 import { RichTextEditor } from '@dashboard-shared/components';
 import type { ClientStoryDetail } from '@/app/[lang]/(site)/client-stories/_client-stories/types';
+import { AiFieldTrigger, type StoryAiFieldControls } from './ai-field-trigger';
 
 interface PortfolioHeroSectionProps {
   story: ClientStoryDetail;
   onChange: (updated: ClientStoryDetail) => void;
   lang: string;
   onOpenMediaPicker: (target: 'heroImage' | 'heroVideo' | 'heroVideoPoster', type: 'image' | 'video') => void;
+  aiControls?: StoryAiFieldControls;
 }
 
 export function PortfolioHeroSection({
@@ -21,6 +23,7 @@ export function PortfolioHeroSection({
   onChange,
   lang,
   onOpenMediaPicker,
+  aiControls,
 }: PortfolioHeroSectionProps) {
   const isRtl = lang === 'ar';
 
@@ -41,85 +44,131 @@ export function PortfolioHeroSection({
       </div>
 
       {/* 1. Title (EN & AR) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div>
-          <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-            {isRtl ? 'العنوان الرئيسي (English)' : 'Primary Title (English)'}
-          </label>
-          <input
-            type="text"
-            required
-            value={story.title?.en || ''}
-            onChange={(e) =>
-              onChange({
-                ...story,
-                title: { en: e.target.value, ar: story.title?.ar || '' },
-              })
-            }
-            placeholder="e.g. Khazan: Crafting 'Alz Al-Lahzat' Campaign"
-            className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-persici-crimson outline-none font-medium"
-          />
+      <div className="space-y-1.5">
+        <div className="flex items-center justify-between">
+          <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+            {isRtl ? 'العنوان الرئيسي للمشروع (H1 SEO Title)' : 'Primary SEO Title (EN / AR)'}
+          </span>
+          {aiControls && (
+            <AiFieldTrigger
+              lang={lang}
+              hasReference={aiControls.hasReference}
+              onMissingReference={aiControls.onMissingReference}
+              isLoading={aiControls.generatingFieldKey === 'title'}
+              onGenerate={() => aiControls.onGenerateField('title', { keyLabel: 'title' })}
+            />
+          )}
         </div>
-        <div>
-          <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-            {isRtl ? 'العنوان الرئيسي (العربية)' : 'Primary Title (Arabic)'}
-          </label>
-          <input
-            type="text"
-            dir="rtl"
-            required
-            value={story.title?.ar || ''}
-            onChange={(e) =>
-              onChange({
-                ...story,
-                title: { en: story.title?.en || '', ar: e.target.value },
-              })
-            }
-            placeholder="خزان: صياغة حملة 'ألذ اللحظات' لترسيخ أسعد الأوقات"
-            className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-persici-crimson outline-none font-medium font-arabic"
-          />
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-[11px] font-semibold text-slate-600 mb-1">
+              {isRtl ? 'العنوان الرئيسي (English)' : 'Primary Title (English)'}
+            </label>
+            <input
+              type="text"
+              required
+              value={story.title?.en || ''}
+              onChange={(e) =>
+                onChange({
+                  ...story,
+                  title: { en: e.target.value, ar: story.title?.ar || '' },
+                })
+              }
+              placeholder="e.g. Khazan: Crafting 'Alz Al-Lahzat' Campaign"
+              className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-persici-crimson outline-none font-medium"
+            />
+          </div>
+          <div>
+            <label className="block text-[11px] font-semibold text-slate-600 mb-1">
+              {isRtl ? 'العنوان الرئيسي (العربية)' : 'Primary Title (Arabic)'}
+            </label>
+            <input
+              type="text"
+              dir="rtl"
+              required
+              value={story.title?.ar || ''}
+              onChange={(e) =>
+                onChange({
+                  ...story,
+                  title: { en: story.title?.en || '', ar: e.target.value },
+                })
+              }
+              placeholder="خزان: صياغة حملة 'ألذ اللحظات' لترسيخ أسعد الأوقات"
+              className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-persici-crimson outline-none font-medium font-arabic"
+            />
+          </div>
         </div>
       </div>
 
       {/* 2. Lead Subtitle (EN & AR) */}
-      <RichTextEditor
-        label={isRtl ? 'العبارة التقديمية الفرعية (Lead Subtitle Hook)' : 'Lead Subtitle Hook (EN / AR)'}
-        rows={3}
-        valueEn={story.leadSubtitle?.en || ''}
-        valueAr={story.leadSubtitle?.ar || ''}
-        onChangeEn={(val) =>
-          onChange({
-            ...story,
-            leadSubtitle: { en: val, ar: story.leadSubtitle?.ar || '' },
-          })
-        }
-        onChangeAr={(val) =>
-          onChange({
-            ...story,
-            leadSubtitle: { en: story.leadSubtitle?.en || '', ar: val },
-          })
-        }
-      />
+      <div className="space-y-1.5">
+        {aiControls && (
+          <div className="flex justify-end">
+            <AiFieldTrigger
+              lang={lang}
+              hasReference={aiControls.hasReference}
+              onMissingReference={aiControls.onMissingReference}
+              isLoading={aiControls.generatingFieldKey === 'leadSubtitle'}
+              onGenerate={() =>
+                aiControls.onGenerateField('leadSubtitle', { keyLabel: 'leadSubtitle' })
+              }
+            />
+          </div>
+        )}
+        <RichTextEditor
+          label={isRtl ? 'العبارة التقديمية الفرعية (Lead Subtitle Hook)' : 'Lead Subtitle Hook (EN / AR)'}
+          rows={3}
+          valueEn={story.leadSubtitle?.en || ''}
+          valueAr={story.leadSubtitle?.ar || ''}
+          onChangeEn={(val) =>
+            onChange({
+              ...story,
+              leadSubtitle: { en: val, ar: story.leadSubtitle?.ar || '' },
+            })
+          }
+          onChangeAr={(val) =>
+            onChange({
+              ...story,
+              leadSubtitle: { en: story.leadSubtitle?.en || '', ar: val },
+            })
+          }
+        />
+      </div>
 
       {/* 3. Executive Summary (EN & AR) */}
-      <RichTextEditor
-        label={isRtl ? 'الملخص التنفيذي الشامل (Executive Summary)' : 'Executive Summary (EN / AR)'}
-        rows={4}
-        valueEn={story.executiveSummary?.en || ''}
-        valueAr={story.executiveSummary?.ar || ''}
-        onChangeEn={(val) =>
-          onChange({
-            ...story,
-            executiveSummary: { en: val, ar: story.executiveSummary?.ar || '' },
-          })
-        }
-        onChangeAr={(val) =>
-          onChange({
-            ...story,
-            executiveSummary: { en: story.executiveSummary?.en || '', ar: val },
-          })
-        }
-      />
+      <div className="space-y-1.5">
+        {aiControls && (
+          <div className="flex justify-end">
+            <AiFieldTrigger
+              lang={lang}
+              hasReference={aiControls.hasReference}
+              onMissingReference={aiControls.onMissingReference}
+              isLoading={aiControls.generatingFieldKey === 'executiveSummary'}
+              onGenerate={() =>
+                aiControls.onGenerateField('executiveSummary', { keyLabel: 'executiveSummary' })
+              }
+            />
+          </div>
+        )}
+        <RichTextEditor
+          label={isRtl ? 'الملخص التنفيذي الشامل (Executive Summary)' : 'Executive Summary (EN / AR)'}
+          rows={4}
+          valueEn={story.executiveSummary?.en || ''}
+          valueAr={story.executiveSummary?.ar || ''}
+          onChangeEn={(val) =>
+            onChange({
+              ...story,
+              executiveSummary: { en: val, ar: story.executiveSummary?.ar || '' },
+            })
+          }
+          onChangeAr={(val) =>
+            onChange({
+              ...story,
+              executiveSummary: { en: story.executiveSummary?.en || '', ar: val },
+            })
+          }
+        />
+      </div>
 
       {/* 4. Cover Hero Image (R2 Media Picker + Live Preview) */}
       <div className="bg-slate-50/70 p-4 rounded-2xl border border-slate-200">

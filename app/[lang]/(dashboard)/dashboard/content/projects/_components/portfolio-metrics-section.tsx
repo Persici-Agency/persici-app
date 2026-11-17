@@ -6,17 +6,20 @@ import type {
   ClientStoryDetail,
   StoryMetric,
 } from '@/app/[lang]/(site)/client-stories/_client-stories/types';
+import { AiFieldTrigger, type StoryAiFieldControls } from './ai-field-trigger';
 
 interface PortfolioMetricsSectionProps {
   story: ClientStoryDetail;
   onChange: (updated: ClientStoryDetail) => void;
   lang: string;
+  aiControls?: StoryAiFieldControls;
 }
 
 export function PortfolioMetricsSection({
   story,
   onChange,
   lang,
+  aiControls,
 }: PortfolioMetricsSectionProps) {
   const isRtl = lang === 'ar';
   const metrics = story.metrics || [];
@@ -55,7 +58,7 @@ export function PortfolioMetricsSection({
 
   return (
     <div id="sec-metrics" className="space-y-6 pt-2">
-      <div className="border-b border-slate-200 pb-3 flex items-center justify-between">
+      <div className="border-b border-slate-200 pb-3 flex flex-wrap items-center justify-between gap-3">
         <div>
           <h4 className="text-base font-bold text-slate-900 flex items-center gap-2">
             <span className="w-6 h-6 rounded-lg bg-persici-crimson/10 text-persici-crimson text-xs font-mono font-bold flex items-center justify-center">
@@ -70,16 +73,31 @@ export function PortfolioMetricsSection({
           </p>
         </div>
 
-        {metrics.length < 4 && (
-          <button
-            type="button"
-            onClick={handleAddMetric}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-black text-white rounded-xl text-xs font-semibold transition-colors cursor-pointer shadow-xs"
-          >
-            <TbPlus className="w-3.5 h-3.5" />
-            <span>{isRtl ? 'إضافة مؤشر' : 'Add Metric'}</span>
-          </button>
-        )}
+        <div className="flex flex-wrap items-center gap-2">
+          {aiControls && (
+            <AiFieldTrigger
+              variant="pill"
+              lang={lang}
+              hasReference={aiControls.hasReference}
+              onMissingReference={aiControls.onMissingReference}
+              isLoading={aiControls.generatingFieldKey === 'metrics'}
+              onGenerate={() => aiControls.onGenerateField('metrics', { keyLabel: 'metrics' })}
+              labelEn="Extract Metrics with AI"
+              labelAr="استخراج المؤشرات بالذكاء الاصطناعي"
+            />
+          )}
+
+          {metrics.length < 4 && (
+            <button
+              type="button"
+              onClick={handleAddMetric}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-black text-white rounded-xl text-xs font-semibold transition-colors cursor-pointer shadow-xs"
+            >
+              <TbPlus className="w-3.5 h-3.5" />
+              <span>{isRtl ? 'إضافة مؤشر' : 'Add Metric'}</span>
+            </button>
+          )}
+        </div>
       </div>
 
       {metrics.length === 0 ? (

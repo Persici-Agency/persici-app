@@ -3,7 +3,7 @@
 import React from 'react';
 import { TbX, TbPhoto, TbVideo, TbFile } from 'react-icons/tb';
 import { MediaStorageBrowser } from './media-storage-browser';
-import { MediaType } from './types';
+import { MediaType, type ImageUploadQualityMode } from './types';
 
 export interface MediaPickerModalProps {
   isOpen: boolean;
@@ -12,6 +12,7 @@ export interface MediaPickerModalProps {
   title?: string;
   defaultFolder?: string;
   allowedType?: MediaType | 'all';
+  defaultQualityMode?: ImageUploadQualityMode;
 }
 
 export function MediaPickerModal({
@@ -21,6 +22,7 @@ export function MediaPickerModal({
   title,
   defaultFolder = '',
   allowedType = 'all',
+  defaultQualityMode = 'high-webp',
 }: MediaPickerModalProps) {
   if (!isOpen) return null;
 
@@ -79,6 +81,7 @@ export function MediaPickerModal({
             mode="picker"
             allowedType={allowedType}
             defaultFolder={defaultFolder}
+            defaultQualityMode={defaultQualityMode}
             onSelect={(url) => {
               onSelect(url);
               onClose();

@@ -16,6 +16,7 @@ import {
   TbLayout,
 } from 'react-icons/tb';
 import { MediaPickerModal } from '@dashboard-shared/components';
+import type { ImageUploadQualityMode } from '@dashboard-shared/components/media/types';
 import type {
   ClientStoryDetail,
   StoryCategorySlug,
@@ -30,7 +31,23 @@ import {
   PortfolioMetricsSection,
   PortfolioNarrativeSection,
   PortfolioMediaShowcaseSection,
+  PortfolioAiReferenceBar,
+  type UploadedReferenceItem,
+  type StoryAiFieldControls,
 } from './_components';
+import type {
+  StoryAiTargetField,
+  NarrativeSectionRole,
+} from '@/app/api/ai/generate-story-field/route';
+import type { AiEffectLevel, AiProviderId } from '@/lib/ai-types';
+
+const CATEGORY_LABELS: Record<StoryCategorySlug, { en: string; ar: string }> = {
+  all: { en: 'All Categories', ar: 'جميع التصنيفات' },
+  software: { en: 'Software & Web Apps', ar: 'البرمجيات والتطبيقات الرقمية' },
+  branding: { en: 'Branding & Identity', ar: 'الهوية البصرية والعلامة التجارية' },
+  marketing: { en: 'Marketing & Performance', ar: 'الحملات ونمو العلامة التجارية' },
+  'video-production': { en: 'Media Production & Films', ar: 'الإنتاج المرئي والسينمائي' },
+};
 
 const DEFAULT_NEW_STORY: ClientStoryDetail = {
   id: '',
@@ -192,16 +209,35 @@ export default function ProjectsManagerPage() {
   const [isCreating, setIsCreating] = useState(false);
   const [activeTocSection, setActiveTocSection] = useState('sec-meta');
 
+  // AI Studio Reference & Generation State
+  const [references, setReferences] = useState<UploadedReferenceItem[]>([]);
+  const [generatingFieldKey, setGeneratingFieldKey] = useState<string | null>(null);
+  const [isGeneratingAll, setIsGeneratingAll] = useState(false);
+  const [referenceWarning, setReferenceWarning] = useState<string | null>(null);
+  const [activeAiMeta, setActiveAiMeta] = useState<{
+    provider: AiProviderId;
+    modelId: string;
+    effectLevel: AiEffectLevel;
+    hasApiKey: boolean;
+    isFreeTier: boolean;
+  } | null>(null);
+  const [lastUsageBanner, setLastUsageBanner] = useState<{
+    tokens: number;
+    costUsd: number;
+    isFreeTier: boolean;
+  } | null>(null);
+
   // Filter & Search State
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<'all' | StoryCategorySlug>('all');
   const [templateFilter, setTemplateFilter] = useState<'all' | StoryTemplateType>('all');
   const [featuredOnly, setFeaturedOnly] = useState(false);
 
-  // Media Picker Modal State
+  // Media Picker Modal & Upload Compression Mode State
   const [mediaPickerOpen, setMediaPickerOpen] = useState(false);
   const [mediaPickerType, setMediaPickerType] = useState<'image' | 'video' | 'all'>('image');
   const [mediaPickerCallback, setMediaPickerCallback] = useState<((url: string) => void) | null>(null);
+  const [uploadQualityMode, setUploadQualityMode] = useState<ImageUploadQualityMode>('high-webp');
 
   const loadStories = useCallback(async (showLoading = false) => {
     if (showLoading) setLoading(true);
@@ -233,6 +269,22 @@ export default function ProjectsManagerPage() {
       .finally(() => {
         if (active) setLoading(false);
       });
+
+    fetch('/api/ai/config', { cache: 'no-store' })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (active && data?.config) {
+          const prov = data.config.activeProvider as AiProviderId;
+          setActiveAiMeta({
+            provider: prov,
+            modelId: data.config.activeModelId,
+            effectLevel: data.config.effectLevel,
+            hasApiKey: Boolean(data.config.providers?.[prov]?.hasApiKey),
+            isFreeTier: Boolean(data.config.providers?.[prov]?.isFreeTier),
+          });
+        }
+      })
+      .catch(() => {});
 
     return () => {
       active = false;
@@ -269,6 +321,9 @@ export default function ProjectsManagerPage() {
   const openNewProject = () => {
     setIsCreating(true);
     setActiveTocSection('sec-meta');
+    setReferences([]);
+    setReferenceWarning(null);
+    setLastUsageBanner(null);
     setEditingStory({
       ...DEFAULT_NEW_STORY,
       id: `story-${Date.now()}`,
@@ -280,7 +335,248 @@ export default function ProjectsManagerPage() {
   const openEditStory = (story: ClientStoryDetail) => {
     setIsCreating(false);
     setActiveTocSection('sec-meta');
+    setReferences([]);
+    setReferenceWarning(null);
+    setLastUsageBanner(null);
     setEditingStory({ ...story });
+  };
+
+  const combinedReferenceText = references
+    .map((r) => `=== REFERENCE DOCUMENT: ${r.filename} (${r.metaSummary}) ===\n${r.text}`)
+    .join('\n\n')
+    .trim();
+
+  const handleMissingReference = () => {
+    setReferenceWarning(
+      isRtl
+        ? 'يرجى رفع ملف مرجع أولاً (PDF أو Word أو Excel أو Markdown أو TXT) حتى يتمكن الذكاء الاصطناعي من توليد المحتوى لهذا الحقل.'
+        : 'Please upload a reference file (PDF, Word, Excel, Markdown, or TXT) first before generating content with AI.'
+    );
+    const bar = document.getElementById('ai-reference-bar');
+    if (bar) {
+      bar.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  };
+
+  const handleGenerateAiField = async (
+    targetField: StoryAiTargetField,
+    options?: {
+      sectionContext?: NarrativeSectionRole;
+      paragraphIndex?: number;
+      codeBlockIndex?: number;
+      codeLanguage?: string;
+      keyLabel?: string;
+    }
+  ) => {
+    if (!editingStory) return;
+    const isCodeTarget = targetField === 'code_block' || targetField === 'code_blocks';
+    if (!isCodeTarget && !combinedReferenceText) {
+      handleMissingReference();
+      return;
+    }
+
+    const fieldKey = options?.keyLabel || targetField;
+    setReferenceWarning(null);
+    if (targetField === 'all') {
+      setIsGeneratingAll(true);
+    } else {
+      setGeneratingFieldKey(fieldKey);
+    }
+
+    try {
+      const res = await fetch('/api/ai/generate-story-field', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          targetField,
+          referenceText: combinedReferenceText,
+          currentStoryContext: editingStory,
+          sectionContext: options?.sectionContext,
+          paragraphIndex: options?.paragraphIndex,
+          codeBlockIndex: options?.codeBlockIndex,
+          codeLanguage: options?.codeLanguage,
+        }),
+      });
+
+      const payload = await res.json();
+      if (!res.ok || !payload.success) {
+        if (payload.code === 'REFERENCE_REQUIRED') {
+          handleMissingReference();
+          return;
+        }
+        throw new Error(payload.error || 'AI generation failed.');
+      }
+
+      const r = payload.result || {};
+      if (payload.usage) {
+        setLastUsageBanner({
+          tokens: payload.usage.totalTokens || 0,
+          costUsd: payload.usage.estimatedCostUsd || 0,
+          isFreeTier: Boolean(payload.usage.isFreeTier),
+        });
+      }
+
+      setEditingStory((prev) => {
+        if (!prev) return null;
+        const next = { ...prev };
+
+        if (targetField === 'all') {
+          if (r.meta && typeof r.meta === 'object') {
+            const m = r.meta as Record<string, unknown>;
+            if (typeof m.client === 'string' && m.client) next.client = m.client;
+            if (typeof m.slug === 'string' && m.slug) next.slug = m.slug;
+            if (typeof m.categorySlug === 'string' && m.categorySlug in CATEGORY_LABELS) {
+              const catSlug = m.categorySlug as StoryCategorySlug;
+              next.categorySlug = catSlug;
+              next.category = CATEGORY_LABELS[catSlug];
+            }
+            if (typeof m.templateType === 'string') {
+              next.templateType = m.templateType as StoryTemplateType;
+            }
+            if (m.topic && typeof m.topic === 'object') {
+              next.topic = m.topic as { en: string; ar: string };
+            }
+            if (m.region && typeof m.region === 'object') {
+              next.region = m.region as { en: string; ar: string };
+            }
+            if (typeof m.date === 'string' && m.date) next.date = m.date;
+            if (Array.isArray(m.services) && m.services.length > 0) {
+              next.services = m.services as Array<{ en: string; ar: string }>;
+            }
+          }
+          if (r.title) next.title = r.title;
+          if (r.leadSubtitle) next.leadSubtitle = r.leadSubtitle;
+          if (r.executiveSummary) next.executiveSummary = r.executiveSummary;
+          if (Array.isArray(r.metrics) && r.metrics.length > 0) next.metrics = r.metrics;
+          if (r.intro) next.intro = { ...(prev.intro || { id: 'intro' }), ...r.intro, id: 'intro' };
+          if (r.problem) next.problem = { ...(prev.problem || { id: 'the-problem' }), ...r.problem, id: 'the-problem' };
+          if (r.solution) next.solution = { ...(prev.solution || { id: 'the-solution' }), ...r.solution, id: 'the-solution' };
+          if (r.impact) next.impact = { ...(prev.impact || { id: 'the-impact' }), ...r.impact, id: 'the-impact' };
+        } else if (targetField === 'meta') {
+          if (typeof r.client === 'string' && r.client) next.client = r.client;
+          if (typeof r.slug === 'string' && r.slug) next.slug = r.slug;
+          if (typeof r.categorySlug === 'string' && r.categorySlug in CATEGORY_LABELS) {
+            const catSlug = r.categorySlug as StoryCategorySlug;
+            next.categorySlug = catSlug;
+            next.category = CATEGORY_LABELS[catSlug];
+          }
+          if (typeof r.templateType === 'string') {
+            next.templateType = r.templateType as StoryTemplateType;
+          }
+          if (r.topic) next.topic = r.topic;
+          if (r.region) next.region = r.region;
+          if (typeof r.date === 'string' && r.date) next.date = r.date;
+          if (Array.isArray(r.services) && r.services.length > 0) next.services = r.services;
+        } else if (targetField === 'slug' && typeof r.slug === 'string') {
+          next.slug = r.slug;
+        } else if (targetField === 'client' && typeof r.client === 'string') {
+          next.client = r.client;
+        } else if (targetField === 'topic' && r.topic) {
+          next.topic = r.topic;
+        } else if (targetField === 'region' && r.region) {
+          next.region = r.region;
+        } else if (targetField === 'services' && Array.isArray(r.services)) {
+          next.services = r.services;
+        } else if (targetField === 'title' && r.title) {
+          next.title = r.title;
+        } else if (targetField === 'leadSubtitle' && r.leadSubtitle) {
+          next.leadSubtitle = r.leadSubtitle;
+        } else if (targetField === 'executiveSummary' && r.executiveSummary) {
+          next.executiveSummary = r.executiveSummary;
+        } else if (targetField === 'metrics' && Array.isArray(r.metrics)) {
+          next.metrics = r.metrics.slice(0, 4);
+        } else if (
+          targetField === 'intro' ||
+          targetField === 'problem' ||
+          targetField === 'solution' ||
+          targetField === 'impact'
+        ) {
+          const existingSec = prev[targetField] || {
+            id: targetField === 'intro' ? 'intro' : `the-${targetField}`,
+            title: { en: '', ar: '' },
+            paragraphs: [],
+          };
+          next[targetField] = {
+            ...existingSec,
+            ...r,
+            id: existingSec.id,
+          };
+        } else if (options?.sectionContext) {
+          const secKey = options.sectionContext;
+          const existingSec = prev[secKey] || {
+            id: secKey === 'intro' ? 'intro' : `the-${secKey}`,
+            title: { en: '', ar: '' },
+            paragraphs: [{ en: '', ar: '' }],
+          };
+          const updatedSec = { ...existingSec };
+
+          if (targetField === 'section_heading' && (r.en || r.ar)) {
+            updatedSec.title = { en: r.en || '', ar: r.ar || '' };
+          } else if (targetField === 'paragraph' && (r.en || r.ar)) {
+            const pIdx = options.paragraphIndex ?? 0;
+            const copyParas = [...(updatedSec.paragraphs || [])];
+            copyParas[pIdx] = { en: r.en || '', ar: r.ar || '' };
+            updatedSec.paragraphs = copyParas;
+          } else if (targetField === 'bullets' && Array.isArray(r.bullets)) {
+            updatedSec.bullets = r.bullets;
+          } else if (targetField === 'code_block' && typeof r.code === 'string') {
+            const cIdx = options.codeBlockIndex ?? 0;
+            const copyBlocks = [...(updatedSec.codeBlocks || [])];
+            const existing = copyBlocks[cIdx];
+            copyBlocks[cIdx] = {
+              id: existing?.id || `code-${Date.now()}-${cIdx + 1}`,
+              title: r.title || existing?.title || { en: 'Sample Code', ar: 'نموذج كود' },
+              language: r.language || existing?.language || options.codeLanguage || 'typescript',
+              code: r.code,
+            };
+            updatedSec.codeBlocks = copyBlocks;
+          } else if (targetField === 'code_blocks' && Array.isArray(r.codeBlocks)) {
+            const generatedBlocks = r.codeBlocks.map(
+              (
+                blk: {
+                  title?: { en: string; ar: string };
+                  language?: string;
+                  code?: string;
+                },
+                idx: number
+              ) => ({
+                id: `code-${Date.now()}-${idx + 1}`,
+                title: blk.title || { en: 'Sample Code', ar: 'نموذج كود' },
+                language: blk.language || 'typescript',
+                code: blk.code || '',
+              })
+            );
+            updatedSec.codeBlocks = [
+              ...(updatedSec.codeBlocks || []),
+              ...generatedBlocks,
+            ];
+          } else if (targetField === 'quote' && r.text) {
+            updatedSec.quote = {
+              text: r.text,
+              author: r.author || updatedSec.quote?.author || 'Leadership Team',
+              role: r.role || { en: 'Executive Partner', ar: 'شريك تنفيذي' },
+            };
+          }
+
+          next[secKey] = updatedSec;
+        }
+
+        return next;
+      });
+    } catch (err) {
+      console.error('AI generation error:', err);
+      alert(err instanceof Error ? err.message : 'AI generation failed.');
+    } finally {
+      setGeneratingFieldKey(null);
+      setIsGeneratingAll(false);
+    }
+  };
+
+  const aiControls: StoryAiFieldControls = {
+    hasReference: combinedReferenceText.length > 0,
+    generatingFieldKey,
+    onGenerateField: handleGenerateAiField,
+    onMissingReference: handleMissingReference,
   };
 
   // Save Story (POST or PUT)
@@ -643,11 +939,74 @@ export default function ProjectsManagerPage() {
 
               {/* Right Content Editor Form */}
               <div className="flex-1 min-w-0 space-y-10 pb-8">
+                {/* Reference Document Uploader & Global AI Control Bar */}
+                <PortfolioAiReferenceBar
+                  lang={lang}
+                  references={references}
+                  onAddReferences={(docs) => setReferences((prev) => [...prev, ...docs])}
+                  onRemoveReference={(id) =>
+                    setReferences((prev) => prev.filter((item) => item.id !== id))
+                  }
+                  onGenerateAll={() => handleGenerateAiField('all', { keyLabel: 'all' })}
+                  isGeneratingAll={isGeneratingAll}
+                  generatingFieldKey={generatingFieldKey}
+                  referenceWarning={referenceWarning}
+                  onDismissWarning={() => setReferenceWarning(null)}
+                  activeAiMeta={activeAiMeta}
+                  lastUsageBanner={lastUsageBanner}
+                />
+
+                {/* Image Upload WebP Quality Mode Bar (Before Upload Toggle) */}
+                <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div>
+                    <div className="text-xs font-bold text-slate-800">
+                      {isRtl
+                        ? 'إعداد جودة وضغط الصور قبل الرفع (WebP)'
+                        : 'Before Upload: Image Quality & WebP Conversion Setting'}
+                    </div>
+                    <p className="text-[11px] text-slate-500 mt-0.5">
+                      {isRtl
+                        ? 'يحفظ الوضع عالي الجودة دقة لقطات الشاشة الكاملة للمواقع بدون تصغير حاد مع تحويلها لـ WebP.'
+                        : 'High Quality WebP keeps full-page website screenshots crisp (up to 3840w × 16380h at q94) while converting to WebP.'}
+                    </p>
+                  </div>
+                  <div className="inline-flex items-center p-1 rounded-xl bg-white border border-slate-200 shadow-2xs shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => setUploadQualityMode('high-webp')}
+                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                        uploadQualityMode === 'high-webp'
+                          ? 'bg-emerald-600 text-white shadow-xs'
+                          : 'text-slate-600 hover:text-slate-900'
+                      }`}
+                    >
+                      <TbSparkles className="w-3.5 h-3.5" />
+                      <span>
+                        {isRtl
+                          ? 'جودة عالية WebP (للشاشات الكاملة)'
+                          : 'High Quality WebP (Full-Screen)'}
+                      </span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setUploadQualityMode('reduced-webp')}
+                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                        uploadQualityMode === 'reduced-webp'
+                          ? 'bg-slate-800 text-white shadow-xs'
+                          : 'text-slate-600 hover:text-slate-900'
+                      }`}
+                    >
+                      <span>{isRtl ? 'تقليل الجودة WebP' : 'Reduced Quality WebP'}</span>
+                    </button>
+                  </div>
+                </div>
+
                 {/* Section 01: Meta & General */}
                 <PortfolioMetaSection
                   story={editingStory}
                   onChange={setEditingStory}
                   lang={lang}
+                  aiControls={aiControls}
                 />
 
                 {/* Section 02: Hero & Summary */}
@@ -656,6 +1015,7 @@ export default function ProjectsManagerPage() {
                   onChange={setEditingStory}
                   lang={lang}
                   onOpenMediaPicker={handleOpenMediaPicker}
+                  aiControls={aiControls}
                 />
 
                 {/* Section 03: Key Impact Metrics */}
@@ -663,11 +1023,13 @@ export default function ProjectsManagerPage() {
                   story={editingStory}
                   onChange={setEditingStory}
                   lang={lang}
+                  aiControls={aiControls}
                 />
 
                 {/* Section 04: Narrative - Overview */}
                 <PortfolioNarrativeSection
                   id="sec-intro"
+                  sectionRole="intro"
                   stepNumber="04"
                   sectionTitleEn="Section 1: Project Overview"
                   sectionTitleAr="القسم الأول: نظرة عامة وسياق المشروع"
@@ -678,11 +1040,16 @@ export default function ProjectsManagerPage() {
                     setEditingStory({ ...editingStory, intro: updated })
                   }
                   lang={lang}
+                  aiControls={aiControls}
+                  onOpenMediaPicker={handleOpenMediaPicker}
+                  uploadQualityMode={uploadQualityMode}
+                  onUploadQualityModeChange={setUploadQualityMode}
                 />
 
                 {/* Section 05: Narrative - Problem */}
                 <PortfolioNarrativeSection
                   id="sec-problem"
+                  sectionRole="problem"
                   stepNumber="05"
                   sectionTitleEn="Section 2: The Challenge"
                   sectionTitleAr="القسم الثاني: التحدي والمشكلة الاستراتيجية"
@@ -693,11 +1060,16 @@ export default function ProjectsManagerPage() {
                     setEditingStory({ ...editingStory, problem: updated })
                   }
                   lang={lang}
+                  aiControls={aiControls}
+                  onOpenMediaPicker={handleOpenMediaPicker}
+                  uploadQualityMode={uploadQualityMode}
+                  onUploadQualityModeChange={setUploadQualityMode}
                 />
 
                 {/* Section 06: Narrative - Solution */}
                 <PortfolioNarrativeSection
                   id="sec-solution"
+                  sectionRole="solution"
                   stepNumber="06"
                   sectionTitleEn="Section 3: The Engineered Solution"
                   sectionTitleAr="القسم الثالث: الحل المعماري والتنفيذ"
@@ -708,11 +1080,16 @@ export default function ProjectsManagerPage() {
                     setEditingStory({ ...editingStory, solution: updated })
                   }
                   lang={lang}
+                  aiControls={aiControls}
+                  onOpenMediaPicker={handleOpenMediaPicker}
+                  uploadQualityMode={uploadQualityMode}
+                  onUploadQualityModeChange={setUploadQualityMode}
                 />
 
                 {/* Section 07: Narrative - Impact */}
                 <PortfolioNarrativeSection
                   id="sec-impact"
+                  sectionRole="impact"
                   stepNumber="07"
                   sectionTitleEn="Section 4: The Measurable Impact"
                   sectionTitleAr="القسم الرابع: الأثر والنتائج وعائد الاستثمار"
@@ -723,6 +1100,10 @@ export default function ProjectsManagerPage() {
                     setEditingStory({ ...editingStory, impact: updated })
                   }
                   lang={lang}
+                  aiControls={aiControls}
+                  onOpenMediaPicker={handleOpenMediaPicker}
+                  uploadQualityMode={uploadQualityMode}
+                  onUploadQualityModeChange={setUploadQualityMode}
                 />
 
                 {/* Section 08: Media Showcase & Deliverables */}
@@ -813,6 +1194,7 @@ export default function ProjectsManagerPage() {
           }}
           onSelect={handleMediaPickerSelect}
           defaultFolder="projects"
+          defaultQualityMode={uploadQualityMode}
         />
       )}
     </div>
