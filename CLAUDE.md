@@ -90,6 +90,7 @@ Consult the authoritative master documentation in `.doc/` for in-depth specifica
 | [`.doc/reference-legal-and-compliance-architecture.md`](file:///i:/Projects/persici-app/.doc/reference-legal-and-compliance-architecture.md) | Privacy policy (`/privacy`), Terms (`/terms`), GDPR/CCPA & UAE/KSA/Jordan compliance. |
 | [`.doc/reference-maintenance-and-redirect-architecture.md`](file:///home/mahmoodmubdi/Projects/persici-app/.doc/reference-maintenance-and-redirect-architecture.md) | Site Maintenance Mode & Global Redirect System (`/dashboard/maintenance`), `proxy.ts` edge interception, optional countdown timer & direct URL redirection. |
 | [`.doc/reference-leads-media-buying-and-tracking-architecture.md`](file:///home/mahmoodmubdi/Projects/persici-app/.doc/reference-leads-media-buying-and-tracking-architecture.md) | Leads & Media Buying CRM (`/dashboard/leads/*`), Dashboard Home Analytics (`/dashboard`), Google Tag Manager (GTM), Google Analytics 4 (GA4 + Future API setup), Ad Pixels & WPCode-style Custom Code Snippets (`/dashboard/leads/tracking`). |
+| [`.doc/implementations/ai-system-for-client-story.md`](file:///home/mahmoodmubdi/Projects/persici-app/.doc/implementations/ai-system-for-client-story.md) | Multi-Provider **AI Studio & Models** (`/dashboard/ai` for Gemini, ChatGPT, Claude, Groq, DeepSeek with auto-updating models, Effect levels & credit telemetry) + Reference-Driven Client Story AI Generator (`/dashboard/content/projects`). |
 
 ---
 

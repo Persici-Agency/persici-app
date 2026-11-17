@@ -29,6 +29,7 @@ import {
   TbBriefcase,
   TbStar,
   TbTool,
+  TbSparkles,
 } from 'react-icons/tb';
 
 export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
@@ -195,6 +196,7 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
     insights: isRtl ? 'المدونة والمقالات' : 'Blogs & Insights',
     projects: isRtl ? 'قصص نجاح العملاء' : 'Client Stories',
     reviews: isRtl ? 'التقييمات والشهادات' : 'Reviews & Testimonials',
+    aiStudio: isRtl ? 'الذكاء الاصطناعي والنماذج' : 'AI Studio & Models',
     maintenance: isRtl ? 'وضع الصيانة والتوجيه' : 'Maintenance Mode',
     users: isRtl ? 'فريق العمل وصلاحيات RBAC' : 'Team & RBAC Users',
     settings: isRtl ? 'إعدادات النظام والأمان' : 'System Settings',
@@ -954,6 +956,28 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
                 {!isCollapsed && <span>{t.reviews}</span>}
               </Link>
               {isCollapsed && <div className={tooltipClass}>{t.reviews}</div>}
+            </div>
+          </div>
+        )}
+
+        {/* 10. AI Studio & Models */}
+        {canSeeContent && (
+          <div className="pt-1">
+            <div className="relative group">
+              <Link
+                href={getHref(`/${lang}/dashboard/ai`)}
+                className={`flex items-center ${
+                  isCollapsed ? 'justify-center p-3' : 'gap-3 px-3.5 py-2.5'
+                } rounded-xl text-sm font-medium transition-all ${
+                  isActive('/dashboard/ai')
+                    ? 'bg-persici-crimson text-white shadow-lg shadow-persici-crimson/25'
+                    : 'text-white/70 hover:bg-white/5 hover:text-white'
+                }`}
+              >
+                <TbSparkles className="w-5 h-5 shrink-0" />
+                {!isCollapsed && <span>{t.aiStudio}</span>}
+              </Link>
+              {isCollapsed && <div className={tooltipClass}>{t.aiStudio}</div>}
             </div>
           </div>
         )}

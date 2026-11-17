@@ -55,10 +55,13 @@ export function toSeoFilename(filename: string): string {
   return sanitized || 'persici-asset';
 }
 
+export type ImageQualityMode = 'high-webp' | 'reduced-webp';
+
 export interface OptimizationOptions {
   maxWidth?: number;
   maxHeight?: number;
   quality?: number;
+  qualityMode?: ImageQualityMode;
 }
 
 export interface UploadResult {
@@ -75,8 +78,9 @@ export interface UploadResult {
 
 /**
  * Compresses an image in-flight using sharp:
- * - Resizes to max dimensions (default 2048px)
- * - Converts to optimized WebP format (default quality 80)
+ * - Converts to optimized WebP format
+ * - Supports 'high-webp' (full-screen safe: preserves tall website captures up to 16380px height at q94)
+ *   vs 'reduced-webp' (standard max 1920x1920 at q75 for lightweight assets)
  * - Retains metadata orientation
  */
 export async function optimizeImageBuffer(
@@ -89,7 +93,12 @@ export async function optimizeImageBuffer(
   width?: number;
   height?: number;
 }> {
-  const { maxWidth = 2048, maxHeight = 2048, quality = 80 } = options;
+  const mode: ImageQualityMode = options.qualityMode || 'high-webp';
+  const isHighQuality = mode === 'high-webp';
+
+  const maxWidth = options.maxWidth ?? (isHighQuality ? 3840 : 1920);
+  const maxHeight = options.maxHeight ?? (isHighQuality ? 16380 : 1920);
+  const quality = options.quality ?? (isHighQuality ? 94 : 75);
 
   let pipeline = sharp(inputBuffer).rotate(); // auto-orient based on EXIF
 
@@ -103,7 +112,12 @@ export async function optimizeImageBuffer(
   }
 
   const outputBuffer = await pipeline
-    .webp({ quality, effort: 6 })
+    .webp({
+      quality,
+      alphaQuality: isHighQuality ? 100 : 85,
+      smartSubsample: isHighQuality,
+      effort: 6,
+    })
     .toBuffer();
 
   const metadata = await sharp(outputBuffer).metadata();

@@ -6,3 +6,5 @@ export * from './portfolio-hero-section';
 export * from './portfolio-metrics-section';
 export * from './portfolio-narrative-section';
 export * from './portfolio-media-showcase-section';
+export * from './ai-field-trigger';
+export * from './portfolio-ai-reference-bar';

@@ -9,7 +9,16 @@ const nextConfig: NextConfig = {
     cpus: 1,
     workerThreads: false,
   },
-  serverExternalPackages: ['mongodb', '@aws-sdk/client-s3', 'sharp'],
+  serverExternalPackages: [
+    'mongodb',
+    '@aws-sdk/client-s3',
+    'sharp',
+    'pdf-parse',
+    'pdfjs-dist',
+    '@napi-rs/canvas',
+    'mammoth',
+    'xlsx',
+  ],
   images: {
     remotePatterns: [
       {

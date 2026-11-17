@@ -49,11 +49,45 @@ export interface StoryTechBadge {
   category?: 'frontend' | 'backend' | 'database' | 'cloud' | 'tool' | 'design';
 }
 
+export type StorySectionImageSize = 'sm' | 'md' | 'lg' | 'full';
+
+export interface StorySectionImage {
+  src: string;
+  alt?: LocalizedString;
+  caption?: LocalizedString;
+  size?: StorySectionImageSize;
+  widthPercent?: number; // 30 to 100
+  maxHeight?: number; // optional max-height in px (0 or undefined = natural auto height)
+  objectFit?: 'contain' | 'cover';
+}
+
+export type StoryCodeLanguage =
+  | 'html'
+  | 'php'
+  | 'javascript'
+  | 'typescript'
+  | 'react'
+  | 'nextjs'
+  | 'css'
+  | 'python'
+  | 'sql'
+  | 'json'
+  | 'bash';
+
+export interface StoryCodeBlock {
+  id?: string;
+  title: LocalizedString;
+  language: StoryCodeLanguage | string;
+  code: string;
+}
+
 export interface StoryNarrativeSection {
   id: string;
   title: LocalizedString;
+  image?: StorySectionImage;
   paragraphs: LocalizedString[];
   bullets?: LocalizedString[];
+  codeBlocks?: StoryCodeBlock[];
   quote?: {
     text: LocalizedString;
     author: string;

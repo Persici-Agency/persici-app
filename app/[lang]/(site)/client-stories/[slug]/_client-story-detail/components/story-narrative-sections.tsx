@@ -1,6 +1,28 @@
 import React from 'react';
-import type { ClientStoryDetail, StoryNarrativeSection } from '../../../_client-stories/types';
+import type {
+  ClientStoryDetail,
+  StoryNarrativeSection,
+  StorySectionImage,
+} from '../../../_client-stories/types';
 import { TbCheck, TbQuote } from 'react-icons/tb';
+import { CodeShowcaseBlock } from '@/app/[lang]/_shared/components/code-showcase-block';
+
+function resolveSectionImageWidthPercent(image: StorySectionImage): number {
+  if (typeof image.widthPercent === 'number' && !Number.isNaN(image.widthPercent)) {
+    return Math.min(100, Math.max(30, image.widthPercent));
+  }
+  switch (image.size) {
+    case 'sm':
+      return 50;
+    case 'md':
+      return 70;
+    case 'lg':
+      return 85;
+    case 'full':
+    default:
+      return 100;
+  }
+}
 
 export interface StoryNarrativeSectionsProps {
   story: ClientStoryDetail;
@@ -24,6 +46,44 @@ export function StoryNarrativeSections({ story, lang }: StoryNarrativeSectionsPr
         <h2 className="font-primary text-2xl sm:text-3xl lg:text-4xl font-medium text-slate-900 tracking-tight mb-6">
           {title}
         </h2>
+
+        {/* Optional Section Main Image (After Title, Before Paragraphs) */}
+        {section.image?.src && (
+          <figure
+            className="mx-auto max-w-full mb-8 space-y-2.5"
+            style={{ width: `${resolveSectionImageWidthPercent(section.image)}%` }}
+          >
+            <div className="rounded-2xl overflow-hidden border border-slate-200/90 bg-slate-50 shadow-sm">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={section.image.src}
+                alt={
+                  section.image.alt?.[lang as 'en' | 'ar'] ||
+                  section.image.alt?.en ||
+                  title
+                }
+                loading="lazy"
+                style={{
+                  maxHeight:
+                    section.image.maxHeight && section.image.maxHeight > 0
+                      ? `${section.image.maxHeight}px`
+                      : undefined,
+                }}
+                className={`w-full h-auto block ${
+                  section.image.objectFit === 'cover'
+                    ? 'object-cover'
+                    : 'object-contain'
+                }`}
+              />
+            </div>
+            {(section.image.caption?.en || section.image.caption?.ar) && (
+              <figcaption className="text-center text-xs sm:text-sm text-slate-500 font-medium">
+                {section.image.caption[lang as 'en' | 'ar'] ||
+                  section.image.caption.en}
+              </figcaption>
+            )}
+          </figure>
+        )}
 
         {/* Paragraphs */}
         <div className="space-y-5 text-base sm:text-lg text-slate-700 leading-relaxed font-normal">
@@ -56,6 +116,25 @@ export function StoryNarrativeSections({ story, lang }: StoryNarrativeSectionsPr
               );
             })}
           </ul>
+        )}
+
+        {/* Code Samples if present (After Key Highlights) */}
+        {section.codeBlocks && section.codeBlocks.length > 0 && (
+          <div className="mt-8 space-y-6">
+            {section.codeBlocks.map((block, cIdx) => {
+              if (!block.code) return null;
+              const codeTitle =
+                block.title?.[lang as 'en' | 'ar'] || block.title?.en || '';
+              return (
+                <CodeShowcaseBlock
+                  key={block.id || cIdx}
+                  title={codeTitle}
+                  language={block.language}
+                  code={block.code}
+                />
+              );
+            })}
+          </div>
         )}
 
         {/* Pull Quote if present */}

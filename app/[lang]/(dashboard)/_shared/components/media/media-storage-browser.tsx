@@ -28,6 +28,7 @@ import {
   TbChevronsLeft,
   TbChevronsRight,
   TbInfinity,
+  TbSparkles,
 } from 'react-icons/tb';
 import {
   MediaItem,
@@ -35,6 +36,7 @@ import {
   FOLDERS,
   TYPE_FILTERS,
   MediaStorageBrowserProps,
+  type ImageUploadQualityMode,
 } from './types';
 import { MediaDetailsInspector } from './media-details-inspector';
 import { MediaPreviewModal } from './media-preview-modal';
@@ -43,6 +45,7 @@ export function MediaStorageBrowser({
   mode = 'standalone',
   allowedType = 'all',
   defaultFolder = '',
+  defaultQualityMode = 'high-webp',
   onSelect,
   onClose,
   className = '',
@@ -62,6 +65,12 @@ export function MediaStorageBrowser({
     if (allowedType && allowedType !== 'all') {
       setActiveType(allowedType);
     }
+  }
+  const [qualityMode, setQualityMode] = useState<ImageUploadQualityMode>(defaultQualityMode);
+  const [prevDefaultQualityMode, setPrevDefaultQualityMode] = useState(defaultQualityMode);
+  if (defaultQualityMode !== prevDefaultQualityMode) {
+    setPrevDefaultQualityMode(defaultQualityMode);
+    setQualityMode(defaultQualityMode);
   }
 
   const [search, setSearch] = useState('');
@@ -195,6 +204,7 @@ export function MediaStorageBrowser({
         const formData = new FormData();
         formData.append('file', file);
         formData.append('folder', targetFolder);
+        formData.append('qualityMode', qualityMode);
 
         // Auto-extract thumbnail if video
         if (file.type.startsWith('video/')) {
@@ -492,9 +502,45 @@ export function MediaStorageBrowser({
             ))}
           </div>
 
-          {/* Search + Upload Buttons */}
-          <div className="flex items-center gap-2">
-            <div className="relative flex-1 sm:w-64">
+          {/* Search + Quality Toggle + Upload Buttons */}
+          <div className="flex flex-wrap items-center gap-2">
+            {/* WebP Upload Quality Toggle (High Quality Full-Screen vs Reduced Quality) */}
+            <div
+              className="inline-flex items-center p-0.5 rounded-xl bg-slate-100 border border-slate-200 shrink-0"
+              title={
+                isRtl
+                  ? 'اختر وضع ضغط الصور قبل الرفع إلى Cloudflare R2'
+                  : 'Choose WebP compression mode before uploading images to Cloudflare R2'
+              }
+            >
+              <button
+                type="button"
+                onClick={() => setQualityMode('high-webp')}
+                className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
+                  qualityMode === 'high-webp'
+                    ? 'bg-emerald-600 text-white shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                <TbSparkles className="w-3.5 h-3.5 shrink-0" />
+                <span>
+                  {isRtl ? 'جودة عالية WebP (للشاشات الكاملة)' : 'High Quality WebP (Full-Screen)'}
+                </span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setQualityMode('reduced-webp')}
+                className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-semibold transition-all cursor-pointer ${
+                  qualityMode === 'reduced-webp'
+                    ? 'bg-slate-800 text-white shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                <span>{isRtl ? 'ضغط وتقليل الجودة WebP' : 'Reduced Size WebP'}</span>
+              </button>
+            </div>
+
+            <div className="relative flex-1 sm:w-56 min-w-[160px]">
               <TbSearch className={`w-4 h-4 text-slate-400 absolute ${isRtl ? 'right-3' : 'left-3'} top-1/2 -translate-y-1/2`} />
               <input
                 type="text"
@@ -518,7 +564,7 @@ export function MediaStorageBrowser({
               type="button"
               disabled={uploading}
               onClick={() => fileInputRef.current?.click()}
-              className="flex items-center gap-1.5 px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-semibold transition-colors shadow-xs shrink-0 disabled:opacity-50"
+              className="flex items-center gap-1.5 px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-semibold transition-colors shadow-xs shrink-0 disabled:opacity-50 cursor-pointer"
             >
               <TbUpload className="w-4 h-4" />
               <span>{uploading ? (isRtl ? 'جارٍ الرفع...' : 'Uploading...') : isRtl ? 'رفع ملفات' : 'Upload Files'}</span>
@@ -527,7 +573,7 @@ export function MediaStorageBrowser({
             <button
               type="button"
               onClick={fetchMedia}
-              className="p-2 text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors shrink-0"
+              className="p-2 text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors shrink-0 cursor-pointer"
               title={isRtl ? 'تحديث' : 'Refresh'}
             >
               <TbRefresh className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />

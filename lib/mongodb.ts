@@ -44,6 +44,7 @@ export const COLLECTIONS = {
   USERS: 'dashboard_users',
   NAVIGATION: 'navigation_menus',
   SETTINGS: 'system_settings',
+  AI_USAGE_LOGS: 'ai_usage_logs',
 } as const;
 
 export type CollectionName = (typeof COLLECTIONS)[keyof typeof COLLECTIONS];
