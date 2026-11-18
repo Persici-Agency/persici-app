@@ -242,6 +242,19 @@ function isModelNotFoundOrUnavailableError(status: number, errText: string): boo
   return false;
 }
 
+function isTransientOverloadOrRateLimitError(status: number, errText: string): boolean {
+  if (status === 429 || status === 500 || status === 502 || status === 503 || status === 504 || status === 529) {
+    return true;
+  }
+  return /high demand|experiencing high demand|overloaded|try again later|temporarily unavailable|resource_exhausted|rate.?limit|quota exceeded|UNAVAILABLE/i.test(
+    errText
+  );
+}
+
+function sleepMs(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 function extractSuggestedModelFromError(errText: string): string | null {
   const patterns = [
     /(?:update your code to use|please update.*?to use|please use|try using|instead use|use the)\s+(?:models\/)?["'`]?([a-zA-Z0-9._\/:-]{3,80})["'`]?/i,
@@ -649,6 +662,8 @@ async function invokeSingleModelRequest(params: {
   effectLevel: AiEffectLevel;
   cachedModels?: AiModelDescriptor[];
   isProbe?: boolean;
+  disableThinking?: boolean;
+  minMaxOutputTokens?: number;
 }): Promise<{
   rawText: string;
   inputTokens: number;
@@ -656,12 +671,30 @@ async function invokeSingleModelRequest(params: {
   rateLimitRemainingRequests: number | null;
   rateLimitRemainingTokens: number | null;
 }> {
-  const { provider, apiKey, modelId, systemPrompt, userPrompt, effectLevel, cachedModels, isProbe } = params;
-  const preset = EFFECT_LEVEL_PRESETS[effectLevel];
+  const {
+    provider,
+    apiKey,
+    modelId,
+    systemPrompt,
+    userPrompt,
+    effectLevel,
+    cachedModels,
+    isProbe,
+    disableThinking,
+    minMaxOutputTokens,
+  } = params;
+  const basePreset = EFFECT_LEVEL_PRESETS[effectLevel];
+  const preset =
+    minMaxOutputTokens && minMaxOutputTokens > basePreset.maxOutputTokens
+      ? { ...basePreset, maxOutputTokens: minMaxOutputTokens }
+      : basePreset;
 
   if (provider === 'gemini') {
     const supportsThinking =
-      !isProbe && (modelId.includes('2.5') || modelId.includes('3')) && preset.geminiThinkingBudget > 0;
+      !isProbe &&
+      !disableThinking &&
+      (modelId.includes('2.5') || modelId.includes('3')) &&
+      preset.geminiThinkingBudget > 0;
 
     const sendGemini = async (opts: {
       includeThinking: boolean;
@@ -962,18 +995,31 @@ async function invokeWithModelAutoHeal(params: {
   userPrompt: string;
   effectLevel: AiEffectLevel;
   isProbe?: boolean;
+  minMaxOutputTokens?: number;
   prefetchedDiscovery?: {
     models: AiModelDescriptor[];
     syncedAt: string;
   };
 }): Promise<{
   response: Awaited<ReturnType<typeof invokeSingleModelRequest>>;
+  usedProvider: AiProviderId;
   usedModelId: string;
   deadModels: string[];
   discoveryModels: AiModelDescriptor[];
   syncedAt: string;
 }> {
-  const { config, provider, apiKey, requestedModel, systemPrompt, userPrompt, effectLevel, isProbe, prefetchedDiscovery } = params;
+  const {
+    config,
+    provider,
+    apiKey,
+    requestedModel,
+    systemPrompt,
+    userPrompt,
+    effectLevel,
+    isProbe,
+    minMaxOutputTokens,
+    prefetchedDiscovery,
+  } = params;
   const deadModels: string[] = KNOWN_RETIRED_MODEL_IDS.has(requestedModel) ? [requestedModel] : [];
   let currentModelId = KNOWN_RETIRED_MODEL_IDS.has(requestedModel)
     ? (prefetchedDiscovery?.models[0]?.id || MODEL_PRICING_CATALOG[provider][0].id)
@@ -994,9 +1040,11 @@ async function invokeWithModelAutoHeal(params: {
       effectLevel,
       cachedModels: cachedList,
       isProbe,
+      minMaxOutputTokens,
     });
     return {
       response,
+      usedProvider: provider,
       usedModelId: currentModelId,
       deadModels,
       discoveryModels: cachedList,
@@ -1004,12 +1052,52 @@ async function invokeWithModelAutoHeal(params: {
     };
   } catch (firstErr) {
     const httpErr = firstErr instanceof AiProviderHttpError ? firstErr : null;
-    if (!httpErr || !isModelNotFoundOrUnavailableError(httpErr.status, httpErr.bodyText)) {
+    const isModelMissing = Boolean(
+      httpErr && isModelNotFoundOrUnavailableError(httpErr.status, httpErr.bodyText)
+    );
+    const isOverloaded = Boolean(
+      httpErr && isTransientOverloadOrRateLimitError(httpErr.status, httpErr.bodyText)
+    );
+
+    if (!isModelMissing && !isOverloaded) {
       throw firstErr;
     }
 
-    deadModels.push(currentModelId);
-    const suggested = extractSuggestedModelFromError(httpErr.bodyText);
+    if (isModelMissing) {
+      deadModels.push(currentModelId);
+    }
+
+    // If active Gemini model hit a 503/429 high-demand spike, retry once without thinkingConfig
+    // before failing over across sibling models or backup providers
+    if (isOverloaded && provider === 'gemini' && !isProbe) {
+      await sleepMs(900);
+      try {
+        const retryResponse = await invokeSingleModelRequest({
+          provider,
+          apiKey,
+          modelId: currentModelId,
+          systemPrompt,
+          userPrompt,
+          effectLevel,
+          cachedModels: cachedList,
+          isProbe,
+          disableThinking: true,
+          minMaxOutputTokens,
+        });
+        return {
+          response: retryResponse,
+          usedProvider: provider,
+          usedModelId: currentModelId,
+          deadModels,
+          discoveryModels: cachedList,
+          syncedAt: prefetchedDiscovery?.syncedAt || new Date().toISOString(),
+        };
+      } catch {
+        // Continue cluster failover across non-congested sibling models
+      }
+    }
+
+    const suggested = httpErr ? extractSuggestedModelFromError(httpErr.bodyText) : null;
     const discovery = prefetchedDiscovery
       ? { models: prefetchedDiscovery.models, syncedAt: prefetchedDiscovery.syncedAt }
       : await discoverProviderModels(provider, apiKey, false);
@@ -1020,10 +1108,13 @@ async function invokeWithModelAutoHeal(params: {
         ...discovery.models.map((m) => m.id),
         ...MODEL_PRICING_CATALOG[provider].map((m) => m.id),
       ])
-    ).filter((id) => Boolean(id) && !deadModels.includes(id));
+    ).filter((id) => Boolean(id) && id !== currentModelId && !deadModels.includes(id));
 
     let lastFallbackErr: unknown = firstErr;
     for (const candidate of fallbackCandidates.slice(0, 5)) {
+      if (isOverloaded) {
+        await sleepMs(650);
+      }
       try {
         const response = await invokeSingleModelRequest({
           provider,
@@ -1034,10 +1125,13 @@ async function invokeWithModelAutoHeal(params: {
           effectLevel,
           cachedModels: discovery.models,
           isProbe,
+          disableThinking: isOverloaded,
+          minMaxOutputTokens,
         });
         currentModelId = candidate;
         return {
           response,
+          usedProvider: provider,
           usedModelId: currentModelId,
           deadModels,
           discoveryModels: discovery.models,
@@ -1050,7 +1144,51 @@ async function invokeWithModelAutoHeal(params: {
           deadModels.push(candidate);
           continue;
         }
+        if (candHttpErr && isTransientOverloadOrRateLimitError(candHttpErr.status, candHttpErr.bodyText)) {
+          continue;
+        }
         throw candErr;
+      }
+    }
+
+    // Last resort for content generation: if active provider cluster is completely overloaded (503/429),
+    // automatically fail over to another configured provider API key
+    if (isOverloaded && !isProbe) {
+      for (const backupProvider of AI_PROVIDER_IDS) {
+        if (backupProvider === provider) continue;
+        const backupKey = resolveProviderApiKey(config, backupProvider);
+        if (!backupKey) continue;
+
+        const backupModels =
+          config.providers[backupProvider]?.cachedModels?.length
+            ? config.providers[backupProvider].cachedModels!
+            : MODEL_PRICING_CATALOG[backupProvider];
+        const backupModelId = backupModels[0]?.id || MODEL_PRICING_CATALOG[backupProvider][0].id;
+
+        try {
+          const backupResponse = await invokeSingleModelRequest({
+            provider: backupProvider,
+            apiKey: backupKey,
+            modelId: backupModelId,
+            systemPrompt,
+            userPrompt,
+            effectLevel,
+            cachedModels: backupModels,
+            isProbe,
+            disableThinking: true,
+            minMaxOutputTokens,
+          });
+          return {
+            response: backupResponse,
+            usedProvider: backupProvider,
+            usedModelId: backupModelId,
+            deadModels,
+            discoveryModels: discovery.models,
+            syncedAt: discovery.syncedAt,
+          };
+        } catch {
+          // try next configured backup provider
+        }
       }
     }
 
@@ -1266,6 +1404,7 @@ export async function generateStructuredAiJson<T = Record<string, unknown>>(para
     config.activeModelId ||
     MODEL_PRICING_CATALOG[provider][0].id;
 
+  let usedProvider = provider;
   let modelId = KNOWN_RETIRED_MODEL_IDS.has(requestedModel)
     ? MODEL_PRICING_CATALOG[provider][0].id
     : requestedModel;
@@ -1294,10 +1433,12 @@ export async function generateStructuredAiJson<T = Record<string, unknown>>(para
       systemPrompt: params.systemPrompt,
       userPrompt: params.userPrompt,
       effectLevel,
+      minMaxOutputTokens: params.targetField === 'all' ? 8192 : undefined,
     });
 
+    usedProvider = healedRun.usedProvider;
     modelId = healedRun.usedModelId;
-    if (healedRun.deadModels.length > 0) {
+    if (healedRun.deadModels.length > 0 && usedProvider === provider) {
       await healDeadModelsInConfig({
         config,
         provider,
@@ -1306,6 +1447,8 @@ export async function generateStructuredAiJson<T = Record<string, unknown>>(para
         liveDiscoveredModels: healedRun.discoveryModels,
       });
     }
+
+    const usedProviderSettings = config.providers[usedProvider] || providerSettings;
 
     rawText = healedRun.response.rawText;
     inputTokens = healedRun.response.inputTokens;
@@ -1322,13 +1465,13 @@ export async function generateStructuredAiJson<T = Record<string, unknown>>(para
     const totalTokens = inputTokens + outputTokens;
     const latencyMs = Date.now() - startedAt;
     const theoreticalPaidCostUsd = calculateTokenCostUsd(
-      provider,
+      usedProvider,
       modelId,
       inputTokens,
       outputTokens,
-      providerSettings.cachedModels
+      usedProviderSettings.cachedModels
     );
-    const estimatedCostUsd = providerSettings.isFreeTier ? 0 : theoreticalPaidCostUsd;
+    const estimatedCostUsd = usedProviderSettings.isFreeTier ? 0 : theoreticalPaidCostUsd;
 
     const parsed = parseRobustJson<T>(rawText);
 
@@ -1337,7 +1480,7 @@ export async function generateStructuredAiJson<T = Record<string, unknown>>(para
       const col = await getCollection(COLLECTIONS.AI_USAGE_LOGS);
       if (col) {
         await col.insertOne({
-          provider,
+          provider: usedProvider,
           modelId,
           effectLevel,
           targetField: params.targetField,
@@ -1347,7 +1490,7 @@ export async function generateStructuredAiJson<T = Record<string, unknown>>(para
           totalTokens,
           estimatedCostUsd,
           theoreticalPaidCostUsd,
-          isFreeTier: providerSettings.isFreeTier,
+          isFreeTier: usedProviderSettings.isFreeTier,
           latencyMs,
           status: 'success',
           userId: params.userId || '',
@@ -1361,7 +1504,7 @@ export async function generateStructuredAiJson<T = Record<string, unknown>>(para
     return {
       data: parsed,
       usage: {
-        provider,
+        provider: usedProvider,
         modelId,
         effectLevel,
         inputTokens,
@@ -1369,7 +1512,7 @@ export async function generateStructuredAiJson<T = Record<string, unknown>>(para
         totalTokens,
         estimatedCostUsd,
         theoreticalPaidCostUsd,
-        isFreeTier: providerSettings.isFreeTier,
+        isFreeTier: usedProviderSettings.isFreeTier,
         latencyMs,
       },
     };
@@ -1380,7 +1523,7 @@ export async function generateStructuredAiJson<T = Record<string, unknown>>(para
       const col = await getCollection(COLLECTIONS.AI_USAGE_LOGS);
       if (col) {
         await col.insertOne({
-          provider,
+          provider: usedProvider,
           modelId,
           effectLevel,
           targetField: params.targetField,
