@@ -12,6 +12,8 @@ import {
   TbSettings,
   TbLoader2,
   TbPlus,
+  TbEye,
+  TbEyeOff,
 } from 'react-icons/tb';
 import { AI_PROVIDERS_META, type AiEffectLevel, type AiProviderId } from '@/lib/ai-types';
 
@@ -23,6 +25,7 @@ export interface UploadedReferenceItem {
   wordCount: number;
   charCount: number;
   metaSummary: string;
+  savedAt?: string;
 }
 
 export interface PortfolioAiReferenceBarProps {
@@ -31,6 +34,8 @@ export interface PortfolioAiReferenceBarProps {
   references: UploadedReferenceItem[];
   onAddReferences: (docs: UploadedReferenceItem[]) => void;
   onRemoveReference: (id: string) => void;
+  onClearAllReferences?: () => void;
+  isSavingReferences?: boolean;
   onGenerateAll: () => void;
   isGeneratingAll: boolean;
   generatingFieldKey: string | null;
@@ -56,6 +61,8 @@ export function PortfolioAiReferenceBar({
   references,
   onAddReferences,
   onRemoveReference,
+  onClearAllReferences,
+  isSavingReferences = false,
   onGenerateAll,
   isGeneratingAll,
   generatingFieldKey,
@@ -71,6 +78,7 @@ export function PortfolioAiReferenceBar({
   const [showPasteBox, setShowPasteBox] = useState(false);
   const [pasteTitle, setPasteTitle] = useState('');
   const [pasteText, setPasteText] = useState('');
+  const [previewingRefId, setPreviewingRefId] = useState<string | null>(null);
 
   const totalWords = references.reduce((acc, r) => acc + r.wordCount, 0);
   const hasReference = references.length > 0;
@@ -98,10 +106,13 @@ export function PortfolioAiReferenceBar({
         throw new Error(data.error || 'Failed to parse uploaded document.');
       }
 
+      const nowTs = Date.now();
+      const savedAt = new Date(nowTs).toISOString();
       const mapped: UploadedReferenceItem[] = data.documents.map(
         (doc: Omit<UploadedReferenceItem, 'id'>, idx: number) => ({
           ...doc,
-          id: `ref-${doc.filename}-${doc.charCount}-${idx}`,
+          id: `ref-${nowTs}-${idx}`,
+          savedAt,
         })
       );
       onAddReferences(mapped);
@@ -126,15 +137,17 @@ export function PortfolioAiReferenceBar({
     const clean = pasteText.trim();
     if (!clean) return;
     const words = clean.match(/\S+/g)?.length || 0;
+    const nowTs = Date.now();
     onAddReferences([
       {
-        id: `ref-notes-${clean.length}-${words}`,
+        id: `ref-notes-${nowTs}`,
         filename: pasteTitle.trim() || 'Project Brief Notes.txt',
         extension: 'txt',
         text: clean,
         wordCount: words,
         charCount: clean.length,
         metaSummary: isRtl ? 'ملاحظات مرجعية مضافة يدوياً' : 'Manual Text Reference',
+        savedAt: new Date(nowTs).toISOString(),
       },
     ]);
     setPasteTitle('');
@@ -142,6 +155,10 @@ export function PortfolioAiReferenceBar({
     setShowPasteBox(false);
     onDismissWarning();
   };
+
+  const previewDoc = previewingRefId
+    ? references.find((r) => r.id === previewingRefId) || null
+    : null;
 
   return (
     <div
@@ -327,46 +344,120 @@ export function PortfolioAiReferenceBar({
         </div>
       )}
 
-      {/* Uploaded Reference Files Chips */}
+      {/* Uploaded / Saved Reference Files Chips */}
       {hasReference && (
-        <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
-          <div className="flex flex-wrap items-center gap-2">
-            {references.map((refDoc) => (
-              <div
-                key={refDoc.id}
-                className="inline-flex items-center gap-2 px-3 py-1.5 bg-white border border-purple-200 rounded-xl text-xs shadow-2xs"
-              >
-                <TbFileText className="w-4 h-4 text-purple-600 shrink-0" />
-                <div>
-                  <span className="font-bold text-slate-800">{refDoc.filename}</span>
-                  <span className="text-[10px] text-slate-400 ms-1.5 font-mono uppercase">
-                    .{refDoc.extension} • {refDoc.wordCount.toLocaleString()} {isRtl ? 'كلمة' : 'words'}
-                  </span>
-                </div>
+        <div className="space-y-2.5 pt-1">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div className="flex flex-wrap items-center gap-2">
+              {references.map((refDoc) => {
+                const isPreviewOpen = previewingRefId === refDoc.id;
+                return (
+                  <div
+                    key={refDoc.id}
+                    className={`inline-flex items-center gap-2 px-3 py-1.5 bg-white border rounded-xl text-xs shadow-2xs ${
+                      isPreviewOpen ? 'border-purple-500 ring-1 ring-purple-300' : 'border-purple-200'
+                    }`}
+                  >
+                    <TbFileText className="w-4 h-4 text-purple-600 shrink-0" />
+                    <div>
+                      <span className="font-bold text-slate-800">{refDoc.filename}</span>
+                      <span className="text-[10px] text-slate-400 ms-1.5 font-mono uppercase">
+                        .{refDoc.extension} • {refDoc.wordCount.toLocaleString()} {isRtl ? 'كلمة' : 'words'}
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setPreviewingRefId((prev) => (prev === refDoc.id ? null : refDoc.id))
+                      }
+                      className="text-slate-400 hover:text-purple-700 p-0.5 cursor-pointer"
+                      title={isRtl ? 'معاينة النص المرجعي' : 'Preview saved reference'}
+                    >
+                      {isPreviewOpen ? (
+                        <TbEyeOff className="w-3.5 h-3.5 text-purple-600" />
+                      ) : (
+                        <TbEye className="w-3.5 h-3.5" />
+                      )}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (previewingRefId === refDoc.id) setPreviewingRefId(null);
+                        onRemoveReference(refDoc.id);
+                      }}
+                      className="text-slate-400 hover:text-rose-600 p-0.5 cursor-pointer"
+                      title={isRtl ? 'إزالة الملف' : 'Remove reference'}
+                    >
+                      <TbTrash className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2 text-[11px] font-semibold">
+              <span className="inline-flex items-center gap-1 text-emerald-700">
+                {isSavingReferences ? (
+                  <TbLoader2 className="w-3.5 h-3.5 animate-spin" />
+                ) : (
+                  <TbCheck className="w-3.5 h-3.5" />
+                )}
+                <span>
+                  {isSavingReferences
+                    ? isRtl
+                      ? 'جارٍ الحفظ مع القصة...'
+                      : 'Saving to story...'
+                    : `${totalWords.toLocaleString()} ${
+                        isRtl ? 'كلمة محفوظة مع القصة' : 'words saved to story'
+                      }`}
+                </span>
+              </span>
+
+              {onClearAllReferences && (
                 <button
                   type="button"
-                  onClick={() => onRemoveReference(refDoc.id)}
-                  className="text-slate-400 hover:text-rose-600 p-0.5 cursor-pointer"
-                  title={isRtl ? 'إزالة الملف' : 'Remove reference'}
+                  onClick={() => {
+                    setPreviewingRefId(null);
+                    onClearAllReferences();
+                  }}
+                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-[10px] font-bold cursor-pointer transition-colors"
                 >
-                  <TbTrash className="w-3.5 h-3.5" />
+                  <TbTrash className="w-3 h-3" />
+                  <span>{isRtl ? 'مسح الكل' : 'Remove All'}</span>
                 </button>
-              </div>
-            ))}
+              )}
+
+              {lastUsageBanner && (
+                <span className="px-2 py-0.5 rounded bg-emerald-50 border border-emerald-200 text-emerald-700 font-mono text-[10px]">
+                  Last AI: {lastUsageBanner.tokens.toLocaleString()} tok (
+                  {lastUsageBanner.isFreeTier ? 'Free' : `$${lastUsageBanner.costUsd.toFixed(5)}`})
+                </span>
+              )}
+            </div>
           </div>
 
-          <div className="flex items-center gap-2 text-[11px] text-emerald-700 font-semibold">
-            <TbCheck className="w-3.5 h-3.5" />
-            <span>
-              {totalWords.toLocaleString()} {isRtl ? 'كلمة مرجعية جاهزة' : 'reference words indexed'}
-            </span>
-            {lastUsageBanner && (
-              <span className="px-2 py-0.5 rounded bg-emerald-50 border border-emerald-200 font-mono text-[10px]">
-                Last AI: {lastUsageBanner.tokens.toLocaleString()} tok (
-                {lastUsageBanner.isFreeTier ? 'Free' : `$${lastUsageBanner.costUsd.toFixed(5)}`})
-              </span>
-            )}
-          </div>
+          {previewDoc && (
+            <div className="p-3 bg-white border border-purple-200 rounded-xl space-y-1.5 animate-in fade-in">
+              <div className="flex items-center justify-between text-[11px]">
+                <span className="font-bold text-slate-800">
+                  {previewDoc.filename}{' '}
+                  <span className="font-normal text-slate-500">
+                    ({previewDoc.metaSummary})
+                  </span>
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setPreviewingRefId(null)}
+                  className="text-slate-400 hover:text-slate-700 underline cursor-pointer"
+                >
+                  {isRtl ? 'إغلاق المعاينة' : 'Close Preview'}
+                </button>
+              </div>
+              <pre className="max-h-48 overflow-y-auto whitespace-pre-wrap text-[11px] font-mono text-slate-700 bg-slate-50 p-2.5 rounded-lg border border-slate-200 leading-relaxed">
+                {previewDoc.text}
+              </pre>
+            </div>
+          )}
         </div>
       )}
     </div>

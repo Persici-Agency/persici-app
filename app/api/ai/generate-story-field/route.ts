@@ -2,7 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getSessionUser } from '@/lib/auth/jwt';
 import { isRoleAllowed } from '@/lib/auth/rbac';
 import { generateStructuredAiJson } from '@/lib/ai-server';
+import { getAllProjectsFromDb } from '@/lib/projects-server';
 import type { AiEffectLevel, AiProviderId } from '@/lib/ai-types';
+import type {
+  ClientStoryDetail,
+  StoryTechBadge,
+} from '@/app/[lang]/(site)/client-stories/_client-stories/types';
 
 export const runtime = 'nodejs';
 
@@ -27,9 +32,297 @@ export type StoryAiTargetField =
   | 'bullets'
   | 'code_block'
   | 'code_blocks'
-  | 'quote';
+  | 'quote'
+  | 'tech_stack'
+  | 'related_slugs';
 
 export type NarrativeSectionRole = 'intro' | 'problem' | 'solution' | 'impact';
+
+type TechBadgeCategory = NonNullable<StoryTechBadge['category']>;
+
+interface StoryCatalogEntry {
+  slug: string;
+  client: string;
+  title: string;
+  categorySlug: string;
+  templateType: string;
+  topic: string;
+  services: string[];
+  techStack: string[];
+}
+
+const VALID_TECH_CATEGORIES = new Set<TechBadgeCategory>([
+  'frontend',
+  'backend',
+  'database',
+  'cloud',
+  'tool',
+  'design',
+]);
+
+const TECH_CATEGORY_ALIASES: Record<string, TechBadgeCategory> = {
+  hosting: 'cloud',
+  infrastructure: 'cloud',
+  devops: 'cloud',
+  cdn: 'cloud',
+  server: 'backend',
+  api: 'backend',
+  cms: 'backend',
+  ecommerce: 'backend',
+  platform: 'backend',
+  db: 'database',
+  sql: 'database',
+  nosql: 'database',
+  storage: 'database',
+  cache: 'database',
+  ui: 'design',
+  ux: 'design',
+  'ui/ux': 'design',
+  creative: 'design',
+  fintech: 'tool',
+  payment: 'tool',
+  payments: 'tool',
+  analytics: 'tool',
+  seo: 'tool',
+  plugin: 'tool',
+  sdk: 'tool',
+};
+
+function normalizeTechStackBadges(raw: unknown): StoryTechBadge[] {
+  if (!Array.isArray(raw)) return [];
+  const seen = new Set<string>();
+  const normalized: StoryTechBadge[] = [];
+
+  for (const item of raw) {
+    if (!item || typeof item !== 'object') continue;
+    const obj = item as Record<string, unknown>;
+    const rawName = typeof obj.name === 'string' ? obj.name.trim() : '';
+    if (!rawName) continue;
+    const dedupeKey = rawName.toLowerCase();
+    if (seen.has(dedupeKey)) continue;
+    seen.add(dedupeKey);
+
+    const rawCat = typeof obj.category === 'string' ? obj.category.trim().toLowerCase() : 'frontend';
+    let category: TechBadgeCategory = 'frontend';
+    if (VALID_TECH_CATEGORIES.has(rawCat as TechBadgeCategory)) {
+      category = rawCat as TechBadgeCategory;
+    } else if (rawCat in TECH_CATEGORY_ALIASES) {
+      category = TECH_CATEGORY_ALIASES[rawCat];
+    }
+
+    normalized.push({ name: rawName, category });
+  }
+
+  return normalized;
+}
+
+function tokenizeKeywords(text: string): Set<string> {
+  const stopWords = new Set([
+    'and',
+    'the',
+    'for',
+    'with',
+    'from',
+    'into',
+    'that',
+    'this',
+    'full',
+    'web',
+    'app',
+    'apps',
+    'platform',
+    'digital',
+    'enterprise',
+    'custom',
+    'system',
+    'solutions',
+    'services',
+  ]);
+  const words = text
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, ' ')
+    .split(/[\s-]+/)
+    .map((w) => w.trim())
+    .filter((w) => w.length >= 3 && !stopWords.has(w));
+  return new Set(words);
+}
+
+function buildStoriesCatalogSummary(
+  dbStories: ClientStoryDetail[],
+  excludeSlug?: string
+): StoryCatalogEntry[] {
+  const excluded = (excludeSlug || '').trim().toLowerCase();
+  return dbStories
+    .filter((s) => s.slug && s.slug.toLowerCase() !== excluded)
+    .map((s) => ({
+      slug: s.slug,
+      client: s.client || '',
+      title: s.title?.en || s.title?.ar || s.slug,
+      categorySlug: s.categorySlug,
+      templateType: s.templateType,
+      topic: s.topic?.en || s.topic?.ar || '',
+      services: (s.services || []).map((srv) => srv.en).filter(Boolean),
+      techStack: (s.mediaShowcase?.techStack || []).map((t) => t.name).filter(Boolean),
+    }));
+}
+
+function rankDatabaseRelatedSlugs(params: {
+  currentStoryContext?: Record<string, unknown>;
+  referenceText: string;
+  dbStories: ClientStoryDetail[];
+  limit?: number;
+}): string[] {
+  const { currentStoryContext, referenceText, dbStories, limit = 3 } = params;
+  const currentSlug =
+    typeof currentStoryContext?.slug === 'string'
+      ? currentStoryContext.slug.trim().toLowerCase()
+      : '';
+  const currentCategory =
+    typeof currentStoryContext?.categorySlug === 'string'
+      ? currentStoryContext.categorySlug.trim().toLowerCase()
+      : '';
+  const currentTemplate =
+    typeof currentStoryContext?.templateType === 'string'
+      ? currentStoryContext.templateType.trim().toLowerCase()
+      : '';
+
+  const currentServicesList = Array.isArray(currentStoryContext?.services)
+    ? (currentStoryContext.services as Array<{ en?: string; ar?: string }>)
+        .map((s) => (typeof s?.en === 'string' ? s.en.trim().toLowerCase() : ''))
+        .filter(Boolean)
+    : [];
+
+  const topicObj = currentStoryContext?.topic as { en?: string } | undefined;
+  const titleObj = currentStoryContext?.title as { en?: string } | undefined;
+  const mediaObj = currentStoryContext?.mediaShowcase as
+    | { techStack?: Array<{ name?: string }> }
+    | undefined;
+  const currentTechNames = new Set(
+    (mediaObj?.techStack || [])
+      .map((t) => (typeof t?.name === 'string' ? t.name.trim().toLowerCase() : ''))
+      .filter(Boolean)
+  );
+
+  const currentKeywordSet = tokenizeKeywords(
+    [
+      topicObj?.en || '',
+      titleObj?.en || '',
+      currentServicesList.join(' '),
+      Array.from(currentTechNames).join(' '),
+    ].join(' ')
+  );
+  const refLower = referenceText.toLowerCase();
+
+  const scored = dbStories
+    .filter((s) => s.slug && s.slug.toLowerCase() !== currentSlug)
+    .map((candidate) => {
+      let score = 0;
+      const candSlugLower = candidate.slug.toLowerCase();
+
+      if (refLower && refLower.includes(candSlugLower)) {
+        score += 100;
+      }
+      if (currentCategory && candidate.categorySlug?.toLowerCase() === currentCategory) {
+        score += 40;
+      }
+      if (currentTemplate && candidate.templateType?.toLowerCase() === currentTemplate) {
+        score += 20;
+      }
+
+      const candServices = (candidate.services || [])
+        .map((s) => (s.en || '').trim().toLowerCase())
+        .filter(Boolean);
+      let serviceScore = 0;
+      for (const cs of candServices) {
+        if (currentServicesList.includes(cs)) {
+          serviceScore += 15;
+        }
+      }
+      score += Math.min(35, serviceScore);
+
+      const candTech = (candidate.mediaShowcase?.techStack || [])
+        .map((t) => t.name.trim().toLowerCase())
+        .filter(Boolean);
+      let techMatches = 0;
+      for (const ct of candTech) {
+        if (currentTechNames.has(ct)) techMatches += 1;
+      }
+      score += Math.min(20, techMatches * 6);
+
+      const candKeywords = tokenizeKeywords(
+        [
+          candidate.topic?.en || '',
+          candidate.title?.en || '',
+          candServices.join(' '),
+          candTech.join(' '),
+        ].join(' ')
+      );
+      let kwOverlap = 0;
+      for (const kw of candKeywords) {
+        if (currentKeywordSet.has(kw)) kwOverlap += 1;
+      }
+      score += Math.min(25, kwOverlap * 4);
+
+      if (candidate.featured) score += 2;
+
+      return { slug: candidate.slug, score };
+    })
+    .sort((a, b) => b.score - a.score);
+
+  return scored.slice(0, limit).map((item) => item.slug);
+}
+
+function validateAndTopUpRelatedSlugs(params: {
+  candidateSlugs: unknown;
+  currentStoryContext?: Record<string, unknown>;
+  referenceText: string;
+  dbStories: ClientStoryDetail[];
+  limit?: number;
+}): string[] {
+  const { candidateSlugs, currentStoryContext, referenceText, dbStories, limit = 3 } = params;
+  const currentSlug =
+    typeof currentStoryContext?.slug === 'string'
+      ? currentStoryContext.slug.trim().toLowerCase()
+      : '';
+  const validMap = new Map<string, string>();
+  for (const s of dbStories) {
+    if (s.slug && s.slug.toLowerCase() !== currentSlug) {
+      validMap.set(s.slug.toLowerCase(), s.slug);
+    }
+  }
+
+  const picked: string[] = [];
+  const seen = new Set<string>();
+
+  if (Array.isArray(candidateSlugs)) {
+    for (const raw of candidateSlugs) {
+      if (typeof raw !== 'string') continue;
+      const canonical = validMap.get(raw.trim().toLowerCase());
+      if (canonical && !seen.has(canonical.toLowerCase())) {
+        seen.add(canonical.toLowerCase());
+        picked.push(canonical);
+      }
+    }
+  }
+
+  if (picked.length < limit) {
+    const ranked = rankDatabaseRelatedSlugs({
+      currentStoryContext,
+      referenceText,
+      dbStories,
+      limit: Math.max(limit + 2, 5),
+    });
+    for (const slug of ranked) {
+      if (picked.length >= limit) break;
+      if (!seen.has(slug.toLowerCase())) {
+        seen.add(slug.toLowerCase());
+        picked.push(slug);
+      }
+    }
+  }
+
+  return picked.slice(0, Math.max(limit, picked.length));
+}
 
 const SECTION_ROLE_GUIDANCE: Record<NarrativeSectionRole, string> = {
   intro:
@@ -42,6 +335,28 @@ const SECTION_ROLE_GUIDANCE: Record<NarrativeSectionRole, string> = {
     'SECTION ROLE = THE MEASURABLE IMPACT (Section 07): Focus strictly on quantifiable ROI, conversion lift, performance gains, customer growth, efficiency milestones, and long-term business value achieved from the engagement.',
 };
 
+function collectStoryCodeSummary(ctx?: Record<string, unknown>) {
+  if (!ctx) return [];
+  const roles: NarrativeSectionRole[] = ['intro', 'problem', 'solution', 'impact'];
+  const collected: Array<{ section: string; language: string; title: string; code: string }> = [];
+  for (const r of roles) {
+    const sec = ctx[r] as { codeBlocks?: Array<{ language?: string; title?: { en?: string }; code?: string }> } | undefined;
+    if (Array.isArray(sec?.codeBlocks)) {
+      for (const blk of sec.codeBlocks) {
+        if (blk && typeof blk.code === 'string' && blk.code.trim()) {
+          collected.push({
+            section: r,
+            language: String(blk.language || ''),
+            title: String(blk.title?.en || ''),
+            code: blk.code.slice(0, 800),
+          });
+        }
+      }
+    }
+  }
+  return collected;
+}
+
 function buildPromptForTarget(params: {
   targetField: StoryAiTargetField;
   referenceText: string;
@@ -50,6 +365,7 @@ function buildPromptForTarget(params: {
   paragraphIndex?: number;
   codeBlockIndex?: number;
   codeLanguage?: string;
+  availableStoriesCatalog?: StoryCatalogEntry[];
 }): { systemPrompt: string; userPrompt: string } {
   const {
     targetField,
@@ -59,6 +375,7 @@ function buildPromptForTarget(params: {
     paragraphIndex,
     codeBlockIndex,
     codeLanguage,
+    availableStoriesCatalog,
   } = params;
   const role: NarrativeSectionRole = sectionContext || 'intro';
   const hasRef = Boolean(referenceText && referenceText.trim().length > 0);
@@ -69,7 +386,7 @@ CORE RULES:
 1. GROUNDING RULE: ${
     hasRef
       ? 'Rely strictly on the facts, brand names, technologies, deliverables, metrics, and context inside the provided REFERENCE DOCUMENT. Never invent fake client names or fabricated statistical numbers.'
-      : 'Use the provided Client Story metadata (client, title, topic, category, services, and active section context) to produce realistic, production-grade technical output.'
+      : 'Use the provided Client Story metadata (client, title, topic, category, services, code samples, and active section context) to produce realistic, production-grade technical output.'
   }
 2. SIMULTANEOUS BILINGUAL OUTPUT: Every bilingual object must provide authoritative B2B English ("en") and natural, idiomatic Modern Standard Arabic ("ar") suitable for C-suite executives (never literal word-by-word translation).
 3. SEO BEST PRACTICES: Weave high-intent industry keywords naturally into headings, summaries, and narrative prose without keyword stuffing.
@@ -77,9 +394,13 @@ CORE RULES:
 5. CODE OUTPUT FORMATTING: When generating code blocks, return raw valid code inside the "code" JSON string (escaped newlines \\n) without wrapping it in triple backtick markdown fences.
 6. JSON ONLY: Return strictly valid JSON matching the exact schema requested for the target field.`;
 
+  const mediaShowcaseCtx = currentStoryContext?.mediaShowcase as
+    | { techStack?: unknown }
+    | undefined;
   const storyContextJson = currentStoryContext
     ? JSON.stringify(
         {
+          slug: currentStoryContext.slug,
           client: currentStoryContext.client,
           categorySlug: currentStoryContext.categorySlug,
           templateType: currentStoryContext.templateType,
@@ -90,6 +411,8 @@ CORE RULES:
           sectionSummary: currentStoryContext[role],
           region: currentStoryContext.region,
           date: currentStoryContext.date,
+          currentTechStack: mediaShowcaseCtx?.techStack,
+          codeSamples: collectStoryCodeSummary(currentStoryContext),
         },
         null,
         2
@@ -266,10 +589,44 @@ Return STRICT JSON:
 }`;
       break;
 
+    case 'tech_stack':
+      fieldInstructions = `TARGET: Extract and curate the exact Technology Stack Badges ("techStack") for this Client Story based on the Reference Document, code samples, and engineered solution context.
+INSTRUCTIONS:
+- Replace irrelevant placeholder/default badges (do NOT keep Next.js, TypeScript, Tailwind CSS, or MongoDB unless they were actually used in THIS client story).
+- Include every relevant technology, CMS, framework, programming language, payment/FinTech integration, cloud/hosting provider, UI/UX tool, and database documented in the reference or code samples (typically 4 to 10 concise badges; remove duplicates or redundant items).
+- Allowed "category" values ONLY: "frontend" | "backend" | "database" | "cloud" | "tool" | "design".
+Return STRICT JSON:
+{
+  "techStack": [
+    { "name": "WordPress", "category": "backend" },
+    { "name": "PHP", "category": "backend" },
+    { "name": "WooCommerce", "category": "backend" },
+    { "name": "MySQL", "category": "database" }
+  ]
+}`;
+      break;
+
+    case 'related_slugs':
+      fieldInstructions = `TARGET: Select the 3 most relevant Related Client Story slugs from our live database catalog.
+INSTRUCTIONS:
+- Pick 3 slugs STRICTLY from the AVAILABLE DATABASE CLIENT STORIES list below (never invent or modify slugs).
+- Prioritize stories that share the same "categorySlug", similar "services", matching "topic" / industry, overlapping "techStack", or are explicitly referenced in the Reference Document.
+Return STRICT JSON:
+{
+  "relatedSlugs": [
+    "existing-database-slug-1",
+    "existing-database-slug-2",
+    "existing-database-slug-3"
+  ]
+}`;
+      break;
+
     case 'all':
       fieldInstructions = `TARGET: Generate ALL sections of the complete Persici Client Story from the Reference Document cleanly without cross-section repetition.
 Allowed "categorySlug": "software" | "branding" | "marketing" | "video-production".
 Allowed "templateType": "software-web-app-showcase" | "mobile-app-showcase" | "marketing-video-showcase" | "image-gallery-showcase".
+Allowed "techStack[].category": "frontend" | "backend" | "database" | "cloud" | "tool" | "design".
+For "relatedSlugs", choose 3 slugs STRICTLY from the AVAILABLE DATABASE CLIENT STORIES list matching category, services, or industry.
 Return STRICT JSON matching this complete schema:
 {
   "meta": {
@@ -311,16 +668,33 @@ Return STRICT JSON matching this complete schema:
     "paragraphs": [ { "en": "<p>...</p>", "ar": "<p>...</p>" } ],
     "bullets": [ { "en": "...", "ar": "..." } ],
     "quote": { "text": { "en": "...", "ar": "..." }, "author": "...", "role": { "en": "...", "ar": "..." } }
-  }
+  },
+  "techStack": [
+    { "name": "Tech Name", "category": "frontend" }
+  ],
+  "relatedSlugs": [
+    "existing-database-slug-1",
+    "existing-database-slug-2",
+    "existing-database-slug-3"
+  ]
 }`;
       break;
   }
+
+  const catalogBlock =
+    availableStoriesCatalog && availableStoriesCatalog.length > 0
+      ? `\n\nAVAILABLE DATABASE CLIENT STORIES (choose relatedSlugs ONLY from these exact slugs):\n${JSON.stringify(
+          availableStoriesCatalog,
+          null,
+          2
+        )}`
+      : '';
 
   const userPrompt = `CURRENT STORY METADATA CONTEXT:
 ${storyContextJson}
 
 GENERATION TASK:
-${fieldInstructions}
+${fieldInstructions}${catalogBlock}
 
 REFERENCE DOCUMENT CONTENT:
 """
@@ -351,10 +725,14 @@ export async function POST(request: NextRequest) {
     } | null;
 
     const targetField: StoryAiTargetField = body?.targetField || 'title';
-    const isCodeTarget = targetField === 'code_block' || targetField === 'code_blocks';
+    const isContextAllowedTarget =
+      targetField === 'code_block' ||
+      targetField === 'code_blocks' ||
+      targetField === 'tech_stack' ||
+      targetField === 'related_slugs';
     const refText = body?.referenceText?.trim() || '';
 
-    if (!body || (!isCodeTarget && !refText)) {
+    if (!body || (!isContextAllowedTarget && !refText)) {
       return NextResponse.json(
         {
           error:
@@ -365,6 +743,17 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const storySlug =
+      typeof body.currentStoryContext?.slug === 'string'
+        ? body.currentStoryContext.slug
+        : '';
+
+    const needsDbCatalog = targetField === 'related_slugs' || targetField === 'all';
+    const dbStories = needsDbCatalog ? await getAllProjectsFromDb(true) : [];
+    const availableStoriesCatalog = needsDbCatalog
+      ? buildStoriesCatalogSummary(dbStories, storySlug)
+      : undefined;
+
     const { systemPrompt, userPrompt } = buildPromptForTarget({
       targetField,
       referenceText: refText,
@@ -373,12 +762,53 @@ export async function POST(request: NextRequest) {
       paragraphIndex: body.paragraphIndex,
       codeBlockIndex: body.codeBlockIndex,
       codeLanguage: body.codeLanguage,
+      availableStoriesCatalog,
     });
 
-    const storySlug =
-      typeof body.currentStoryContext?.slug === 'string'
-        ? body.currentStoryContext.slug
-        : '';
+    if (targetField === 'related_slugs') {
+      try {
+        const result = await generateStructuredAiJson({
+          systemPrompt,
+          userPrompt,
+          targetField,
+          storySlug,
+          userId: user.email || user.name,
+          providerOverride: body.providerOverride,
+          modelOverride: body.modelOverride,
+          effectOverride: body.effectOverride,
+        });
+
+        const rawData = (result.data || {}) as Record<string, unknown>;
+        const validatedSlugs = validateAndTopUpRelatedSlugs({
+          candidateSlugs: rawData.relatedSlugs,
+          currentStoryContext: body.currentStoryContext,
+          referenceText: refText,
+          dbStories,
+          limit: 3,
+        });
+
+        return NextResponse.json({
+          success: true,
+          targetField,
+          result: { ...rawData, relatedSlugs: validatedSlugs },
+          usage: result.usage,
+        });
+      } catch (aiErr) {
+        console.warn('[API /api/ai/generate-story-field] AI related_slugs fallback to DB matcher:', aiErr);
+        const fallbackSlugs = rankDatabaseRelatedSlugs({
+          currentStoryContext: body.currentStoryContext,
+          referenceText: refText,
+          dbStories,
+          limit: 3,
+        });
+        return NextResponse.json({
+          success: true,
+          targetField,
+          source: 'database-fallback',
+          result: { relatedSlugs: fallbackSlugs },
+        });
+      }
+    }
 
     const result = await generateStructuredAiJson({
       systemPrompt,
@@ -391,10 +821,37 @@ export async function POST(request: NextRequest) {
       effectOverride: body.effectOverride,
     });
 
+    const rawData = (result.data || {}) as Record<string, unknown>;
+    const sanitizedData: Record<string, unknown> = { ...rawData };
+
+    if (targetField === 'tech_stack' || targetField === 'all') {
+      if (Array.isArray(rawData.techStack)) {
+        sanitizedData.techStack = normalizeTechStackBadges(rawData.techStack);
+      }
+    }
+
+    if (targetField === 'all' && dbStories.length > 0) {
+      const contextForMatch = {
+        ...(body.currentStoryContext || {}),
+        ...(rawData.meta && typeof rawData.meta === 'object' ? (rawData.meta as Record<string, unknown>) : {}),
+        ...(rawData.title ? { title: rawData.title } : {}),
+        ...(Array.isArray(sanitizedData.techStack)
+          ? { mediaShowcase: { techStack: sanitizedData.techStack } }
+          : {}),
+      };
+      sanitizedData.relatedSlugs = validateAndTopUpRelatedSlugs({
+        candidateSlugs: rawData.relatedSlugs,
+        currentStoryContext: contextForMatch,
+        referenceText: refText,
+        dbStories,
+        limit: 3,
+      });
+    }
+
     return NextResponse.json({
       success: true,
       targetField,
-      result: result.data,
+      result: sanitizedData,
       usage: result.usage,
     });
   } catch (err) {

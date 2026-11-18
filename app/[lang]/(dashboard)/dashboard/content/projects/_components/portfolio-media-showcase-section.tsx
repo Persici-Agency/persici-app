@@ -18,6 +18,7 @@ import type {
   StoryGalleryImage,
   StoryTechBadge,
 } from '@/app/[lang]/(site)/client-stories/_client-stories/types';
+import { AiFieldTrigger, type StoryAiFieldControls } from './ai-field-trigger';
 
 interface PortfolioMediaShowcaseSectionProps {
   story: ClientStoryDetail;
@@ -27,6 +28,7 @@ interface PortfolioMediaShowcaseSectionProps {
     callback: (url: string) => void,
     type: 'image' | 'video' | 'all'
   ) => void;
+  aiControls?: StoryAiFieldControls;
 }
 
 export function PortfolioMediaShowcaseSection({
@@ -34,6 +36,7 @@ export function PortfolioMediaShowcaseSection({
   onChange,
   lang,
   onOpenMediaPicker,
+  aiControls,
 }: PortfolioMediaShowcaseSectionProps) {
   const isRtl = lang === 'ar';
   const showcase = story.mediaShowcase || {
@@ -735,19 +738,35 @@ export function PortfolioMediaShowcaseSection({
 
           {/* Tech Stack Badges Repeater */}
           <div className="space-y-3 pt-2">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-wrap items-center justify-between gap-2">
               <div className="flex items-center gap-2 text-xs font-bold text-slate-700 uppercase tracking-wider">
                 <TbStack2 className="w-4 h-4 text-persici-crimson" />
                 <span>{isRtl ? 'حزم التقنيات المستخدمة (Technology Stack)' : 'Technology Stack Badges'}</span>
               </div>
-              <button
-                type="button"
-                onClick={handleAddTech}
-                className="inline-flex items-center gap-1 text-xs font-semibold text-persici-crimson hover:underline cursor-pointer"
-              >
-                <TbPlus className="w-3.5 h-3.5" />
-                <span>{isRtl ? 'إضافة تقنية' : 'Add Tech Badge'}</span>
-              </button>
+              <div className="flex items-center gap-2">
+                {aiControls && (
+                  <AiFieldTrigger
+                    lang={lang}
+                    hasReference={aiControls.hasReference}
+                    allowWithoutReference
+                    onMissingReference={aiControls.onMissingReference}
+                    isLoading={aiControls.generatingFieldKey === 'tech_stack'}
+                    onGenerate={() =>
+                      aiControls.onGenerateField('tech_stack', { keyLabel: 'tech_stack' })
+                    }
+                    labelEn="Generate Tech Stack with AI"
+                    labelAr="استخراج التقنيات بالذكاء الاصطناعي"
+                  />
+                )}
+                <button
+                  type="button"
+                  onClick={handleAddTech}
+                  className="inline-flex items-center gap-1 text-xs font-semibold text-persici-crimson hover:underline cursor-pointer"
+                >
+                  <TbPlus className="w-3.5 h-3.5" />
+                  <span>{isRtl ? 'إضافة تقنية' : 'Add Tech Badge'}</span>
+                </button>
+              </div>
             </div>
 
             <div className="flex flex-wrap gap-2">

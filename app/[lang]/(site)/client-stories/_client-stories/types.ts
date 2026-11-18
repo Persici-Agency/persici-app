@@ -49,6 +49,17 @@ export interface StoryTechBadge {
   category?: 'frontend' | 'backend' | 'database' | 'cloud' | 'tool' | 'design';
 }
 
+export interface StoryAiReferenceItem {
+  id: string;
+  filename: string;
+  extension: string;
+  text: string;
+  wordCount: number;
+  charCount: number;
+  metaSummary: string;
+  savedAt?: string;
+}
+
 export type StorySectionImageSize = 'sm' | 'md' | 'lg' | 'full';
 
 export interface StorySectionImage {
@@ -146,6 +157,9 @@ export interface ClientStoryDetail {
 
   // Related Stories (Slugs)
   relatedSlugs: string[];
+
+  // Persisted AI Reference Files & Text Notes
+  aiReferences?: StoryAiReferenceItem[];
 }
 
 export interface ClientStoriesHubCategoryFilter {

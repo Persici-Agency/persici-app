@@ -127,6 +127,9 @@ function mapDocToClientStory(d: Document | Record<string, unknown>): ClientStory
     impact,
     mediaShowcase,
     relatedSlugs: Array.isArray(d.relatedSlugs) ? (d.relatedSlugs as string[]) : (fallback?.relatedSlugs || []),
+    aiReferences: Array.isArray(d.aiReferences)
+      ? (d.aiReferences as ClientStoryDetail['aiReferences'])
+      : (fallback?.aiReferences || []),
   };
 }
 
@@ -216,7 +219,7 @@ export async function getProjectBySlugFromDb(slug: string): Promise<ClientStoryD
 }
 
 /**
- * Retrieves related client stories excluding the current slug.
+ * Retrieves related client stories prioritizing `relatedSlugs`, then same category, excluding the current slug.
  */
 export async function getRelatedProjectsFromDb(
   currentSlug: string,
@@ -224,8 +227,44 @@ export async function getRelatedProjectsFromDb(
 ): Promise<ClientStoryDetail[]> {
   try {
     const all = await getAllProjectsFromDb(true);
-    const filtered = all.filter((s) => s.slug !== currentSlug);
-    return filtered.slice(0, limitCount);
+    const current = all.find((s) => s.slug === currentSlug);
+    const others = all.filter((s) => s.slug !== currentSlug);
+    if (!current) return others.slice(0, limitCount);
+
+    const bySlug = new Map(others.map((s) => [s.slug, s]));
+    const picked: ClientStoryDetail[] = [];
+    const seen = new Set<string>();
+
+    for (const relSlug of current.relatedSlugs || []) {
+      const match = bySlug.get(relSlug);
+      if (match && !seen.has(match.slug)) {
+        seen.add(match.slug);
+        picked.push(match);
+      }
+    }
+
+    if (picked.length < limitCount) {
+      const sameCategory = others.filter(
+        (s) => !seen.has(s.slug) && s.categorySlug === current.categorySlug
+      );
+      for (const s of sameCategory) {
+        if (picked.length >= limitCount) break;
+        seen.add(s.slug);
+        picked.push(s);
+      }
+    }
+
+    if (picked.length < limitCount) {
+      for (const s of others) {
+        if (picked.length >= limitCount) break;
+        if (!seen.has(s.slug)) {
+          seen.add(s.slug);
+          picked.push(s);
+        }
+      }
+    }
+
+    return picked.slice(0, limitCount);
   } catch {
     return getRelatedClientStories(currentSlug, limitCount);
   }
