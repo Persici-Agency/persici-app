@@ -32,6 +32,7 @@ import {
   PortfolioNarrativeSection,
   PortfolioMediaShowcaseSection,
   PortfolioAiReferenceBar,
+  AiFieldTrigger,
   type UploadedReferenceItem,
   type StoryAiFieldControls,
 } from './_components';
@@ -192,6 +193,7 @@ const DEFAULT_NEW_STORY: ClientStoryDetail = {
     ],
   },
   relatedSlugs: [],
+  aiReferences: [],
 };
 
 export default function ProjectsManagerPage() {
@@ -207,10 +209,12 @@ export default function ProjectsManagerPage() {
   // Editor State
   const [editingStory, setEditingStory] = useState<ClientStoryDetail | null>(null);
   const [isCreating, setIsCreating] = useState(false);
+  const [persistedSlug, setPersistedSlug] = useState<string | null>(null);
   const [activeTocSection, setActiveTocSection] = useState('sec-meta');
 
   // AI Studio Reference & Generation State
   const [references, setReferences] = useState<UploadedReferenceItem[]>([]);
+  const [isSavingReferences, setIsSavingReferences] = useState(false);
   const [generatingFieldKey, setGeneratingFieldKey] = useState<string | null>(null);
   const [isGeneratingAll, setIsGeneratingAll] = useState(false);
   const [referenceWarning, setReferenceWarning] = useState<string | null>(null);
@@ -320,6 +324,7 @@ export default function ProjectsManagerPage() {
   // Open Create Modal
   const openNewProject = () => {
     setIsCreating(true);
+    setPersistedSlug(null);
     setActiveTocSection('sec-meta');
     setReferences([]);
     setReferenceWarning(null);
@@ -328,17 +333,49 @@ export default function ProjectsManagerPage() {
       ...DEFAULT_NEW_STORY,
       id: `story-${Date.now()}`,
       slug: `case-study-${Date.now()}`,
+      aiReferences: [],
     });
   };
 
   // Open Edit Modal
   const openEditStory = (story: ClientStoryDetail) => {
+    const savedRefs = Array.isArray(story.aiReferences) ? story.aiReferences : [];
     setIsCreating(false);
+    setPersistedSlug(story.slug);
     setActiveTocSection('sec-meta');
-    setReferences([]);
+    setReferences(savedRefs);
     setReferenceWarning(null);
     setLastUsageBanner(null);
-    setEditingStory({ ...story });
+    setEditingStory({ ...story, aiReferences: savedRefs });
+  };
+
+  const persistStoryReferences = async (nextRefs: UploadedReferenceItem[]) => {
+    setReferences(nextRefs);
+    setEditingStory((prev) => (prev ? { ...prev, aiReferences: nextRefs } : null));
+
+    if (!isCreating && persistedSlug) {
+      setStories((prev) =>
+        prev.map((s) =>
+          s.slug === persistedSlug ? { ...s, aiReferences: nextRefs } : s
+        )
+      );
+      setIsSavingReferences(true);
+      try {
+        await fetch('/api/projects', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            id: editingStory?.id,
+            slug: persistedSlug,
+            aiReferences: nextRefs,
+          }),
+        });
+      } catch (err) {
+        console.error('Failed to auto-save AI references:', err);
+      } finally {
+        setIsSavingReferences(false);
+      }
+    }
   };
 
   const combinedReferenceText = references
@@ -369,8 +406,12 @@ export default function ProjectsManagerPage() {
     }
   ) => {
     if (!editingStory) return;
-    const isCodeTarget = targetField === 'code_block' || targetField === 'code_blocks';
-    if (!isCodeTarget && !combinedReferenceText) {
+    const isContextAllowedTarget =
+      targetField === 'code_block' ||
+      targetField === 'code_blocks' ||
+      targetField === 'tech_stack' ||
+      targetField === 'related_slugs';
+    if (!isContextAllowedTarget && !combinedReferenceText) {
       handleMissingReference();
       return;
     }
@@ -452,6 +493,18 @@ export default function ProjectsManagerPage() {
           if (r.problem) next.problem = { ...(prev.problem || { id: 'the-problem' }), ...r.problem, id: 'the-problem' };
           if (r.solution) next.solution = { ...(prev.solution || { id: 'the-solution' }), ...r.solution, id: 'the-solution' };
           if (r.impact) next.impact = { ...(prev.impact || { id: 'the-impact' }), ...r.impact, id: 'the-impact' };
+          if (Array.isArray(r.techStack) && r.techStack.length > 0) {
+            next.mediaShowcase = {
+              ...(prev.mediaShowcase || {
+                title: { en: 'Deliverables & Production', ar: 'معرض المخرجات والإنتاج' },
+                description: { en: '', ar: '' },
+              }),
+              techStack: r.techStack,
+            };
+          }
+          if (Array.isArray(r.relatedSlugs) && r.relatedSlugs.length > 0) {
+            next.relatedSlugs = r.relatedSlugs;
+          }
         } else if (targetField === 'meta') {
           if (typeof r.client === 'string' && r.client) next.client = r.client;
           if (typeof r.slug === 'string' && r.slug) next.slug = r.slug;
@@ -485,6 +538,16 @@ export default function ProjectsManagerPage() {
           next.executiveSummary = r.executiveSummary;
         } else if (targetField === 'metrics' && Array.isArray(r.metrics)) {
           next.metrics = r.metrics.slice(0, 4);
+        } else if (targetField === 'tech_stack' && Array.isArray(r.techStack)) {
+          next.mediaShowcase = {
+            ...(prev.mediaShowcase || {
+              title: { en: 'Deliverables & Production', ar: 'معرض المخرجات والإنتاج' },
+              description: { en: '', ar: '' },
+            }),
+            techStack: r.techStack,
+          };
+        } else if (targetField === 'related_slugs' && Array.isArray(r.relatedSlugs)) {
+          next.relatedSlugs = r.relatedSlugs;
         } else if (
           targetField === 'intro' ||
           targetField === 'problem' ||
@@ -605,16 +668,21 @@ export default function ProjectsManagerPage() {
     try {
       const url = '/api/projects';
       const method = isCreating ? 'POST' : 'PUT';
+      const payloadToSave: ClientStoryDetail = {
+        ...editingStory,
+        aiReferences: references,
+      };
 
       const res = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(editingStory),
+        body: JSON.stringify(payloadToSave),
       });
 
       if (res.ok) {
         setEditingStory(null);
         setIsCreating(false);
+        setPersistedSlug(null);
         loadStories(false);
       } else {
         const errorData = await res.json().catch(() => ({}));
@@ -955,10 +1023,16 @@ export default function ProjectsManagerPage() {
                 <PortfolioAiReferenceBar
                   lang={lang}
                   references={references}
-                  onAddReferences={(docs) => setReferences((prev) => [...prev, ...docs])}
-                  onRemoveReference={(id) =>
-                    setReferences((prev) => prev.filter((item) => item.id !== id))
+                  onAddReferences={(docs) =>
+                    void persistStoryReferences([...references, ...docs])
                   }
+                  onRemoveReference={(id) =>
+                    void persistStoryReferences(
+                      references.filter((item) => item.id !== id)
+                    )
+                  }
+                  onClearAllReferences={() => void persistStoryReferences([])}
+                  isSavingReferences={isSavingReferences}
                   onGenerateAll={() => handleGenerateAiField('all', { keyLabel: 'all' })}
                   isGeneratingAll={isGeneratingAll}
                   generatingFieldKey={generatingFieldKey}
@@ -1124,21 +1198,36 @@ export default function ProjectsManagerPage() {
                   onChange={setEditingStory}
                   lang={lang}
                   onOpenMediaPicker={handleOpenMediaPicker}
+                  aiControls={aiControls}
                 />
 
                 {/* Section 09: Related Stories & Final Publish Bar */}
                 <div id="sec-publish" className="space-y-4 pt-4 border-t border-slate-200">
-                  <div className="border-b border-slate-200 pb-2">
+                  <div className="border-b border-slate-200 pb-2 flex flex-wrap items-center justify-between gap-3">
                     <h4 className="text-base font-bold text-slate-900 flex items-center gap-2">
                       <span className="w-6 h-6 rounded-lg bg-persici-crimson/10 text-persici-crimson text-xs font-mono font-bold flex items-center justify-center">
                         09
                       </span>
                       <span>{isRtl ? 'المشاريع ذات الصلة وإتمام النشر' : 'Related Stories & Publishing'}</span>
                     </h4>
+
+                    <AiFieldTrigger
+                      variant="pill"
+                      lang={lang}
+                      hasReference={aiControls.hasReference}
+                      allowWithoutReference
+                      onMissingReference={aiControls.onMissingReference}
+                      isLoading={generatingFieldKey === 'related_slugs'}
+                      onGenerate={() =>
+                        handleGenerateAiField('related_slugs', { keyLabel: 'related_slugs' })
+                      }
+                      labelEn="Find Related Stories with AI"
+                      labelAr="اقتراح مشاريع ذات صلة بالذكاء الاصطناعي"
+                    />
                   </div>
 
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  <div className="space-y-2.5">
+                    <label className="block text-xs font-semibold text-slate-700">
                       {isRtl ? 'معرفات المشاريع ذات الصلة (Slugs مفصولة بفواصل)' : 'Related Story Slugs (comma separated)'}
                     </label>
                     <input
@@ -1154,8 +1243,52 @@ export default function ProjectsManagerPage() {
                         })
                       }
                       placeholder="e.g. khazan-crafting-alz-al-lahzat, hala-food-mobile-app"
-                      className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl font-mono text-slate-800 outline-none"
+                      className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl font-mono text-slate-800 outline-none focus:bg-white focus:border-persici-crimson"
                     />
+
+                    {(editingStory.relatedSlugs || []).length > 0 && (
+                      <div className="flex flex-wrap gap-2 pt-1">
+                        {(editingStory.relatedSlugs || []).map((relSlug) => {
+                          const matched = stories.find((s) => s.slug === relSlug);
+                          return (
+                            <span
+                              key={relSlug}
+                              className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-[11px] border ${
+                                matched
+                                  ? 'bg-slate-50 border-slate-200 text-slate-700'
+                                  : 'bg-amber-50 border-amber-200 text-amber-800'
+                              }`}
+                            >
+                              <span className="font-semibold truncate max-w-[220px]">
+                                {matched
+                                  ? isRtl
+                                    ? matched.title?.ar || matched.title?.en || relSlug
+                                    : matched.title?.en || relSlug
+                                  : relSlug}
+                              </span>
+                              <span className="text-[10px] font-mono text-slate-400">
+                                ({matched ? matched.categorySlug : isRtl ? 'غير موجود' : 'unmatched'})
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  setEditingStory({
+                                    ...editingStory,
+                                    relatedSlugs: (editingStory.relatedSlugs || []).filter(
+                                      (s) => s !== relSlug
+                                    ),
+                                  })
+                                }
+                                className="text-slate-400 hover:text-red-600 p-0.5 cursor-pointer"
+                                title={isRtl ? 'إزالة' : 'Remove'}
+                              >
+                                <TbX className="w-3 h-3" />
+                              </button>
+                            </span>
+                          );
+                        })}
+                      </div>
+                    )}
                   </div>
 
                   <div className="p-6 bg-slate-900 text-white rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
