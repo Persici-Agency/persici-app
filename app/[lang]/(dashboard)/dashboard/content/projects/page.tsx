@@ -565,7 +565,19 @@ export default function ProjectsManagerPage() {
       });
     } catch (err) {
       console.error('AI generation error:', err);
-      alert(err instanceof Error ? err.message : 'AI generation failed.');
+      const rawMsg = err instanceof Error ? err.message : 'AI generation failed.';
+      const isOverload = /503|high demand|UNAVAILABLE|overloaded|429|rate.?limit/i.test(rawMsg);
+      setReferenceWarning(
+        isOverload
+          ? isRtl
+            ? `خوادم نموذج الذكاء الاصطناعي تشهد ضغطاً مرتفعاً مؤقتاً (${rawMsg.slice(0, 120)}). حاول مجدداً خلال ثوانٍ أو اختر نموذجاً/مزوداً آخر من AI Studio.`
+            : `The AI provider is temporarily experiencing high demand (${rawMsg.slice(0, 120)}). Please retry in a moment or switch to another model/provider in AI Studio.`
+          : rawMsg
+      );
+      const bar = document.getElementById('ai-reference-bar');
+      if (bar) {
+        bar.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
     } finally {
       setGeneratingFieldKey(null);
       setIsGeneratingAll(false);
