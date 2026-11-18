@@ -1,4 +1,10 @@
-export type AiProviderId = 'gemini' | 'openai' | 'anthropic' | 'groq' | 'deepseek';
+export type AiProviderId =
+  | 'gemini'
+  | 'openai'
+  | 'anthropic'
+  | 'groq'
+  | 'deepseek'
+  | 'grok';
 export type AiEffectLevel = 'low' | 'medium' | 'high';
 
 export interface AiModelDescriptor {
@@ -118,6 +124,7 @@ export const AI_PROVIDER_IDS: AiProviderId[] = [
   'anthropic',
   'groq',
   'deepseek',
+  'grok',
 ];
 
 export const AI_PROVIDERS_META: Record<AiProviderId, AiProviderMeta> = {
@@ -206,6 +213,23 @@ export const AI_PROVIDERS_META: Record<AiProviderId, AiProviderMeta> = {
       ar: 'تكلفة اقتصادية جداً مع إمكانية قراءة الرصيد الفعلي المتبقي مباشرة من API.',
     },
   },
+  grok: {
+    id: 'grok',
+    name: 'xAI Grok (Grok 4 & Grok 3)',
+    shortName: 'xAI Grok',
+    company: 'xAI',
+    keyPrefixHint: 'xai-...',
+    consoleUrl: 'https://console.x.ai',
+    defaultFreeTierAvailable: false,
+    freeTierSummary: {
+      en: 'Paid API via xAI Console (prepaid credits / monthly free promo credits if eligible)',
+      ar: 'API مدفوع عبر xAI Console (مع رصيد ترحيبي أو مسبق الدفع)',
+    },
+    billingNotes: {
+      en: 'OpenAI-compatible xAI endpoints featuring live model discovery & fast Grok 4/3 reasoning.',
+      ar: 'نقطة اتصال متوافقة مع xAI مع مزامنة النماذج الحية وقدرات استنتاج متقدمة لـ Grok 4 و Grok 3.',
+    },
+  },
 };
 
 export const EFFECT_LEVEL_PRESETS: Record<
@@ -230,8 +254,8 @@ export const EFFECT_LEVEL_PRESETS: Record<
     descEn: 'Quick factual extraction with tight concise outputs and minimal token usage.',
     descAr: 'استخلاص سريع ومختصر بأقل استهلاك للتوكنز وزمن استجابة فوري.',
     temperature: 0.2,
-    maxOutputTokens: 1600,
-    geminiThinkingBudget: 512,
+    maxOutputTokens: 2048,
+    geminiThinkingBudget: 0,
     reasoningEffort: 'low',
     anthropicThinkingBudget: 1024,
   },
@@ -242,8 +266,8 @@ export const EFFECT_LEVEL_PRESETS: Record<
     descEn: 'Optimal balance of persuasive B2B storytelling, SEO keyword depth, and speed.',
     descAr: 'توازن مثالي بين السرد الاحترافي وتضمين كلمات SEO المفتاحية والسرعة.',
     temperature: 0.45,
-    maxOutputTokens: 3200,
-    geminiThinkingBudget: 2048,
+    maxOutputTokens: 4096,
+    geminiThinkingBudget: 1024,
     reasoningEffort: 'medium',
     anthropicThinkingBudget: 2048,
   },
@@ -254,18 +278,33 @@ export const EFFECT_LEVEL_PRESETS: Record<
     descEn: 'Deep analytical synthesis, rich executive nuance, and comprehensive SEO optimization.',
     descAr: 'صياغة استراتيجية عميقة، غنى لغوي وتنفيذي، وأعلى تحسين لمحركات البحث.',
     temperature: 0.65,
-    maxOutputTokens: 6000,
-    geminiThinkingBudget: 8192,
+    maxOutputTokens: 8192,
+    geminiThinkingBudget: 2048,
     reasoningEffort: 'high',
     anthropicThinkingBudget: 4096,
   },
 };
 
+export const KNOWN_RETIRED_MODEL_IDS = new Set<string>([
+  'gemini-1.5-pro',
+  'gemini-1.5-flash',
+  'gemini-1.5-flash-8b',
+  'gemini-1.0-pro',
+  'gemini-pro',
+  'gemini-pro-vision',
+  'deepseek-r1-distill-llama-70b',
+  'qwen-qwq-32b',
+  'mixtral-8x7b-32768',
+  'llama3-70b-8192',
+  'llama3-8b-8192',
+  'gemma2-9b-it',
+]);
+
 export const MODEL_PRICING_CATALOG: Record<AiProviderId, AiModelDescriptor[]> = {
   gemini: [
     {
-      id: 'gemini-2.5-flash',
-      name: 'Gemini 2.5 Flash (Recommended)',
+      id: 'gemini-3.8-flash',
+      name: 'Gemini 3.8 Flash (Latest Recommended)',
       provider: 'gemini',
       supportsJsonMode: true,
       supportsReasoning: true,
@@ -273,8 +312,45 @@ export const MODEL_PRICING_CATALOG: Record<AiProviderId, AiModelDescriptor[]> = 
       inputCostPer1MTokens: 0.15,
       outputCostPer1MTokens: 0.6,
       freeTierAvailable: true,
-      freeTierNotes: '10 RPM / 250–500 RPD Free Tier on AI Studio',
+      freeTierNotes: 'Available on Google AI Studio Free & Paid Tiers',
       isLatest: true,
+    },
+    {
+      id: 'gemini-3.8-pro',
+      name: 'Gemini 3.8 Pro',
+      provider: 'gemini',
+      supportsJsonMode: true,
+      supportsReasoning: true,
+      contextWindow: 1048576,
+      inputCostPer1MTokens: 1.25,
+      outputCostPer1MTokens: 10.0,
+      freeTierAvailable: true,
+      freeTierNotes: 'High-reasoning flagship Gemini model',
+      isLatest: true,
+    },
+    {
+      id: 'gemini-3-flash-preview',
+      name: 'Gemini 3 Flash Preview',
+      provider: 'gemini',
+      supportsJsonMode: true,
+      supportsReasoning: true,
+      contextWindow: 1048576,
+      inputCostPer1MTokens: 0.15,
+      outputCostPer1MTokens: 0.6,
+      freeTierAvailable: true,
+      isLatest: true,
+    },
+    {
+      id: 'gemini-2.5-flash',
+      name: 'Gemini 2.5 Flash (Legacy Keys)',
+      provider: 'gemini',
+      supportsJsonMode: true,
+      supportsReasoning: true,
+      contextWindow: 1048576,
+      inputCostPer1MTokens: 0.15,
+      outputCostPer1MTokens: 0.6,
+      freeTierAvailable: true,
+      freeTierNotes: 'Legacy model (unavailable for new API keys)',
     },
     {
       id: 'gemini-2.5-pro',
@@ -287,20 +363,6 @@ export const MODEL_PRICING_CATALOG: Record<AiProviderId, AiModelDescriptor[]> = 
       outputCostPer1MTokens: 10.0,
       freeTierAvailable: true,
       freeTierNotes: 'Limited Free Tier RPM on AI Studio',
-      isLatest: true,
-    },
-    {
-      id: 'gemini-2.5-flash-lite',
-      name: 'Gemini 2.5 Flash-Lite',
-      provider: 'gemini',
-      supportsJsonMode: true,
-      supportsReasoning: true,
-      contextWindow: 1048576,
-      inputCostPer1MTokens: 0.1,
-      outputCostPer1MTokens: 0.4,
-      freeTierAvailable: true,
-      freeTierNotes: '15 RPM / 1,000 RPD Free Tier on AI Studio',
-      isLatest: true,
     },
     {
       id: 'gemini-2.0-flash',
@@ -313,18 +375,6 @@ export const MODEL_PRICING_CATALOG: Record<AiProviderId, AiModelDescriptor[]> = 
       outputCostPer1MTokens: 0.4,
       freeTierAvailable: true,
       freeTierNotes: '15 RPM / 1,500 RPD Free Tier on AI Studio',
-    },
-    {
-      id: 'gemini-1.5-pro',
-      name: 'Gemini 1.5 Pro',
-      provider: 'gemini',
-      supportsJsonMode: true,
-      supportsReasoning: false,
-      contextWindow: 2097152,
-      inputCostPer1MTokens: 1.25,
-      outputCostPer1MTokens: 5.0,
-      freeTierAvailable: true,
-      freeTierNotes: '2 RPM Free Tier limit',
     },
   ],
   openai: [
@@ -349,6 +399,18 @@ export const MODEL_PRICING_CATALOG: Record<AiProviderId, AiModelDescriptor[]> = 
       contextWindow: 1047576,
       inputCostPer1MTokens: 0.4,
       outputCostPer1MTokens: 1.6,
+      freeTierAvailable: false,
+      isLatest: true,
+    },
+    {
+      id: 'gpt-4.1-nano',
+      name: 'GPT-4.1 Nano',
+      provider: 'openai',
+      supportsJsonMode: true,
+      supportsReasoning: false,
+      contextWindow: 1047576,
+      inputCostPer1MTokens: 0.1,
+      outputCostPer1MTokens: 0.4,
       freeTierAvailable: false,
       isLatest: true,
     },
@@ -393,13 +455,49 @@ export const MODEL_PRICING_CATALOG: Record<AiProviderId, AiModelDescriptor[]> = 
       supportsJsonMode: true,
       supportsReasoning: true,
       contextWindow: 200000,
-      inputCostPer1MTokens: 10.0,
-      outputCostPer1MTokens: 40.0,
+      inputCostPer1MTokens: 2.0,
+      outputCostPer1MTokens: 8.0,
       freeTierAvailable: false,
       isLatest: true,
     },
   ],
   anthropic: [
+    {
+      id: 'claude-sonnet-4-5',
+      name: 'Claude Sonnet 4.5 (Latest)',
+      provider: 'anthropic',
+      supportsJsonMode: false,
+      supportsReasoning: true,
+      contextWindow: 200000,
+      inputCostPer1MTokens: 3.0,
+      outputCostPer1MTokens: 15.0,
+      freeTierAvailable: false,
+      isLatest: true,
+    },
+    {
+      id: 'claude-opus-4-5',
+      name: 'Claude Opus 4.5 (Flagship)',
+      provider: 'anthropic',
+      supportsJsonMode: false,
+      supportsReasoning: true,
+      contextWindow: 200000,
+      inputCostPer1MTokens: 5.0,
+      outputCostPer1MTokens: 25.0,
+      freeTierAvailable: false,
+      isLatest: true,
+    },
+    {
+      id: 'claude-haiku-4-5',
+      name: 'Claude Haiku 4.5 (Fast)',
+      provider: 'anthropic',
+      supportsJsonMode: false,
+      supportsReasoning: false,
+      contextWindow: 200000,
+      inputCostPer1MTokens: 1.0,
+      outputCostPer1MTokens: 5.0,
+      freeTierAvailable: false,
+      isLatest: true,
+    },
     {
       id: 'claude-sonnet-4-20250514',
       name: 'Claude Sonnet 4',
@@ -410,7 +508,6 @@ export const MODEL_PRICING_CATALOG: Record<AiProviderId, AiModelDescriptor[]> = 
       inputCostPer1MTokens: 3.0,
       outputCostPer1MTokens: 15.0,
       freeTierAvailable: false,
-      isLatest: true,
     },
     {
       id: 'claude-opus-4-20250514',
@@ -422,7 +519,6 @@ export const MODEL_PRICING_CATALOG: Record<AiProviderId, AiModelDescriptor[]> = 
       inputCostPer1MTokens: 15.0,
       outputCostPer1MTokens: 75.0,
       freeTierAvailable: false,
-      isLatest: true,
     },
     {
       id: 'claude-3-7-sonnet-latest',
@@ -430,17 +526,6 @@ export const MODEL_PRICING_CATALOG: Record<AiProviderId, AiModelDescriptor[]> = 
       provider: 'anthropic',
       supportsJsonMode: false,
       supportsReasoning: true,
-      contextWindow: 200000,
-      inputCostPer1MTokens: 3.0,
-      outputCostPer1MTokens: 15.0,
-      freeTierAvailable: false,
-    },
-    {
-      id: 'claude-3-5-sonnet-latest',
-      name: 'Claude 3.5 Sonnet',
-      provider: 'anthropic',
-      supportsJsonMode: false,
-      supportsReasoning: false,
       contextWindow: 200000,
       inputCostPer1MTokens: 3.0,
       outputCostPer1MTokens: 15.0,
@@ -465,11 +550,62 @@ export const MODEL_PRICING_CATALOG: Record<AiProviderId, AiModelDescriptor[]> = 
       provider: 'groq',
       supportsJsonMode: true,
       supportsReasoning: false,
-      contextWindow: 128000,
+      contextWindow: 131072,
       inputCostPer1MTokens: 0.59,
       outputCostPer1MTokens: 0.79,
       freeTierAvailable: true,
       freeTierNotes: '1,000 RPD / 30 RPM Free Tier on GroqCloud',
+      isLatest: true,
+    },
+    {
+      id: 'meta-llama/llama-4-scout-17b-16e-instruct',
+      name: 'Llama 4 Scout 17B (Groq)',
+      provider: 'groq',
+      supportsJsonMode: true,
+      supportsReasoning: false,
+      contextWindow: 131072,
+      inputCostPer1MTokens: 0.11,
+      outputCostPer1MTokens: 0.34,
+      freeTierAvailable: true,
+      freeTierNotes: 'Fast Llama 4 inference on GroqCloud',
+      isLatest: true,
+    },
+    {
+      id: 'meta-llama/llama-4-maverick-17b-128e-instruct',
+      name: 'Llama 4 Maverick 17B (Groq)',
+      provider: 'groq',
+      supportsJsonMode: true,
+      supportsReasoning: false,
+      contextWindow: 131072,
+      inputCostPer1MTokens: 0.2,
+      outputCostPer1MTokens: 0.6,
+      freeTierAvailable: true,
+      freeTierNotes: 'High-capability Llama 4 MoE on GroqCloud',
+      isLatest: true,
+    },
+    {
+      id: 'qwen/qwen3-32b',
+      name: 'Qwen 3 32B (Groq)',
+      provider: 'groq',
+      supportsJsonMode: true,
+      supportsReasoning: true,
+      contextWindow: 131072,
+      inputCostPer1MTokens: 0.29,
+      outputCostPer1MTokens: 0.59,
+      freeTierAvailable: true,
+      freeTierNotes: '1,000 RPD Free Tier on GroqCloud',
+      isLatest: true,
+    },
+    {
+      id: 'openai/gpt-oss-120b',
+      name: 'GPT-OSS 120B (Groq)',
+      provider: 'groq',
+      supportsJsonMode: true,
+      supportsReasoning: true,
+      contextWindow: 131072,
+      inputCostPer1MTokens: 0.15,
+      outputCostPer1MTokens: 0.6,
+      freeTierAvailable: true,
       isLatest: true,
     },
     {
@@ -478,36 +614,11 @@ export const MODEL_PRICING_CATALOG: Record<AiProviderId, AiModelDescriptor[]> = 
       provider: 'groq',
       supportsJsonMode: true,
       supportsReasoning: false,
-      contextWindow: 128000,
+      contextWindow: 131072,
       inputCostPer1MTokens: 0.05,
       outputCostPer1MTokens: 0.08,
       freeTierAvailable: true,
       freeTierNotes: '14,400 RPD / 30 RPM Free Tier on GroqCloud',
-    },
-    {
-      id: 'deepseek-r1-distill-llama-70b',
-      name: 'DeepSeek R1 Distill Llama 70B (Groq)',
-      provider: 'groq',
-      supportsJsonMode: true,
-      supportsReasoning: true,
-      contextWindow: 128000,
-      inputCostPer1MTokens: 0.75,
-      outputCostPer1MTokens: 0.99,
-      freeTierAvailable: true,
-      freeTierNotes: '1,000 RPD Free Tier on GroqCloud',
-      isLatest: true,
-    },
-    {
-      id: 'qwen-qwq-32b',
-      name: 'Qwen QwQ 32B',
-      provider: 'groq',
-      supportsJsonMode: true,
-      supportsReasoning: true,
-      contextWindow: 128000,
-      inputCostPer1MTokens: 0.29,
-      outputCostPer1MTokens: 0.39,
-      freeTierAvailable: true,
-      freeTierNotes: '1,000 RPD Free Tier on GroqCloud',
     },
   ],
   deepseek: [
@@ -527,13 +638,84 @@ export const MODEL_PRICING_CATALOG: Record<AiProviderId, AiModelDescriptor[]> = 
       id: 'deepseek-reasoner',
       name: 'DeepSeek-R1 (deepseek-reasoner)',
       provider: 'deepseek',
-      supportsJsonMode: false,
+      supportsJsonMode: true,
       supportsReasoning: true,
       contextWindow: 65536,
       inputCostPer1MTokens: 0.55,
       outputCostPer1MTokens: 2.19,
       freeTierAvailable: false,
       isLatest: true,
+    },
+  ],
+  grok: [
+    {
+      id: 'grok-4-latest',
+      name: 'Grok 4 (Latest Flagship)',
+      provider: 'grok',
+      supportsJsonMode: true,
+      supportsReasoning: true,
+      contextWindow: 256000,
+      inputCostPer1MTokens: 3.0,
+      outputCostPer1MTokens: 15.0,
+      freeTierAvailable: false,
+      isLatest: true,
+    },
+    {
+      id: 'grok-4-fast-non-reasoning',
+      name: 'Grok 4 Fast',
+      provider: 'grok',
+      supportsJsonMode: true,
+      supportsReasoning: false,
+      contextWindow: 2000000,
+      inputCostPer1MTokens: 0.2,
+      outputCostPer1MTokens: 0.5,
+      freeTierAvailable: false,
+      isLatest: true,
+    },
+    {
+      id: 'grok-4-fast-reasoning',
+      name: 'Grok 4 Fast Reasoning',
+      provider: 'grok',
+      supportsJsonMode: true,
+      supportsReasoning: true,
+      contextWindow: 2000000,
+      inputCostPer1MTokens: 0.2,
+      outputCostPer1MTokens: 0.5,
+      freeTierAvailable: false,
+      isLatest: true,
+    },
+    {
+      id: 'grok-3-latest',
+      name: 'Grok 3 (Latest)',
+      provider: 'grok',
+      supportsJsonMode: true,
+      supportsReasoning: false,
+      contextWindow: 131072,
+      inputCostPer1MTokens: 3.0,
+      outputCostPer1MTokens: 15.0,
+      freeTierAvailable: false,
+    },
+    {
+      id: 'grok-3-fast-latest',
+      name: 'Grok 3 Fast',
+      provider: 'grok',
+      supportsJsonMode: true,
+      supportsReasoning: false,
+      contextWindow: 131072,
+      inputCostPer1MTokens: 5.0,
+      outputCostPer1MTokens: 25.0,
+      freeTierAvailable: false,
+    },
+    {
+      id: 'grok-3-mini-latest',
+      name: 'Grok 3 Mini (Fast Reasoning)',
+      provider: 'grok',
+      supportsJsonMode: true,
+      supportsReasoning: true,
+      contextWindow: 131072,
+      inputCostPer1MTokens: 0.3,
+      outputCostPer1MTokens: 0.5,
+      freeTierAvailable: false,
     },
   ],
 };
@@ -559,7 +741,7 @@ function createDefaultProviderSettings(provider: AiProviderId): AiProviderSettin
 
 export const DEFAULT_AI_CONFIG: AiSystemConfig = {
   activeProvider: 'gemini',
-  activeModelId: 'gemini-2.5-flash',
+  activeModelId: 'gemini-3.8-flash',
   effectLevel: 'medium',
   providers: {
     gemini: createDefaultProviderSettings('gemini'),
@@ -567,6 +749,7 @@ export const DEFAULT_AI_CONFIG: AiSystemConfig = {
     anthropic: createDefaultProviderSettings('anthropic'),
     groq: createDefaultProviderSettings('groq'),
     deepseek: createDefaultProviderSettings('deepseek'),
+    grok: createDefaultProviderSettings('grok'),
   },
 };
 
@@ -607,6 +790,12 @@ export function normalizeAiConfig(raw?: Partial<AiSystemConfig> | Record<string,
     const incoming = rawProviders[pid] || {};
     const def = base.providers[pid];
     const apiKey = typeof incoming.apiKey === 'string' ? incoming.apiKey.trim() : def.apiKey;
+    const hasSyncedModels =
+      typeof incoming.modelsLastSyncedAt === 'string' && incoming.modelsLastSyncedAt.length > 0;
+    const filteredCached =
+      Array.isArray(incoming.cachedModels) && incoming.cachedModels.length > 0 && hasSyncedModels
+        ? incoming.cachedModels.filter((m) => m && m.id && !KNOWN_RETIRED_MODEL_IDS.has(m.id))
+        : [];
     providers[pid] = {
       ...def,
       ...incoming,
@@ -623,10 +812,7 @@ export function normalizeAiConfig(raw?: Partial<AiSystemConfig> | Record<string,
         typeof incoming.dailyFreeQuotaLimit === 'number' && !Number.isNaN(incoming.dailyFreeQuotaLimit)
           ? Math.max(0, Math.round(incoming.dailyFreeQuotaLimit))
           : def.dailyFreeQuotaLimit,
-      cachedModels:
-        Array.isArray(incoming.cachedModels) && incoming.cachedModels.length > 0
-          ? incoming.cachedModels
-          : def.cachedModels,
+      cachedModels: filteredCached.length > 0 ? filteredCached : def.cachedModels,
     };
   }
 
@@ -634,10 +820,22 @@ export function normalizeAiConfig(raw?: Partial<AiSystemConfig> | Record<string,
     providers[activeProvider].cachedModels?.[0]?.id ||
     MODEL_PRICING_CATALOG[activeProvider][0].id;
 
-  const activeModelId =
+  let activeModelId =
     typeof obj.activeModelId === 'string' && obj.activeModelId.trim().length > 0
       ? obj.activeModelId.trim()
       : fallbackModel;
+
+  // Auto-upgrade retired model IDs or deprecated gemini-2.5-flash failing on new keys
+  if (KNOWN_RETIRED_MODEL_IDS.has(activeModelId)) {
+    activeModelId = fallbackModel;
+  } else if (
+    activeProvider === 'gemini' &&
+    activeModelId === 'gemini-2.5-flash' &&
+    (!providers.gemini.lastVerifiedAt ||
+      (providers.gemini.lastError || '').includes('gemini-2.5-flash'))
+  ) {
+    activeModelId = 'gemini-3.8-flash';
+  }
 
   return {
     activeProvider,

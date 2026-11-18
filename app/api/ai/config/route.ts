@@ -1,7 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSessionUser } from '@/lib/auth/jwt';
 import { isRoleAllowed } from '@/lib/auth/rbac';
-import { getAiConfig, saveAiConfig, getAiUsageSummary } from '@/lib/ai-server';
+import {
+  getAiConfig,
+  saveAiConfig,
+  getAiUsageSummary,
+  discoverProviderModels,
+} from '@/lib/ai-server';
 import { toPublicAiConfig, type AiProviderId, type AiSystemConfig } from '@/lib/ai-types';
 
 export const runtime = 'nodejs';
@@ -40,7 +45,27 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid configuration payload' }, { status: 400 });
     }
 
-    const saved = await saveAiConfig(body, user.email || user.name || 'dashboard');
+    let saved = await saveAiConfig(body, user.email || user.name || 'dashboard');
+    if (saved.providers[saved.activeProvider]?.hasApiKey) {
+      try {
+        const discovery = await discoverProviderModels(saved.activeProvider, undefined, true);
+        if (
+          discovery.source === 'live-api' &&
+          discovery.models.length > 0 &&
+          !discovery.models.some((m) => m.id === saved.activeModelId)
+        ) {
+          saved = await saveAiConfig(
+            { activeModelId: discovery.models[0].id },
+            user.email || user.name || 'dashboard'
+          );
+        } else {
+          saved = await getAiConfig(true);
+        }
+      } catch {
+        // Keep saved config even if live discovery endpoint fails
+      }
+    }
+
     const usage = await getAiUsageSummary();
 
     return NextResponse.json({

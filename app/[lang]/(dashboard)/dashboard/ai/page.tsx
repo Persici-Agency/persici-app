@@ -250,7 +250,23 @@ export default function AiStudioSettingsPage({
         }),
       });
       const data = await res.json();
-      if (data.config) setConfig(data.config);
+      if (data.config) {
+        setConfig((prev) => ({
+          ...data.config,
+          activeProvider: prev.activeProvider,
+          activeModelId:
+            data.success && data.probe?.modelId
+              ? data.probe.modelId
+              : prev.activeModelId,
+        }));
+      }
+      if (data.success && data.probe?.ok) {
+        setEditedKeys((prev) => {
+          const next = { ...prev };
+          delete next[activeProvider];
+          return next;
+        });
+      }
       if (data.usage) setUsage(data.usage);
 
       if (data.success && data.probe?.ok) {
@@ -258,11 +274,16 @@ export default function AiStudioSettingsPage({
           data.probe.liveBalanceUsd !== null && data.probe.liveBalanceUsd !== undefined
             ? ` | Live Balance: $${Number(data.probe.liveBalanceUsd).toFixed(4)}`
             : '';
+        const healedNote = data.probe.autoHealedFrom
+          ? isRtl
+            ? ` (تم التبديل تلقائياً من ${data.probe.autoHealedFrom} إلى ${data.probe.modelId})`
+            : ` (Auto-updated from ${data.probe.autoHealedFrom} to ${data.probe.modelId})`
+          : ` [${data.probe.modelId}]`;
         showNotice(
           'success',
           isRtl
-            ? `الاتصال ناجح مع ${activeProviderMeta.shortName} (${data.probe.latencyMs}ms)${balanceInfo}`
-            : `Verified ${activeProviderMeta.shortName} (${data.probe.latencyMs}ms, ${data.probe.modelsCount} models synced)${balanceInfo}`
+            ? `الاتصال ناجح مع ${activeProviderMeta.shortName}${healedNote} (${data.probe.latencyMs}ms)${balanceInfo}`
+            : `Verified ${activeProviderMeta.shortName}${healedNote} (${data.probe.latencyMs}ms, ${data.probe.modelsCount} models synced)${balanceInfo}`
         );
       } else {
         showNotice(
@@ -358,8 +379,8 @@ export default function AiStudioSettingsPage({
           </h1>
           <p className="text-sm text-slate-500 mt-1 max-w-3xl">
             {isRtl
-              ? 'اربط Gemini أو ChatGPT أو Claude أو Groq أو DeepSeek، وحدد النموذج المحدّث تلقائياً ومستوى التأثير وتابع استهلاك التوكنز والرصيد.'
-              : 'Connect Gemini, ChatGPT (OpenAI), Claude, Groq, or DeepSeek. Auto-sync latest released models, set Low/Medium/High effect intensity, and monitor real-time token pricing and credits.'}
+              ? 'اربط Gemini أو ChatGPT أو Claude أو Groq أو DeepSeek أو xAI Grok، وحدد النموذج المحدّث تلقائياً ومستوى التأثير وتابع استهلاك التوكنز والرصيد.'
+              : 'Connect Gemini, ChatGPT (OpenAI), Claude, Groq, DeepSeek, or xAI Grok. Auto-sync latest released models, set Low/Medium/High effect intensity, and monitor real-time token pricing and credits.'}
           </p>
         </div>
 
@@ -928,7 +949,7 @@ export default function AiStudioSettingsPage({
           <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
             <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-3">
               <TbChartBar className="w-4 h-4 text-persici-crimson" />
-              <span>{isRtl ? 'مقارنة جميع المزودين الخمسة' : 'All 5 Supported AI Platforms'}</span>
+              <span>{isRtl ? 'مقارنة جميع المنصات الست' : 'All 6 Supported AI Platforms'}</span>
             </h3>
 
             <div className="space-y-2.5">
