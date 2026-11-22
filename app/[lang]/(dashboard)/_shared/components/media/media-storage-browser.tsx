@@ -57,10 +57,12 @@ import { MoveCopyMediaModal } from './move-copy-media-modal';
 
 export function MediaStorageBrowser({
   mode = 'standalone',
+  multiple = false,
   allowedType = 'all',
   defaultFolder = '',
   defaultQualityMode = 'high-webp',
   onSelect,
+  onSelectMultiple,
   onClose,
   onMediaMutated,
   className = '',
@@ -98,6 +100,7 @@ export function MediaStorageBrowser({
   // Selection, Bulk Multi-Select, Modals & Inspector
   const [selectedItem, setSelectedItem] = useState<MediaItem | null>(null);
   const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
+  const [selectedItemsMap, setSelectedItemsMap] = useState<Record<string, MediaItem>>({});
   const [previewItem, setPreviewItem] = useState<MediaItem | null>(null);
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const [createFolderModalState, setCreateFolderModalState] = useState<{
@@ -238,6 +241,7 @@ export function MediaStorageBrowser({
     setUploading(true);
 
     const targetFolder = activeFolder || 'general';
+    const uploadedBatch: MediaItem[] = [];
 
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
@@ -268,9 +272,12 @@ export function MediaStorageBrowser({
 
         const data = await res.json();
         if (res.ok && data.media) {
-          if (mode === 'picker' && files.length === 1 && onSelect) {
-            // In single file picker upload, auto-select right away
-            onSelect(data.media.url, data.media);
+          const uploadedMedia = data.media as MediaItem;
+          uploadedBatch.push(uploadedMedia);
+
+          if (mode === 'picker' && !multiple && files.length === 1 && onSelect) {
+            // In single-select picker mode with 1 upload, select & close immediately
+            onSelect(uploadedMedia.url, uploadedMedia);
             onClose?.();
             return;
           }
@@ -283,8 +290,32 @@ export function MediaStorageBrowser({
       }
     }
 
-    setUploadProgress(isRtl ? 'تم رفع جميع الملفات بنجاح!' : 'All files uploaded successfully!');
-    setTimeout(() => setUploadProgress(null), 3000);
+    if (uploadedBatch.length > 0) {
+      setSelectedItemsMap((prev) => {
+        const next = { ...prev };
+        for (const item of uploadedBatch) {
+          next[item.key] = item;
+        }
+        return next;
+      });
+      setSelectedKeys((prev) => {
+        const merged = new Set(prev);
+        for (const item of uploadedBatch) merged.add(item.key);
+        return Array.from(merged);
+      });
+      setSelectedItem(uploadedBatch[0]);
+    }
+
+    setUploadProgress(
+      mode === 'picker' && multiple && uploadedBatch.length > 0
+        ? isRtl
+          ? `تم رفع وتحديد ${uploadedBatch.length} ملف داخل "${targetFolder}" — اضغط إدراج لإضافتها للمعرض!`
+          : `Uploaded & selected ${uploadedBatch.length} asset(s) in "${targetFolder}" — click Insert Selected below!`
+        : isRtl
+        ? 'تم رفع جميع الملفات بنجاح!'
+        : 'All files uploaded successfully!'
+    );
+    setTimeout(() => setUploadProgress(null), 4500);
     setUploading(false);
     await fetchMedia();
     onMediaMutated?.();
@@ -298,8 +329,18 @@ export function MediaStorageBrowser({
     setTimeout(() => setCopiedKey(null), 2000);
   };
 
-  const toggleKeySelection = (key: string, e?: React.MouseEvent) => {
+  const toggleKeySelection = (itemOrKey: MediaItem | string, e?: React.MouseEvent) => {
     e?.stopPropagation();
+    const key = typeof itemOrKey === 'string' ? itemOrKey : itemOrKey.key;
+    const itemObj =
+      typeof itemOrKey === 'string'
+        ? items.find((i) => i.key === itemOrKey) || selectedItemsMap[itemOrKey]
+        : itemOrKey;
+
+    if (itemObj) {
+      setSelectedItemsMap((prev) => ({ ...prev, [key]: itemObj }));
+    }
+
     setSelectedKeys((prev) =>
       prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]
     );
@@ -373,13 +414,13 @@ export function MediaStorageBrowser({
   const [pageSize, setPageSize] = useState<number>(24);
   const [paginationMode, setPaginationMode] = useState<'paged' | 'infinite'>('paged');
 
-  // Reset to page 1 & clear multi-select during render whenever filters change
+  // Reset to page 1 & clear multi-select during render whenever filters change (preserve cross-folder selection in multiple picker mode)
   const [prevFilterKey, setPrevFilterKey] = useState<string>('');
   const currentFilterKey = `${search}|${activeFolder}|${includeSubfolders}|${activeType}|${sort}`;
   if (prevFilterKey !== currentFilterKey) {
     setPrevFilterKey(currentFilterKey);
     setCurrentPage(1);
-    if (selectedKeys.length > 0) {
+    if (!(mode === 'picker' && multiple) && selectedKeys.length > 0) {
       setSelectedKeys([]);
     }
   }
@@ -565,11 +606,47 @@ export function MediaStorageBrowser({
 
   const selectedKeySet = useMemo(() => new Set(selectedKeys), [selectedKeys]);
   const selectedMediaItems = useMemo(
-    () => items.filter((i) => selectedKeySet.has(i.key)),
-    [items, selectedKeySet]
+    () =>
+      selectedKeys
+        .map((k) => selectedItemsMap[k] || items.find((i) => i.key === k))
+        .filter((i): i is MediaItem => Boolean(i)),
+    [selectedKeys, selectedItemsMap, items]
   );
   const allDisplayedSelected =
     displayedItems.length > 0 && displayedItems.every((i) => selectedKeySet.has(i.key));
+
+  const handleConfirmMultiplePick = () => {
+    if (selectedMediaItems.length === 0) return;
+    if (onSelectMultiple) {
+      onSelectMultiple(
+        selectedMediaItems.map((i) => i.url),
+        selectedMediaItems
+      );
+    } else if (onSelect) {
+      for (const item of selectedMediaItems) {
+        onSelect(item.url, item);
+      }
+    }
+    onClose?.();
+  };
+
+  const handleToggleSelectAllDisplayed = () => {
+    if (allDisplayedSelected) {
+      const dispSet = new Set(displayedItems.map((i) => i.key));
+      setSelectedKeys((prev) => prev.filter((k) => !dispSet.has(k)));
+    } else {
+      setSelectedItemsMap((prev) => {
+        const next = { ...prev };
+        for (const i of displayedItems) next[i.key] = i;
+        return next;
+      });
+      setSelectedKeys((prev) => {
+        const merged = new Set(prev);
+        for (const i of displayedItems) merged.add(i.key);
+        return Array.from(merged);
+      });
+    }
+  };
 
   return (
     <div
@@ -827,16 +904,7 @@ export function MediaStorageBrowser({
             {displayedItems.length > 0 && (
               <button
                 type="button"
-                onClick={() => {
-                  if (allDisplayedSelected) {
-                    const dispSet = new Set(displayedItems.map((i) => i.key));
-                    setSelectedKeys((prev) => prev.filter((k) => !dispSet.has(k)));
-                  } else {
-                    const merged = new Set(selectedKeys);
-                    for (const i of displayedItems) merged.add(i.key);
-                    setSelectedKeys(Array.from(merged));
-                  }
-                }}
+                onClick={handleToggleSelectAllDisplayed}
                 className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-colors cursor-pointer ${
                   allDisplayedSelected
                     ? 'bg-persici-crimson text-white'
@@ -1034,21 +1102,50 @@ export function MediaStorageBrowser({
         )}
       </div>
 
-      {/* Multi-Select Bulk Organization Action Bar */}
+      {/* Picker Multi-Select Guidance Strip (when active & no items checked yet) */}
+      {mode === 'picker' && multiple && selectedKeys.length === 0 && (
+        <div className="mb-4 px-4 py-2.5 bg-slate-100 border border-slate-200 rounded-2xl text-xs text-slate-700 flex flex-wrap items-center justify-between gap-2">
+          <span>
+            {isRtl
+              ? 'وضع التحديد المتعدد مفعل: انقر على عدة صور لتحديدها (حتى عبر مجلدات مختلفة)، أو اختر مجلداً وارفع صوراً متعددة دفعة واحدة.'
+              : 'Bulk Select Mode active: click images across any folder/subfolder or click "Upload Files" to upload a batch and insert them all at once.'}
+          </span>
+        </div>
+      )}
+
+      {/* Multi-Select Bulk Organization & Picker Confirmation Bar */}
       {selectedKeys.length > 0 && (
-        <div className="mb-4 px-4 py-3 bg-slate-900 text-white rounded-2xl shadow-lg flex flex-wrap items-center justify-between gap-3 text-xs animate-in fade-in">
+        <div className="mb-4 px-4 py-3 bg-slate-900 text-white rounded-2xl shadow-lg flex flex-wrap items-center justify-between gap-3 text-xs animate-in fade-in sticky top-0 z-30">
           <div className="flex items-center gap-2.5">
             <span className="px-2.5 py-1 rounded-lg bg-persici-crimson text-white font-bold">
               {isRtl ? `تم تحديد ${selectedKeys.length} ملف` : `${selectedKeys.length} Selected`}
             </span>
             <span className="text-slate-300 hidden sm:inline">
-              {isRtl
+              {mode === 'picker' && multiple
+                ? isRtl
+                  ? 'جاهز للإدراج في معرض دراسة الحالة:'
+                  : 'Ready to insert into your gallery:'
+                : isRtl
                 ? 'يمكنك نقل أو نسخ جميع الملفات المحددة دفعة واحدة:'
                 : 'Organize all selected assets across folders in batch:'}
             </span>
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
+            {mode === 'picker' && multiple && (
+              <button
+                type="button"
+                onClick={handleConfirmMultiplePick}
+                className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold transition-colors shadow-sm cursor-pointer"
+              >
+                <TbCheck className="w-4 h-4 stroke-[3]" />
+                <span>
+                  {isRtl
+                    ? `إدراج ${selectedMediaItems.length} صور في المعرض`
+                    : `Insert ${selectedMediaItems.length} Selected Image${selectedMediaItems.length > 1 ? 's' : ''}`}
+                </span>
+              </button>
+            )}
             <button
               type="button"
               onClick={() =>
@@ -1112,9 +1209,14 @@ export function MediaStorageBrowser({
                     return (
                       <div
                         key={item.key}
-                        onClick={() => setSelectedItem(item)}
+                        onClick={() => {
+                          setSelectedItem(item);
+                          if (mode === 'picker' && multiple) {
+                            toggleKeySelection(item);
+                          }
+                        }}
                         onDoubleClick={() => {
-                          if (mode === 'picker' && onSelect) {
+                          if (mode === 'picker' && !multiple && onSelect) {
                             onSelect(item.url, item);
                             onClose?.();
                           } else {
@@ -1137,11 +1239,11 @@ export function MediaStorageBrowser({
                           <button
                             type="button"
                             className={`absolute top-2.5 ${isRtl ? 'right-2.5' : 'left-2.5'} z-30 transition-all ${
-                              isChecked || selectedKeys.length > 0
+                              isChecked || selectedKeys.length > 0 || (mode === 'picker' && multiple)
                                 ? 'scale-100 opacity-100'
                                 : 'scale-95 opacity-0 group-hover:opacity-100'
                             }`}
-                            onClick={(e) => toggleKeySelection(item.key, e)}
+                            onClick={(e) => toggleKeySelection(item, e)}
                             title={isRtl ? 'تحديد / إلغاء تحديد الملف' : 'Select / Unselect asset'}
                           >
                             <div
@@ -1213,16 +1315,32 @@ export function MediaStorageBrowser({
                               <TbCopyPlus className="w-4 h-4 text-slate-800" />
                             </button>
 
-                            {mode === 'picker' && onSelect && (
+                            {mode === 'picker' && (multiple || onSelect) && (
                               <button
                                 type="button"
                                 onClick={(e) => {
-                                  e.stopPropagation();
-                                  onSelect(item.url, item);
-                                  onClose?.();
+                                  if (multiple) {
+                                    toggleKeySelection(item, e);
+                                  } else {
+                                    e.stopPropagation();
+                                    onSelect?.(item.url, item);
+                                    onClose?.();
+                                  }
                                 }}
                                 className="p-2 bg-persici-crimson hover:bg-red-700 text-white rounded-xl text-xs font-semibold shadow transition-transform hover:scale-105 cursor-pointer"
-                                title={isRtl ? 'اختيار هذا الملف' : 'Select asset'}
+                                title={
+                                  multiple
+                                    ? isChecked
+                                      ? isRtl
+                                        ? 'إلغاء التحديد'
+                                        : 'Unselect'
+                                      : isRtl
+                                      ? 'إضافة للتحديد'
+                                      : 'Add to selection'
+                                    : isRtl
+                                    ? 'اختيار هذا الملف'
+                                    : 'Select asset'
+                                }
                               >
                                 <TbCheck className="w-4 h-4" />
                               </button>
@@ -1261,16 +1379,7 @@ export function MediaStorageBrowser({
                           <th scope="col" className="ps-4 pe-2 py-3.5 w-10 text-center">
                             <button
                               type="button"
-                              onClick={() => {
-                                if (allDisplayedSelected) {
-                                  const dispSet = new Set(displayedItems.map((i) => i.key));
-                                  setSelectedKeys((prev) => prev.filter((k) => !dispSet.has(k)));
-                                } else {
-                                  const merged = new Set(selectedKeys);
-                                  for (const i of displayedItems) merged.add(i.key);
-                                  setSelectedKeys(Array.from(merged));
-                                }
-                              }}
+                              onClick={handleToggleSelectAllDisplayed}
                               className={`w-5 h-5 rounded-md border flex items-center justify-center mx-auto transition-colors cursor-pointer ${
                                 allDisplayedSelected
                                   ? 'bg-persici-crimson border-persici-crimson text-white'
@@ -1295,7 +1404,12 @@ export function MediaStorageBrowser({
                           return (
                             <tr
                               key={item.key}
-                              onClick={() => setSelectedItem(item)}
+                              onClick={() => {
+                                setSelectedItem(item);
+                                if (mode === 'picker' && multiple) {
+                                  toggleKeySelection(item);
+                                }
+                              }}
                               className={`hover:bg-slate-50 cursor-pointer transition-colors ${
                                 isChecked
                                   ? 'bg-persici-crimson/5 font-medium'
@@ -1307,7 +1421,7 @@ export function MediaStorageBrowser({
                               <td className="ps-4 pe-2 py-3 w-10 text-center" onClick={(e) => e.stopPropagation()}>
                                 <button
                                   type="button"
-                                  onClick={(e) => toggleKeySelection(item.key, e)}
+                                  onClick={(e) => toggleKeySelection(item, e)}
                                   className={`w-5 h-5 rounded-md border flex items-center justify-center mx-auto transition-colors cursor-pointer ${
                                     isChecked
                                       ? 'bg-persici-crimson border-persici-crimson text-white'
@@ -1380,18 +1494,38 @@ export function MediaStorageBrowser({
                                     <TbCopyPlus className="w-4 h-4" />
                                   </button>
 
-                                  {mode === 'picker' && onSelect && (
+                                  {mode === 'picker' && (multiple || onSelect) && (
                                     <button
                                       type="button"
                                       onClick={() => {
-                                        onSelect(item.url, item);
-                                        onClose?.();
+                                        if (multiple) {
+                                          toggleKeySelection(item);
+                                        } else {
+                                          onSelect?.(item.url, item);
+                                          onClose?.();
+                                        }
                                       }}
-                                      className="px-2.5 py-1.5 bg-persici-crimson hover:bg-red-700 text-white rounded-lg text-xs font-semibold shadow-xs transition-colors flex items-center gap-1 cursor-pointer"
+                                      className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold shadow-xs transition-colors flex items-center gap-1 cursor-pointer ${
+                                        multiple && isChecked
+                                          ? 'bg-emerald-600 hover:bg-emerald-700 text-white'
+                                          : 'bg-persici-crimson hover:bg-red-700 text-white'
+                                      }`}
                                       title={isRtl ? 'اختيار' : 'Select'}
                                     >
                                       <TbCheck className="w-3.5 h-3.5" />
-                                      <span>{isRtl ? 'اختيار' : 'Select'}</span>
+                                      <span>
+                                        {multiple
+                                          ? isChecked
+                                            ? isRtl
+                                              ? 'محدد'
+                                              : 'Added'
+                                            : isRtl
+                                            ? 'تحديد'
+                                            : 'Add'
+                                          : isRtl
+                                          ? 'اختيار'
+                                          : 'Select'}
+                                      </span>
                                     </button>
                                   )}
                                 </div>

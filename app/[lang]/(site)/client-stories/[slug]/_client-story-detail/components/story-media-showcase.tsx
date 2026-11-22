@@ -4,10 +4,9 @@ import React, { useState, useRef } from 'react';
 import Image from 'next/image';
 import type { ClientStoryDetail, StoryVideoItem } from '../../../_client-stories/types';
 import { VideoPlayer } from '@shared/components/video-player';
+import { StoryGalleryShowcase } from './story-gallery-showcase';
 import {
   TbPlayerPlay,
-  TbMaximize,
-  TbX,
   TbChevronRight,
   TbChevronLeft,
   TbDeviceDesktop,
@@ -35,15 +34,21 @@ export function StoryMediaShowcase({ story, lang }: StoryMediaShowcaseProps) {
   // State for Template A: Selected Video
   const [selectedVideoIndex, setSelectedVideoIndex] = useState<number>(0);
 
-  // State for Template B: Lightbox
-  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
-
   const videos = mediaShowcase.videos || [];
   const currentVideo: StoryVideoItem | undefined = videos[selectedVideoIndex] || videos[0];
 
   const gallery = mediaShowcase.gallery || [];
   const mockups = mediaShowcase.mockups || [];
   const techStack = mediaShowcase.techStack || [];
+
+  const hasPrimaryShowcaseContent =
+    ((templateType === 'marketing-video-showcase' ||
+      templateType === 'marketing-branding-showcase') &&
+      videos.length > 0) ||
+    ((templateType === 'software-web-app-showcase' ||
+      templateType === 'ai-platform-showcase' ||
+      templateType === 'mobile-app-showcase') &&
+      (mockups.length > 0 || Boolean(mediaShowcase.demoVideo) || techStack.length > 0));
 
   const availableTypes = Array.from(new Set(mockups.map((m) => m.type)));
   const defaultDevice = mockups.some((m) => m.type === 'desktop')
@@ -276,129 +281,6 @@ export function StoryMediaShowcase({ story, lang }: StoryMediaShowcaseProps) {
                   );
                 })}
               </div>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* ========================================================================= */}
-      {/* GALLERY & LIGHTBOX ZOOM (Template B, Marketing & Branding, Hybrid)        */}
-      {/* ========================================================================= */}
-      {gallery.length > 0 && (
-        <div className={videos.length > 0 ? 'mt-12 sm:mt-16' : ''}>
-          {videos.length > 0 && (
-            <h3 className="text-xs font-mono font-medium uppercase tracking-wider text-slate-500 mb-6">
-              {templateType === 'marketing-branding-showcase'
-                ? isRtl
-                  ? 'المخرجات البصرية للعلامة التجارية'
-                  : 'Key Brand Visuals & Campaign Assets'
-                : isRtl
-                ? 'معرض الصور والإنتاج الميداني'
-                : 'Campaign Photography & Production Stills'}
-            </h3>
-          )}
-          <div
-            className={
-              templateType === 'marketing-branding-showcase' && gallery.length === 1
-                ? 'grid grid-cols-1 gap-6'
-                : templateType === 'marketing-branding-showcase' && gallery.length === 2
-                ? 'grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8'
-                : 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6'
-            }
-          >
-            {gallery.map((img, idx) => {
-              const alt = img.alt[lang as 'en' | 'ar'] || img.alt.en;
-              const caption = img.caption?.[lang as 'en' | 'ar'] || img.caption?.en;
-              const isCompactShowcase = templateType === 'marketing-branding-showcase';
-              const aspectClass =
-                isCompactShowcase && gallery.length === 1
-                  ? 'aspect-16/9'
-                  : isCompactShowcase && gallery.length === 2
-                  ? 'aspect-4/3'
-                  : img.featured
-                  ? 'sm:col-span-2 aspect-16/9'
-                  : 'aspect-square';
-
-              return (
-                <div
-                  key={idx}
-                  onClick={() => setLightboxIndex(idx)}
-                  className={`group relative overflow-hidden rounded-2xl sm:rounded-3xl border border-slate-200/80 bg-slate-100 cursor-pointer shadow-xs hover:shadow-xl transition-all duration-300 ${aspectClass}`}
-                >
-                  <Image
-                    src={img.src}
-                    alt={alt}
-                    fill
-                    sizes="(max-width: 640px) 100vw, 33vw"
-                    className="object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/30 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
-                    <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-slate-900 shadow-md">
-                      <TbMaximize className="h-5 w-5" />
-                    </span>
-                  </div>
-                  {caption && (
-                    <div className="absolute bottom-0 inset-x-0 p-3 bg-linear-to-t from-black/70 to-transparent text-white text-xs font-medium truncate">
-                      {caption}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Lightbox Modal */}
-          {lightboxIndex !== null && (
-            <div
-              className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 sm:p-8"
-              onClick={() => setLightboxIndex(null)}
-            >
-              {/* Close Button */}
-              <button
-                type="button"
-                onClick={() => setLightboxIndex(null)}
-                className="absolute top-6 end-6 text-white/80 hover:text-white p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors cursor-pointer z-50"
-              >
-                <TbX className="h-6 w-6" />
-              </button>
-
-              {/* Prev Button */}
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setLightboxIndex((prev) => (prev! > 0 ? prev! - 1 : gallery.length - 1));
-                }}
-                className="absolute start-4 sm:start-8 text-white/80 hover:text-white p-3 rounded-full bg-white/10 hover:bg-white/20 transition-colors cursor-pointer z-50"
-              >
-                <TbChevronLeft className="h-6 w-6" />
-              </button>
-
-              {/* Main Image */}
-              <div
-                className="relative max-w-5xl max-h-[85vh] w-full h-full flex items-center justify-center"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <Image
-                  src={gallery[lightboxIndex].src}
-                  alt={gallery[lightboxIndex].alt[lang as 'en' | 'ar'] || gallery[lightboxIndex].alt.en}
-                  fill
-                  className="object-contain"
-                  sizes="100vw"
-                />
-              </div>
-
-              {/* Next Button */}
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setLightboxIndex((prev) => (prev! < gallery.length - 1 ? prev! + 1 : 0));
-                }}
-                className="absolute end-4 sm:end-8 text-white/80 hover:text-white p-3 rounded-full bg-white/10 hover:bg-white/20 transition-colors cursor-pointer z-50"
-              >
-                <TbChevronRight className="h-6 w-6" />
-              </button>
             </div>
           )}
         </div>
@@ -1016,6 +898,19 @@ export function StoryMediaShowcase({ story, lang }: StoryMediaShowcaseProps) {
             </div>
           )}
         </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* UNIVERSAL VISUAL GALLERY & LAYOUT DESIGN SHOWCASE (ALL TEMPLATES)         */}
+      {/* ========================================================================= */}
+      {gallery.length > 0 && (
+        <StoryGalleryShowcase
+          gallery={gallery}
+          galleryDesign={mediaShowcase.galleryDesign}
+          templateType={templateType}
+          lang={lang}
+          hasPrimaryContent={hasPrimaryShowcaseContent}
+        />
       )}
     </section>
   );

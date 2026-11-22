@@ -3,12 +3,14 @@
 import React from 'react';
 import { TbX, TbPhoto, TbVideo, TbFile } from 'react-icons/tb';
 import { MediaStorageBrowser } from './media-storage-browser';
-import { MediaType, type ImageUploadQualityMode } from './types';
+import { MediaItem, MediaType, type ImageUploadQualityMode } from './types';
 
 export interface MediaPickerModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSelect: (url: string) => void;
+  onSelectMultiple?: (urls: string[], items: MediaItem[]) => void;
+  multiple?: boolean;
   title?: string;
   defaultFolder?: string;
   allowedType?: MediaType | 'all';
@@ -19,6 +21,8 @@ export function MediaPickerModal({
   isOpen,
   onClose,
   onSelect,
+  onSelectMultiple,
+  multiple = false,
   title,
   defaultFolder = '',
   allowedType = 'all',
@@ -28,7 +32,9 @@ export function MediaPickerModal({
 
   const computedTitle =
     title ||
-    (allowedType === 'image'
+    (multiple
+      ? 'Bulk Select or Upload Assets (Cloudflare R2)'
+      : allowedType === 'image'
       ? 'Select Image from Storage Library R2'
       : allowedType === 'video'
       ? 'Select Video from Storage Library R2'
@@ -79,11 +85,16 @@ export function MediaPickerModal({
         <div className="flex-1 overflow-y-auto p-4 sm:p-6 bg-slate-50/60">
           <MediaStorageBrowser
             mode="picker"
+            multiple={multiple}
             allowedType={allowedType}
             defaultFolder={defaultFolder}
             defaultQualityMode={defaultQualityMode}
             onSelect={(url) => {
               onSelect(url);
+              onClose();
+            }}
+            onSelectMultiple={(urls, items) => {
+              onSelectMultiple?.(urls, items);
               onClose();
             }}
             onClose={onClose}

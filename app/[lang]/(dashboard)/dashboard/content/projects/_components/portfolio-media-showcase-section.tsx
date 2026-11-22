@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import {
   TbPlus,
   TbTrash,
@@ -9,16 +10,100 @@ import {
   TbDeviceDesktop,
   TbMovie,
   TbStack2,
+  TbLibraryPhoto,
+  TbPhotoPlus,
+  TbLayoutCollage,
+  TbLayoutGrid,
+  TbCarouselHorizontal,
+  TbLayoutBoard,
+  TbSlideshow,
+  TbBook2,
+  TbArrowUp,
+  TbArrowDown,
 } from 'react-icons/tb';
 import { RichTextEditor } from '@dashboard-shared/components';
+import type { MediaItem } from '@dashboard-shared/components/media/types';
 import type {
   ClientStoryDetail,
   StoryVideoItem,
   StorySoftwareDeviceMockup,
   StoryGalleryImage,
+  StoryGalleryDesign,
   StoryTechBadge,
 } from '@/app/[lang]/(site)/client-stories/_client-stories/types';
 import { AiFieldTrigger, type StoryAiFieldControls } from './ai-field-trigger';
+
+interface GalleryDesignMeta {
+  id: StoryGalleryDesign;
+  nameEn: string;
+  nameAr: string;
+  descEn: string;
+  descAr: string;
+  isDefault?: boolean;
+}
+
+const GALLERY_DESIGN_OPTIONS: GalleryDesignMeta[] = [
+  {
+    id: 'editorial-bento',
+    nameEn: 'Editorial Bento Grid',
+    nameAr: 'شبكة التحرير الذكية (Bento)',
+    descEn: 'Default asymmetric showcase with wide 2x2 featured highlights and companion stills.',
+    descAr: 'التصميم الافتراضي: عرض تحريري متباين يبرز الصور المميزة بحجم مزدوج مع الباقي.',
+    isDefault: true,
+  },
+  {
+    id: 'uniform-grid',
+    nameEn: 'Architectural Uniform Grid',
+    nameAr: 'شبكة هندسية منتظمة (Grid)',
+    descEn: 'Clean symmetrical 3-column architectural cards with equal proportions and lightbox zoom.',
+    descAr: 'شبكة متساوية الأبعاد من 3 أعمدة تبرز الانضباط البصري مع معاينة مكبرة.',
+  },
+  {
+    id: 'interactive-carousel',
+    nameEn: 'Interactive Carousel Slider',
+    nameAr: 'معرض سحب دائري تفاعلي (Carousel)',
+    descEn: 'Smooth swipeable horizontal strip with navigation arrows, slide counters, and progress bar.',
+    descAr: 'شريط عرض أفقي قابل للسحب والتمرير مع أسهم تنقل وعداد شرائح.',
+  },
+  {
+    id: 'masonry-lookbook',
+    nameEn: 'Masonry Lookbook Collage',
+    nameAr: 'كولاج متدرج الارتفاعات (Masonry)',
+    descEn: 'Agency lookbook layout preserving native portrait & landscape aspect ratios without cropping.',
+    descAr: 'تخطيط إبداعي متعدد الارتفاعات يحفظ الأبعاد الطبيعية لكل صورة دون اقتصاص.',
+  },
+  {
+    id: 'spotlight-filmstrip',
+    nameEn: 'Spotlight Stage & Filmstrip',
+    nameAr: 'منصة عرض رئيسية + شريط مصغرات',
+    descEn: 'Large cinematic centerpiece stage with interactive bottom thumbnail filmstrip switcher.',
+    descAr: 'شاشة عرض رئيسية سينمائية كبيرة مع شريط مصغرات سفلي للتنقل الفوري.',
+  },
+  {
+    id: 'magazine-spread',
+    nameEn: 'Editorial Magazine Spread',
+    nameAr: 'عرض المجلة الفاخرة (Spread)',
+    descEn: 'Alternates full-width panoramic hero frames with curated 60/40 asymmetric story pairs.',
+    descAr: 'يتناوب بين إطارات بانورامية كاملة العرض وثنائيات غير متماثلة بأسلوب المجلات العالمية.',
+  },
+];
+
+function renderGalleryDesignIcon(id: StoryGalleryDesign, className = 'w-4 h-4') {
+  switch (id) {
+    case 'uniform-grid':
+      return <TbLayoutGrid className={className} />;
+    case 'interactive-carousel':
+      return <TbCarouselHorizontal className={className} />;
+    case 'masonry-lookbook':
+      return <TbLayoutBoard className={className} />;
+    case 'spotlight-filmstrip':
+      return <TbSlideshow className={className} />;
+    case 'magazine-spread':
+      return <TbBook2 className={className} />;
+    default:
+      return <TbLayoutCollage className={className} />;
+  }
+}
 
 interface PortfolioMediaShowcaseSectionProps {
   story: ClientStoryDetail;
@@ -28,6 +113,10 @@ interface PortfolioMediaShowcaseSectionProps {
     callback: (url: string) => void,
     type: 'image' | 'video' | 'all'
   ) => void;
+  onOpenMultiMediaPicker?: (
+    callback: (urls: string[], items: MediaItem[]) => void,
+    type?: 'image' | 'video' | 'all'
+  ) => void;
   aiControls?: StoryAiFieldControls;
 }
 
@@ -36,6 +125,7 @@ export function PortfolioMediaShowcaseSection({
   onChange,
   lang,
   onOpenMediaPicker,
+  onOpenMultiMediaPicker,
   aiControls,
 }: PortfolioMediaShowcaseSectionProps) {
   const isRtl = lang === 'ar';
@@ -116,6 +206,8 @@ export function PortfolioMediaShowcaseSection({
     });
   };
 
+  const activeGalleryDesign: StoryGalleryDesign = showcase.galleryDesign || 'editorial-bento';
+
   // Gallery
   const handleAddGalleryImage = () => {
     const newImg: StoryGalleryImage = {
@@ -127,6 +219,71 @@ export function PortfolioMediaShowcaseSection({
     onChange({
       ...story,
       mediaShowcase: { ...showcase, gallery: [...gallery, newImg] },
+    });
+  };
+
+  const handleBulkAddGalleryImages = (urls: string[], pickedItems?: MediaItem[]) => {
+    if (!urls || urls.length === 0) return;
+
+    const itemByUrl = new Map<string, MediaItem>();
+    for (const mi of pickedItems || []) {
+      itemByUrl.set(mi.url, mi);
+    }
+
+    const newImages: StoryGalleryImage[] = urls.map((url, idx) => {
+      const meta = itemByUrl.get(url);
+      const fallbackEn =
+        meta?.alt?.trim() ||
+        meta?.title?.trim() ||
+        `${story.title?.en || 'Project Deliverable'} #${gallery.length + idx + 1}`;
+      const fallbackAr =
+        meta?.alt?.trim() ||
+        meta?.title?.trim() ||
+        `${story.title?.ar || 'مخرجات المشروع'} #${gallery.length + idx + 1}`;
+      return {
+        src: url,
+        alt: { en: fallbackEn, ar: fallbackAr },
+        caption: {
+          en: meta?.caption?.trim() || '',
+          ar: meta?.caption?.trim() || '',
+        },
+        width: meta?.width,
+        height: meta?.height,
+        featured: false,
+      };
+    });
+
+    const cleanedExisting =
+      gallery.length === 1 && !gallery[0].src.trim() ? [] : gallery;
+
+    onChange({
+      ...story,
+      mediaShowcase: {
+        ...showcase,
+        gallery: [...cleanedExisting, ...newImages],
+      },
+    });
+  };
+
+  const handleGalleryDesignChange = (design: StoryGalleryDesign) => {
+    onChange({
+      ...story,
+      mediaShowcase: {
+        ...showcase,
+        galleryDesign: design,
+      },
+    });
+  };
+
+  const handleMoveGalleryImage = (index: number, direction: 'up' | 'down') => {
+    const targetIdx = direction === 'up' ? index - 1 : index + 1;
+    if (targetIdx < 0 || targetIdx >= gallery.length) return;
+    const updated = [...gallery];
+    const [moved] = updated.splice(index, 1);
+    updated.splice(targetIdx, 0, moved);
+    onChange({
+      ...story,
+      mediaShowcase: { ...showcase, gallery: updated },
     });
   };
 
@@ -475,92 +632,6 @@ export function PortfolioMediaShowcaseSection({
                 ))}
               </div>
             )}
-          </div>
-
-          {/* Stills Photo Gallery */}
-          <div className="space-y-3 pt-2">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 text-xs font-bold text-slate-700 uppercase tracking-wider">
-                <TbPhoto className="w-4 h-4 text-emerald-600" />
-                <span>
-                  {story.templateType === 'marketing-branding-showcase'
-                    ? isRtl
-                      ? 'الصور والمخرجات البصرية الرئيسية (1–2 صورة اختيارية)'
-                      : 'Key Brand Visuals / Assets (Optional, 1–2 Images)'
-                    : isRtl
-                    ? 'معرض اللقطات الثابتة (Photo Stills Gallery)'
-                    : 'Photo Stills Gallery'}
-                </span>
-              </div>
-              <button
-                type="button"
-                onClick={handleAddGalleryImage}
-                className="inline-flex items-center gap-1 text-xs font-semibold text-persici-crimson hover:underline cursor-pointer"
-              >
-                <TbPlus className="w-3.5 h-3.5" />
-                <span>{isRtl ? 'إضافة صورة' : 'Add Still Image'}</span>
-              </button>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {gallery.map((img, gIdx) => (
-                <div
-                  key={gIdx}
-                  className="p-3 bg-slate-50/80 rounded-xl border border-slate-200 space-y-2 relative"
-                >
-                  <div className="flex items-center justify-between text-[11px] font-mono text-slate-400">
-                    <span>{isRtl ? `صورة #${gIdx + 1}` : `Still #${gIdx + 1}`}</span>
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveGalleryImage(gIdx)}
-                      className="p-1 text-slate-400 hover:text-red-600 rounded-md hover:bg-white"
-                    >
-                      <TbTrash className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      value={img.src}
-                      onChange={(e) => handleUpdateGalleryImage(gIdx, 'src', e.target.value)}
-                      placeholder="https://pub-...r2.dev/.../still.webp"
-                      className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg font-mono"
-                    />
-                    <button
-                      type="button"
-                      onClick={() =>
-                        onOpenMediaPicker(
-                          (url) => handleUpdateGalleryImage(gIdx, 'src', url),
-                          'image'
-                        )
-                      }
-                      className="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold shrink-0"
-                    >
-                      <TbPhoto className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-2">
-                    <input
-                      type="text"
-                      value={img.alt?.en || ''}
-                      onChange={(e) => handleUpdateGalleryImage(gIdx, 'altEn', e.target.value)}
-                      placeholder="Alt text (EN)"
-                      className="px-2 py-1 text-xs bg-white border border-slate-200 rounded-md"
-                    />
-                    <input
-                      type="text"
-                      dir="rtl"
-                      value={img.alt?.ar || ''}
-                      onChange={(e) => handleUpdateGalleryImage(gIdx, 'altAr', e.target.value)}
-                      placeholder="النص البديل (AR)"
-                      className="px-2 py-1 text-xs bg-white border border-slate-200 rounded-md font-arabic"
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
           </div>
         </div>
       )}
@@ -930,62 +1001,204 @@ export function PortfolioMediaShowcaseSection({
       )}
 
       {/* ========================================================================= */}
-      {/* 4. TEMPLATE D: IMAGE GALLERY SHOWCASE                                     */}
+      {/* 4. UNIVERSAL VISUAL GALLERY & LAYOUT DESIGN (ALL TEMPLATES)               */}
       {/* ========================================================================= */}
-      {story.templateType === 'image-gallery-showcase' && (
-        <div className="space-y-4 pt-2">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-xs font-bold text-slate-700 uppercase tracking-wider">
-              <TbPhoto className="w-4 h-4 text-emerald-600" />
-              <span>{isRtl ? 'معرض صور الهوية البصرية (Visual Gallery)' : 'Branding & Visual Gallery'}</span>
+      <div className="space-y-5 pt-4 border-t border-slate-200">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <div className="flex items-center gap-2 text-xs font-bold text-slate-800 uppercase tracking-wider">
+              <TbLibraryPhoto className="w-4 h-4 text-emerald-600" />
+              <span>
+                {story.templateType === 'marketing-branding-showcase'
+                  ? isRtl
+                    ? 'معرض صور العلامة التجارية وتصميم العرض (1–2 صورة أو أكثر)'
+                    : 'Brand Visual Gallery & Display Layout'
+                  : isRtl
+                  ? 'معرض الصور المتكامل وتصميم العرض (متاح لجميع القوالب)'
+                  : 'Visual Image Gallery & Layout Design (All Templates)'}
+              </span>
+              <span className="px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 text-[10px] font-bold">
+                {gallery.length}
+              </span>
             </div>
+            <p className="text-[11px] text-slate-500 mt-0.5">
+              {isRtl
+                ? 'اختر نمط عرض المعرض المناسب (الافتراضي: شبكة التحرير Bento)، ثم حدد صوراً متعددة دفعة واحدة أو ارفع مجلداً كاملاً من مكتبة R2.'
+                : 'Choose one of 6 gallery layouts (Editorial Bento is selected by default), and bulk-select or bulk-upload multiple images into any folder/subfolder.'}
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            {onOpenMultiMediaPicker && (
+              <button
+                type="button"
+                onClick={() => onOpenMultiMediaPicker(handleBulkAddGalleryImages, 'image')}
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-persici-crimson hover:bg-red-700 text-white rounded-xl text-xs font-bold shadow-xs transition-colors cursor-pointer"
+              >
+                <TbPhotoPlus className="w-4 h-4" />
+                <span>{isRtl ? 'تحديد / رفع صور متعددة' : 'Bulk Select / Upload Images'}</span>
+              </button>
+            )}
+
             <button
               type="button"
               onClick={handleAddGalleryImage}
-              className="inline-flex items-center gap-1 text-xs font-semibold text-persici-crimson hover:underline cursor-pointer"
+              className="inline-flex items-center gap-1 px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold transition-colors cursor-pointer"
             >
               <TbPlus className="w-3.5 h-3.5" />
-              <span>{isRtl ? 'إضافة صورة' : 'Add Image'}</span>
+              <span>{isRtl ? 'إضافة صورة مفردة' : 'Add Single Image'}</span>
             </button>
           </div>
+        </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {/* 6 Best-Practice Gallery Designs Selector */}
+        <div className="p-4 rounded-2xl bg-slate-50/90 border border-slate-200/90 space-y-3">
+          <div className="flex items-center justify-between gap-2">
+            <label className="text-[11px] font-bold uppercase tracking-wider text-slate-700">
+              {isRtl ? 'تصميم عرض المعرض (Gallery Display Design)' : 'Select Gallery Display Design'}
+            </label>
+            <span className="text-[11px] font-medium text-slate-500">
+              {isRtl ? 'الافتراضي:' : 'Default:'}{' '}
+              <strong className="text-slate-800">Editorial Bento Grid</strong>
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+            {GALLERY_DESIGN_OPTIONS.map((opt) => {
+              const isSelected = activeGalleryDesign === opt.id;
+              return (
+                <button
+                  key={opt.id}
+                  type="button"
+                  onClick={() => handleGalleryDesignChange(opt.id)}
+                  className={`p-3 rounded-xl border text-start transition-all flex items-start gap-2.5 cursor-pointer ${
+                    isSelected
+                      ? 'border-persici-crimson bg-white ring-2 ring-persici-crimson/20 shadow-xs'
+                      : 'border-slate-200 bg-white/70 hover:border-slate-300 hover:bg-white'
+                  }`}
+                >
+                  <div
+                    className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${
+                      isSelected
+                        ? 'bg-persici-crimson text-white'
+                        : 'bg-slate-100 text-slate-600'
+                    }`}
+                  >
+                    {renderGalleryDesignIcon(opt.id, 'w-4 h-4')}
+                  </div>
+                  <div className="min-w-0 flex-1 space-y-1">
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <span className="text-xs font-bold text-slate-900">
+                        {isRtl ? opt.nameAr : opt.nameEn}
+                      </span>
+                      {opt.isDefault && (
+                        <span className="px-1.5 py-0.2 rounded-full bg-emerald-100 text-emerald-800 text-[9px] font-bold uppercase">
+                          {isRtl ? 'افتراضي' : 'Default'}
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-[11px] text-slate-500 leading-snug">
+                      {isRtl ? opt.descAr : opt.descEn}
+                    </p>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Gallery Images Grid */}
+        {gallery.length === 0 ? (
+          <div className="p-6 bg-slate-50 rounded-2xl border border-dashed border-slate-300 text-center space-y-2">
+            <TbLibraryPhoto className="w-8 h-8 mx-auto text-slate-300" />
+            <p className="text-xs font-semibold text-slate-600">
+              {isRtl
+                ? 'لا توجد صور مضافة في المعرض بعد.'
+                : 'No images added to the gallery yet.'}
+            </p>
+            <p className="text-[11px] text-slate-400">
+              {isRtl
+                ? 'اضغط على "تحديد / رفع صور متعددة" لإضافة أو رفع مجموعة صور دفعة واحدة في مجلد المشروع.'
+                : 'Use "Bulk Select / Upload Images" above to pick or upload multiple assets at once into any folder/subfolder.'}
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
             {gallery.map((img, gIdx) => (
               <div
                 key={gIdx}
-                className="p-3 bg-slate-50/80 rounded-xl border border-slate-200 space-y-2 relative"
+                className="p-3.5 bg-slate-50/80 rounded-2xl border border-slate-200 space-y-2.5 relative"
               >
-                <div className="flex items-center justify-between text-[11px] font-mono text-slate-400">
-                  <span>{isRtl ? `صورة #${gIdx + 1}` : `Image #${gIdx + 1}`}</span>
-                  <div className="flex items-center gap-2">
-                    <label className="flex items-center gap-1 text-[10px] text-slate-600 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={Boolean(img.featured)}
-                        onChange={(e) =>
-                          handleUpdateGalleryImage(gIdx, 'featured', e.target.checked)
-                        }
-                        className="rounded text-persici-crimson"
-                      />
-                      <span>Featured (2x2)</span>
-                    </label>
+                <div className="flex items-center justify-between text-[11px] font-mono text-slate-500">
+                  <span className="font-bold text-slate-700">
+                    {isRtl ? `صورة #${gIdx + 1}` : `Image #${gIdx + 1}`}
+                  </span>
+                  <div className="flex items-center gap-1.5">
+                    {activeGalleryDesign === 'editorial-bento' && (
+                      <label className="flex items-center gap-1 text-[10px] text-slate-600 cursor-pointer me-1">
+                        <input
+                          type="checkbox"
+                          checked={Boolean(img.featured)}
+                          onChange={(e) =>
+                            handleUpdateGalleryImage(gIdx, 'featured', e.target.checked)
+                          }
+                          className="rounded text-persici-crimson"
+                        />
+                        <span>Featured (2x2)</span>
+                      </label>
+                    )}
+
+                    <button
+                      type="button"
+                      disabled={gIdx === 0}
+                      onClick={() => handleMoveGalleryImage(gIdx, 'up')}
+                      className="p-1 text-slate-400 hover:text-slate-800 rounded-md hover:bg-white disabled:opacity-30 cursor-pointer"
+                      title={isRtl ? 'تحريك لأعلى' : 'Move earlier'}
+                    >
+                      <TbArrowUp className="w-3.5 h-3.5" />
+                    </button>
+                    <button
+                      type="button"
+                      disabled={gIdx === gallery.length - 1}
+                      onClick={() => handleMoveGalleryImage(gIdx, 'down')}
+                      className="p-1 text-slate-400 hover:text-slate-800 rounded-md hover:bg-white disabled:opacity-30 cursor-pointer"
+                      title={isRtl ? 'تحريك لأسفل' : 'Move later'}
+                    >
+                      <TbArrowDown className="w-3.5 h-3.5" />
+                    </button>
                     <button
                       type="button"
                       onClick={() => handleRemoveGalleryImage(gIdx)}
-                      className="p-1 text-slate-400 hover:text-red-600 rounded-md hover:bg-white"
+                      className="p-1 text-slate-400 hover:text-red-600 rounded-md hover:bg-white cursor-pointer"
+                      title={isRtl ? 'حذف الصورة' : 'Remove image'}
                     >
                       <TbTrash className="w-3.5 h-3.5" />
                     </button>
                   </div>
                 </div>
 
-                <div className="flex gap-2">
+                {/* Live Thumbnail + URL Picker */}
+                <div className="flex items-center gap-2.5">
+                  <div className="w-12 h-12 rounded-xl overflow-hidden bg-slate-200 border border-slate-200 relative shrink-0 flex items-center justify-center">
+                    {img.src.trim() ? (
+                      <Image
+                        src={img.src}
+                        alt={img.alt?.en || 'Gallery preview'}
+                        fill
+                        unoptimized
+                        className="object-cover"
+                        sizes="48px"
+                      />
+                    ) : (
+                      <TbPhoto className="w-5 h-5 text-slate-400" />
+                    )}
+                  </div>
                   <input
                     type="text"
                     value={img.src}
                     onChange={(e) => handleUpdateGalleryImage(gIdx, 'src', e.target.value)}
                     placeholder="https://pub-...r2.dev/.../image.webp"
-                    className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg font-mono"
+                    className="flex-1 px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg font-mono min-w-0"
                   />
                   <button
                     type="button"
@@ -995,7 +1208,8 @@ export function PortfolioMediaShowcaseSection({
                         'image'
                       )
                     }
-                    className="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold shrink-0"
+                    className="px-2.5 py-1.5 bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 rounded-lg text-xs font-semibold shrink-0 cursor-pointer"
+                    title={isRtl ? 'اختيار من مكتبة الوسائط' : 'Pick from Media Library'}
                   >
                     <TbPhoto className="w-3.5 h-3.5" />
                   </button>
@@ -1006,7 +1220,7 @@ export function PortfolioMediaShowcaseSection({
                     type="text"
                     value={img.alt?.en || ''}
                     onChange={(e) => handleUpdateGalleryImage(gIdx, 'altEn', e.target.value)}
-                    placeholder="Caption (EN)"
+                    placeholder="Alt Text (EN)"
                     className="px-2 py-1 text-xs bg-white border border-slate-200 rounded-md"
                   />
                   <input
@@ -1014,15 +1228,33 @@ export function PortfolioMediaShowcaseSection({
                     dir="rtl"
                     value={img.alt?.ar || ''}
                     onChange={(e) => handleUpdateGalleryImage(gIdx, 'altAr', e.target.value)}
-                    placeholder="الوصف (AR)"
+                    placeholder="النص البديل (AR)"
+                    className="px-2 py-1 text-xs bg-white border border-slate-200 rounded-md font-arabic"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-2">
+                  <input
+                    type="text"
+                    value={img.caption?.en || ''}
+                    onChange={(e) => handleUpdateGalleryImage(gIdx, 'captionEn', e.target.value)}
+                    placeholder="Caption Overlay (EN - optional)"
+                    className="px-2 py-1 text-xs bg-white border border-slate-200 rounded-md"
+                  />
+                  <input
+                    type="text"
+                    dir="rtl"
+                    value={img.caption?.ar || ''}
+                    onChange={(e) => handleUpdateGalleryImage(gIdx, 'captionAr', e.target.value)}
+                    placeholder="التعليق الظاهر (AR - اختياري)"
                     className="px-2 py-1 text-xs bg-white border border-slate-200 rounded-md font-arabic"
                   />
                 </div>
               </div>
             ))}
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
