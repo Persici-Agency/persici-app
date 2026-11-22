@@ -11,12 +11,14 @@ import {
 import type {
   StoryGalleryDesign,
   StoryGalleryImage,
+  StoryGalleryOrder,
   StoryTemplateType,
 } from '../../../_client-stories/types';
 
 export interface StoryGalleryShowcaseProps {
   gallery: StoryGalleryImage[];
   galleryDesign?: StoryGalleryDesign;
+  galleryOrder?: StoryGalleryOrder;
   templateType: StoryTemplateType;
   lang: string;
   hasPrimaryContent?: boolean;
@@ -25,17 +27,19 @@ export interface StoryGalleryShowcaseProps {
 export function StoryGalleryShowcase({
   gallery,
   galleryDesign = 'editorial-bento',
+  galleryOrder = 'normal',
   templateType,
   lang,
   hasPrimaryContent = false,
 }: StoryGalleryShowcaseProps) {
   const isRtl = lang === 'ar';
   const activeDesign: StoryGalleryDesign = galleryDesign || 'editorial-bento';
+  const isReverseOrder = galleryOrder === 'reverse';
 
-  const validGallery = useMemo(
-    () => gallery.filter((img) => Boolean(img.src && img.src.trim())),
-    [gallery]
-  );
+  const validGallery = useMemo(() => {
+    const filtered = gallery.filter((img) => Boolean(img.src && img.src.trim()));
+    return isReverseOrder ? [...filtered].reverse() : filtered;
+  }, [gallery, isReverseOrder]);
 
   // Lightbox state (shared across all 6 designs)
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);

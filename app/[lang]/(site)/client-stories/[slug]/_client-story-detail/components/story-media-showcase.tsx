@@ -907,6 +907,7 @@ export function StoryMediaShowcase({ story, lang }: StoryMediaShowcaseProps) {
         <StoryGalleryShowcase
           gallery={gallery}
           galleryDesign={mediaShowcase.galleryDesign}
+          galleryOrder={mediaShowcase.galleryOrder}
           templateType={templateType}
           lang={lang}
           hasPrimaryContent={hasPrimaryShowcaseContent}

@@ -16,6 +16,8 @@ export type StoryGalleryDesign =
   | 'spotlight-filmstrip'
   | 'magazine-spread';
 
+export type StoryGalleryOrder = 'normal' | 'reverse';
+
 export type StoryCategorySlug =
   | 'all'
   | 'software'
@@ -161,6 +163,7 @@ export interface ClientStoryDetail {
     // Template B / Universal Visual Gallery & Layout Design
     gallery?: StoryGalleryImage[];
     galleryDesign?: StoryGalleryDesign;
+    galleryOrder?: StoryGalleryOrder;
     // Template C (Software demo & mockups)
     mockups?: StorySoftwareDeviceMockup[];
     demoVideo?: string;

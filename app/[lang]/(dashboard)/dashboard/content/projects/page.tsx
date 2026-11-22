@@ -175,6 +175,7 @@ const DEFAULT_NEW_STORY: ClientStoryDetail = {
   },
   mediaShowcase: {
     galleryDesign: 'editorial-bento',
+    galleryOrder: 'normal',
     title: {
       en: 'Deliverables & Production',
       ar: 'معرض المخرجات والإنتاج',
