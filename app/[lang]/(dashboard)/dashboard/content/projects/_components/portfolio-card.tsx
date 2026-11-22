@@ -12,6 +12,8 @@ import {
   TbDeviceMobile,
   TbMovie,
   TbPhoto,
+  TbCpu,
+  TbPalette,
 } from 'react-icons/tb';
 import type { ClientStoryDetail, StoryTemplateType } from '@/app/[lang]/(site)/client-stories/_client-stories/types';
 
@@ -33,6 +35,12 @@ const TEMPLATE_CONFIG: Record<
     icon: TbDeviceDesktop,
     color: 'bg-blue-50 text-blue-700 border-blue-200',
   },
+  'ai-platform-showcase': {
+    labelEn: 'AI Platform',
+    labelAr: 'منصة ذكاء اصطناعي',
+    icon: TbCpu,
+    color: 'bg-indigo-50 text-indigo-700 border-indigo-200',
+  },
   'mobile-app-showcase': {
     labelEn: 'Mobile App',
     labelAr: 'تطبيق جوال',
@@ -44,6 +52,12 @@ const TEMPLATE_CONFIG: Record<
     labelAr: 'فيديو ترويجي',
     icon: TbMovie,
     color: 'bg-amber-50 text-amber-700 border-amber-200',
+  },
+  'marketing-branding-showcase': {
+    labelEn: 'Marketing & Branding',
+    labelAr: 'تسويق وهوية بصرية',
+    icon: TbPalette,
+    color: 'bg-rose-50 text-rose-700 border-rose-200',
   },
   'image-gallery-showcase': {
     labelEn: 'Image Gallery',

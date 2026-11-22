@@ -245,6 +245,7 @@ export function HealthView({
           quoteRole={data.clientReview.role}
           badge={data.clientReview.badge}
           quoteAvatar={data.clientReview.avatar}
+          reviewId={data.clientReview.reviewId || 'random'}
           lang={lang}
         />
       )}

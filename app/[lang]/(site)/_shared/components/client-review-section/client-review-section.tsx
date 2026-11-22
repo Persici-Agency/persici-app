@@ -1,9 +1,10 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
-import type { SolutionsPageContent } from '@shared/types';
+import type { SolutionsPageContent, ReviewItem } from '@shared/types';
 import { sectionContainer } from '@shared/constants';
+import { reviewsList } from '@shared/data';
 import { FadeUp } from '@shared';
 
 export interface ClientReviewSectionProps {
@@ -18,15 +19,114 @@ export interface ClientReviewSectionProps {
   authorClassName?: string;
   roleClassName?: string;
   badge?: string | { en: string; ar: string };
+  /** 'random' (default) picks a random active review from /api/reviews; or pass a specific review ID */
+  reviewId?: string;
+  /** Default true for all client review sections; set false only for dedicated executive quotes like founder note */
+  useLiveReviews?: boolean;
   lang: string;
   className?: string;
+}
+
+interface NormalizedLiveReview {
+  id: string;
+  nameEn: string;
+  nameAr: string;
+  roleEn: string;
+  roleAr: string;
+  companyEn: string;
+  companyAr: string;
+  reviewEn: string;
+  reviewAr: string;
+  avatar?: string;
+  active: boolean;
+}
+
+function normalizeLiveReview(raw: Record<string, unknown> | ReviewItem): NormalizedLiveReview {
+  const rec = raw as Record<string, unknown>;
+  const str = (val: unknown) => (typeof val === 'string' ? val.trim() : '');
+  const bi = (obj: unknown, explicitEn: unknown, explicitAr: unknown) => {
+    const o = typeof obj === 'object' && obj !== null ? (obj as Record<string, unknown>) : null;
+    const s = typeof obj === 'string' ? obj.trim() : '';
+    const en = str(explicitEn) || str(o?.en) || s;
+    const ar = str(explicitAr) || str(o?.ar) || en;
+    return { en, ar };
+  };
+
+  const name = bi(rec.name, rec.nameEn, rec.nameAr);
+  const role = bi(rec.role, rec.roleEn, rec.roleAr);
+  const company = bi(rec.company, rec.companyEn, rec.companyAr);
+  const review = bi(rec.review, rec.reviewEn, rec.reviewAr);
+
+  return {
+    id: str(rec.id) || (rec._id ? String(rec._id) : ''),
+    nameEn: name.en,
+    nameAr: name.ar,
+    roleEn: role.en,
+    roleAr: role.ar,
+    companyEn: company.en,
+    companyAr: company.ar,
+    reviewEn: review.en,
+    reviewAr: review.ar,
+    avatar: str(rec.avatar) || str(rec.photo) || undefined,
+    active: rec.active !== false,
+  };
+}
+
+const FALLBACK_LIVE_REVIEWS: NormalizedLiveReview[] = reviewsList.map((r) =>
+  normalizeLiveReview(r)
+);
+
+let cachedLiveReviews: NormalizedLiveReview[] | null = null;
+let inflightReviewsPromise: Promise<NormalizedLiveReview[]> | null = null;
+
+function pickLiveReview(
+  pool: NormalizedLiveReview[],
+  reviewId?: string,
+  randomize = false
+): NormalizedLiveReview | null {
+  const activePool = pool.filter((r) => r.active && (r.reviewEn || r.reviewAr));
+  if (activePool.length === 0) return null;
+
+  if (reviewId && reviewId !== 'random') {
+    const matched = activePool.find((r) => r.id === reviewId);
+    if (matched) return matched;
+  }
+
+  if (randomize) {
+    return activePool[Math.floor(Math.random() * activePool.length)] || activePool[0];
+  }
+
+  return activePool[0];
+}
+
+async function fetchLiveReviewsCached(): Promise<NormalizedLiveReview[]> {
+  if (cachedLiveReviews && cachedLiveReviews.length > 0) {
+    return cachedLiveReviews;
+  }
+  if (!inflightReviewsPromise) {
+    inflightReviewsPromise = fetch('/api/reviews', { cache: 'no-store' })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        const items = Array.isArray(data?.reviews)
+          ? data.reviews.map((item: Record<string, unknown>) => normalizeLiveReview(item))
+          : [];
+        const resolved = items.length > 0 ? items : FALLBACK_LIVE_REVIEWS;
+        cachedLiveReviews = resolved;
+        return resolved;
+      })
+      .catch(() => FALLBACK_LIVE_REVIEWS)
+      .finally(() => {
+        inflightReviewsPromise = null;
+      });
+  }
+  return inflightReviewsPromise;
 }
 
 /**
  * ClientReviewSection
  * Standalone client testimonial quotation section featuring an eyebrow badge,
  * monospaced typographic quote with brand crimson border accent, and author attribution.
- * Usable across any page on the site (solutions, services, about, client stories, work).
+ * Syncs live from /api/reviews by default (random or selected ID) in Arabic or English matching page locale.
  */
 export function ClientReviewSection({
   content,
@@ -40,14 +140,50 @@ export function ClientReviewSection({
   authorClassName,
   roleClassName,
   badge,
+  reviewId = 'random',
+  useLiveReviews = true,
   lang,
   className,
 }: ClientReviewSectionProps) {
   const isRtl = lang === 'ar';
 
-  const avatar = quoteAvatar || propAvatar || '';
+  // SSR-safe deterministic initial review from real fallback catalog so SSR matches initial hydration cleanly
+  const ssrFallbackReview = useLiveReviews
+    ? pickLiveReview(FALLBACK_LIVE_REVIEWS, reviewId, false)
+    : null;
 
-  const rawQuote =
+  const [mountedReview, setMountedReview] = useState<NormalizedLiveReview | null>(null);
+
+  useEffect(() => {
+    if (!useLiveReviews) return;
+    let active = true;
+
+    fetchLiveReviewsCached().then((pool) => {
+      if (!active) return;
+      const chosen = pickLiveReview(pool, reviewId, true);
+      if (chosen) {
+        setMountedReview(chosen);
+      }
+    });
+
+    return () => {
+      active = false;
+    };
+  }, [useLiveReviews, reviewId]);
+
+  const activeLiveReview = useLiveReviews ? mountedReview || ssrFallbackReview : null;
+
+  const avatar = useLiveReviews
+    ? activeLiveReview?.avatar || ''
+    : quoteAvatar || propAvatar || '';
+
+  const liveQuote = activeLiveReview
+    ? isRtl
+      ? activeLiveReview.reviewAr || activeLiveReview.reviewEn
+      : activeLiveReview.reviewEn || activeLiveReview.reviewAr
+    : '';
+
+  const propQuote =
     (typeof quoteText === 'string'
       ? quoteText
       : quoteText?.[lang as 'en' | 'ar'] || quoteText?.en) ||
@@ -55,17 +191,34 @@ export function ClientReviewSection({
       ? content.quoteText[lang as 'en' | 'ar'] || content.quoteText.en
       : '');
 
+  const rawQuote = (useLiveReviews ? liveQuote : '') || propQuote;
   const cleanQuoteText = rawQuote.replace(/^["'“\s]+|["'”\s]+$/g, '');
 
-  const author = quoteAuthor || content?.quoteAuthor || '';
+  const liveAuthor = activeLiveReview
+    ? isRtl
+      ? activeLiveReview.nameAr || activeLiveReview.nameEn
+      : activeLiveReview.nameEn || activeLiveReview.nameAr
+    : '';
+  const propAuthor = quoteAuthor || content?.quoteAuthor || '';
+  const author = (useLiveReviews ? liveAuthor : '') || propAuthor;
 
-  const role =
+  const liveRole = activeLiveReview
+    ? isRtl
+      ? [activeLiveReview.roleAr || activeLiveReview.roleEn, activeLiveReview.companyAr || activeLiveReview.companyEn]
+          .filter(Boolean)
+          .join('، ')
+      : [activeLiveReview.roleEn || activeLiveReview.roleAr, activeLiveReview.companyEn || activeLiveReview.companyAr]
+          .filter(Boolean)
+          .join(', ')
+    : '';
+  const propRole =
     (typeof quoteRole === 'string'
       ? quoteRole
       : quoteRole?.[lang as 'en' | 'ar'] || quoteRole?.en) ||
     (content?.quoteRole
       ? content.quoteRole[lang as 'en' | 'ar'] || content.quoteRole.en
       : '');
+  const role = (useLiveReviews ? liveRole : '') || propRole;
 
   const badgeText =
     (typeof badge === 'string'

@@ -316,16 +316,32 @@ export function PortfolioMediaShowcaseSection({
       />
 
       {/* ========================================================================= */}
-      {/* 2. TEMPLATE A: MARKETING VIDEO SHOWCASE                                   */}
+      {/* 2. TEMPLATE A & E: MARKETING VIDEO & MARKETING & BRANDING SHOWCASE        */}
       {/* ========================================================================= */}
-      {story.templateType === 'marketing-video-showcase' && (
+      {(story.templateType === 'marketing-video-showcase' ||
+        story.templateType === 'marketing-branding-showcase') && (
         <div className="space-y-6 pt-2">
+          {story.templateType === 'marketing-branding-showcase' && (
+            <div className="p-3.5 rounded-xl bg-rose-50/70 border border-rose-200/80 text-xs text-rose-900 leading-relaxed">
+              {isRtl
+                ? 'قالب التسويق والهوية البصرية مصمم للمشاريع المركزة التي تضم فيديو أو اثنين و/أو صورة أو صورتين رئيسيتين للهوية البصرية بدون معرض ضخم.'
+                : 'Marketing & Branding template is optimized for focused projects with 1–2 campaign videos and/or 1–2 key branding visuals without requiring a large gallery or multi-episode series.'}
+            </div>
+          )}
           {/* Video Cuts / Episodes Repeater */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 text-xs font-bold text-slate-700 uppercase tracking-wider">
                 <TbMovie className="w-4 h-4 text-amber-600" />
-                <span>{isRtl ? 'حلقات ومقاطع الفيديو (Video Cuts & Episodes)' : 'Video Cuts & Episodes'}</span>
+                <span>
+                  {story.templateType === 'marketing-branding-showcase'
+                    ? isRtl
+                      ? 'فيديو الحملة والهوية (1–2 فيديو اختياري)'
+                      : 'Featured Campaign Videos (Optional, 1–2 Videos)'
+                    : isRtl
+                    ? 'حلقات ومقاطع الفيديو (Video Cuts & Episodes)'
+                    : 'Video Cuts & Episodes'}
+                </span>
               </div>
               <button
                 type="button"
@@ -466,7 +482,15 @@ export function PortfolioMediaShowcaseSection({
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 text-xs font-bold text-slate-700 uppercase tracking-wider">
                 <TbPhoto className="w-4 h-4 text-emerald-600" />
-                <span>{isRtl ? 'معرض اللقطات الثابتة (Photo Stills Gallery)' : 'Photo Stills Gallery'}</span>
+                <span>
+                  {story.templateType === 'marketing-branding-showcase'
+                    ? isRtl
+                      ? 'الصور والمخرجات البصرية الرئيسية (1–2 صورة اختيارية)'
+                      : 'Key Brand Visuals / Assets (Optional, 1–2 Images)'
+                    : isRtl
+                    ? 'معرض اللقطات الثابتة (Photo Stills Gallery)'
+                    : 'Photo Stills Gallery'}
+                </span>
               </div>
               <button
                 type="button"
@@ -542,11 +566,19 @@ export function PortfolioMediaShowcaseSection({
       )}
 
       {/* ========================================================================= */}
-      {/* 3. TEMPLATE B & C: SOFTWARE WEB APP & MOBILE APP SHOWCASE                 */}
+      {/* 3. TEMPLATE B, C & F: WEB APP, AI PLATFORMS & MOBILE APP SHOWCASE         */}
       {/* ========================================================================= */}
       {(story.templateType === 'software-web-app-showcase' ||
+        story.templateType === 'ai-platform-showcase' ||
         story.templateType === 'mobile-app-showcase') && (
         <div className="space-y-6 pt-2">
+          {story.templateType === 'ai-platform-showcase' && (
+            <div className="p-3.5 rounded-xl bg-indigo-50/70 border border-indigo-200/80 text-xs text-indigo-950 leading-relaxed">
+              {isRtl
+                ? 'قالب منصات الذكاء الاصطناعي: أضف شاشات المنصة (سطح المكتب/الجوال)، وفيديو العرض التفاعلي (اختياري)، وحزم تقنيات ونماذج الذكاء الاصطناعي.'
+                : 'AI Platforms Template: Configure interactive desktop/mobile mockups, an optional live AI workflow demo video, and AI models & infrastructure tech badges.'}
+            </div>
+          )}
           {/* Device Mockups Repeater */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
@@ -559,7 +591,8 @@ export function PortfolioMediaShowcaseSection({
                 </span>
               </div>
               <div className="flex items-center gap-2">
-                {story.templateType === 'software-web-app-showcase' && (
+                {(story.templateType === 'software-web-app-showcase' ||
+                  story.templateType === 'ai-platform-showcase') && (
                   <button
                     type="button"
                     onClick={() => handleAddMockup('desktop')}
@@ -734,6 +767,94 @@ export function PortfolioMediaShowcaseSection({
                 ))}
               </div>
             )}
+          </div>
+
+          {/* Interactive Demo Video (Optional) */}
+          <div className="p-4 bg-slate-50/80 rounded-2xl border border-slate-200 space-y-3">
+            <div className="flex items-center gap-2 text-xs font-bold text-slate-700 uppercase tracking-wider">
+              <TbVideo className="w-4 h-4 text-amber-600" />
+              <span>
+                {story.templateType === 'ai-platform-showcase'
+                  ? isRtl
+                    ? 'فيديو العرض الحي لمنصة الذكاء الاصطناعي (اختياري)'
+                    : 'Interactive AI Platform Demo Video (Optional)'
+                  : isRtl
+                  ? 'فيديو العرض التفاعلي للتطبيق (اختياري)'
+                  : 'Interactive App Demo Video (Optional)'}
+              </span>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label className="block text-[11px] font-semibold text-slate-700 mb-1">
+                  {isRtl ? 'رابط ملف الفيديو (MP4 / WebM)' : 'Demo Video URL'}
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={showcase.demoVideo || ''}
+                    onChange={(e) =>
+                      onChange({
+                        ...story,
+                        mediaShowcase: { ...showcase, demoVideo: e.target.value },
+                      })
+                    }
+                    placeholder="https://pub-...r2.dev/.../demo.mp4"
+                    className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg font-mono"
+                  />
+                  <button
+                    type="button"
+                    onClick={() =>
+                      onOpenMediaPicker(
+                        (url) =>
+                          onChange({
+                            ...story,
+                            mediaShowcase: { ...showcase, demoVideo: url },
+                          }),
+                        'video'
+                      )
+                    }
+                    className="px-2.5 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-800 rounded-lg text-xs font-semibold shrink-0 border border-amber-200"
+                  >
+                    <TbVideo className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+              <div>
+                <label className="block text-[11px] font-semibold text-slate-700 mb-1">
+                  {isRtl ? 'صورة غلاف الفيديو (اختياري)' : 'Demo Video Poster URL (Optional)'}
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={showcase.demoVideoPoster || ''}
+                    onChange={(e) =>
+                      onChange({
+                        ...story,
+                        mediaShowcase: { ...showcase, demoVideoPoster: e.target.value },
+                      })
+                    }
+                    placeholder="https://pub-...r2.dev/.../poster.webp"
+                    className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg font-mono"
+                  />
+                  <button
+                    type="button"
+                    onClick={() =>
+                      onOpenMediaPicker(
+                        (url) =>
+                          onChange({
+                            ...story,
+                            mediaShowcase: { ...showcase, demoVideoPoster: url },
+                          }),
+                        'image'
+                      )
+                    }
+                    className="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold shrink-0"
+                  >
+                    <TbPhoto className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Tech Stack Badges Repeater */}

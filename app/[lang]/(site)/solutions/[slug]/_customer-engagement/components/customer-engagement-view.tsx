@@ -170,6 +170,7 @@ export function CustomerEngagementView({ lang, dict, data: propData }: CustomerE
           quoteRole={data.clientReview.role}
           quoteAvatar={data.clientReview.avatar}
           badge={data.clientReview.badge}
+          reviewId={data.clientReview.reviewId || 'random'}
           lang={lang}
         />
       )}

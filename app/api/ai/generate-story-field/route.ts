@@ -424,8 +424,12 @@ CORE RULES:
   switch (targetField) {
     case 'meta':
       fieldInstructions = `TARGET: Extract Case Study Meta & Classification.
-Allowed "categorySlug" values ONLY: "software" | "branding" | "marketing" | "video-production".
-Allowed "templateType" values ONLY: "software-web-app-showcase" | "mobile-app-showcase" | "marketing-video-showcase" | "image-gallery-showcase".
+Allowed "categorySlug" values ONLY: "software" | "ai-platforms" | "branding" | "marketing" | "marketing-branding" | "video-production".
+Allowed "templateType" values ONLY: "software-web-app-showcase" | "ai-platform-showcase" | "mobile-app-showcase" | "marketing-video-showcase" | "marketing-branding-showcase" | "image-gallery-showcase".
+CLASSIFICATION RULES:
+- Use "ai-platforms" + "ai-platform-showcase" when the project centers on an AI platform, LLM/agent orchestration product, machine learning engine, RAG/copilot, or intelligent automation SaaS (distinct from general "software" web apps).
+- Use "marketing-branding" + "marketing-branding-showcase" when the project combines branding & marketing deliverables in a compact scope (typically 1-2 hero videos and/or 1-2 key visual boards rather than a large multi-episode video series or huge gallery).
+- Otherwise choose the closest matching categorySlug and templateType.
 Return STRICT JSON matching this exact schema:
 {
   "client": "Exact client organization name from reference",
@@ -590,10 +594,10 @@ Return STRICT JSON:
       break;
 
     case 'tech_stack':
-      fieldInstructions = `TARGET: Extract and curate the exact Technology Stack Badges ("techStack") for this Client Story based on the Reference Document, code samples, and engineered solution context.
+      fieldInstructions = `TARGET: Extract and curate the exact Technology Stack Badges ("techStack") for this Client Story based on the Reference Document, code samples, templateType, and engineered solution context.
 INSTRUCTIONS:
 - Replace irrelevant placeholder/default badges (do NOT keep Next.js, TypeScript, Tailwind CSS, or MongoDB unless they were actually used in THIS client story).
-- Include every relevant technology, CMS, framework, programming language, payment/FinTech integration, cloud/hosting provider, UI/UX tool, and database documented in the reference or code samples (typically 4 to 10 concise badges; remove duplicates or redundant items).
+- Include every relevant technology, AI model/LLM/vector DB/agent framework (especially for "ai-platform-showcase" / "ai-platforms"), CMS, framework, programming language, payment/FinTech integration, cloud/hosting provider, UI/UX or campaign tool documented in the reference or code samples (typically 4 to 10 concise badges; remove duplicates or redundant items).
 - Allowed "category" values ONLY: "frontend" | "backend" | "database" | "cloud" | "tool" | "design".
 Return STRICT JSON:
 {
@@ -623,8 +627,11 @@ Return STRICT JSON:
 
     case 'all':
       fieldInstructions = `TARGET: Generate ALL sections of the complete Persici Client Story from the Reference Document cleanly without cross-section repetition.
-Allowed "categorySlug": "software" | "branding" | "marketing" | "video-production".
-Allowed "templateType": "software-web-app-showcase" | "mobile-app-showcase" | "marketing-video-showcase" | "image-gallery-showcase".
+Allowed "categorySlug": "software" | "ai-platforms" | "branding" | "marketing" | "marketing-branding" | "video-production".
+Allowed "templateType": "software-web-app-showcase" | "ai-platform-showcase" | "mobile-app-showcase" | "marketing-video-showcase" | "marketing-branding-showcase" | "image-gallery-showcase".
+CLASSIFICATION RULES:
+- Choose "ai-platforms" + "ai-platform-showcase" whenever the story showcases an AI platform, LLM/agent product, AI copilot, or ML pipeline (separated from regular "software" web applications).
+- Choose "marketing-branding" + "marketing-branding-showcase" whenever the story showcases a combined marketing & branding engagement (compact 1-2 videos and/or 1-2 visuals rather than a huge gallery).
 Allowed "techStack[].category": "frontend" | "backend" | "database" | "cloud" | "tool" | "design".
 For "relatedSlugs", choose 3 slugs STRICTLY from the AVAILABLE DATABASE CLIENT STORIES list matching category, services, or industry.
 Return STRICT JSON matching this complete schema:

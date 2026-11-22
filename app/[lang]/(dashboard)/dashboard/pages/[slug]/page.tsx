@@ -22,13 +22,13 @@ import {
   TbCheck,
   TbAlertCircle,
   TbMapPin,
-  TbClock,
-  TbBuildingCommunity,
+  TbAddressBook,
   TbArrowUp,
   TbArrowDown,
   TbForms,
   TbChevronRight,
   TbBriefcase,
+  TbIdBadge2,
 } from 'react-icons/tb';
 import {
   growthServicesHome,
@@ -88,6 +88,7 @@ export default function UniversalPageCmsEditor() {
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [pageData, setPageData] = useState<Record<string, any>>({});
+  const [passkeySuffix, setPasskeySuffix] = useState('');
 
   // Media picker modal state with strict image vs video filtering
   const [mediaPickerOpen, setMediaPickerOpen] = useState(false);
@@ -110,15 +111,23 @@ export default function UniversalPageCmsEditor() {
 
   useEffect(() => {
     const loadContent = async () => {
-      setLoading(true);
+      const pk =
+        typeof window !== 'undefined'
+          ? new URLSearchParams(window.location.search).get('passkey')
+          : null;
       try {
-        const [res, reviewsRes, sharedContactRes] = await Promise.all([
+        const [res, reviewsRes, sharedContactRes, commRes] = await Promise.all([
           fetch(`/api/content/${slug}`),
           slug === 'home' ? fetch('/api/reviews').then((r) => r.json()).catch(() => null) : Promise.resolve(null),
           slug === 'home' ? fetch('/api/content/shared-contact').then((r) => r.json()).catch(() => null) : Promise.resolve(null),
+          slug === 'contact' || slug === 'careers'
+            ? fetch('/api/communication', { cache: 'no-store' }).then((r) => r.json()).catch(() => null)
+            : Promise.resolve(null),
         ]);
+        if (pk) setPasskeySuffix(`?passkey=${encodeURIComponent(pk)}`);
         const data = await res.json();
         const sharedContactDoc = sharedContactRes?.content || sharedContactRes || null;
+        const commConfig = commRes?.success && commRes.config ? commRes.config : null;
         if (data.content) {
           const c = data.content;
           const canonicalReviews = (reviewsRes?.success && Array.isArray(reviewsRes.reviews) && reviewsRes.reviews.length > 0)
@@ -263,6 +272,31 @@ export default function UniversalPageCmsEditor() {
                   : (c.approach?.teamMembers && c.approach.teamMembers.length > 0)
                   ? c.approach.teamMembers
                   : approachTeamAvatars,
+
+              // 6B. Team Members Carousel Section
+              teamSection: {
+                enabled: c.teamSection?.enabled !== false,
+                badge: {
+                  en: c.teamSection?.badge?.en || 'Leadership & Engineering Specialists',
+                  ar: c.teamSection?.badge?.ar || 'قيادات وخبراء التحول الرقمي',
+                },
+                title: {
+                  en:
+                    c.teamSection?.title?.en ||
+                    'The Strategists, Architects & Engineers Behind Persici',
+                  ar:
+                    c.teamSection?.title?.ar ||
+                    'العقول الهندسية والاستراتيجية خلف نجاحات بيرسيشي',
+                },
+                subtitle: {
+                  en:
+                    c.teamSection?.subtitle?.en ||
+                    'Meet the multidisciplinary directors, AI engineers, and growth architects driving measurable digital transformation across global enterprise partners.',
+                  ar:
+                    c.teamSection?.subtitle?.ar ||
+                    'تعرّف على نخبة المديرين ومهندسي الذكاء الاصطناعي ومعماريّي النمو الذين يقودون مشاريع التحول الرقمي لشركائنا.',
+                },
+              },
 
               // 7. Reviews
               reviewsScore: c.reviewsScore || c.reviews?.score || '5.0',
@@ -474,7 +508,12 @@ export default function UniversalPageCmsEditor() {
                 ...contactPageData.officesSubtitle,
                 ...(c.officesSubtitle || {}),
               },
-              offices: hasValidOffices ? c.offices : contactPageData.offices,
+              offices:
+                Array.isArray(commConfig?.offices) && commConfig.offices.length > 0
+                  ? commConfig.offices
+                  : hasValidOffices
+                  ? c.offices
+                  : contactPageData.offices,
               channelsBadge: {
                 ...(contactPageData.channelsBadge || { en: 'Direct Inquiries', ar: 'قنوات تواصل سريعة ومباشرة' }),
                 ...(c.channelsBadge || {}),
@@ -487,7 +526,12 @@ export default function UniversalPageCmsEditor() {
                 ...contactPageData.channelsSubtitle,
                 ...(c.channelsSubtitle || {}),
               },
-              channels: hasValidChannels ? c.channels : contactPageData.channels,
+              channels:
+                Array.isArray(commConfig?.channels) && commConfig.channels.length > 0
+                  ? commConfig.channels
+                  : hasValidChannels
+                  ? c.channels
+                  : contactPageData.channels,
               faqsTitle: {
                 ...contactPageData.faqsTitle,
                 ...(c.faqsTitle || {}),
@@ -574,7 +618,27 @@ export default function UniversalPageCmsEditor() {
                   ...clientStoriesHubPageData.allStoriesSection.emptySubtitle,
                   ...(c.allStoriesSection?.emptySubtitle || {}),
                 },
-                categories: hasValidCategories ? c.allStoriesSection.categories : defaultCategories,
+                categories: (() => {
+                  if (!hasValidCategories) return defaultCategories;
+                  const saved = c.allStoriesSection.categories as ClientStoriesHubCategoryFilter[];
+                  const merged: ClientStoriesHubCategoryFilter[] = saved.map((cat) => {
+                    const defCat = defaultCategories.find((d) => d.slug === cat?.slug);
+                    return {
+                      ...(defCat || {}),
+                      ...cat,
+                      label: {
+                        ...(defCat?.label || { en: '', ar: '' }),
+                        ...(cat?.label || {}),
+                      },
+                    };
+                  });
+                  for (const defCat of defaultCategories) {
+                    if (!merged.some((item) => item.slug === defCat.slug)) {
+                      merged.push(defCat);
+                    }
+                  }
+                  return merged;
+                })(),
               },
             });
           } else if (slug === 'careers') {
@@ -709,7 +773,7 @@ export default function UniversalPageCmsEditor() {
                 title: { ...careersHubData.spontaneous.title, ...(c.spontaneous?.title || {}) },
                 description: { ...careersHubData.spontaneous.description, ...(c.spontaneous?.description || {}) },
                 ctaText: { ...careersHubData.spontaneous.ctaText, ...(c.spontaneous?.ctaText || {}) },
-                email: c.spontaneous?.email || careersHubData.spontaneous.email || 'hr@persiciagency.com',
+                email: commConfig?.hrEmail || c.spontaneous?.email || careersHubData.spontaneous.email || 'hr@persiciagency.com',
                 emailSubject: {
                   ...(careersHubData.spontaneous.emailSubject || { en: '', ar: '' }),
                   ...(c.spontaneous?.emailSubject || {}),
@@ -1072,6 +1136,25 @@ export default function UniversalPageCmsEditor() {
             },
             ctaSecondaryHref: pageData.approachCtaSecondaryHref || pageData.approach?.ctaSecondaryHref || '/about',
             teamMembers: pageData.approachTeamMembers || pageData.approach?.teamMembers || [],
+          },
+          teamSection: {
+            enabled: pageData.teamSection?.enabled !== false,
+            badge: {
+              en: pageData.teamSection?.badge?.en || 'Leadership & Engineering Specialists',
+              ar: pageData.teamSection?.badge?.ar || 'قيادات وخبراء التحول الرقمي',
+            },
+            title: {
+              en:
+                pageData.teamSection?.title?.en ||
+                'The Strategists, Architects & Engineers Behind Persici',
+              ar:
+                pageData.teamSection?.title?.ar ||
+                'العقول الهندسية والاستراتيجية خلف نجاحات بيرسيشي',
+            },
+            subtitle: {
+              en: pageData.teamSection?.subtitle?.en || '',
+              ar: pageData.teamSection?.subtitle?.ar || '',
+            },
           },
           reviews: {
             ...pageData.reviews,
@@ -2911,7 +2994,7 @@ export default function UniversalPageCmsEditor() {
           <SectionAccordion
             number={6}
             title="6. Our Approach to eCommerce Growth & Engineering Squad"
-            description="Team squad featured image, specialist avatar stack, badge label, approach copy, and primary/secondary CTAs"
+            description="Team squad featured image, approach copy, and primary/secondary CTAs"
             onSave={savePage}
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -2959,280 +3042,26 @@ export default function UniversalPageCmsEditor() {
               helperText="Second paragraph explaining agile sprint execution, transparent governance, and direct communication"
             />
 
-            {/* Team Image & Floating Badge Config */}
-            <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-3">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-700">
-                Squad Featured Photo & Floating Card Badge
-              </span>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-[11px] font-semibold text-slate-600 mb-1">Squad Featured Photo</label>
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      value={pageData.approachTeamImage || pageData.approach?.teamImage || ''}
-                      onChange={(e) => setPageData({ ...pageData, approachTeamImage: e.target.value })}
-                      className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg font-mono text-[11px] bg-white"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => openMediaPicker((url) => setPageData({ ...pageData, approachTeamImage: url }), 'image')}
-                      className="px-2.5 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-lg text-xs font-semibold shrink-0 flex items-center gap-1"
-                    >
-                      <TbPhoto className="w-3.5 h-3.5" />
-                      <span>Pick Photo</span>
-                    </button>
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-[11px] font-semibold text-slate-600 mb-1">Badge Tag (EN)</label>
-                      <input
-                        type="text"
-                        value={pageData.approachBadgeLabelEn || pageData.approach?.badgeLabel?.en || 'Team Persici'}
-                        onChange={(e) => setPageData({ ...pageData, approachBadgeLabelEn: e.target.value })}
-                        className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg bg-white"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-[11px] font-semibold text-slate-600 mb-1">وسام الشارة (AR)</label>
-                      <input
-                        type="text"
-                        dir="rtl"
-                        value={pageData.approachBadgeLabelAr || pageData.approach?.badgeLabel?.ar || 'فريق بيرسيشي'}
-                        onChange={(e) => setPageData({ ...pageData, approachBadgeLabelAr: e.target.value })}
-                        className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg bg-white"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-[11px] font-semibold text-slate-600 mb-1">Badge Title (EN)</label>
-                      <input
-                        type="text"
-                        value={pageData.approachBadgeTitleEn || pageData.approach?.badgeTitle?.en || 'Your team of specialists'}
-                        onChange={(e) => setPageData({ ...pageData, approachBadgeTitleEn: e.target.value })}
-                        className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg bg-white"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-[11px] font-semibold text-slate-600 mb-1">عنوان الشارة (AR)</label>
-                      <input
-                        type="text"
-                        dir="rtl"
-                        value={pageData.approachBadgeTitleAr || pageData.approach?.badgeTitle?.ar || 'فريقك من المتخصصين'}
-                        onChange={(e) => setPageData({ ...pageData, approachBadgeTitleAr: e.target.value })}
-                        className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg bg-white"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Specialist Avatars Stack Manager */}
-              <div className="pt-3 border-t border-slate-200">
-                <div className="flex items-center justify-between mb-3">
-                  <div>
-                    <span className="text-xs font-bold uppercase tracking-wider text-slate-800">
-                      Team Specialists Avatar Stack ({(pageData.approachTeamMembers || []).length})
-                    </span>
-                    <p className="text-[11px] text-slate-500">
-                      Add, remove, and reorder specialist avatars. On the public site, these are centered when few, and smoothly drag-to-scroll horizontally when overflowing.
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        openMediaPicker((url) => {
-                          const name = prompt('Specialist Name:', 'Team Specialist') || 'Specialist Member';
-                          const role = prompt('Specialist Role / Title:', 'AI & Digital Transformation Specialist') || 'Specialist';
-                          const newAvatar = {
-                            id: `specialist-${Date.now()}`,
-                            name,
-                            role,
-                            avatar: url,
-                            src: url,
-                            alt: `${name} - ${role}`,
-                          };
-                          setPageData((prev) => ({
-                            ...prev,
-                            approachTeamMembers: [...(prev.approachTeamMembers || []), newAvatar],
-                          }));
-                        }, 'image');
-                      }}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-persici-crimson hover:bg-red-600 text-white rounded-lg text-xs font-semibold shadow-xs transition-colors"
-                    >
-                      <TbPhoto className="w-3.5 h-3.5" />
-                      <span>Add from Storage Library (R2)</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const newAvatar = {
-                          id: `specialist-${Date.now()}`,
-                          name: 'Specialist Member',
-                          role: 'Senior Digital Engineer',
-                          avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
-                          src: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
-                          alt: 'Team Specialist',
-                        };
-                        setPageData((prev) => ({
-                          ...prev,
-                          approachTeamMembers: [...(prev.approachTeamMembers || []), newAvatar],
-                        }));
-                      }}
-                      className="inline-flex items-center gap-1 px-3 py-1.5 bg-slate-900 text-white rounded-lg text-xs font-semibold hover:bg-slate-800 transition-colors"
-                    >
-                      <TbPlus className="w-3.5 h-3.5" />
-                      <span>Add Specialist</span>
-                    </button>
-                  </div>
-                </div>
-
-                <div className="space-y-2.5">
-                  {(pageData.approachTeamMembers || []).map((m: any, mIdx: number) => (
-                    <div
-                      key={m.id || mIdx}
-                      className="p-3 bg-white border border-slate-200 rounded-xl flex flex-wrap items-center justify-between gap-3"
-                    >
-                      <div className="flex items-center gap-2.5 flex-1 min-w-[200px]">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={m.avatar || m.src || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80'}
-                          alt={m.name || 'Specialist'}
-                          className="w-10 h-10 rounded-full object-cover border border-slate-200 shrink-0"
-                        />
-                        <div className="flex-1 space-y-1">
-                          <div className="flex items-center gap-2">
-                            <input
-                              type="text"
-                              placeholder="Avatar URL"
-                              value={m.avatar || m.src || ''}
-                              onChange={(e) => {
-                                const val = e.target.value;
-                                setPageData((prev) => {
-                                  const updated = [...(prev.approachTeamMembers || [])];
-                                  if (updated[mIdx]) {
-                                    updated[mIdx] = { ...updated[mIdx], avatar: val, src: val };
-                                  }
-                                  return { ...prev, approachTeamMembers: updated };
-                                });
-                              }}
-                              className="w-full px-2 py-1 text-xs border border-slate-200 rounded font-mono text-[11px]"
-                            />
-                            <button
-                              type="button"
-                              onClick={() =>
-                                openMediaPicker((url) => {
-                                  setPageData((prev) => {
-                                    const updated = [...(prev.approachTeamMembers || [])];
-                                    if (updated[mIdx]) {
-                                      updated[mIdx] = { ...updated[mIdx], avatar: url, src: url };
-                                    }
-                                    return { ...prev, approachTeamMembers: updated };
-                                  });
-                                }, 'image')
-                              }
-                              className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded text-xs font-semibold shrink-0 flex items-center gap-1 border border-slate-200"
-                            >
-                              <TbPhoto className="w-3.5 h-3.5" />
-                              <span>Pick</span>
-                            </button>
-                          </div>
-
-                          <div className="grid grid-cols-2 gap-2">
-                            <input
-                              type="text"
-                              placeholder="Specialist Name (e.g. Elena Rostova)"
-                              value={m.name || ''}
-                              onChange={(e) => {
-                                const val = e.target.value;
-                                setPageData((prev) => {
-                                  const updated = [...(prev.approachTeamMembers || [])];
-                                  if (updated[mIdx]) {
-                                    updated[mIdx] = { ...updated[mIdx], name: val };
-                                  }
-                                  return { ...prev, approachTeamMembers: updated };
-                                });
-                              }}
-                              className="px-2 py-0.5 text-xs border border-slate-200 rounded"
-                            />
-                            <input
-                              type="text"
-                              placeholder="Role / Title (e.g. Lead AI Architect)"
-                              value={m.role || ''}
-                              onChange={(e) => {
-                                const val = e.target.value;
-                                setPageData((prev) => {
-                                  const updated = [...(prev.approachTeamMembers || [])];
-                                  if (updated[mIdx]) {
-                                    updated[mIdx] = { ...updated[mIdx], role: val };
-                                  }
-                                  return { ...prev, approachTeamMembers: updated };
-                                });
-                              }}
-                              className="px-2 py-0.5 text-xs border border-slate-200 rounded"
-                            />
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-1">
-                        <button
-                          type="button"
-                          disabled={mIdx === 0}
-                          onClick={() => {
-                            if (mIdx === 0) return;
-                            setPageData((prev) => {
-                              const updated = [...(prev.approachTeamMembers || [])];
-                              const temp = updated[mIdx - 1];
-                              updated[mIdx - 1] = updated[mIdx];
-                              updated[mIdx] = temp;
-                              return { ...prev, approachTeamMembers: updated };
-                            });
-                          }}
-                          className="p-1 text-slate-400 hover:text-slate-700 disabled:opacity-30"
-                          title="Move Up"
-                        >
-                          <TbArrowUp className="w-3.5 h-3.5" />
-                        </button>
-                        <button
-                          type="button"
-                          disabled={mIdx === (pageData.approachTeamMembers || []).length - 1}
-                          onClick={() => {
-                            if (mIdx === (pageData.approachTeamMembers || []).length - 1) return;
-                            setPageData((prev) => {
-                              const updated = [...(prev.approachTeamMembers || [])];
-                              const temp = updated[mIdx + 1];
-                              updated[mIdx + 1] = updated[mIdx];
-                              updated[mIdx] = temp;
-                              return { ...prev, approachTeamMembers: updated };
-                            });
-                          }}
-                          className="p-1 text-slate-400 hover:text-slate-700 disabled:opacity-30"
-                          title="Move Down"
-                        >
-                          <TbArrowDown className="w-3.5 h-3.5" />
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setPageData((prev) => {
-                              const updated = [...(prev.approachTeamMembers || [])];
-                              updated.splice(mIdx, 1);
-                              return { ...prev, approachTeamMembers: updated };
-                            });
-                          }}
-                          className="p-1 text-slate-400 hover:text-red-600 rounded"
-                          title="Remove Avatar"
-                        >
-                          <TbTrash className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+            {/* Squad Featured Photo */}
+            <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                Squad Featured Photo
+              </label>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={pageData.approachTeamImage || pageData.approach?.teamImage || ''}
+                  onChange={(e) => setPageData({ ...pageData, approachTeamImage: e.target.value })}
+                  className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg font-mono text-[11px] bg-white"
+                />
+                <button
+                  type="button"
+                  onClick={() => openMediaPicker((url) => setPageData({ ...pageData, approachTeamImage: url }), 'image')}
+                  className="px-2.5 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-lg text-xs font-semibold shrink-0 flex items-center gap-1"
+                >
+                  <TbPhoto className="w-3.5 h-3.5" />
+                  <span>Pick Photo</span>
+                </button>
               </div>
             </div>
 
@@ -3272,6 +3101,190 @@ export default function UniversalPageCmsEditor() {
                   className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg bg-white font-mono text-[11px]"
                 />
               </div>
+            </div>
+          </SectionAccordion>
+
+          {/* ================================================================= */}
+          {/* Section 6B: Team Members Carousel (HomeTeamCarouselSection)       */}
+          {/* ================================================================= */}
+          <SectionAccordion
+            number="6B"
+            title="6B. Persici Team Members Carousel (#team)"
+            description="SEO headline, subtitle, and visibility for the homepage specialist carousel — member profiles & drag-and-drop order sync from the Team Members tab"
+            onSave={savePage}
+          >
+            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <div className="flex items-center gap-2">
+                  <TbIdBadge2 className="w-5 h-5 text-persici-crimson" />
+                  <span className="text-xs font-bold text-slate-900">
+                    Synced Member Roster &amp; Carousel Order
+                  </span>
+                </div>
+                <p className="text-xs text-slate-600 mt-1">
+                  To add team members, upload photos, edit descriptions/sections, or drag cards to change carousel order, open the dedicated{' '}
+                  <span className="font-semibold text-slate-900">Team Members</span> tab.
+                </p>
+              </div>
+              <Link
+                href={`/${lang}/dashboard/team${passkeySuffix}`}
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-persici-crimson hover:bg-red-700 text-white text-xs font-semibold transition-colors shadow-sm shrink-0"
+              >
+                <TbIdBadge2 className="w-4 h-4" />
+                <span>Manage &amp; Reorder Team Members</span>
+                <TbExternalLink className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+
+            <div className="flex items-center justify-between p-3.5 rounded-xl bg-white border border-slate-200 mt-4">
+              <div>
+                <span className="text-xs font-bold text-slate-800 block">
+                  Display Team Members Carousel on Homepage
+                </span>
+                <span className="text-[11px] text-slate-500">
+                  Appears immediately below Section 6 (Our Approach to Digital Transformation)
+                </span>
+              </div>
+              <input
+                type="checkbox"
+                checked={pageData.teamSection?.enabled !== false}
+                onChange={(e) =>
+                  setPageData({
+                    ...pageData,
+                    teamSection: {
+                      ...(pageData.teamSection || {}),
+                      enabled: e.target.checked,
+                    },
+                  })
+                }
+                className="w-4 h-4 accent-persici-crimson rounded cursor-pointer"
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  Section Eyebrow Badge (EN)
+                </label>
+                <input
+                  type="text"
+                  value={pageData.teamSection?.badge?.en || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      teamSection: {
+                        ...(pageData.teamSection || {}),
+                        badge: {
+                          ...(pageData.teamSection?.badge || {}),
+                          en: e.target.value,
+                        },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  شارة القسم (AR)
+                </label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={pageData.teamSection?.badge?.ar || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      teamSection: {
+                        ...(pageData.teamSection || {}),
+                        badge: {
+                          ...(pageData.teamSection?.badge || {}),
+                          ar: e.target.value,
+                        },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-arabic"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  SEO Section Heading H2 (EN)
+                </label>
+                <input
+                  type="text"
+                  value={pageData.teamSection?.title?.en || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      teamSection: {
+                        ...(pageData.teamSection || {}),
+                        title: {
+                          ...(pageData.teamSection?.title || {}),
+                          en: e.target.value,
+                        },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-semibold"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  العنوان الرئيسي لقسم الفريق H2 (AR)
+                </label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={pageData.teamSection?.title?.ar || ''}
+                  onChange={(e) =>
+                    setPageData({
+                      ...pageData,
+                      teamSection: {
+                        ...(pageData.teamSection || {}),
+                        title: {
+                          ...(pageData.teamSection?.title || {}),
+                          ar: e.target.value,
+                        },
+                      },
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-semibold font-arabic"
+                />
+              </div>
+            </div>
+
+            <div className="pt-4">
+              <RichTextEditor
+                label="Team Carousel Subtitle (SEO Summary)"
+                rows={2}
+                valueEn={pageData.teamSection?.subtitle?.en || ''}
+                valueAr={pageData.teamSection?.subtitle?.ar || ''}
+                onChangeEn={(val) =>
+                  setPageData({
+                    ...pageData,
+                    teamSection: {
+                      ...(pageData.teamSection || {}),
+                      subtitle: {
+                        ...(pageData.teamSection?.subtitle || {}),
+                        en: val,
+                      },
+                    },
+                  })
+                }
+                onChangeAr={(val) =>
+                  setPageData({
+                    ...pageData,
+                    teamSection: {
+                      ...(pageData.teamSection || {}),
+                      subtitle: {
+                        ...(pageData.teamSection?.subtitle || {}),
+                        ar: val,
+                      },
+                    },
+                  })
+                }
+              />
             </div>
           </SectionAccordion>
 
@@ -7012,447 +7025,61 @@ export default function UniversalPageCmsEditor() {
               />
             </div>
 
-            {/* Offices Repeater */}
+            {/* Synced Regional Offices Summary + Communication Redirect */}
             <div className="pt-4 border-t border-slate-200/80 space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <span className="text-xs font-bold text-slate-800 uppercase tracking-wider">
-                    Global Office Hubs ({(pageData.offices || []).length})
-                  </span>
-                  <p className="text-[11px] text-slate-500">
-                    Manage regional headquarters, addresses, operational hours, and map coordinates
-                  </p>
+              <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <TbAddressBook className="w-5 h-5 text-persici-crimson" />
+                      <span className="text-xs font-bold text-slate-900 uppercase tracking-wider">
+                        Global Office Hubs ({(pageData.offices || []).length}) — Synced Source
+                      </span>
+                    </div>
+                    <p className="text-xs text-slate-600 mt-1">
+                      Branches, physical addresses, phone numbers, and business hours are centrally managed in{' '}
+                      <span className="font-semibold text-slate-900">Communication &amp; Social Media</span> so Footer and Contact pages stay synchronized.
+                    </p>
+                  </div>
+                  <Link
+                    href={`/${lang}/dashboard/communication${passkeySuffix}#offices`}
+                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-persici-crimson hover:bg-red-700 text-white text-xs font-semibold transition-colors shadow-sm shrink-0"
+                  >
+                    <TbAddressBook className="w-4 h-4" />
+                    <span>Edit in Communication &amp; Social</span>
+                    <TbExternalLink className="w-3.5 h-3.5" />
+                  </Link>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    const current = pageData.offices || [];
-                    const newOffice = {
-                      id: `office-${Date.now()}`,
-                      city: { en: 'New City', ar: 'مدينة جديدة' },
-                      country: { en: 'Country', ar: 'الدولة' },
-                      badge: { en: 'Regional Hub', ar: 'مركز إقليمي' },
-                      isHQ: false,
-                      address: { en: 'Business District, Tower 1', ar: 'المنطقة التجارية، برج 1' },
-                      email: 'dubai@persiciagency.com',
-                      phone: '+971 4 000 0000',
-                      hours: { en: 'Mon – Fri, 9:00 AM – 5:00 PM', ar: 'الإثنين – الجمعة، 9:00 ص – 5:00 م' },
-                      timezone: 'UTC+3',
-                      mapsUrl: 'https://maps.google.com',
-                      directionsLabel: { en: 'Get Directions', ar: 'الاتجاهات عبر خرائط جوجل' },
-                      image: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=1200&q=85',
-                    };
-                    setPageData({ ...pageData, offices: [...current, newOffice] });
-                  }}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900 text-white text-xs font-semibold hover:bg-persici-crimson transition-colors cursor-pointer"
-                >
-                  <TbPlus className="w-3.5 h-3.5" />
-                  <span>Add Office Hub</span>
-                </button>
-              </div>
 
-              {(pageData.offices || []).map((office: ContactOfficeItem, idx: number) => (
-                <div
-                  key={office.id || idx}
-                  className="p-4 bg-white border border-slate-200 rounded-2xl space-y-4 shadow-2xs"
-                >
-                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
-                    <div className="flex items-center gap-2">
-                      <span className="w-6 h-6 rounded-lg bg-persici-crimson/10 text-persici-crimson text-xs font-bold flex items-center justify-center">
-                        {idx + 1}
-                      </span>
-                      <TbMapPin className="w-4 h-4 text-persici-crimson" />
-                      <span className="text-xs font-bold text-slate-900">
-                        {office.city?.en || 'City'} — {office.country?.en || 'Country'}
-                      </span>
-                      {office.isHQ && (
-                        <span className="text-[10px] font-bold uppercase tracking-wider bg-persici-crimson text-white px-2.5 py-0.5 rounded-full">
-                          HQ Badge Active
-                        </span>
-                      )}
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                      <label className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-700 mr-2 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={Boolean(office.isHQ)}
-                          onChange={(e) => {
-                            const updated = [...(pageData.offices || [])];
-                            updated[idx] = { ...office, isHQ: e.target.checked };
-                            setPageData({ ...pageData, offices: updated });
-                          }}
-                          className="rounded border-slate-300 text-persici-crimson focus:ring-persici-crimson"
-                        />
-                        <span>Highlight as HQ</span>
-                      </label>
-
-                      <button
-                        type="button"
-                        disabled={idx === 0}
-                        onClick={() =>
-                          setPageData({
-                            ...pageData,
-                            offices: moveItem(pageData.offices || [], idx, 'up'),
-                          })
-                        }
-                        className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 disabled:opacity-30 text-slate-700"
-                        title="Move Up"
-                      >
-                        <TbArrowUp className="w-3.5 h-3.5" />
-                      </button>
-                      <button
-                        type="button"
-                        disabled={idx === (pageData.offices || []).length - 1}
-                        onClick={() =>
-                          setPageData({
-                            ...pageData,
-                            offices: moveItem(pageData.offices || [], idx, 'down'),
-                          })
-                        }
-                        className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 disabled:opacity-30 text-slate-700"
-                        title="Move Down"
-                      >
-                        <TbArrowDown className="w-3.5 h-3.5" />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          const updated = (pageData.offices || []).filter(
-                            (_item: ContactOfficeItem, i: number) => i !== idx
-                          );
-                          setPageData({ ...pageData, offices: updated });
-                        }}
-                        className="p-1.5 rounded-lg bg-red-50 hover:bg-red-100 text-red-600"
-                        title="Delete Office"
-                      >
-                        <TbTrash className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Row 1: City, Country, Role Badge */}
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <div>
-                      <label className="block text-[11px] font-semibold text-slate-600 mb-0.5">
-                        City Name (EN)
-                      </label>
-                      <input
-                        type="text"
-                        value={office.city?.en || ''}
-                        onChange={(e) => {
-                          const updated = [...(pageData.offices || [])];
-                          updated[idx] = {
-                            ...office,
-                            city: { ...(office.city || {}), en: e.target.value },
-                          };
-                          setPageData({ ...pageData, offices: updated });
-                        }}
-                        className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg font-semibold"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-[11px] font-semibold text-slate-600 mb-0.5">
-                        اسم المدينة (AR)
-                      </label>
-                      <input
-                        type="text"
-                        dir="rtl"
-                        value={office.city?.ar || ''}
-                        onChange={(e) => {
-                          const updated = [...(pageData.offices || [])];
-                          updated[idx] = {
-                            ...office,
-                            city: { ...(office.city || {}), ar: e.target.value },
-                          };
-                          setPageData({ ...pageData, offices: updated });
-                        }}
-                        className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg font-semibold font-arabic"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-[11px] font-semibold text-slate-600 mb-0.5">
-                        Timezone Badge (e.g. UTC+3)
-                      </label>
-                      <input
-                        type="text"
-                        value={office.timezone || ''}
-                        onChange={(e) => {
-                          const updated = [...(pageData.offices || [])];
-                          updated[idx] = { ...office, timezone: e.target.value };
-                          setPageData({ ...pageData, offices: updated });
-                        }}
-                        className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg font-mono"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                    <div>
-                      <label className="block text-[11px] font-semibold text-slate-600 mb-0.5">
-                        Country (EN)
-                      </label>
-                      <input
-                        type="text"
-                        value={office.country?.en || ''}
-                        onChange={(e) => {
-                          const updated = [...(pageData.offices || [])];
-                          updated[idx] = {
-                            ...office,
-                            country: { ...(office.country || {}), en: e.target.value },
-                          };
-                          setPageData({ ...pageData, offices: updated });
-                        }}
-                        className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-[11px] font-semibold text-slate-600 mb-0.5">
-                        الدولة (AR)
-                      </label>
-                      <input
-                        type="text"
-                        dir="rtl"
-                        value={office.country?.ar || ''}
-                        onChange={(e) => {
-                          const updated = [...(pageData.offices || [])];
-                          updated[idx] = {
-                            ...office,
-                            country: { ...(office.country || {}), ar: e.target.value },
-                          };
-                          setPageData({ ...pageData, offices: updated });
-                        }}
-                        className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg font-arabic"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-[11px] font-semibold text-slate-600 mb-0.5">
-                        Hub Role Badge (EN)
-                      </label>
-                      <input
-                        type="text"
-                        value={office.badge?.en || ''}
-                        onChange={(e) => {
-                          const updated = [...(pageData.offices || [])];
-                          updated[idx] = {
-                            ...office,
-                            badge: { ...(office.badge || {}), en: e.target.value },
-                          };
-                          setPageData({ ...pageData, offices: updated });
-                        }}
-                        className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-[11px] font-semibold text-slate-600 mb-0.5">
-                        شارة المركز الإقليمي (AR)
-                      </label>
-                      <input
-                        type="text"
-                        dir="rtl"
-                        value={office.badge?.ar || ''}
-                        onChange={(e) => {
-                          const updated = [...(pageData.offices || [])];
-                          updated[idx] = {
-                            ...office,
-                            badge: { ...(office.badge || {}), ar: e.target.value },
-                          };
-                          setPageData({ ...pageData, offices: updated });
-                        }}
-                        className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg font-arabic"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Row 2: RichText Address (EN / AR) */}
-                  <RichTextEditor
-                    label={`Office #${idx + 1} Full Address`}
-                    rows={2}
-                    valueEn={office.address?.en || ''}
-                    valueAr={office.address?.ar || ''}
-                    onChangeEn={(val) => {
-                      const updated = [...(pageData.offices || [])];
-                      updated[idx] = {
-                        ...office,
-                        address: { ...(office.address || {}), en: val },
-                      };
-                      setPageData({ ...pageData, offices: updated });
-                    }}
-                    onChangeAr={(val) => {
-                      const updated = [...(pageData.offices || [])];
-                      updated[idx] = {
-                        ...office,
-                        address: { ...(office.address || {}), ar: val },
-                      };
-                      setPageData({ ...pageData, offices: updated });
-                    }}
-                  />
-
-                  {/* Row 3: Working Hours (EN / AR), Direct Email, Direct Phone */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                    <div>
-                      <label className="block text-[11px] font-semibold text-slate-600 mb-0.5">
-                        Working Hours (EN)
-                      </label>
-                      <input
-                        type="text"
-                        value={office.hours?.en || ''}
-                        onChange={(e) => {
-                          const updated = [...(pageData.offices || [])];
-                          updated[idx] = {
-                            ...office,
-                            hours: { ...(office.hours || {}), en: e.target.value },
-                          };
-                          setPageData({ ...pageData, offices: updated });
-                        }}
-                        className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-[11px] font-semibold text-slate-600 mb-0.5">
-                        ساعات العمل (AR)
-                      </label>
-                      <input
-                        type="text"
-                        dir="rtl"
-                        value={office.hours?.ar || ''}
-                        onChange={(e) => {
-                          const updated = [...(pageData.offices || [])];
-                          updated[idx] = {
-                            ...office,
-                            hours: { ...(office.hours || {}), ar: e.target.value },
-                          };
-                          setPageData({ ...pageData, offices: updated });
-                        }}
-                        className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg font-arabic"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-[11px] font-semibold text-slate-600 mb-0.5">
-                        Direct Hub Email
-                      </label>
-                      <input
-                        type="text"
-                        value={office.email || ''}
-                        onChange={(e) => {
-                          const updated = [...(pageData.offices || [])];
-                          updated[idx] = { ...office, email: e.target.value };
-                          setPageData({ ...pageData, offices: updated });
-                        }}
-                        className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg font-mono"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-[11px] font-semibold text-slate-600 mb-0.5">
-                        Direct Hub Phone
-                      </label>
-                      <input
-                        type="text"
-                        dir="ltr"
-                        value={office.phone || ''}
-                        onChange={(e) => {
-                          const updated = [...(pageData.offices || [])];
-                          updated[idx] = { ...office, phone: e.target.value };
-                          setPageData({ ...pageData, offices: updated });
-                        }}
-                        className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg font-mono"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Row 4: Google Maps URL, Directions Button Labels, and Architectural Image */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                    <div>
-                      <label className="block text-[11px] font-semibold text-slate-600 mb-0.5">
-                        Google Maps URL
-                      </label>
-                      <input
-                        type="text"
-                        value={office.mapsUrl || ''}
-                        onChange={(e) => {
-                          const updated = [...(pageData.offices || [])];
-                          updated[idx] = { ...office, mapsUrl: e.target.value };
-                          setPageData({ ...pageData, offices: updated });
-                        }}
-                        className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg font-mono text-[11px]"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-[11px] font-semibold text-slate-600 mb-0.5">
-                        Directions Button Text (EN)
-                      </label>
-                      <input
-                        type="text"
-                        value={office.directionsLabel?.en || 'Get Directions'}
-                        onChange={(e) => {
-                          const updated = [...(pageData.offices || [])];
-                          updated[idx] = {
-                            ...office,
-                            directionsLabel: {
-                              ...(office.directionsLabel || { en: 'Get Directions', ar: 'الاتجاهات عبر خرائط جوجل' }),
-                              en: e.target.value,
-                            },
-                          };
-                          setPageData({ ...pageData, offices: updated });
-                        }}
-                        className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-[11px] font-semibold text-slate-600 mb-0.5">
-                        نص زر الاتجاهات (AR)
-                      </label>
-                      <input
-                        type="text"
-                        dir="rtl"
-                        value={office.directionsLabel?.ar || 'الاتجاهات عبر خرائط جوجل'}
-                        onChange={(e) => {
-                          const updated = [...(pageData.offices || [])];
-                          updated[idx] = {
-                            ...office,
-                            directionsLabel: {
-                              ...(office.directionsLabel || { en: 'Get Directions', ar: 'الاتجاهات عبر خرائط جوجل' }),
-                              ar: e.target.value,
-                            },
-                          };
-                          setPageData({ ...pageData, offices: updated });
-                        }}
-                        className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg font-arabic"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-[11px] font-semibold text-slate-600 mb-0.5">
-                        Office Photo URL (Cloudflare R2)
-                      </label>
-                      <div className="flex gap-2">
-                        <input
-                          type="text"
-                          value={office.image || ''}
-                          onChange={(e) => {
-                            const updated = [...(pageData.offices || [])];
-                            updated[idx] = { ...office, image: e.target.value };
-                            setPageData({ ...pageData, offices: updated });
-                          }}
-                          className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg font-mono text-[11px]"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => {
-                            openMediaPicker((url) => {
-                              const updated = [...(pageData.offices || [])];
-                              updated[idx] = { ...office, image: url };
-                              setPageData({ ...pageData, offices: updated });
-                            }, 'image');
-                          }}
-                          className="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold shrink-0 cursor-pointer"
-                        >
-                          Pick R2
-                        </button>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {(pageData.offices || []).map((office: ContactOfficeItem, idx: number) => (
+                    <div
+                      key={office.id || idx}
+                      className="p-3.5 bg-white border border-slate-200 rounded-xl text-xs space-y-1"
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-1.5 font-bold text-slate-900">
+                          <TbMapPin className="w-4 h-4 text-persici-crimson shrink-0" />
+                          <span>
+                            {isRtl ? office.city?.ar || office.city?.en : office.city?.en}
+                          </span>
+                        </div>
+                        {office.isHQ && (
+                          <span className="text-[10px] font-bold uppercase tracking-wider bg-persici-crimson/10 text-persici-crimson px-2 py-0.5 rounded-full">
+                            HQ
+                          </span>
+                        )}
                       </div>
+                      <p className="text-slate-600 line-clamp-1">
+                        {isRtl ? office.address?.ar || office.address?.en : office.address?.en}
+                      </p>
+                      <p className="font-mono text-[11px] text-slate-500">
+                        {office.phone} · {office.email}
+                      </p>
                     </div>
-                  </div>
+                  ))}
                 </div>
-              ))}
+              </div>
             </div>
           </SectionAccordion>
 
@@ -7557,259 +7184,58 @@ export default function UniversalPageCmsEditor() {
               />
             </div>
 
-            {/* Direct Channels Repeater */}
+            {/* Synced Direct Channels Summary + Communication Redirect */}
             <div className="pt-4 border-t border-slate-200/80 space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <span className="text-xs font-bold text-slate-800 uppercase tracking-wider">
-                    Direct Department Channels ({(pageData.channels || []).length})
-                  </span>
-                  <p className="text-[11px] text-slate-500">
-                    Each card displays a category badge, title, rich-text description, direct email desk, and SLA response badge
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    const current = pageData.channels || [];
-                    const newChannel = {
-                      id: `channel-${Date.now()}`,
-                      category: { en: 'Department Desk', ar: 'مكتب مختص' },
-                      title: { en: 'New Inquiry Channel', ar: 'قناة تواصل جديدة' },
-                      description: {
-                        en: 'Direct routing for specialized inquiries and executive requests.',
-                        ar: 'توجيه مباشر للاستفسارات المتخصصة والطلبات التنفيذية.',
-                      },
-                      email: 'growth@persiciagency.com',
-                      sla: { en: 'Response within 24 hours', ar: 'الرد خلال 24 ساعة عمل' },
-                    };
-                    setPageData({ ...pageData, channels: [...current, newChannel] });
-                  }}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900 text-white text-xs font-semibold hover:bg-persici-crimson transition-colors cursor-pointer"
-                >
-                  <TbPlus className="w-3.5 h-3.5" />
-                  <span>Add Direct Channel</span>
-                </button>
-              </div>
-
-              {(pageData.channels || []).map((channel: ContactChannelItem, idx: number) => (
-                <div
-                  key={channel.id || idx}
-                  className="p-4 bg-white border border-slate-200 rounded-2xl space-y-3.5 shadow-2xs"
-                >
-                  <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
+              <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div>
                     <div className="flex items-center gap-2">
-                      <span className="w-6 h-6 rounded-lg bg-slate-900 text-white text-xs font-bold flex items-center justify-center">
-                        {idx + 1}
-                      </span>
-                      <span className="text-xs font-bold text-slate-900">
-                        {channel.title?.en || 'Channel'} ({channel.email || 'email'})
+                      <TbAddressBook className="w-5 h-5 text-persici-crimson" />
+                      <span className="text-xs font-bold text-slate-900 uppercase tracking-wider">
+                        Direct Department Channels ({(pageData.channels || []).length}) — Synced Source
                       </span>
                     </div>
-                    <div className="flex items-center gap-1.5">
-                      <button
-                        type="button"
-                        disabled={idx === 0}
-                        onClick={() =>
-                          setPageData({
-                            ...pageData,
-                            channels: moveItem(pageData.channels || [], idx, 'up'),
-                          })
-                        }
-                        className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 disabled:opacity-30 text-slate-700"
-                        title="Move Up"
-                      >
-                        <TbArrowUp className="w-3.5 h-3.5" />
-                      </button>
-                      <button
-                        type="button"
-                        disabled={idx === (pageData.channels || []).length - 1}
-                        onClick={() =>
-                          setPageData({
-                            ...pageData,
-                            channels: moveItem(pageData.channels || [], idx, 'down'),
-                          })
-                        }
-                        className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 disabled:opacity-30 text-slate-700"
-                        title="Move Down"
-                      >
-                        <TbArrowDown className="w-3.5 h-3.5" />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          const updated = (pageData.channels || []).filter(
-                            (_item: ContactChannelItem, i: number) => i !== idx
-                          );
-                          setPageData({ ...pageData, channels: updated });
-                        }}
-                        className="p-1.5 rounded-lg bg-red-50 hover:bg-red-100 text-red-600"
-                        title="Delete Channel"
-                      >
-                        <TbTrash className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
+                    <p className="text-xs text-slate-600 mt-1">
+                      Direct routing cards and department email desks are centrally managed in{' '}
+                      <span className="font-semibold text-slate-900">Communication &amp; Social Media</span> so domain or email updates apply sitewide.
+                    </p>
                   </div>
-
-                  {/* Row 1: Category Badge & Title */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                    <div>
-                      <label className="block text-[11px] font-semibold text-slate-600 mb-0.5">
-                        Category Badge (EN)
-                      </label>
-                      <input
-                        type="text"
-                        value={channel.category?.en || ''}
-                        onChange={(e) => {
-                          const updated = [...(pageData.channels || [])];
-                          updated[idx] = {
-                            ...channel,
-                            category: { ...(channel.category || {}), en: e.target.value },
-                          };
-                          setPageData({ ...pageData, channels: updated });
-                        }}
-                        className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-[11px] font-semibold text-slate-600 mb-0.5">
-                        شارة الفئة (AR)
-                      </label>
-                      <input
-                        type="text"
-                        dir="rtl"
-                        value={channel.category?.ar || ''}
-                        onChange={(e) => {
-                          const updated = [...(pageData.channels || [])];
-                          updated[idx] = {
-                            ...channel,
-                            category: { ...(channel.category || {}), ar: e.target.value },
-                          };
-                          setPageData({ ...pageData, channels: updated });
-                        }}
-                        className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg font-arabic"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-[11px] font-semibold text-slate-600 mb-0.5">
-                        Channel Title (EN)
-                      </label>
-                      <input
-                        type="text"
-                        value={channel.title?.en || ''}
-                        onChange={(e) => {
-                          const updated = [...(pageData.channels || [])];
-                          updated[idx] = {
-                            ...channel,
-                            title: { ...(channel.title || {}), en: e.target.value },
-                          };
-                          setPageData({ ...pageData, channels: updated });
-                        }}
-                        className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg font-semibold"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-[11px] font-semibold text-slate-600 mb-0.5">
-                        عنوان القناة (AR)
-                      </label>
-                      <input
-                        type="text"
-                        dir="rtl"
-                        value={channel.title?.ar || ''}
-                        onChange={(e) => {
-                          const updated = [...(pageData.channels || [])];
-                          updated[idx] = {
-                            ...channel,
-                            title: { ...(channel.title || {}), ar: e.target.value },
-                          };
-                          setPageData({ ...pageData, channels: updated });
-                        }}
-                        className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg font-semibold font-arabic"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Row 2: RichText Description */}
-                  <RichTextEditor
-                    label={`Channel #${idx + 1} Description`}
-                    rows={2}
-                    valueEn={channel.description?.en || ''}
-                    valueAr={channel.description?.ar || ''}
-                    onChangeEn={(val) => {
-                      const updated = [...(pageData.channels || [])];
-                      updated[idx] = {
-                        ...channel,
-                        description: { ...(channel.description || {}), en: val },
-                      };
-                      setPageData({ ...pageData, channels: updated });
-                    }}
-                    onChangeAr={(val) => {
-                      const updated = [...(pageData.channels || [])];
-                      updated[idx] = {
-                        ...channel,
-                        description: { ...(channel.description || {}), ar: val },
-                      };
-                      setPageData({ ...pageData, channels: updated });
-                    }}
-                  />
-
-                  {/* Row 3: Direct Email & SLA Commitment */}
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <div>
-                      <label className="block text-[11px] font-semibold text-slate-600 mb-0.5">
-                        Direct Routing Email
-                      </label>
-                      <input
-                        type="text"
-                        value={channel.email || ''}
-                        onChange={(e) => {
-                          const updated = [...(pageData.channels || [])];
-                          updated[idx] = { ...channel, email: e.target.value };
-                          setPageData({ ...pageData, channels: updated });
-                        }}
-                        className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg font-mono"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-[11px] font-semibold text-slate-600 mb-0.5">
-                        SLA Commitment Badge (EN)
-                      </label>
-                      <input
-                        type="text"
-                        value={channel.sla?.en || ''}
-                        onChange={(e) => {
-                          const updated = [...(pageData.channels || [])];
-                          updated[idx] = {
-                            ...channel,
-                            sla: { ...(channel.sla || {}), en: e.target.value },
-                          };
-                          setPageData({ ...pageData, channels: updated });
-                        }}
-                        className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-[11px] font-semibold text-slate-600 mb-0.5">
-                        التزام سرعة الاستجابة SLA (AR)
-                      </label>
-                      <input
-                        type="text"
-                        dir="rtl"
-                        value={channel.sla?.ar || ''}
-                        onChange={(e) => {
-                          const updated = [...(pageData.channels || [])];
-                          updated[idx] = {
-                            ...channel,
-                            sla: { ...(channel.sla || {}), ar: e.target.value },
-                          };
-                          setPageData({ ...pageData, channels: updated });
-                        }}
-                        className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg font-arabic"
-                      />
-                    </div>
-                  </div>
+                  <Link
+                    href={`/${lang}/dashboard/communication${passkeySuffix}#channels`}
+                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-persici-crimson hover:bg-red-700 text-white text-xs font-semibold transition-colors shadow-sm shrink-0"
+                  >
+                    <TbAddressBook className="w-4 h-4" />
+                    <span>Edit Channels in Communication &amp; Social</span>
+                    <TbExternalLink className="w-3.5 h-3.5" />
+                  </Link>
                 </div>
-              ))}
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {(pageData.channels || []).map((channel: ContactChannelItem, idx: number) => (
+                    <div
+                      key={channel.id || idx}
+                      className="p-3.5 bg-white border border-slate-200 rounded-xl text-xs space-y-1"
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="font-bold text-slate-900">
+                          {isRtl ? channel.title?.ar || channel.title?.en : channel.title?.en}
+                        </span>
+                        <span className="px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 text-[10px] font-semibold">
+                          {isRtl
+                            ? channel.category?.ar || channel.category?.en
+                            : channel.category?.en}
+                        </span>
+                      </div>
+                      <p className="font-mono text-[11px] text-persici-crimson font-semibold">
+                        {channel.email}
+                      </p>
+                      <p className="text-[11px] text-slate-500">
+                        {isRtl ? channel.sla?.ar || channel.sla?.en : channel.sla?.en}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </SectionAccordion>
 
@@ -11417,24 +10843,23 @@ export default function UniversalPageCmsEditor() {
                   className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-arabic"
                 />
               </div>
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
-                  Target HR Email Address
-                </label>
-                <input
-                  type="email"
-                  value={pageData.spontaneous?.email || 'hr@persiciagency.com'}
-                  onChange={(e) =>
-                    setPageData({
-                      ...pageData,
-                      spontaneous: {
-                        ...pageData.spontaneous,
-                        email: e.target.value,
-                      },
-                    })
-                  }
-                  className="w-full px-3.5 py-2.5 text-xs border border-slate-200 rounded-xl bg-white font-mono"
-                />
+              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 flex flex-col justify-between gap-2">
+                <div>
+                  <label className="block text-[11px] font-bold text-slate-700 uppercase mb-1">
+                    Synced HR Email Address
+                  </label>
+                  <p className="text-xs font-mono font-semibold text-slate-900">
+                    {pageData.spontaneous?.email || 'hr@persiciagency.com'}
+                  </p>
+                </div>
+                <Link
+                  href={`/${lang}/dashboard/communication${passkeySuffix}#emails`}
+                  className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-persici-crimson hover:underline"
+                >
+                  <TbAddressBook className="w-3.5 h-3.5" />
+                  <span>Edit in Communication &amp; Social</span>
+                  <TbExternalLink className="w-3 h-3" />
+                </Link>
               </div>
             </div>
           </SectionAccordion>

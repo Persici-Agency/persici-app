@@ -170,6 +170,7 @@ export function SupplyChainView({ lang, dict, data: propData }: SupplyChainViewP
           quoteRole={data.clientReview.role}
           quoteAvatar={data.clientReview.avatar}
           badge={data.clientReview.badge}
+          reviewId={data.clientReview.reviewId || 'random'}
           lang={lang}
         />
       )}

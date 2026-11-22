@@ -170,6 +170,7 @@ export function ApplicationManagementView({ lang, dict, data: propData }: Applic
           quoteRole={data.clientReview.role}
           quoteAvatar={data.clientReview.avatar}
           badge={data.clientReview.badge}
+          reviewId={data.clientReview.reviewId || 'random'}
           lang={lang}
         />
       )}

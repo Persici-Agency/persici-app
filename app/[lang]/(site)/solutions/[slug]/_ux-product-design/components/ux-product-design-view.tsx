@@ -170,6 +170,7 @@ export function UxProductDesignView({ lang, dict, data: propData }: UxProductDes
           quoteRole={data.clientReview.role}
           quoteAvatar={data.clientReview.avatar}
           badge={data.clientReview.badge}
+          reviewId={data.clientReview.reviewId || 'random'}
           lang={lang}
         />
       )}

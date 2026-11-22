@@ -27,6 +27,13 @@ export const FILTER_CATEGORIES: FilterCategoryOption[] = [
     },
   },
   {
+    slug: 'ai-platforms',
+    label: {
+      en: 'AI Platforms',
+      ar: 'منصات الذكاء الاصطناعي',
+    },
+  },
+  {
     slug: 'branding',
     label: {
       en: 'Branding & Identity',
@@ -38,6 +45,13 @@ export const FILTER_CATEGORIES: FilterCategoryOption[] = [
     label: {
       en: 'Growth & Campaigns',
       ar: 'الحملات ونمو الأعمال',
+    },
+  },
+  {
+    slug: 'marketing-branding',
+    label: {
+      en: 'Marketing & Branding',
+      ar: 'التسويق والهوية البصرية',
     },
   },
   {

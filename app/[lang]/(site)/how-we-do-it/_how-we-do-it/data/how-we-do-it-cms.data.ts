@@ -101,6 +101,7 @@ export interface HowWeDoItFeatureCmsData {
   insights: ContentCardItem[];
   clientReview: {
     enabled?: boolean;
+    reviewId?: string;
     quote: LocalizedString;
     author: string;
     role: LocalizedString;
@@ -141,6 +142,7 @@ export interface HowWeDoItHubCmsData extends HowWeDoItPageContent {
   insightsCtaText?: LocalizedString;
   insightsList: ContentCardItem[];
   quoteEnabled?: boolean;
+  quoteReviewId?: string;
   quoteBadge?: LocalizedString;
   quoteAvatar?: string;
   faqsEnabled?: boolean;
@@ -1289,6 +1291,7 @@ export function normalizeHowWeDoItHubPageData(
         : def.insightsList,
 
     quoteEnabled: src.quoteEnabled !== false,
+    quoteReviewId: typeof src.quoteReviewId === 'string' && src.quoteReviewId ? src.quoteReviewId : 'random',
     quoteText: pickBi(src.quoteText, def.quoteText),
     quoteAuthor: pickStr(src.quoteAuthor, def.quoteAuthor),
     quoteRole: pickBi(src.quoteRole, def.quoteRole),
@@ -1482,6 +1485,7 @@ export function normalizeHowWeDoItFeaturePageData(
       Array.isArray(src.insights) && src.insights.length > 0 ? src.insights : def.insights,
     clientReview: {
       enabled: src.clientReview?.enabled !== false,
+      reviewId: typeof src.clientReview?.reviewId === 'string' && src.clientReview.reviewId ? src.clientReview.reviewId : 'random',
       quote: pickBi(src.clientReview?.quote, def.clientReview.quote),
       author: pickStr(src.clientReview?.author, def.clientReview.author),
       role: pickBi(src.clientReview?.role, def.clientReview.role),

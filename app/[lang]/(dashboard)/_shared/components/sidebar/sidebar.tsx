@@ -26,8 +26,10 @@ import {
   TbLayoutSidebarRightCollapse,
   TbLayoutSidebarRightExpand,
   TbForms,
+  TbAddressBook,
   TbBriefcase,
   TbStar,
+  TbIdBadge2,
   TbTool,
   TbSparkles,
 } from 'react-icons/tb';
@@ -180,6 +182,7 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
     navigation: isRtl ? 'القوائم والتذييل' : 'Nav & Footer',
     headerBuilder: isRtl ? 'مُنشئ القائمة العلوية' : 'Header Menu Builder',
     footerBuilder: isRtl ? 'مُنشئ تذييل الموقع' : 'Footer Columns Builder',
+    communicationSocial: isRtl ? 'التواصل والسوشيال ميديا' : 'Communication & Social',
     sharedContact: isRtl ? 'القسم العام للتواصل' : 'Shared Contact Form',
     media: isRtl ? 'مكتبة التخزين (R2)' : 'Storage Library (R2)',
     careersAts: isRtl ? 'نظام التوظيف ATS' : 'Careers ATS (HR)',
@@ -196,6 +199,7 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
     insights: isRtl ? 'المدونة والمقالات' : 'Blogs & Insights',
     projects: isRtl ? 'قصص نجاح العملاء' : 'Client Stories',
     reviews: isRtl ? 'التقييمات والشهادات' : 'Reviews & Testimonials',
+    teamMembers: isRtl ? 'فريق العمل والموظفون' : 'Team Members',
     aiStudio: isRtl ? 'الذكاء الاصطناعي والنماذج' : 'AI Studio & Models',
     maintenance: isRtl ? 'وضع الصيانة والتوجيه' : 'Maintenance Mode',
     users: isRtl ? 'فريق العمل وصلاحيات RBAC' : 'Team & RBAC Users',
@@ -671,22 +675,34 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
                 >
                   {t.footerBuilder}
                 </Link>
-                <Link
-                  href={getHref(`/${lang}/dashboard/shared-contact`)}
-                  className={`block px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                    isActive('/dashboard/shared-contact')
-                      ? 'bg-white/15 text-white font-semibold'
-                      : 'text-white/60 hover:text-white'
-                  }`}
-                >
-                  {t.sharedContact}
-                </Link>
               </div>
             )}
           </div>
         )}
 
-        {/* 4. Standalone Global Shared Contact Section Tab */}
+        {/* 4. Standalone Communication & Social Media Tab */}
+        {(canSeePages || canSeeNav) && (
+          <div className="pt-2">
+            <div className="relative group">
+              <Link
+                href={getHref(`/${lang}/dashboard/communication`)}
+                className={`flex items-center ${
+                  isCollapsed ? 'justify-center p-3' : 'gap-3 px-3.5 py-2.5'
+                } rounded-xl text-sm font-medium transition-all ${
+                  isActive('/dashboard/communication')
+                    ? 'bg-persici-crimson text-white shadow-lg shadow-persici-crimson/25'
+                    : 'text-white/70 hover:bg-white/5 hover:text-white'
+                }`}
+              >
+                <TbAddressBook className="w-5 h-5 shrink-0" />
+                {!isCollapsed && <span>{t.communicationSocial}</span>}
+              </Link>
+              {isCollapsed && <div className={tooltipClass}>{t.communicationSocial}</div>}
+            </div>
+          </div>
+        )}
+
+        {/* 4b. Standalone Global Shared Contact Section Tab */}
         {canSeePages && (
           <div className="pt-2">
             <div className="relative group">
@@ -956,6 +972,28 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
                 {!isCollapsed && <span>{t.reviews}</span>}
               </Link>
               {isCollapsed && <div className={tooltipClass}>{t.reviews}</div>}
+            </div>
+          </div>
+        )}
+
+        {/* 9b. Team Members Directory & Carousel (Standalone Single Tab) */}
+        {(canSeeContent || canSeeCareersAts) && (
+          <div className="pt-1">
+            <div className="relative group">
+              <Link
+                href={getHref(`/${lang}/dashboard/team`)}
+                className={`flex items-center ${
+                  isCollapsed ? 'justify-center p-3' : 'gap-3 px-3.5 py-2.5'
+                } rounded-xl text-sm font-medium transition-all ${
+                  isActive('/dashboard/team')
+                    ? 'bg-persici-crimson text-white shadow-lg shadow-persici-crimson/25'
+                    : 'text-white/70 hover:bg-white/5 hover:text-white'
+                }`}
+              >
+                <TbIdBadge2 className="w-5 h-5 shrink-0" />
+                {!isCollapsed && <span>{t.teamMembers}</span>}
+              </Link>
+              {isCollapsed && <div className={tooltipClass}>{t.teamMembers}</div>}
             </div>
           </div>
         )}

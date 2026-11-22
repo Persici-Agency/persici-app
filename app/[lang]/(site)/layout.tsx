@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { Header, Footer, FloatingAppointmentWidget, SiteTrackingInjector } from '@shared/components';
 import { getHeaderNavigationFromDb, getFooterNavigationFromDb } from '@/lib/navigation-server';
 import { getPublicTrackingConfig } from '@/lib/tracking-server';
+import { getCommunicationConfigFromDb } from '@/lib/communication-server';
 
 export default async function SiteLayout({
   children,
@@ -14,11 +15,12 @@ export default async function SiteLayout({
   const { lang } = await params;
   if (!hasLocale(lang)) notFound();
 
-  const [dict, headerNav, footerNav, trackingConfig] = await Promise.all([
+  const [dict, headerNav, footerNav, trackingConfig, commConfig] = await Promise.all([
     getDictionary(lang),
     getHeaderNavigationFromDb(),
     getFooterNavigationFromDb(),
     getPublicTrackingConfig(),
+    getCommunicationConfigFromDb(),
   ]);
 
   return (
@@ -26,7 +28,12 @@ export default async function SiteLayout({
       <SiteTrackingInjector config={trackingConfig} position="body_top" lang={lang} />
       <Header lang={lang} dict={dict} navData={headerNav} />
       <main className="flex-1">{children}</main>
-      <Footer lang={lang} dict={dict} footerData={footerNav} />
+      <Footer
+        lang={lang}
+        dict={dict}
+        footerData={footerNav}
+        communicationConfig={commConfig}
+      />
       <FloatingAppointmentWidget lang={lang} dict={dict} />
       <SiteTrackingInjector config={trackingConfig} position="body_bottom" lang={lang} />
     </>

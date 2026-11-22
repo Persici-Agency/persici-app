@@ -113,6 +113,7 @@ export function SolutionsView({ content, lang, dict }: SolutionsViewProps) {
           content={content}
           badge={content.quoteBadge}
           quoteAvatar={content.quoteAvatar}
+          reviewId={content.quoteReviewId || 'random'}
           lang={lang}
         />
       )}

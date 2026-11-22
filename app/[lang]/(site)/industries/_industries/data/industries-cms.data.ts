@@ -112,6 +112,7 @@ export interface IndustryFeatureCmsData {
   insights: ContentCardItem[];
   clientReview: {
     enabled?: boolean;
+    reviewId?: string;
     quote: LocalizedString;
     author: string;
     role: LocalizedString;
@@ -150,6 +151,7 @@ export interface IndustriesHubCmsData extends IndustriesPageContent {
   insightsCtaText?: LocalizedString;
   insightsList: ContentCardItem[];
   quoteEnabled?: boolean;
+  quoteReviewId?: string;
   quoteBadge?: LocalizedString;
   quoteAvatar?: string;
   faqsEnabled?: boolean;
@@ -1025,6 +1027,7 @@ export function normalizeIndustriesHubPageData(raw?: Record<string, any> | null)
         ? src.insightsList
         : def.insightsList,
     quoteEnabled: src.quoteEnabled !== false,
+    quoteReviewId: typeof src.quoteReviewId === 'string' && src.quoteReviewId ? src.quoteReviewId : 'random',
     quoteBadge: pickBi(
       src.quoteBadge,
       def.quoteBadge || { en: 'Verified Enterprise Partner', ar: 'شريك مؤسسي معتمد' }
@@ -1379,6 +1382,7 @@ export function normalizeIndustryFeaturePageData(
       Array.isArray(src.insights) && src.insights.length > 0 ? src.insights : def.insights,
     clientReview: {
       enabled: src.clientReview?.enabled !== false,
+      reviewId: typeof src.clientReview?.reviewId === 'string' && src.clientReview.reviewId ? src.clientReview.reviewId : 'random',
       quote: pickBi(src.clientReview?.quote, def.clientReview.quote),
       author: pickStr(src.clientReview?.author, def.clientReview.author),
       role: pickBi(src.clientReview?.role, def.clientReview.role),

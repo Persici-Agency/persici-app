@@ -1,4 +1,5 @@
 import type { Dictionary } from "@dictionaries";
+import type { CommunicationSocialConfig } from "@/lib/communication-types";
 
 // ============================================================================
 // MongoDB Base Document & API Contracts
@@ -23,6 +24,7 @@ export type FooterProps = {
   lang: string;
   dict: Dictionary;
   footerData?: any;
+  communicationConfig?: CommunicationSocialConfig;
 };
 
 export type NavSubItem = {
@@ -595,6 +597,13 @@ export interface DiscoverySectionContent {
   revenueOptions: DiscoveryRevenueOption[];
 }
 
+export interface HomeTeamSectionContent {
+  enabled?: boolean;
+  badge?: LocalizedString;
+  title?: LocalizedString;
+  subtitle?: LocalizedString;
+}
+
 export interface HomePageContent extends BaseMongoDocument {
   page: 'home';
   hero: HeroSectionContent;
@@ -603,6 +612,7 @@ export interface HomePageContent extends BaseMongoDocument {
   growthServices: GrowthServicesSectionContent;
   clientVideos: ClientVideosSectionContent;
   approach: ApproachSectionContent;
+  teamSection?: HomeTeamSectionContent;
   reviews: ReviewsSectionContent;
   homeContact: HomeContactSectionContent;
   discovery: DiscoverySectionContent;
@@ -840,6 +850,7 @@ export interface SolutionsPageContent extends BaseMongoDocument {
   spotlightCtaText: LocalizedString;
   spotlightCtaHref: string;
   spotlightStories?: FeaturedClientStoryItem[];
+  quoteReviewId?: string;
   quoteText: LocalizedString;
   quoteAuthor: string;
   quoteRole: LocalizedString;
@@ -938,6 +949,7 @@ export interface IndustriesPageContent extends BaseMongoDocument {
   deliveryImage: string;
   deliveryPillars: SolutionExecutionPillar[];
   spotlightStories?: FeaturedClientStoryItem[];
+  quoteReviewId?: string;
   quoteText: LocalizedString;
   quoteAuthor: string;
   quoteRole: LocalizedString;
@@ -979,6 +991,7 @@ export interface HowWeDoItPageContent extends BaseMongoDocument {
   deliverySubtitle: LocalizedString;
   deliveryImage: string;
   deliveryPillars: SolutionExecutionPillar[];
+  quoteReviewId?: string;
   quoteText: LocalizedString;
   quoteAuthor: string;
   quoteRole: LocalizedString;

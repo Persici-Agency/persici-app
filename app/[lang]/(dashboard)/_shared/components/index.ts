@@ -6,5 +6,6 @@ export * from './editor/section-accordion';
 export * from './editor/cta-editor';
 export * from './editor/social-proof-editor';
 export * from './editor/client-logos-editor';
+export * from './editor/synced-client-review-editor';
 export * from './media/media-picker-modal';
 export * from './careers/candidate-email-modal';

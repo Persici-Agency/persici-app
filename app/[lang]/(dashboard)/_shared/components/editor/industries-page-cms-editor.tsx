@@ -25,6 +25,7 @@ import {
 } from 'react-icons/tb';
 import { SectionAccordion } from './section-accordion';
 import { RichTextEditor } from './rich-text-editor';
+import { SyncedClientReviewEditor } from './synced-client-review-editor';
 import {
   IndustriesHubCmsData,
   IndustryFeatureCmsData,
@@ -2770,120 +2771,18 @@ export function IndustriesPageCmsEditor({
         <SectionAccordion
           number={8}
           title="ClientReviewSection • Executive Client Testimonial"
-          description="Monospace typographic client quote with crimson border accent and author attribution"
+          description="Synced automatically with real bilingual testimonials from the Reviews tab"
           onSave={onSave}
         >
-          <div className="space-y-4">
-            <div className="flex items-center justify-between p-3.5 rounded-xl bg-slate-50 border border-slate-200">
-              <span className="text-xs font-bold text-slate-800">
-                Display Client Review Quote Section
-              </span>
-              <input
-                type="checkbox"
-                checked={hubData.quoteEnabled !== false}
-                onChange={(e) => updateHub({ quoteEnabled: e.target.checked })}
-                className="w-4 h-4 accent-persici-crimson rounded cursor-pointer"
-              />
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
-                  Eyebrow Badge (EN)
-                </label>
-                <input
-                  type="text"
-                  value={hubData.quoteBadge?.en || ''}
-                  onChange={(e) =>
-                    updateHub({
-                      quoteBadge: {
-                        ...(hubData.quoteBadge || { en: '', ar: '' }),
-                        en: e.target.value,
-                      },
-                    })
-                  }
-                  className="w-full px-3.5 py-2 text-xs border border-slate-200 rounded-xl bg-white"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
-                  شارة الاقتباس (AR)
-                </label>
-                <input
-                  type="text"
-                  dir="rtl"
-                  value={hubData.quoteBadge?.ar || ''}
-                  onChange={(e) =>
-                    updateHub({
-                      quoteBadge: {
-                        ...(hubData.quoteBadge || { en: '', ar: '' }),
-                        ar: e.target.value,
-                      },
-                    })
-                  }
-                  className="w-full px-3.5 py-2 text-xs border border-slate-200 rounded-xl bg-white font-arabic"
-                />
-              </div>
-            </div>
-
-            <RichTextEditor
-              label="Client Testimonial Quotation"
-              rows={3}
-              valueEn={hubData.quoteText.en}
-              valueAr={hubData.quoteText.ar}
-              onChangeEn={(val) =>
-                updateHub({ quoteText: { ...hubData.quoteText, en: val } })
-              }
-              onChangeAr={(val) =>
-                updateHub({ quoteText: { ...hubData.quoteText, ar: val } })
-              }
-            />
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
-                  Author Name
-                </label>
-                <input
-                  type="text"
-                  value={hubData.quoteAuthor}
-                  onChange={(e) => updateHub({ quoteAuthor: e.target.value })}
-                  className="w-full px-3.5 py-2 text-xs font-semibold border border-slate-200 rounded-xl bg-white"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
-                  Author Role (EN)
-                </label>
-                <input
-                  type="text"
-                  value={hubData.quoteRole.en}
-                  onChange={(e) =>
-                    updateHub({
-                      quoteRole: { ...hubData.quoteRole, en: e.target.value },
-                    })
-                  }
-                  className="w-full px-3.5 py-2 text-xs border border-slate-200 rounded-xl bg-white"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
-                  المنصب الوظيفي (AR)
-                </label>
-                <input
-                  type="text"
-                  dir="rtl"
-                  value={hubData.quoteRole.ar}
-                  onChange={(e) =>
-                    updateHub({
-                      quoteRole: { ...hubData.quoteRole, ar: e.target.value },
-                    })
-                  }
-                  className="w-full px-3.5 py-2 text-xs border border-slate-200 rounded-xl bg-white font-arabic"
-                />
-              </div>
-            </div>
-          </div>
+          <SyncedClientReviewEditor
+            lang={lang}
+            enabled={hubData.quoteEnabled !== false}
+            onToggleEnabled={(enabled) => updateHub({ quoteEnabled: enabled })}
+            badge={hubData.quoteBadge || { en: 'Verified Enterprise Partner', ar: 'شريك مؤسسي معتمد' }}
+            onChangeBadge={(quoteBadge) => updateHub({ quoteBadge })}
+            reviewId={hubData.quoteReviewId || 'random'}
+            onChangeReviewId={(quoteReviewId) => updateHub({ quoteReviewId })}
+          />
         </SectionAccordion>
 
         {/* SECTION 9: FAQS */}
@@ -5995,162 +5894,39 @@ export function IndustriesPageCmsEditor({
       <SectionAccordion
         number={12}
         title="ClientReviewSection • Executive Client Testimonial"
-        description="Monospace typographic client quote with crimson border accent and author attribution"
+        description="Synced automatically with real bilingual testimonials from the Reviews tab"
         onSave={onSave}
       >
-        <div className="space-y-4">
-          <div className="flex items-center justify-between p-3.5 rounded-xl bg-slate-50 border border-slate-200">
-            <span className="text-xs font-bold text-slate-800">
-              Display Client Review Section
-            </span>
-            <input
-              type="checkbox"
-              checked={featData.clientReview.enabled !== false}
-              onChange={(e) =>
-                updateFeat({
-                  clientReview: {
-                    ...featData.clientReview,
-                    enabled: e.target.checked,
-                  },
-                })
-              }
-              className="w-4 h-4 accent-persici-crimson rounded cursor-pointer"
-            />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
-                Badge (EN)
-              </label>
-              <input
-                type="text"
-                value={featData.clientReview.badge.en}
-                onChange={(e) =>
-                  updateFeat({
-                    clientReview: {
-                      ...featData.clientReview,
-                      badge: {
-                        ...featData.clientReview.badge,
-                        en: e.target.value,
-                      },
-                    },
-                  })
-                }
-                className="w-full px-3.5 py-2 text-xs border border-slate-200 rounded-xl bg-white"
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
-                شارة الاقتباس (AR)
-              </label>
-              <input
-                type="text"
-                dir="rtl"
-                value={featData.clientReview.badge.ar}
-                onChange={(e) =>
-                  updateFeat({
-                    clientReview: {
-                      ...featData.clientReview,
-                      badge: {
-                        ...featData.clientReview.badge,
-                        ar: e.target.value,
-                      },
-                    },
-                  })
-                }
-                className="w-full px-3.5 py-2 text-xs border border-slate-200 rounded-xl bg-white font-arabic"
-              />
-            </div>
-          </div>
-
-          <RichTextEditor
-            label="Client Quotation"
-            rows={3}
-            valueEn={featData.clientReview.quote.en}
-            valueAr={featData.clientReview.quote.ar}
-            onChangeEn={(val) =>
-              updateFeat({
-                clientReview: {
-                  ...featData.clientReview,
-                  quote: { ...featData.clientReview.quote, en: val },
-                },
-              })
-            }
-            onChangeAr={(val) =>
-              updateFeat({
-                clientReview: {
-                  ...featData.clientReview,
-                  quote: { ...featData.clientReview.quote, ar: val },
-                },
-              })
-            }
-          />
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
-                Author Name
-              </label>
-              <input
-                type="text"
-                value={featData.clientReview.author}
-                onChange={(e) =>
-                  updateFeat({
-                    clientReview: {
-                      ...featData.clientReview,
-                      author: e.target.value,
-                    },
-                  })
-                }
-                className="w-full px-3.5 py-2 text-xs font-semibold border border-slate-200 rounded-xl bg-white"
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
-                Author Role (EN)
-              </label>
-              <input
-                type="text"
-                value={featData.clientReview.role.en}
-                onChange={(e) =>
-                  updateFeat({
-                    clientReview: {
-                      ...featData.clientReview,
-                      role: {
-                        ...featData.clientReview.role,
-                        en: e.target.value,
-                      },
-                    },
-                  })
-                }
-                className="w-full px-3.5 py-2 text-xs border border-slate-200 rounded-xl bg-white"
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
-                المنصب الوظيفي (AR)
-              </label>
-              <input
-                type="text"
-                dir="rtl"
-                value={featData.clientReview.role.ar}
-                onChange={(e) =>
-                  updateFeat({
-                    clientReview: {
-                      ...featData.clientReview,
-                      role: {
-                        ...featData.clientReview.role,
-                        ar: e.target.value,
-                      },
-                    },
-                  })
-                }
-                className="w-full px-3.5 py-2 text-xs border border-slate-200 rounded-xl bg-white font-arabic"
-              />
-            </div>
-          </div>
-        </div>
+        <SyncedClientReviewEditor
+          lang={lang}
+          enabled={featData.clientReview.enabled !== false}
+          onToggleEnabled={(enabled) =>
+            updateFeat({
+              clientReview: {
+                ...featData.clientReview,
+                enabled,
+              },
+            })
+          }
+          badge={featData.clientReview.badge}
+          onChangeBadge={(badge) =>
+            updateFeat({
+              clientReview: {
+                ...featData.clientReview,
+                badge,
+              },
+            })
+          }
+          reviewId={featData.clientReview.reviewId || 'random'}
+          onChangeReviewId={(reviewId) =>
+            updateFeat({
+              clientReview: {
+                ...featData.clientReview,
+                reviewId,
+              },
+            })
+          }
+        />
       </SectionAccordion>
 
       {/* SECTION 13: FAQS */}
