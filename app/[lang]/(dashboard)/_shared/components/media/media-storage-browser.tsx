@@ -14,6 +14,10 @@ import {
   TbSearch,
   TbFilter,
   TbFolder,
+  TbFolderPlus,
+  TbFolderShare,
+  TbFolderOpen,
+  TbCopyPlus,
   TbLayoutGrid,
   TbList,
   TbRefresh,
@@ -29,17 +33,27 @@ import {
   TbChevronsRight,
   TbInfinity,
   TbSparkles,
+  TbHome,
+  TbTrash,
 } from 'react-icons/tb';
 import {
   MediaItem,
+  FolderOption,
   SortOption,
-  FOLDERS,
+  DEFAULT_FOLDERS,
   TYPE_FILTERS,
   MediaStorageBrowserProps,
+  MAX_FOLDER_DEPTH,
+  getFolderDepth,
+  getParentFolderPath,
+  getFolderBreadcrumbTrail,
+  formatFolderDisplayPath,
   type ImageUploadQualityMode,
 } from './types';
 import { MediaDetailsInspector } from './media-details-inspector';
 import { MediaPreviewModal } from './media-preview-modal';
+import { CreateFolderModal } from './create-folder-modal';
+import { MoveCopyMediaModal } from './move-copy-media-modal';
 
 export function MediaStorageBrowser({
   mode = 'standalone',
@@ -48,6 +62,7 @@ export function MediaStorageBrowser({
   defaultQualityMode = 'high-webp',
   onSelect,
   onClose,
+  onMediaMutated,
   className = '',
 }: MediaStorageBrowserProps) {
   const routeParams = useParams();
@@ -56,8 +71,10 @@ export function MediaStorageBrowser({
 
   // Data & State
   const [items, setItems] = useState<MediaItem[]>([]);
+  const [folders, setFolders] = useState<FolderOption[]>(DEFAULT_FOLDERS);
   const [loading, setLoading] = useState(true);
   const [activeFolder, setActiveFolder] = useState(defaultFolder);
+  const [includeSubfolders, setIncludeSubfolders] = useState(true);
   const [activeType, setActiveType] = useState<string>(allowedType);
   const [prevAllowedType, setPrevAllowedType] = useState(allowedType);
   if (allowedType !== prevAllowedType) {
@@ -78,10 +95,21 @@ export function MediaStorageBrowser({
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [gridCols, setGridCols] = useState<number>(mode === 'picker' ? 4 : 4);
 
-  // Selection & Inspector
+  // Selection, Bulk Multi-Select, Modals & Inspector
   const [selectedItem, setSelectedItem] = useState<MediaItem | null>(null);
+  const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
   const [previewItem, setPreviewItem] = useState<MediaItem | null>(null);
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
+  const [createFolderModalState, setCreateFolderModalState] = useState<{
+    isOpen: boolean;
+    parentFolder: string;
+  } | null>(null);
+  const [moveCopyModalState, setMoveCopyModalState] = useState<{
+    items: MediaItem[];
+    mode: 'move' | 'copy';
+  } | null>(null);
+  const [actionNotice, setActionNotice] = useState<string | null>(null);
+  const [deletingFolderId, setDeletingFolderId] = useState<string | null>(null);
 
   // Uploading
   const [uploading, setUploading] = useState(false);
@@ -89,12 +117,22 @@ export function MediaStorageBrowser({
   const [isDragOver, setIsDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const showNotice = useCallback((msg: string) => {
+    setActionNotice(msg);
+    setTimeout(() => {
+      setActionNotice((prev) => (prev === msg ? null : prev));
+    }, 6000);
+  }, []);
+
   // Fetch Media Items callback
   const fetchMedia = useCallback(async () => {
     setLoading(true);
     try {
       const params = new URLSearchParams();
-      if (activeFolder) params.set('folder', activeFolder);
+      if (activeFolder) {
+        params.set('folder', activeFolder);
+        params.set('includeSubfolders', includeSubfolders ? 'true' : 'false');
+      }
       if (activeType && activeType !== 'all') params.set('type', activeType);
       if (sort) params.set('sort', sort);
       if (search.trim()) params.set('search', search.trim());
@@ -104,19 +142,25 @@ export function MediaStorageBrowser({
       if (data.items) {
         setItems(data.items);
       }
+      if (Array.isArray(data.folders) && data.folders.length > 0) {
+        setFolders(data.folders);
+      }
     } catch (err) {
       console.error('Failed to load media items:', err);
     } finally {
       setLoading(false);
     }
-  }, [activeFolder, activeType, sort, search]);
+  }, [activeFolder, includeSubfolders, activeType, sort, search]);
 
   useEffect(() => {
     let ignore = false;
     const runFetch = async () => {
       try {
         const params = new URLSearchParams();
-        if (activeFolder) params.set('folder', activeFolder);
+        if (activeFolder) {
+          params.set('folder', activeFolder);
+          params.set('includeSubfolders', includeSubfolders ? 'true' : 'false');
+        }
         if (activeType && activeType !== 'all') params.set('type', activeType);
         if (sort) params.set('sort', sort);
         if (search.trim()) params.set('search', search.trim());
@@ -125,6 +169,9 @@ export function MediaStorageBrowser({
         const data = await res.json();
         if (!ignore && data.items) {
           setItems(data.items);
+        }
+        if (!ignore && Array.isArray(data.folders) && data.folders.length > 0) {
+          setFolders(data.folders);
         }
       } catch (err) {
         if (!ignore) console.error('Failed to load media items:', err);
@@ -137,7 +184,7 @@ export function MediaStorageBrowser({
     return () => {
       ignore = true;
     };
-  }, [activeFolder, activeType, sort, search]);
+  }, [activeFolder, includeSubfolders, activeType, sort, search]);
 
   // Client-side automatic video thumbnail extraction
   const extractThumbnailFromVideoFile = (file: File): Promise<Blob | null> => {
@@ -239,7 +286,8 @@ export function MediaStorageBrowser({
     setUploadProgress(isRtl ? 'تم رفع جميع الملفات بنجاح!' : 'All files uploaded successfully!');
     setTimeout(() => setUploadProgress(null), 3000);
     setUploading(false);
-    fetchMedia();
+    await fetchMedia();
+    onMediaMutated?.();
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
@@ -248,6 +296,62 @@ export function MediaStorageBrowser({
     navigator.clipboard.writeText(url);
     setCopiedKey(key);
     setTimeout(() => setCopiedKey(null), 2000);
+  };
+
+  const toggleKeySelection = (key: string, e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    setSelectedKeys((prev) =>
+      prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]
+    );
+  };
+
+  const handleDeleteCustomFolder = async (folderItem: FolderOption, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!folderItem.isCustom || deletingFolderId) return;
+
+    const hasItems = (folderItem.count || 0) > 0;
+    const confirmMsg = hasItems
+      ? isRtl
+        ? `المجلد "${folderItem.labelAr}" يحتوي على ${folderItem.count} ملف. هل تريد حذف المجلد ونقل ملفاته إلى المجلد الأب؟`
+        : `Folder "${folderItem.labelEn}" contains ${folderItem.count} file(s). Delete folder and move files up to its parent folder?`
+      : isRtl
+      ? `هل تريد حذف المجلد الفارغ "${folderItem.labelAr}"؟`
+      : `Delete empty custom folder "${folderItem.labelEn}"?`;
+
+    if (!confirm(confirmMsg)) return;
+
+    setDeletingFolderId(folderItem.id);
+    try {
+      const res = await fetch(
+        `/api/media/folders?id=${encodeURIComponent(folderItem.id)}${
+          hasItems ? '&moveItemsToParent=true' : ''
+        }`,
+        { method: 'DELETE' }
+      );
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        alert(data.error || 'Failed to delete folder.');
+        return;
+      }
+      if (activeFolder === folderItem.id || activeFolder.startsWith(`${folderItem.id}/`)) {
+        setActiveFolder(getParentFolderPath(folderItem.id));
+      }
+      if (Array.isArray(data.folders)) {
+        setFolders(data.folders);
+      }
+      showNotice(
+        isRtl
+          ? `تم حذف المجلد "${folderItem.labelAr}" بنجاح.`
+          : `Deleted custom folder "${folderItem.labelEn}".`
+      );
+      await fetchMedia();
+      onMediaMutated?.();
+    } catch (err) {
+      console.error('Failed to delete custom folder:', err);
+      alert('Failed to delete folder.');
+    } finally {
+      setDeletingFolderId(null);
+    }
   };
 
   // Filtered Items (client-side instant search)
@@ -259,7 +363,8 @@ export function MediaStorageBrowser({
         i.key.toLowerCase().includes(lower) ||
         i.filename.toLowerCase().includes(lower) ||
         (i.alt || '').toLowerCase().includes(lower) ||
-        (i.title || '').toLowerCase().includes(lower)
+        (i.title || '').toLowerCase().includes(lower) ||
+        (i.folder || '').toLowerCase().includes(lower)
     );
   }, [items, search]);
 
@@ -268,12 +373,15 @@ export function MediaStorageBrowser({
   const [pageSize, setPageSize] = useState<number>(24);
   const [paginationMode, setPaginationMode] = useState<'paged' | 'infinite'>('paged');
 
-  // Reset to page 1 during render whenever search, folder, type, or sort changes
+  // Reset to page 1 & clear multi-select during render whenever filters change
   const [prevFilterKey, setPrevFilterKey] = useState<string>('');
-  const currentFilterKey = `${search}|${activeFolder}|${activeType}|${sort}`;
+  const currentFilterKey = `${search}|${activeFolder}|${includeSubfolders}|${activeType}|${sort}`;
   if (prevFilterKey !== currentFilterKey) {
     setPrevFilterKey(currentFilterKey);
     setCurrentPage(1);
+    if (selectedKeys.length > 0) {
+      setSelectedKeys([]);
+    }
   }
 
   const totalItems = filteredItems.length;
@@ -425,6 +533,44 @@ export function MediaStorageBrowser({
     );
   };
 
+  // Hierarchical folder tree helpers
+  const rootFolders = useMemo(
+    () => folders.filter((f) => f.id === '' || !f.parentId),
+    [folders]
+  );
+
+  const childSubfolders = useMemo(
+    () => (activeFolder ? folders.filter((f) => f.parentId === activeFolder) : []),
+    [folders, activeFolder]
+  );
+
+  const activeTopLevelRoot = activeFolder
+    ? activeFolder.includes('/')
+      ? activeFolder.split('/')[0]
+      : activeFolder
+    : '';
+
+  const breadcrumbTrail = useMemo(
+    () => getFolderBreadcrumbTrail(activeFolder, folders),
+    [activeFolder, folders]
+  );
+
+  const hasSubfoldersMap = useMemo(() => {
+    const map = new Set<string>();
+    for (const f of folders) {
+      if (f.parentId) map.add(f.parentId);
+    }
+    return map;
+  }, [folders]);
+
+  const selectedKeySet = useMemo(() => new Set(selectedKeys), [selectedKeys]);
+  const selectedMediaItems = useMemo(
+    () => items.filter((i) => selectedKeySet.has(i.key)),
+    [items, selectedKeySet]
+  );
+  const allDisplayedSelected =
+    displayedItems.length > 0 && displayedItems.every((i) => selectedKeySet.has(i.key));
+
   return (
     <div
       className={`flex flex-col h-full ${className}`}
@@ -459,6 +605,23 @@ export function MediaStorageBrowser({
           {uploading && (
             <div className="w-4 h-4 border-2 border-emerald-600 border-t-transparent rounded-full animate-spin shrink-0" />
           )}
+        </div>
+      )}
+
+      {/* Action / Auto-Sync Feedback Banner */}
+      {actionNotice && (
+        <div className="mb-4 p-3 bg-emerald-50 border border-emerald-200 rounded-2xl text-xs text-emerald-900 font-semibold flex items-center justify-between gap-2 animate-in fade-in">
+          <div className="flex items-center gap-2">
+            <TbCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+            <span>{actionNotice}</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => setActionNotice(null)}
+            className="p-1 text-emerald-600 hover:text-emerald-900 rounded-lg"
+          >
+            <TbX className="w-3.5 h-3.5" />
+          </button>
         </div>
       )}
 
@@ -581,32 +744,115 @@ export function MediaStorageBrowser({
           </div>
         </div>
 
-        {/* Row 2: Folder Tabs + Sorting + View Mode */}
+        {/* Row 2: Top-Level Folder Tabs + Sorting + View Mode */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-3 pt-2 border-t border-slate-100 text-xs">
-          {/* Folders Bar */}
+          {/* Root Folders Bar */}
           <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-thin w-full md:w-auto pb-2 md:pb-0">
             <span className="text-[10px] font-bold uppercase text-slate-400 tracking-wider me-1 shrink-0">
               {isRtl ? 'المجلد:' : 'Folder:'}
             </span>
-            {FOLDERS.map((f) => (
-              <button
-                key={f.id}
-                type="button"
-                onClick={() => setActiveFolder(f.id)}
-                className={`flex items-center gap-1 px-2.5 py-1 rounded-lg whitespace-nowrap transition-colors ${
-                  activeFolder === f.id
-                    ? 'bg-slate-900 text-white shadow-xs font-semibold'
-                    : 'text-slate-600 hover:bg-slate-100 font-medium'
-                }`}
-              >
-                <TbFolder className="w-3.5 h-3.5 opacity-70" />
-                <span>{isRtl ? f.labelAr : f.labelEn}</span>
-              </button>
-            ))}
+            {rootFolders.map((f) => {
+              const isTabActive = activeTopLevelRoot === f.id;
+              const hasKids = f.id !== '' && hasSubfoldersMap.has(f.id);
+              return (
+                <div
+                  key={f.id || 'all-root'}
+                  className={`group/ftab inline-flex items-center rounded-lg whitespace-nowrap transition-colors ${
+                    isTabActive
+                      ? 'bg-slate-900 text-white shadow-xs font-semibold'
+                      : 'text-slate-600 hover:bg-slate-100 font-medium'
+                  }`}
+                >
+                  <button
+                    type="button"
+                    onClick={() => setActiveFolder(f.id)}
+                    className="flex items-center gap-1.5 px-2.5 py-1 cursor-pointer"
+                  >
+                    {isTabActive && f.id !== '' ? (
+                      <TbFolderOpen className="w-3.5 h-3.5 text-persici-crimson" />
+                    ) : (
+                      <TbFolder className="w-3.5 h-3.5 opacity-70" />
+                    )}
+                    <span>{isRtl ? f.labelAr : f.labelEn}</span>
+                    {typeof f.count === 'number' && (
+                      <span
+                        className={`text-[10px] px-1.5 py-0.2 rounded-full ${
+                          isTabActive ? 'bg-white/15 text-white' : 'bg-slate-200/70 text-slate-500'
+                        }`}
+                      >
+                        {f.count}
+                      </span>
+                    )}
+                    {hasKids && (
+                      <span
+                        className={`w-1.5 h-1.5 rounded-full ${
+                          isTabActive ? 'bg-persici-crimson' : 'bg-persici-crimson/70'
+                        }`}
+                        title={isRtl ? 'يحتوي على مجلدات فرعية' : 'Contains subfolders'}
+                      />
+                    )}
+                  </button>
+                  {f.isCustom && (
+                    <button
+                      type="button"
+                      disabled={deletingFolderId === f.id}
+                      onClick={(e) => handleDeleteCustomFolder(f, e)}
+                      className={`pe-1.5 py-1 transition-opacity ${
+                        isTabActive
+                          ? 'text-slate-300 hover:text-white'
+                          : 'text-slate-400 hover:text-red-600 opacity-0 group-hover/ftab:opacity-100'
+                      }`}
+                      title={isRtl ? 'حذف المجلد المخصص' : 'Delete custom folder'}
+                    >
+                      <TbX className="w-3 h-3" />
+                    </button>
+                  )}
+                </div>
+              );
+            })}
+
+            <button
+              type="button"
+              onClick={() => setCreateFolderModalState({ isOpen: true, parentFolder: '' })}
+              className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-persici-crimson/10 text-persici-crimson hover:bg-persici-crimson/20 font-bold whitespace-nowrap transition-colors shrink-0 cursor-pointer"
+              title={isRtl ? 'إنشاء مجلد رئيسي جديد' : 'Create new top-level folder'}
+            >
+              <TbFolderPlus className="w-3.5 h-3.5" />
+              <span>{isRtl ? '+ مجلد جديد' : '+ New Folder'}</span>
+            </button>
           </div>
 
-          {/* Right Controls: Sort & Grid/List View */}
-          <div className="flex items-center gap-2.5 self-end md:self-auto shrink-0">
+          {/* Right Controls: Select Page, Sort & Grid/List View */}
+          <div className="flex items-center gap-2 self-end md:self-auto shrink-0">
+            {displayedItems.length > 0 && (
+              <button
+                type="button"
+                onClick={() => {
+                  if (allDisplayedSelected) {
+                    const dispSet = new Set(displayedItems.map((i) => i.key));
+                    setSelectedKeys((prev) => prev.filter((k) => !dispSet.has(k)));
+                  } else {
+                    const merged = new Set(selectedKeys);
+                    for (const i of displayedItems) merged.add(i.key);
+                    setSelectedKeys(Array.from(merged));
+                  }
+                }}
+                className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-colors cursor-pointer ${
+                  allDisplayedSelected
+                    ? 'bg-persici-crimson text-white'
+                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                }`}
+              >
+                {allDisplayedSelected
+                  ? isRtl
+                    ? 'إلغاء تحديد الكل'
+                    : 'Unselect Page'
+                  : isRtl
+                  ? 'تحديد الصفحة'
+                  : 'Select Page'}
+              </button>
+            )}
+
             {/* Sort Selector */}
             <div className="flex items-center gap-1">
               <TbSortAscending className="w-4 h-4 text-slate-400" />
@@ -674,7 +920,165 @@ export function MediaStorageBrowser({
             </div>
           </div>
         </div>
+
+        {/* Row 3: Hierarchical Breadcrumb & Nested Subfolders Explorer Strip */}
+        {activeFolder !== '' && (
+          <div className="pt-2.5 border-t border-slate-100 flex flex-col gap-2.5 text-xs">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              {/* Clickable Breadcrumb Trail */}
+              <div className="flex flex-wrap items-center gap-1 text-[11px]">
+                {breadcrumbTrail.map((crumb, idx) => {
+                  const isLast = idx === breadcrumbTrail.length - 1;
+                  return (
+                    <React.Fragment key={crumb.id || 'root-crumb'}>
+                      {idx > 0 && (
+                        <TbChevronRight
+                          className={`w-3.5 h-3.5 text-slate-400 ${isRtl ? 'rotate-180' : ''}`}
+                        />
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => setActiveFolder(crumb.id)}
+                        className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-lg transition-colors cursor-pointer ${
+                          isLast
+                            ? 'bg-slate-900 text-white font-bold'
+                            : 'text-slate-600 hover:bg-slate-100 font-medium'
+                        }`}
+                      >
+                        {idx === 0 && <TbHome className="w-3 h-3" />}
+                        <span>{isRtl ? crumb.labelAr : crumb.labelEn}</span>
+                      </button>
+                    </React.Fragment>
+                  );
+                })}
+                <span className="text-[10px] font-mono text-slate-400 ms-1">
+                  /{activeFolder}/
+                </span>
+              </div>
+
+              {/* Subfolder Include Toggle & Create Subfolder Action */}
+              <div className="flex flex-wrap items-center gap-2">
+                {childSubfolders.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => setIncludeSubfolders((prev) => !prev)}
+                    className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold border transition-colors cursor-pointer ${
+                      includeSubfolders
+                        ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
+                        : 'bg-amber-50 border-amber-200 text-amber-800'
+                    }`}
+                  >
+                    {includeSubfolders
+                      ? isRtl
+                        ? 'العرض: شامل المجلدات الفرعية'
+                        : 'Showing: Includes Subfolders'
+                      : isRtl
+                      ? 'العرض: هذا المجلد فقط'
+                      : 'Showing: Direct Files Only'}
+                  </button>
+                )}
+
+                {getFolderDepth(activeFolder) < MAX_FOLDER_DEPTH && (
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setCreateFolderModalState({ isOpen: true, parentFolder: activeFolder })
+                    }
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-[11px] font-bold transition-colors cursor-pointer"
+                  >
+                    <TbFolderPlus className="w-3.5 h-3.5 text-persici-crimson" />
+                    <span>{isRtl ? '+ مجلد فرعي جديد' : '+ New Subfolder'}</span>
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Child Subfolder Chips */}
+            {childSubfolders.length > 0 && (
+              <div className="flex flex-wrap items-center gap-1.5 bg-slate-50 p-2 rounded-2xl border border-slate-100">
+                <span className="text-[10px] font-bold uppercase text-slate-400 tracking-wider me-1 px-1">
+                  {isRtl ? 'المجلدات الفرعية:' : 'Subfolders:'}
+                </span>
+                {childSubfolders.map((sub) => (
+                  <div
+                    key={sub.id}
+                    className="group/sub inline-flex items-center bg-white border border-slate-200 hover:border-persici-crimson/50 rounded-xl shadow-2xs transition-colors"
+                  >
+                    <button
+                      type="button"
+                      onClick={() => setActiveFolder(sub.id)}
+                      className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold text-slate-700 hover:text-persici-crimson cursor-pointer"
+                    >
+                      <TbFolder className="w-3.5 h-3.5 text-persici-crimson" />
+                      <span>{isRtl ? sub.labelAr : sub.labelEn}</span>
+                      <span className="px-1.5 py-0.2 rounded-full bg-slate-100 text-slate-500 text-[10px]">
+                        {sub.count || 0}
+                      </span>
+                    </button>
+                    {sub.isCustom && (
+                      <button
+                        type="button"
+                        disabled={deletingFolderId === sub.id}
+                        onClick={(e) => handleDeleteCustomFolder(sub, e)}
+                        className="pe-2 py-1 text-slate-400 hover:text-red-600 transition-colors cursor-pointer"
+                        title={isRtl ? 'حذف المجلد الفرعي' : 'Delete subfolder'}
+                      >
+                        <TbTrash className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
       </div>
+
+      {/* Multi-Select Bulk Organization Action Bar */}
+      {selectedKeys.length > 0 && (
+        <div className="mb-4 px-4 py-3 bg-slate-900 text-white rounded-2xl shadow-lg flex flex-wrap items-center justify-between gap-3 text-xs animate-in fade-in">
+          <div className="flex items-center gap-2.5">
+            <span className="px-2.5 py-1 rounded-lg bg-persici-crimson text-white font-bold">
+              {isRtl ? `تم تحديد ${selectedKeys.length} ملف` : `${selectedKeys.length} Selected`}
+            </span>
+            <span className="text-slate-300 hidden sm:inline">
+              {isRtl
+                ? 'يمكنك نقل أو نسخ جميع الملفات المحددة دفعة واحدة:'
+                : 'Organize all selected assets across folders in batch:'}
+            </span>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={() =>
+                setMoveCopyModalState({ items: selectedMediaItems, mode: 'move' })
+              }
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-white text-slate-900 hover:bg-slate-100 font-bold transition-colors cursor-pointer"
+            >
+              <TbFolderShare className="w-4 h-4 text-persici-crimson" />
+              <span>{isRtl ? 'نقل إلى مجلد' : 'Move to Folder'}</span>
+            </button>
+            <button
+              type="button"
+              onClick={() =>
+                setMoveCopyModalState({ items: selectedMediaItems, mode: 'copy' })
+              }
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-white/15 hover:bg-white/25 text-white font-semibold transition-colors cursor-pointer"
+            >
+              <TbCopyPlus className="w-4 h-4" />
+              <span>{isRtl ? 'نسخ إلى مجلد' : 'Copy to Folder'}</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setSelectedKeys([])}
+              className="px-3 py-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/10 font-medium transition-colors cursor-pointer"
+            >
+              {isRtl ? 'إلغاء التحديد' : 'Clear'}
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Main Grid/List + Inspector Split */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 flex-1 min-h-[420px]">
@@ -704,6 +1108,7 @@ export function MediaStorageBrowser({
                 <div className={`grid ${getGridColsClass(gridCols, Boolean(selectedItem))} gap-3.5 sm:gap-4`}>
                   {displayedItems.map((item) => {
                     const isSelected = selectedItem?.key === item.key;
+                    const isChecked = selectedKeySet.has(item.key);
                     return (
                       <div
                         key={item.key}
@@ -717,8 +1122,10 @@ export function MediaStorageBrowser({
                           }
                         }}
                         className={`group relative bg-white rounded-2xl border transition-all duration-200 overflow-hidden flex flex-col justify-between cursor-pointer ${
-                          isSelected
-                            ? 'border-persici-crimson ring-2 ring-persici-crimson/30 shadow-md bg-persici-crimson/[0.01]'
+                          isChecked
+                            ? 'border-persici-crimson ring-2 ring-persici-crimson/40 shadow-md bg-persici-crimson/[0.02]'
+                            : isSelected
+                            ? 'border-slate-900 ring-2 ring-slate-900/20 shadow-md'
                             : 'border-slate-200 hover:border-slate-300 hover:shadow-md'
                         }`}
                       >
@@ -726,26 +1133,27 @@ export function MediaStorageBrowser({
                         <div className="relative w-full overflow-hidden bg-slate-50">
                           {renderThumbnail(item, 'aspect-square w-full')}
 
-                          {/* Selected Checkmark Badge (Top Corner) */}
-                          <div
-                            className={`absolute top-2.5 ${isRtl ? 'right-2.5' : 'left-2.5'} z-10 transition-transform ${
-                              isSelected ? 'scale-100 opacity-100' : 'scale-90 opacity-0 group-hover:opacity-100'
+                          {/* Multi-Select Checkbox Badge (Top Corner, z-30 above hover overlay) */}
+                          <button
+                            type="button"
+                            className={`absolute top-2.5 ${isRtl ? 'right-2.5' : 'left-2.5'} z-30 transition-all ${
+                              isChecked || selectedKeys.length > 0
+                                ? 'scale-100 opacity-100'
+                                : 'scale-95 opacity-0 group-hover:opacity-100'
                             }`}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setSelectedItem(isSelected ? null : item);
-                            }}
+                            onClick={(e) => toggleKeySelection(item.key, e)}
+                            title={isRtl ? 'تحديد / إلغاء تحديد الملف' : 'Select / Unselect asset'}
                           >
                             <div
                               className={`w-6 h-6 rounded-full flex items-center justify-center transition-colors shadow-sm ${
-                                isSelected
+                                isChecked
                                   ? 'bg-persici-crimson text-white ring-2 ring-white'
-                                  : 'bg-white/90 text-slate-400 hover:text-slate-800 hover:bg-white'
+                                  : 'bg-white/95 text-slate-400 hover:text-slate-900 hover:bg-white border border-slate-200'
                               }`}
                             >
-                              <TbCheck className={`w-3.5 h-3.5 stroke-[3] ${isSelected ? 'opacity-100' : 'opacity-60'}`} />
+                              <TbCheck className={`w-3.5 h-3.5 stroke-[3] ${isChecked ? 'opacity-100' : 'opacity-40'}`} />
                             </div>
-                          </div>
+                          </button>
 
                           {/* Format Badge (Opposite Top Corner) */}
                           <span
@@ -755,14 +1163,14 @@ export function MediaStorageBrowser({
                           </span>
 
                           {/* Hover Action Overlay */}
-                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1.5 backdrop-blur-2xs z-20">
+                          <div className="absolute inset-0 bg-black/45 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1.5 backdrop-blur-2xs z-20 px-2">
                             <button
                               type="button"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 setPreviewItem(item);
                               }}
-                              className="p-2 bg-white/95 hover:bg-white text-slate-900 rounded-xl text-xs font-semibold shadow transition-transform hover:scale-105"
+                              className="p-2 bg-white/95 hover:bg-white text-slate-900 rounded-xl text-xs font-semibold shadow transition-transform hover:scale-105 cursor-pointer"
                               title={isRtl ? 'معاينة' : 'Preview'}
                             >
                               <TbEye className="w-4 h-4 text-slate-800" />
@@ -771,7 +1179,7 @@ export function MediaStorageBrowser({
                             <button
                               type="button"
                               onClick={(e) => handleCopyUrl(item.url, item.key, e)}
-                              className="p-2 bg-white/95 hover:bg-white text-slate-900 rounded-xl text-xs font-semibold shadow transition-transform hover:scale-105"
+                              className="p-2 bg-white/95 hover:bg-white text-slate-900 rounded-xl text-xs font-semibold shadow transition-transform hover:scale-105 cursor-pointer"
                               title={isRtl ? 'نسخ الرابط المباشر' : 'Copy CDN URL'}
                             >
                               {copiedKey === item.key ? (
@@ -779,6 +1187,30 @@ export function MediaStorageBrowser({
                               ) : (
                                 <TbCopy className="w-4 h-4 text-slate-800" />
                               )}
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setMoveCopyModalState({ items: [item], mode: 'move' });
+                              }}
+                              className="p-2 bg-white/95 hover:bg-white text-slate-900 rounded-xl text-xs font-semibold shadow transition-transform hover:scale-105 cursor-pointer"
+                              title={isRtl ? 'نقل إلى مجلد' : 'Move to Folder'}
+                            >
+                              <TbFolderShare className="w-4 h-4 text-persici-crimson" />
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setMoveCopyModalState({ items: [item], mode: 'copy' });
+                              }}
+                              className="p-2 bg-white/95 hover:bg-white text-slate-900 rounded-xl text-xs font-semibold shadow transition-transform hover:scale-105 cursor-pointer"
+                              title={isRtl ? 'نسخ إلى مجلد' : 'Copy to Folder'}
+                            >
+                              <TbCopyPlus className="w-4 h-4 text-slate-800" />
                             </button>
 
                             {mode === 'picker' && onSelect && (
@@ -789,7 +1221,7 @@ export function MediaStorageBrowser({
                                   onSelect(item.url, item);
                                   onClose?.();
                                 }}
-                                className="p-2 bg-persici-crimson hover:bg-red-700 text-white rounded-xl text-xs font-semibold shadow transition-transform hover:scale-105"
+                                className="p-2 bg-persici-crimson hover:bg-red-700 text-white rounded-xl text-xs font-semibold shadow transition-transform hover:scale-105 cursor-pointer"
                                 title={isRtl ? 'اختيار هذا الملف' : 'Select asset'}
                               >
                                 <TbCheck className="w-4 h-4" />
@@ -804,8 +1236,11 @@ export function MediaStorageBrowser({
                             {item.title || item.filename || item.key.split('/').pop()}
                           </p>
                           <div className="flex items-center justify-between mt-1.5 text-[10px] text-slate-400">
-                            <span className="px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 font-medium truncate max-w-[100px]">
-                              {item.folder || 'general'}
+                            <span
+                              className="px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 font-medium truncate max-w-[125px]"
+                              title={item.folder || 'general'}
+                            >
+                              {formatFolderDisplayPath(item.folder || 'general', folders, isRtl)}
                             </span>
                             <span className="font-medium text-slate-500 whitespace-nowrap">
                               {formatFileSize(item.size)}
@@ -820,33 +1255,74 @@ export function MediaStorageBrowser({
                 /* LIST VIEW TABLE - FULL WIDTH CONTAINER WITH CRISP BORDER RADIUS */
                 <div className="w-full bg-white rounded-2xl sm:rounded-3xl border border-slate-200 shadow-xs overflow-hidden">
                   <div className="w-full overflow-x-auto scrollbar-thin">
-                    <table className="w-full min-w-[720px] text-start text-xs text-slate-600 border-collapse table-auto">
+                    <table className="w-full min-w-[780px] text-start text-xs text-slate-600 border-collapse table-auto">
                       <thead className="bg-slate-50 border-b border-slate-200 text-[11px] uppercase font-bold text-slate-500">
                         <tr>
-                          <th scope="col" className="px-5 py-3.5 text-start w-20 whitespace-nowrap">{isRtl ? 'المعاينة' : 'Preview'}</th>
-                          <th scope="col" className="px-5 py-3.5 text-start min-w-[240px]">{isRtl ? 'اسم الملف والمفتاح' : 'File Name & Key'}</th>
-                          <th scope="col" className="px-5 py-3.5 text-start w-28 whitespace-nowrap">{isRtl ? 'النوع' : 'Type'}</th>
-                          <th scope="col" className="px-5 py-3.5 text-start w-28 whitespace-nowrap">{isRtl ? 'الحجم' : 'Size'}</th>
-                          <th scope="col" className="px-5 py-3.5 text-end w-36 whitespace-nowrap">{isRtl ? 'الإجراءات' : 'Actions'}</th>
+                          <th scope="col" className="ps-4 pe-2 py-3.5 w-10 text-center">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (allDisplayedSelected) {
+                                  const dispSet = new Set(displayedItems.map((i) => i.key));
+                                  setSelectedKeys((prev) => prev.filter((k) => !dispSet.has(k)));
+                                } else {
+                                  const merged = new Set(selectedKeys);
+                                  for (const i of displayedItems) merged.add(i.key);
+                                  setSelectedKeys(Array.from(merged));
+                                }
+                              }}
+                              className={`w-5 h-5 rounded-md border flex items-center justify-center mx-auto transition-colors cursor-pointer ${
+                                allDisplayedSelected
+                                  ? 'bg-persici-crimson border-persici-crimson text-white'
+                                  : 'bg-white border-slate-300 text-transparent hover:border-slate-500'
+                              }`}
+                              title={isRtl ? 'تحديد كل ملفات الصفحة' : 'Select all on page'}
+                            >
+                              <TbCheck className="w-3.5 h-3.5 stroke-[3]" />
+                            </button>
+                          </th>
+                          <th scope="col" className="px-4 py-3.5 text-start w-20 whitespace-nowrap">{isRtl ? 'المعاينة' : 'Preview'}</th>
+                          <th scope="col" className="px-4 py-3.5 text-start min-w-[240px]">{isRtl ? 'اسم الملف والمفتاح' : 'File Name & Key'}</th>
+                          <th scope="col" className="px-4 py-3.5 text-start w-28 whitespace-nowrap">{isRtl ? 'النوع' : 'Type'}</th>
+                          <th scope="col" className="px-4 py-3.5 text-start w-24 whitespace-nowrap">{isRtl ? 'الحجم' : 'Size'}</th>
+                          <th scope="col" className="px-5 py-3.5 text-end w-44 whitespace-nowrap">{isRtl ? 'الإجراءات' : 'Actions'}</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-100">
                         {displayedItems.map((item) => {
                           const isSelected = selectedItem?.key === item.key;
+                          const isChecked = selectedKeySet.has(item.key);
                           return (
                             <tr
                               key={item.key}
                               onClick={() => setSelectedItem(item)}
                               className={`hover:bg-slate-50 cursor-pointer transition-colors ${
-                                isSelected ? 'bg-persici-crimson/5 font-medium' : ''
+                                isChecked
+                                  ? 'bg-persici-crimson/5 font-medium'
+                                  : isSelected
+                                  ? 'bg-slate-100/70 font-medium'
+                                  : ''
                               }`}
                             >
-                              <td className="px-5 py-3 w-20">
+                              <td className="ps-4 pe-2 py-3 w-10 text-center" onClick={(e) => e.stopPropagation()}>
+                                <button
+                                  type="button"
+                                  onClick={(e) => toggleKeySelection(item.key, e)}
+                                  className={`w-5 h-5 rounded-md border flex items-center justify-center mx-auto transition-colors cursor-pointer ${
+                                    isChecked
+                                      ? 'bg-persici-crimson border-persici-crimson text-white'
+                                      : 'bg-white border-slate-300 text-transparent hover:border-slate-500'
+                                  }`}
+                                >
+                                  <TbCheck className="w-3.5 h-3.5 stroke-[3]" />
+                                </button>
+                              </td>
+                              <td className="px-4 py-3 w-20">
                                 <div className="w-12 h-12 rounded-xl overflow-hidden relative border border-slate-200 shrink-0 bg-slate-100">
                                   {renderThumbnail(item, 'w-full h-full')}
                                 </div>
                               </td>
-                              <td className="px-5 py-3 min-w-[240px]">
+                              <td className="px-4 py-3 min-w-[240px]">
                                 <p className="font-semibold text-slate-900 truncate" title={item.filename}>
                                   {item.title || item.filename || item.key.split('/').pop()}
                                 </p>
@@ -854,20 +1330,20 @@ export function MediaStorageBrowser({
                                   {item.key}
                                 </p>
                               </td>
-                              <td className="px-5 py-3 w-28">
+                              <td className="px-4 py-3 w-28">
                                 <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-slate-100 text-slate-700">
                                   {item.format || item.mediaType}
                                 </span>
                               </td>
-                              <td className="px-5 py-3 w-28 whitespace-nowrap font-medium text-slate-700">
+                              <td className="px-4 py-3 w-24 whitespace-nowrap font-medium text-slate-700">
                                 {formatFileSize(item.size)}
                               </td>
-                              <td className="px-5 py-3 w-36 text-end whitespace-nowrap">
+                              <td className="px-5 py-3 w-44 text-end whitespace-nowrap">
                                 <div className="flex items-center justify-end gap-1.5" onClick={(e) => e.stopPropagation()}>
                                   <button
                                     type="button"
                                     onClick={() => setPreviewItem(item)}
-                                    className="p-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-colors"
+                                    className="p-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-colors cursor-pointer"
                                     title={isRtl ? 'معاينة' : 'Preview'}
                                   >
                                     <TbEye className="w-4 h-4" />
@@ -876,7 +1352,7 @@ export function MediaStorageBrowser({
                                   <button
                                     type="button"
                                     onClick={(e) => handleCopyUrl(item.url, item.key, e)}
-                                    className="p-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-colors"
+                                    className="p-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-colors cursor-pointer"
                                     title={isRtl ? 'نسخ الرابط' : 'Copy CDN URL'}
                                   >
                                     {copiedKey === item.key ? (
@@ -886,6 +1362,24 @@ export function MediaStorageBrowser({
                                     )}
                                   </button>
 
+                                  <button
+                                    type="button"
+                                    onClick={() => setMoveCopyModalState({ items: [item], mode: 'move' })}
+                                    className="p-1.5 bg-slate-100 hover:bg-persici-crimson/10 text-persici-crimson rounded-lg transition-colors cursor-pointer"
+                                    title={isRtl ? 'نقل إلى مجلد' : 'Move to Folder'}
+                                  >
+                                    <TbFolderShare className="w-4 h-4" />
+                                  </button>
+
+                                  <button
+                                    type="button"
+                                    onClick={() => setMoveCopyModalState({ items: [item], mode: 'copy' })}
+                                    className="p-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-colors cursor-pointer"
+                                    title={isRtl ? 'نسخ إلى مجلد' : 'Copy to Folder'}
+                                  >
+                                    <TbCopyPlus className="w-4 h-4" />
+                                  </button>
+
                                   {mode === 'picker' && onSelect && (
                                     <button
                                       type="button"
@@ -893,7 +1387,7 @@ export function MediaStorageBrowser({
                                         onSelect(item.url, item);
                                         onClose?.();
                                       }}
-                                      className="px-2.5 py-1.5 bg-persici-crimson hover:bg-red-700 text-white rounded-lg text-xs font-semibold shadow-xs transition-colors flex items-center gap-1"
+                                      className="px-2.5 py-1.5 bg-persici-crimson hover:bg-red-700 text-white rounded-lg text-xs font-semibold shadow-xs transition-colors flex items-center gap-1 cursor-pointer"
                                       title={isRtl ? 'اختيار' : 'Select'}
                                     >
                                       <TbCheck className="w-3.5 h-3.5" />
@@ -1065,19 +1559,31 @@ export function MediaStorageBrowser({
             <MediaDetailsInspector
               key={selectedItem.key}
               item={selectedItem}
+              folders={folders}
               onClose={() => setSelectedItem(null)}
               onSelect={onSelect}
               mode={mode}
               isRtl={isRtl}
               onOpenPreview={(i) => setPreviewItem(i)}
+              onOpenMoveCopy={(i, actionMode) =>
+                setMoveCopyModalState({ items: [i], mode: actionMode })
+              }
+              onOpenCreateFolder={(parent) =>
+                setCreateFolderModalState({ isOpen: true, parentFolder: parent || '' })
+              }
               onItemUpdated={(updated) => {
                 setSelectedItem(updated);
                 setItems((prev) => prev.map((x) => (x.key === selectedItem.key ? updated : x)));
+                void fetchMedia();
+                onMediaMutated?.();
               }}
               onItemDeleted={(key) => {
                 setItems((prev) => prev.filter((x) => x.key !== key));
+                setSelectedKeys((prev) => prev.filter((k) => k !== key));
                 setSelectedItem(null);
                 if (previewItem?.key === key) setPreviewItem(null);
+                void fetchMedia();
+                onMediaMutated?.();
               }}
             />
           </div>
@@ -1095,6 +1601,55 @@ export function MediaStorageBrowser({
             setPreviewItem(updated);
             if (selectedItem?.key === updated.key) setSelectedItem(updated);
             setItems((prev) => prev.map((x) => (x.key === updated.key ? updated : x)));
+          }}
+        />
+      )}
+
+      {/* Create Custom Folder / Nested Subfolder Modal */}
+      {createFolderModalState?.isOpen && (
+        <CreateFolderModal
+          isOpen
+          onClose={() => setCreateFolderModalState(null)}
+          folders={folders}
+          initialParentFolder={createFolderModalState.parentFolder}
+          isRtl={isRtl}
+          onCreated={(createdFolder, updatedFolders) => {
+            setFolders(updatedFolders);
+            setActiveFolder(createdFolder.id);
+            showNotice(
+              isRtl
+                ? `تم إنشاء المجلد "${createdFolder.labelAr}" (${createdFolder.id}) بنجاح.`
+                : `Created folder "${createdFolder.labelEn}" (${createdFolder.id}).`
+            );
+          }}
+        />
+      )}
+
+      {/* Move / Copy Media Modal (Single or Batch + Inline Subfolder Creation + Option B Sync) */}
+      {moveCopyModalState && moveCopyModalState.items.length > 0 && (
+        <MoveCopyMediaModal
+          key={`${moveCopyModalState.mode}-${moveCopyModalState.items.map((i) => i.key).join('|')}`}
+          isOpen
+          onClose={() => setMoveCopyModalState(null)}
+          items={moveCopyModalState.items}
+          initialMode={moveCopyModalState.mode}
+          folders={folders}
+          isRtl={isRtl}
+          onFoldersUpdated={(updatedFolders) => setFolders(updatedFolders)}
+          onCompleted={(result) => {
+            if (Array.isArray(result.folders) && result.folders.length > 0) {
+              setFolders(result.folders);
+            }
+            if (result.action === 'move' && result.moved && selectedItem) {
+              const movedMatch = result.moved.find((m) => m.oldKey === selectedItem.key);
+              if (movedMatch) {
+                setSelectedItem(movedMatch.item);
+              }
+            }
+            setSelectedKeys([]);
+            showNotice(result.message);
+            void fetchMedia();
+            onMediaMutated?.();
           }}
         />
       )}
