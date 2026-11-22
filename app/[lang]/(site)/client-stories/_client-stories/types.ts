@@ -8,6 +8,14 @@ export type StoryTemplateType =
   | 'ai-platform-showcase'
   | 'mobile-app-showcase';
 
+export type StoryGalleryDesign =
+  | 'editorial-bento'
+  | 'uniform-grid'
+  | 'interactive-carousel'
+  | 'masonry-lookbook'
+  | 'spotlight-filmstrip'
+  | 'magazine-spread';
+
 export type StoryCategorySlug =
   | 'all'
   | 'software'
@@ -150,8 +158,9 @@ export interface ClientStoryDetail {
     description: LocalizedString;
     // Template A (Multi-video)
     videos?: StoryVideoItem[];
-    // Template B (Image gallery & lightbox)
+    // Template B / Universal Visual Gallery & Layout Design
     gallery?: StoryGalleryImage[];
+    galleryDesign?: StoryGalleryDesign;
     // Template C (Software demo & mockups)
     mockups?: StorySoftwareDeviceMockup[];
     demoVideo?: string;

@@ -16,7 +16,10 @@ import {
   TbLayout,
 } from 'react-icons/tb';
 import { MediaPickerModal } from '@dashboard-shared/components';
-import type { ImageUploadQualityMode } from '@dashboard-shared/components/media/types';
+import type {
+  ImageUploadQualityMode,
+  MediaItem,
+} from '@dashboard-shared/components/media/types';
 import type {
   ClientStoryDetail,
   StoryCategorySlug,
@@ -171,6 +174,7 @@ const DEFAULT_NEW_STORY: ClientStoryDetail = {
     ],
   },
   mediaShowcase: {
+    galleryDesign: 'editorial-bento',
     title: {
       en: 'Deliverables & Production',
       ar: 'معرض المخرجات والإنتاج',
@@ -241,8 +245,12 @@ export default function ProjectsManagerPage() {
 
   // Media Picker Modal & Upload Compression Mode State
   const [mediaPickerOpen, setMediaPickerOpen] = useState(false);
+  const [mediaPickerMultiple, setMediaPickerMultiple] = useState(false);
   const [mediaPickerType, setMediaPickerType] = useState<'image' | 'video' | 'all'>('image');
   const [mediaPickerCallback, setMediaPickerCallback] = useState<((url: string) => void) | null>(null);
+  const [mediaPickerMultiCallback, setMediaPickerMultiCallback] = useState<
+    ((urls: string[], items: MediaItem[]) => void) | null
+  >(null);
   const [uploadQualityMode, setUploadQualityMode] = useState<ImageUploadQualityMode>('high-webp');
 
   const loadStories = useCallback(async (showLoading = false) => {
@@ -297,11 +305,13 @@ export default function ProjectsManagerPage() {
     };
   }, []);
 
-  // Open Media Picker helper
+  // Open Media Picker helpers (Single & Bulk Multi-Select)
   const handleOpenMediaPicker = (
     callbackOrTarget: ((url: string) => void) | 'heroImage' | 'heroVideo' | 'heroVideoPoster',
     type: 'image' | 'video' | 'all' = 'image'
   ) => {
+    setMediaPickerMultiple(false);
+    setMediaPickerMultiCallback(null);
     setMediaPickerType(type);
     if (typeof callbackOrTarget === 'function') {
       setMediaPickerCallback(() => callbackOrTarget);
@@ -315,12 +325,35 @@ export default function ProjectsManagerPage() {
     setMediaPickerOpen(true);
   };
 
+  const handleOpenMultiMediaPicker = (
+    callback: (urls: string[], items: MediaItem[]) => void,
+    type: 'image' | 'video' | 'all' = 'image'
+  ) => {
+    setMediaPickerMultiple(true);
+    setMediaPickerCallback(null);
+    setMediaPickerMultiCallback(() => callback);
+    setMediaPickerType(type);
+    setMediaPickerOpen(true);
+  };
+
   const handleMediaPickerSelect = (url: string) => {
     if (mediaPickerCallback) {
       mediaPickerCallback(url);
     }
     setMediaPickerOpen(false);
+    setMediaPickerMultiple(false);
     setMediaPickerCallback(null);
+    setMediaPickerMultiCallback(null);
+  };
+
+  const handleMediaPickerSelectMultiple = (urls: string[], selectedItems: MediaItem[]) => {
+    if (mediaPickerMultiCallback) {
+      mediaPickerMultiCallback(urls, selectedItems);
+    }
+    setMediaPickerOpen(false);
+    setMediaPickerMultiple(false);
+    setMediaPickerCallback(null);
+    setMediaPickerMultiCallback(null);
   };
 
   // Open Create Modal
@@ -1204,6 +1237,7 @@ export default function ProjectsManagerPage() {
                   onChange={setEditingStory}
                   lang={lang}
                   onOpenMediaPicker={handleOpenMediaPicker}
+                  onOpenMultiMediaPicker={handleOpenMultiMediaPicker}
                   aiControls={aiControls}
                 />
 
@@ -1334,16 +1368,20 @@ export default function ProjectsManagerPage() {
         </div>
       )}
 
-      {/* Media Picker Modal */}
+      {/* Media Picker Modal (Supports Single & Bulk Multi-Select + Folder/Subfolder Uploads) */}
       {mediaPickerOpen && (
         <MediaPickerModal
           isOpen={mediaPickerOpen}
+          multiple={mediaPickerMultiple}
           allowedType={mediaPickerType}
           onClose={() => {
             setMediaPickerOpen(false);
+            setMediaPickerMultiple(false);
             setMediaPickerCallback(null);
+            setMediaPickerMultiCallback(null);
           }}
           onSelect={handleMediaPickerSelect}
+          onSelectMultiple={handleMediaPickerSelectMultiple}
           defaultFolder="projects"
           defaultQualityMode={uploadQualityMode}
         />

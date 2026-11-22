@@ -170,10 +170,12 @@ export type ImageUploadQualityMode = 'high-webp' | 'reduced-webp';
 
 export interface MediaStorageBrowserProps {
   mode?: 'standalone' | 'picker';
+  multiple?: boolean;
   allowedType?: 'all' | MediaType;
   defaultFolder?: string;
   defaultQualityMode?: ImageUploadQualityMode;
   onSelect?: (url: string, item: MediaItem) => void;
+  onSelectMultiple?: (urls: string[], items: MediaItem[]) => void;
   onClose?: () => void;
   onMediaMutated?: () => void;
   className?: string;

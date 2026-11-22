@@ -48,3 +48,8 @@ next-env.d.ts
 *-recovery-codes.txt
 *recovery*
 
+# local database backups
+/.db_backup/
+.db_backup/
+
+
