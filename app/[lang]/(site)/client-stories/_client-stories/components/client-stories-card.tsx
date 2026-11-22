@@ -70,9 +70,25 @@ export function ClientStoriesCard({ story, lang, className = '' }: ClientStories
         </h3>
 
         {/* Executive summary */}
-        <p className="mt-3 text-sm text-slate-600 leading-relaxed line-clamp-3">
-          {summary}
-        </p>
+        {(() => {
+          const normalizedSummary = (summary || '').replace(
+            /&lt;(\/?(?:b|strong|i|em|u|p|br)(?:\s+[^&]*?)?)&gt;/gi,
+            '<$1>'
+          );
+          if (normalizedSummary.includes('<') && normalizedSummary.includes('>')) {
+            return (
+              <div
+                className="mt-3 text-sm text-slate-600 leading-relaxed line-clamp-3 [&_p]:inline [&_strong]:font-semibold [&_b]:font-semibold [&_em]:italic [&_i]:italic [&_u]:underline"
+                dangerouslySetInnerHTML={{ __html: normalizedSummary }}
+              />
+            );
+          }
+          return (
+            <p className="mt-3 text-sm text-slate-600 leading-relaxed line-clamp-3">
+              {normalizedSummary}
+            </p>
+          );
+        })()}
 
         {/* Bottom CTA Strip */}
         <div className="mt-auto pt-6 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-slate-900 group-hover:text-persici-crimson transition-colors">

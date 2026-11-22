@@ -11,20 +11,84 @@ export interface StorySummaryStatsSectionProps {
   lang: string;
 }
 
+function normalizeSummaryHtml(raw: string): string {
+  if (!raw) return '';
+  return raw.replace(
+    /&lt;(\/?(?:b|strong|i|em|u|p|br|ul|ol|li|a)(?:\s+[^&]*?)?)&gt;/gi,
+    '<$1>'
+  );
+}
+
+function truncateHtmlPreservingInlineTags(html: string, maxChars: number): string {
+  const tokens = html.match(/<[^>]+>|[^<]+/g) || [];
+  let visibleCount = 0;
+  let result = '';
+  const openTags: string[] = [];
+  const selfClosing = new Set(['br', 'hr', 'img']);
+
+  for (const token of tokens) {
+    if (token.startsWith('<')) {
+      const closeMatch = token.match(/^<\/([a-z0-9]+)\s*>/i);
+      const openMatch = token.match(/^<([a-z0-9]+)(?:\s[^>]*)?>/i);
+      if (closeMatch) {
+        const tag = closeMatch[1].toLowerCase();
+        if (tag === 'p' || tag === 'div') {
+          result += ' ';
+        } else {
+          const idx = openTags.lastIndexOf(tag);
+          if (idx !== -1) openTags.splice(idx, 1);
+          result += token;
+        }
+      } else if (openMatch) {
+        const tag = openMatch[1].toLowerCase();
+        if (tag === 'p' || tag === 'div') {
+          // Flatten block paragraph wrappers for inline Read More truncation
+        } else if (selfClosing.has(tag) || token.endsWith('/>')) {
+          result += token;
+        } else {
+          openTags.push(tag);
+          result += token;
+        }
+      }
+    } else {
+      const remaining = maxChars - visibleCount;
+      if (remaining <= 0) break;
+      if (token.length <= remaining) {
+        result += token;
+        visibleCount += token.length;
+      } else {
+        result += token.slice(0, remaining).trimEnd() + '...';
+        visibleCount = maxChars;
+        break;
+      }
+    }
+  }
+
+  for (let i = openTags.length - 1; i >= 0; i--) {
+    result += `</${openTags[i]}>`;
+  }
+  return result.trim();
+}
+
 export function StorySummaryStatsSection({ story, lang }: StorySummaryStatsSectionProps) {
   const isRtl = lang === 'ar';
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const summary = story.executiveSummary[lang as 'en' | 'ar'] || story.executiveSummary.en;
+  const rawSummary = story.executiveSummary[lang as 'en' | 'ar'] || story.executiveSummary.en || '';
+  const summary = normalizeSummaryHtml(rawSummary);
   const metrics = story.metrics || [];
   const isHtmlSummary = summary.includes('<') && summary.includes('>');
-  const plainSummary = isHtmlSummary ? summary.replace(/<[^>]*>/g, '').trim() : summary;
+  const plainSummary = isHtmlSummary ? summary.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim() : summary;
 
   // Threshold for truncation
   const CHAR_LIMIT = 180;
   const isLong = plainSummary.length > CHAR_LIMIT;
   const displaySummary =
-    isLong && !isExpanded ? `${plainSummary.slice(0, CHAR_LIMIT).trim()}...` : summary;
+    isLong && !isExpanded
+      ? isHtmlSummary
+        ? truncateHtmlPreservingInlineTags(summary, CHAR_LIMIT)
+        : `${plainSummary.slice(0, CHAR_LIMIT).trim()}...`
+      : summary;
 
   return (
     <section
@@ -45,9 +109,9 @@ export function StorySummaryStatsSection({ story, lang }: StorySummaryStatsSecti
 
               {/* Normal Size Paragraph with Read More */}
               <div className="text-base sm:text-lg text-slate-600 leading-relaxed font-normal">
-                {isHtmlSummary && (!isLong || isExpanded) ? (
-                  <div
-                    className="inline"
+                {isHtmlSummary ? (
+                  <span
+                    className="inline [&_p]:inline [&_div]:inline [&_strong]:font-semibold [&_strong]:text-slate-800 [&_b]:font-semibold [&_b]:text-slate-800 [&_em]:italic [&_i]:italic [&_u]:underline"
                     dangerouslySetInnerHTML={{ __html: displaySummary }}
                   />
                 ) : (

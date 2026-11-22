@@ -37,9 +37,16 @@ export function TelecomTechStackSection({
           <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-white">
             {title}
           </h2>
-          <p className="mt-4 text-base sm:text-lg text-slate-300 leading-relaxed font-normal">
-            {subtitle}
-          </p>
+          {subtitle.includes('<') && subtitle.includes('>') ? (
+            <div
+              className="mt-4 text-base sm:text-lg text-slate-300 leading-relaxed font-normal [&_p]:inline [&_strong]:font-semibold [&_b]:font-semibold [&_em]:italic [&_i]:italic"
+              dangerouslySetInnerHTML={{ __html: subtitle }}
+            />
+          ) : (
+            <p className="mt-4 text-base sm:text-lg text-slate-300 leading-relaxed font-normal">
+              {subtitle}
+            </p>
+          )}
         </FadeUp>
 
         {/* 4 Pods Grid */}

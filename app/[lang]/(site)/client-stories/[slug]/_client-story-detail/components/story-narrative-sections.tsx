@@ -86,9 +86,13 @@ export function StoryNarrativeSections({ story, lang }: StoryNarrativeSectionsPr
         )}
 
         {/* Paragraphs */}
-        <div className="space-y-5 text-base sm:text-lg text-slate-700 leading-relaxed font-normal">
+        <div className="space-y-5 text-base sm:text-lg text-slate-700 leading-relaxed font-normal [&_strong]:font-semibold [&_strong]:text-slate-900 [&_b]:font-semibold [&_b]:text-slate-900 [&_em]:italic [&_i]:italic [&_u]:underline [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:text-slate-900 [&_h2]:mt-4 [&_h2]:mb-2 [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:text-slate-800 [&_h3]:mt-3 [&_h3]:mb-1.5 [&_ul]:list-disc [&_ul]:ps-6 [&_ul]:my-2 [&_ol]:list-decimal [&_ol]:ps-6 [&_ol]:my-2 [&_li]:my-1 [&_blockquote]:border-s-4 [&_blockquote]:border-persici-crimson [&_blockquote]:ps-4 [&_blockquote]:italic [&_a]:text-persici-crimson [&_a]:underline">
           {section.paragraphs.map((p, idx) => {
-            const pText = p[lang as 'en' | 'ar'] || p.en || '';
+            const rawText = p[lang as 'en' | 'ar'] || p.en || '';
+            const pText = rawText.replace(
+              /&lt;(\/?(?:b|strong|i|em|u|p|br|ul|ol|li|h2|h3|blockquote|div|span|a)(?:\s+[^&]*?)?)&gt;/gi,
+              '<$1>'
+            );
             if (pText.includes('<') && pText.includes('>')) {
               return (
                 <div

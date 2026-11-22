@@ -107,16 +107,25 @@ export function StoryMediaShowcase({ story, lang }: StoryMediaShowcaseProps) {
           {showcaseTitle}
         </h2>
         {showcaseDesc &&
-          (showcaseDesc.includes('<') && showcaseDesc.includes('>') ? (
-            <div
-              className="mt-3 text-base sm:text-lg text-slate-600 max-w-3xl leading-relaxed"
-              dangerouslySetInnerHTML={{ __html: showcaseDesc }}
-            />
-          ) : (
-            <p className="mt-3 text-base sm:text-lg text-slate-600 max-w-3xl leading-relaxed">
-              {showcaseDesc}
-            </p>
-          ))}
+          (() => {
+            const normalizedDesc = showcaseDesc.replace(
+              /&lt;(\/?(?:b|strong|i|em|u|p|br|a)(?:\s+[^&]*?)?)&gt;/gi,
+              '<$1>'
+            );
+            if (normalizedDesc.includes('<') && normalizedDesc.includes('>')) {
+              return (
+                <div
+                  className="mt-3 text-base sm:text-lg text-slate-600 max-w-3xl leading-relaxed [&_strong]:font-semibold [&_b]:font-semibold [&_em]:italic [&_i]:italic [&_u]:underline"
+                  dangerouslySetInnerHTML={{ __html: normalizedDesc }}
+                />
+              );
+            }
+            return (
+              <p className="mt-3 text-base sm:text-lg text-slate-600 max-w-3xl leading-relaxed">
+                {normalizedDesc}
+              </p>
+            );
+          })()}
       </div>
 
       {/* ========================================================================= */}

@@ -25,14 +25,41 @@ export function DarkTestimonialCard({
     defaultList;
 
   const isAr = lang === 'ar';
-  const testimonials = rawTestimonials.map((t: any) => ({
-    ...t,
-    author: t.author?.[isAr ? 'ar' : 'en'] || (isAr ? t.authorAr : t.authorEn) || t.author,
-    role: t.role?.[isAr ? 'ar' : 'en'] || (isAr ? t.roleAr : t.roleEn) || t.role,
-    company: t.company?.[isAr ? 'ar' : 'en'] || (isAr ? t.companyAr : t.companyEn) || t.company,
-    quote: t.quote?.[isAr ? 'ar' : 'en'] || (isAr ? t.quoteAr : t.quoteEn) || t.quote,
-    metric: t.metric?.[isAr ? 'ar' : 'en'] || (isAr ? t.metricAr : t.metricEn) || t.metric,
-  }));
+  const testimonials = rawTestimonials.map((rawItem) => {
+    const t = rawItem as TestimonialItem & {
+      author?: string | { en?: string; ar?: string };
+      role?: string | { en?: string; ar?: string };
+      company?: string | { en?: string; ar?: string };
+      quote?: string | { en?: string; ar?: string };
+      metric?: string | { en?: string; ar?: string };
+      authorAr?: string;
+      authorEn?: string;
+      roleAr?: string;
+      roleEn?: string;
+      companyAr?: string;
+      companyEn?: string;
+      quoteAr?: string;
+      quoteEn?: string;
+      metricAr?: string;
+      metricEn?: string;
+      photo?: string;
+      image?: string;
+    };
+    const pickLoc = (val: string | { en?: string; ar?: string } | undefined, arVal?: string, enVal?: string) => {
+      if (typeof val === 'object' && val !== null) {
+        return (isAr ? val.ar : val.en) || val.en || val.ar || '';
+      }
+      return (isAr ? arVal : enVal) || (typeof val === 'string' ? val : '') || '';
+    };
+    return {
+      ...t,
+      author: pickLoc(t.author, t.authorAr, t.authorEn),
+      role: pickLoc(t.role, t.roleAr, t.roleEn),
+      company: pickLoc(t.company, t.companyAr, t.companyEn),
+      quote: pickLoc(t.quote, t.quoteAr, t.quoteEn),
+      metric: pickLoc(t.metric, t.metricAr, t.metricEn),
+    };
+  });
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
@@ -143,11 +170,15 @@ export function DarkTestimonialCard({
         <div className="min-h-[110px] sm:min-h-[120px]">
           <blockquote
             className={cn(
-              'mt-6 text-sm font-normal leading-relaxed text-white/90 transition-all duration-300 sm:text-base lg:text-lg',
+              'mt-6 text-sm font-normal leading-relaxed text-white/90 transition-all duration-300 sm:text-base lg:text-lg [&_p]:inline [&_strong]:font-semibold [&_b]:font-semibold [&_em]:italic [&_i]:italic',
               isAnimating ? 'opacity-0 translate-y-1' : 'opacity-100 translate-y-0'
             )}
           >
-            &ldquo;{current.quote}&rdquo;
+            {typeof current.quote === 'string' && current.quote.includes('<') && current.quote.includes('>') ? (
+              <span dangerouslySetInnerHTML={{ __html: `&ldquo;${current.quote}&rdquo;` }} />
+            ) : (
+              <>&ldquo;{current.quote}&rdquo;</>
+            )}
           </blockquote>
         </div>
       </div>

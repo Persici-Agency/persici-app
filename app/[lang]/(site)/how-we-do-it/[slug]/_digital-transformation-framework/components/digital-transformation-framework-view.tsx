@@ -79,9 +79,16 @@ export function DigitalTransformationFrameworkView({
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-primary font-medium text-slate-900 tracking-tight leading-tight mb-5">
               {offeringsTitle}
             </h2>
-            <p className="text-base sm:text-lg text-slate-600 font-secondary leading-relaxed">
-              {offeringsSubtitle}
-            </p>
+            {offeringsSubtitle.includes('<') && offeringsSubtitle.includes('>') ? (
+              <div
+                className="text-base sm:text-lg text-slate-600 font-secondary leading-relaxed [&_p]:inline [&_strong]:font-semibold [&_b]:font-semibold [&_em]:italic [&_i]:italic"
+                dangerouslySetInnerHTML={{ __html: offeringsSubtitle }}
+              />
+            ) : (
+              <p className="text-base sm:text-lg text-slate-600 font-secondary leading-relaxed">
+                {offeringsSubtitle}
+              </p>
+            )}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">

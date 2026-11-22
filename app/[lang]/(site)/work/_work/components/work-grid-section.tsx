@@ -54,9 +54,16 @@ export async function WorkGridSection({ lang }: { lang: string }) {
                 <h3 className="mt-2 font-primary text-2xl font-medium text-foreground">
                   {title}
                 </h3>
-                <p className="mt-2 text-xs leading-relaxed text-foreground/70 sm:text-sm">
-                  {description}
-                </p>
+                {description.includes('<') && description.includes('>') ? (
+                  <div
+                    className="mt-2 text-xs leading-relaxed text-foreground/70 sm:text-sm [&_p]:inline [&_strong]:font-semibold [&_b]:font-semibold [&_em]:italic [&_i]:italic"
+                    dangerouslySetInnerHTML={{ __html: description }}
+                  />
+                ) : (
+                  <p className="mt-2 text-xs leading-relaxed text-foreground/70 sm:text-sm">
+                    {description}
+                  </p>
+                )}
                 <div className="mt-4 flex items-center gap-2 text-xs font-semibold text-persici-crimson">
                   <span>{isAr ? 'عرض دراسة الحالة' : 'View case study'}</span>
                   <span>→</span>

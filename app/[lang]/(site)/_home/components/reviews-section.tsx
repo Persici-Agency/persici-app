@@ -144,8 +144,12 @@ export function ReviewsSection({ lang, dict, content, reviews: customReviews }: 
           </div>
 
           {/* Review Quote */}
-          <blockquote className="mt-3.5 text-xs sm:text-sm leading-relaxed text-foreground/80 font-normal line-clamp-4">
-            &ldquo;{resolvedReview}&rdquo;
+          <blockquote className="mt-3.5 text-xs sm:text-sm leading-relaxed text-foreground/80 font-normal line-clamp-4 [&_p]:inline [&_strong]:font-semibold [&_b]:font-semibold [&_em]:italic [&_i]:italic">
+            {resolvedReview.includes('<') && resolvedReview.includes('>') ? (
+              <span dangerouslySetInnerHTML={{ __html: `&ldquo;${resolvedReview}&rdquo;` }} />
+            ) : (
+              <>&ldquo;{resolvedReview}&rdquo;</>
+            )}
           </blockquote>
         </div>
 

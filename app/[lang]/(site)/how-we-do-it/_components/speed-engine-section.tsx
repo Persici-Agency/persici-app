@@ -39,9 +39,16 @@ export function SpeedEngineSection({
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-primary font-medium text-white tracking-tight leading-tight mb-5">
             {title}
           </h2>
-          <p className="text-base sm:text-lg text-slate-300 font-secondary leading-relaxed">
-            {subtitle}
-          </p>
+          {subtitle.includes('<') && subtitle.includes('>') ? (
+            <div
+              className="text-base sm:text-lg text-slate-300 font-secondary leading-relaxed [&_p]:inline [&_strong]:font-semibold [&_b]:font-semibold [&_em]:italic [&_i]:italic"
+              dangerouslySetInnerHTML={{ __html: subtitle }}
+            />
+          ) : (
+            <p className="text-base sm:text-lg text-slate-300 font-secondary leading-relaxed">
+              {subtitle}
+            </p>
+          )}
         </div>
 
         {/* 5 Pillars Horizontal / Grid Matrix */}
@@ -73,9 +80,16 @@ export function SpeedEngineSection({
                   </h3>
 
                   {/* Description */}
-                  <p className="text-xs sm:text-sm text-slate-300 font-secondary leading-relaxed">
-                    {pDesc}
-                  </p>
+                  {pDesc.includes('<') && pDesc.includes('>') ? (
+                    <div
+                      className="text-xs sm:text-sm text-slate-300 font-secondary leading-relaxed [&_p]:inline [&_strong]:font-semibold [&_b]:font-semibold [&_em]:italic [&_i]:italic"
+                      dangerouslySetInnerHTML={{ __html: pDesc }}
+                    />
+                  ) : (
+                    <p className="text-xs sm:text-sm text-slate-300 font-secondary leading-relaxed">
+                      {pDesc}
+                    </p>
+                  )}
                 </div>
 
                 <div className="mt-6 pt-4 border-t border-white/10 flex items-center justify-between">
