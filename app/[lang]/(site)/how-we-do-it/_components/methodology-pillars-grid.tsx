@@ -35,9 +35,16 @@ export function MethodologyPillarsGrid({
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-primary font-medium text-slate-900 tracking-tight leading-tight mb-5">
             {title}
           </h2>
-          <p className="text-base sm:text-lg text-slate-600 font-secondary leading-relaxed">
-            {subtitle}
-          </p>
+          {subtitle.includes('<') && subtitle.includes('>') ? (
+            <div
+              className="text-base sm:text-lg text-slate-600 font-secondary leading-relaxed [&_p]:inline [&_strong]:font-semibold [&_b]:font-semibold [&_em]:italic [&_i]:italic"
+              dangerouslySetInnerHTML={{ __html: subtitle }}
+            />
+          ) : (
+            <p className="text-base sm:text-lg text-slate-600 font-secondary leading-relaxed">
+              {subtitle}
+            </p>
+          )}
         </div>
 
         {/* Pillars Grid */}
@@ -87,9 +94,16 @@ export function MethodologyPillarsGrid({
                   )}
 
                   {/* Description */}
-                  <p className="text-sm sm:text-base text-slate-600 font-secondary leading-relaxed mb-6">
-                    {itemDesc}
-                  </p>
+                  {itemDesc.includes('<') && itemDesc.includes('>') ? (
+                    <div
+                      className="text-sm sm:text-base text-slate-600 font-secondary leading-relaxed mb-6 [&_p]:inline [&_strong]:font-semibold [&_b]:font-semibold [&_em]:italic [&_i]:italic"
+                      dangerouslySetInnerHTML={{ __html: itemDesc }}
+                    />
+                  ) : (
+                    <p className="text-sm sm:text-base text-slate-600 font-secondary leading-relaxed mb-6">
+                      {itemDesc}
+                    </p>
+                  )}
                 </div>
 
                 {/* Footer Link Action */}

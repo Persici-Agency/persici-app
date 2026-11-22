@@ -38,9 +38,16 @@ export function IndustriesOfferingsGrid({
           <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-slate-900">
             {title}
           </h2>
-          <p className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed">
-            {subtitle}
-          </p>
+          {subtitle.includes('<') && subtitle.includes('>') ? (
+            <div
+              className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed [&_p]:inline [&_strong]:font-semibold [&_b]:font-semibold [&_em]:italic [&_i]:italic"
+              dangerouslySetInnerHTML={{ __html: subtitle }}
+            />
+          ) : (
+            <p className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed">
+              {subtitle}
+            </p>
+          )}
         </FadeUp>
 
         {/* 6 Industry Cards (3 Columns on Desktop, 2 on Tablet, 1 on Mobile) */}
@@ -108,9 +115,16 @@ export function IndustriesOfferingsGrid({
 
                     {/* Bottom: Description + Kinetic Link */}
                     <div>
-                      <p className="text-xs sm:text-[12px] leading-relaxed text-slate-600 line-clamp-3 mb-5 font-normal">
-                        {itemDesc}
-                      </p>
+                      {itemDesc.includes('<') && itemDesc.includes('>') ? (
+                        <div
+                          className="text-xs sm:text-[12px] leading-relaxed text-slate-600 line-clamp-3 mb-5 font-normal [&_p]:inline [&_strong]:font-semibold [&_b]:font-semibold [&_em]:italic [&_i]:italic"
+                          dangerouslySetInnerHTML={{ __html: itemDesc }}
+                        />
+                      ) : (
+                        <p className="text-xs sm:text-[12px] leading-relaxed text-slate-600 line-clamp-3 mb-5 font-normal">
+                          {itemDesc}
+                        </p>
+                      )}
 
                       <div className="pt-4 border-t border-persici-black/5">
                         <Link

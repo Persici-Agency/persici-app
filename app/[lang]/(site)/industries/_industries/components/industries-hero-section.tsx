@@ -136,9 +136,16 @@ export function IndustriesHeroSection({
             {heroTitle}
           </h1>
 
-          <p className="mt-5 sm:mt-6 text-base sm:text-lg lg:text-xl leading-relaxed rtl:leading-relaxed text-slate-600 max-w-xl">
-            {heroSubtitle}
-          </p>
+          {heroSubtitle.includes('<') && heroSubtitle.includes('>') ? (
+            <div
+              className="mt-5 sm:mt-6 text-base sm:text-lg lg:text-xl leading-relaxed rtl:leading-relaxed text-slate-600 max-w-xl [&_p]:inline [&_strong]:font-semibold [&_b]:font-semibold [&_em]:italic [&_i]:italic"
+              dangerouslySetInnerHTML={{ __html: heroSubtitle }}
+            />
+          ) : (
+            <p className="mt-5 sm:mt-6 text-base sm:text-lg lg:text-xl leading-relaxed rtl:leading-relaxed text-slate-600 max-w-xl">
+              {heroSubtitle}
+            </p>
+          )}
 
           <div className="mt-8 sm:mt-10 flex items-center rtl:justify-start">
             <HomeButton

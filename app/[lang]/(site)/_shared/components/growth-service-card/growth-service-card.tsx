@@ -316,9 +316,16 @@ export function GrowthServiceCard({
           </h3>
 
           {/* Service Description */}
-          <p className="mt-4 text-sm leading-relaxed text-foreground/75 sm:text-base">
-            {description}
-          </p>
+          {typeof description === 'string' && description.includes('<') && description.includes('>') ? (
+            <div
+              className="mt-4 text-sm leading-relaxed text-foreground/75 sm:text-base [&_p]:inline [&_strong]:font-semibold [&_b]:font-semibold [&_em]:italic [&_i]:italic [&_u]:underline"
+              dangerouslySetInnerHTML={{ __html: description }}
+            />
+          ) : (
+            <p className="mt-4 text-sm leading-relaxed text-foreground/75 sm:text-base">
+              {description}
+            </p>
+          )}
         </div>
       </div>
     </FadeUp>

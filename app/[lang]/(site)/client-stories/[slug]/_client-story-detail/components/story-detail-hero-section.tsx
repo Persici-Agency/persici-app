@@ -76,16 +76,25 @@ export function StoryDetailHeroSection({ story, lang }: StoryDetailHeroSectionPr
 
           {/* Lead Subtitle */}
           {lead &&
-            (lead.includes('<') && lead.includes('>') ? (
-              <div
-                className="mt-6 text-lg sm:text-xl text-slate-600 leading-relaxed font-normal max-w-4xl"
-                dangerouslySetInnerHTML={{ __html: lead }}
-              />
-            ) : (
-              <p className="mt-6 text-lg sm:text-xl text-slate-600 leading-relaxed font-normal max-w-4xl">
-                {lead}
-              </p>
-            ))}
+            (() => {
+              const normalizedLead = lead.replace(
+                /&lt;(\/?(?:b|strong|i|em|u|p|br|a)(?:\s+[^&]*?)?)&gt;/gi,
+                '<$1>'
+              );
+              if (normalizedLead.includes('<') && normalizedLead.includes('>')) {
+                return (
+                  <div
+                    className="mt-6 text-lg sm:text-xl text-slate-600 leading-relaxed font-normal max-w-4xl [&_p]:inline [&_strong]:font-semibold [&_strong]:text-slate-800 [&_b]:font-semibold [&_b]:text-slate-800 [&_em]:italic [&_i]:italic [&_u]:underline"
+                    dangerouslySetInnerHTML={{ __html: normalizedLead }}
+                  />
+                );
+              }
+              return (
+                <p className="mt-6 text-lg sm:text-xl text-slate-600 leading-relaxed font-normal max-w-4xl">
+                  {normalizedLead}
+                </p>
+              );
+            })()}
         </div>
       </div>
     </section>

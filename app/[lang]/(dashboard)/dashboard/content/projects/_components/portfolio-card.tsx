@@ -143,9 +143,25 @@ export function PortfolioCard({
             {title}
           </h3>
 
-          <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed">
-            {summary}
-          </p>
+          {(() => {
+            const normalizedSummary = (summary || '').replace(
+              /&lt;(\/?(?:b|strong|i|em|u|p|br)(?:\s+[^&]*?)?)&gt;/gi,
+              '<$1>'
+            );
+            if (normalizedSummary.includes('<') && normalizedSummary.includes('>')) {
+              return (
+                <div
+                  className="text-xs text-slate-600 line-clamp-2 leading-relaxed [&_p]:inline [&_strong]:font-semibold [&_b]:font-semibold [&_em]:italic [&_i]:italic [&_u]:underline"
+                  dangerouslySetInnerHTML={{ __html: normalizedSummary }}
+                />
+              );
+            }
+            return (
+              <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed">
+                {normalizedSummary}
+              </p>
+            );
+          })()}
 
           {/* Impact Metrics Preview */}
           {story.metrics && story.metrics.length > 0 && (

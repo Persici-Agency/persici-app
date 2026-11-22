@@ -56,9 +56,16 @@ export function DeliveryVelocitySection({
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-primary font-medium text-slate-900 tracking-tight leading-tight mb-5">
             {title}
           </h2>
-          <p className="text-base sm:text-lg text-slate-600 font-secondary leading-relaxed">
-            {subtitle}
-          </p>
+          {subtitle.includes('<') && subtitle.includes('>') ? (
+            <div
+              className="text-base sm:text-lg text-slate-600 font-secondary leading-relaxed [&_p]:inline [&_strong]:font-semibold [&_b]:font-semibold [&_em]:italic [&_i]:italic"
+              dangerouslySetInnerHTML={{ __html: subtitle }}
+            />
+          ) : (
+            <p className="text-base sm:text-lg text-slate-600 font-secondary leading-relaxed">
+              {subtitle}
+            </p>
+          )}
         </div>
 
         {/* Metrics Strip */}
@@ -130,9 +137,16 @@ export function DeliveryVelocitySection({
                     <h3 className="text-lg sm:text-xl font-primary font-medium text-slate-900 mb-2">
                       {pTitle}
                     </h3>
-                    <p className="text-sm sm:text-base text-slate-600 font-secondary leading-relaxed">
-                      {pDesc}
-                    </p>
+                    {pDesc.includes('<') && pDesc.includes('>') ? (
+                      <div
+                        className="text-sm sm:text-base text-slate-600 font-secondary leading-relaxed [&_p]:inline [&_strong]:font-semibold [&_b]:font-semibold [&_em]:italic [&_i]:italic"
+                        dangerouslySetInnerHTML={{ __html: pDesc }}
+                      />
+                    ) : (
+                      <p className="text-sm sm:text-base text-slate-600 font-secondary leading-relaxed">
+                        {pDesc}
+                      </p>
+                    )}
                   </div>
                 </div>
               );

@@ -13,7 +13,6 @@ import {
   TbQuote,
   TbLink,
   TbUnlink,
-  TbEye,
   TbCode,
   TbTypography,
   TbEraser,
@@ -69,18 +68,27 @@ const INITIAL_ACTIVE_FORMATS: ActiveFormatsState = {
   alignJustify: false,
 };
 
+function decodeEscapedFormattingTags(input: string): string {
+  if (!input || !input.includes('&lt;')) return input;
+  return input.replace(
+    /&lt;(\/?(?:b|strong|i|em|u|p|br|ul|ol|li|h2|h3|blockquote|div|span)(?:\s+[^&]*?)?)&gt;/gi,
+    '<$1>'
+  );
+}
+
 function toVisualHtml(raw: string): string {
   if (!raw || !raw.trim()) return '';
-  // If raw string has no HTML tags at all, convert plain newlines into <br> for visual display
-  if (!/<[a-z][\s\S]*>/i.test(raw)) {
-    return raw.replace(/\r?\n/g, '<br>');
+  const normalized = decodeEscapedFormattingTags(raw);
+  // If string has no HTML tags at all, convert plain newlines into <br> for visual display
+  if (!/<[a-z][\s\S]*>/i.test(normalized)) {
+    return normalized.replace(/\r?\n/g, '<br>');
   }
-  return raw;
+  return normalized;
 }
 
 function cleanVisualHtml(html: string): string {
   if (!html) return '';
-  const trimmed = html.trim();
+  const trimmed = decodeEscapedFormattingTags(html).trim();
   if (
     !trimmed ||
     trimmed === '<br>' ||
@@ -90,7 +98,6 @@ function cleanVisualHtml(html: string): string {
   ) {
     return '';
   }
-  // If the content has no formatting tags and only a single wrapper or plain text, keep it clean
   return trimmed;
 }
 
@@ -104,9 +111,8 @@ export function RichTextEditor({
   rows = 6,
 }: RichTextEditorProps) {
   const [activeTab, setActiveTab] = useState<'en' | 'ar'>('en');
-  // WordPress-style two toggle buttons: 'normal' (default visual WYSIWYG) and 'code' (HTML source)
+  // WordPress-style two toggle buttons: 'normal' (default visual live preview WYSIWYG) and 'code' (HTML source)
   const [editorMode, setEditorMode] = useState<'normal' | 'code'>('normal');
-  const [previewMode, setPreviewMode] = useState(false);
   const [activeFormats, setActiveFormats] = useState<ActiveFormatsState>(INITIAL_ACTIVE_FORMATS);
 
   // Inline Link Popover State
@@ -118,6 +124,8 @@ export function RichTextEditor({
   const visualRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const lastEmittedHtmlRef = useRef<string>('');
+  const prevModeRef = useRef<'normal' | 'code'>('normal');
+  const prevTabRef = useRef<'en' | 'ar'>('en');
   const savedRangeRef = useRef<Range | null>(null);
 
   const currentValue = activeTab === 'en' ? valueEn || '' : valueAr || '';
@@ -127,25 +135,40 @@ export function RichTextEditor({
 
   // Sync external value changes, tab switches ('en' <-> 'ar'), or mode switches ('code' -> 'normal') into the visual DOM
   useEffect(() => {
-    if (editorMode !== 'normal' || previewMode) return;
+    if (editorMode !== 'normal') {
+      prevModeRef.current = editorMode;
+      prevTabRef.current = activeTab;
+      return;
+    }
     const el = visualRef.current;
     if (!el) return;
 
     const targetHtml = toVisualHtml(currentValue);
-    if (currentValue !== lastEmittedHtmlRef.current || el.innerHTML !== targetHtml) {
-      // Only overwrite DOM if user isn't mid-typing the exact same emitted value
-      if (currentValue !== lastEmittedHtmlRef.current) {
-        el.innerHTML = targetHtml;
-        lastEmittedHtmlRef.current = currentValue;
-      } else if (!currentValue && el.innerHTML !== '') {
-        el.innerHTML = '';
-      }
+    const modeJustSwitched = prevModeRef.current !== 'normal';
+    const tabJustSwitched = prevTabRef.current !== activeTab;
+    const isDomOutOfSync =
+      (typeof document !== 'undefined' &&
+        document.activeElement !== el &&
+        cleanVisualHtml(el.innerHTML) !== cleanVisualHtml(targetHtml)) ||
+      (el.innerHTML === '' && targetHtml !== '');
+
+    if (
+      modeJustSwitched ||
+      tabJustSwitched ||
+      currentValue !== lastEmittedHtmlRef.current ||
+      isDomOutOfSync
+    ) {
+      el.innerHTML = targetHtml;
+      lastEmittedHtmlRef.current = currentValue;
     }
-  }, [currentValue, activeTab, editorMode, previewMode]);
+
+    prevModeRef.current = 'normal';
+    prevTabRef.current = activeTab;
+  }, [currentValue, activeTab, editorMode]);
 
   // Detect active formatting at current cursor/selection inside Visual ('normal') mode
   const refreshActiveFormats = useCallback(() => {
-    if (editorMode !== 'normal' || previewMode || typeof document === 'undefined') return;
+    if (editorMode !== 'normal' || typeof document === 'undefined') return;
     const el = visualRef.current;
     const sel = window.getSelection();
     if (!el || !sel || sel.rangeCount === 0) return;
@@ -207,7 +230,7 @@ export function RichTextEditor({
     } catch {
       // Ignore queryCommandState errors in unsupported contexts
     }
-  }, [editorMode, previewMode]);
+  }, [editorMode]);
 
   const emitVisualChange = useCallback(() => {
     const el = visualRef.current;
@@ -606,20 +629,19 @@ export function RichTextEditor({
             </button>
           </div>
 
-          {/* Two WordPress-Style Mode Toggle Buttons ("Normal" and "Code") right before Live Preview */}
+          {/* Two WordPress-Style Mode Toggle Buttons ("Normal" and "Code") */}
           <div className="flex rounded-lg bg-slate-100 p-0.5 border border-slate-200 text-xs font-semibold">
             <button
               type="button"
               onClick={() => {
-                setPreviewMode(false);
                 setEditorMode('normal');
               }}
               className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-md transition-all cursor-pointer ${
-                !previewMode && editorMode === 'normal'
+                editorMode === 'normal'
                   ? 'bg-slate-900 text-white shadow-xs'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
-              title="Visual Editor (WordPress Normal Mode - No HTML tags shown)"
+              title="Visual Live Preview Editor (WordPress Normal Mode - Format visually without HTML tags)"
             >
               <TbTypography className="w-3.5 h-3.5" />
               <span>Normal</span>
@@ -627,11 +649,15 @@ export function RichTextEditor({
             <button
               type="button"
               onClick={() => {
-                setPreviewMode(false);
+                if (editorMode === 'normal' && visualRef.current) {
+                  const synced = cleanVisualHtml(visualRef.current.innerHTML);
+                  lastEmittedHtmlRef.current = synced;
+                  currentSetter(synced);
+                }
                 setEditorMode('code');
               }}
               className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-md transition-all cursor-pointer ${
-                !previewMode && editorMode === 'code'
+                editorMode === 'code'
                   ? 'bg-slate-900 text-white shadow-xs'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
@@ -641,28 +667,13 @@ export function RichTextEditor({
               <span>Code</span>
             </button>
           </div>
-
-          {/* Live Preview Toggle Button */}
-          <button
-            type="button"
-            onClick={() => setPreviewMode((prev) => !prev)}
-            className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-lg border transition-colors cursor-pointer ${
-              previewMode
-                ? 'bg-emerald-50 text-emerald-700 border-emerald-300 font-semibold'
-                : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
-            }`}
-          >
-            <TbEye className="w-3.5 h-3.5" />
-            <span>Live Preview</span>
-          </button>
         </div>
       </div>
 
       {/* Editor Container */}
       <div className="border border-slate-200 rounded-xl overflow-hidden bg-white shadow-xs focus-within:border-slate-400 focus-within:ring-2 focus-within:ring-slate-100 transition-all">
         {/* Formatting Toolbar (Shown in both Normal and Code modes) */}
-        {!previewMode && (
-          <div className="flex flex-wrap items-center justify-between gap-1 p-2 bg-slate-50/90 border-b border-slate-200 text-slate-700">
+        <div className="flex flex-wrap items-center justify-between gap-1 p-2 bg-slate-50/90 border-b border-slate-200 text-slate-700">
             <div className="flex flex-wrap items-center gap-1">
               <button
                 type="button"
@@ -847,10 +858,9 @@ export function RichTextEditor({
               </div>
             )}
           </div>
-        )}
 
         {/* WordPress-Style Inline Link Input Popover Bar */}
-        {!previewMode && showLinkBar && (
+        {showLinkBar && (
           <div className="p-2.5 bg-slate-100/90 border-b border-slate-200 flex flex-wrap items-center gap-2 animate-in fade-in">
             <input
               type="text"
@@ -894,19 +904,8 @@ export function RichTextEditor({
           </div>
         )}
 
-        {/* Content Canvas: 1) Live Preview, 2) Normal (Visual WYSIWYG), or 3) Code (Raw HTML) */}
-        {previewMode ? (
-          <div
-            dir={isRtl ? 'rtl' : 'ltr'}
-            style={{ minHeight: `${minHeightPx}px` }}
-            className="p-4 bg-slate-50/40 text-slate-800 text-sm font-normal leading-relaxed [&_strong]:font-bold [&_b]:font-bold [&_em]:italic [&_i]:italic [&_u]:underline [&_h2]:text-xl [&_h2]:font-bold [&_h2]:text-slate-900 [&_h2]:mt-3 [&_h2]:mb-1.5 [&_h3]:text-base [&_h3]:font-bold [&_h3]:text-slate-800 [&_h3]:mt-2.5 [&_h3]:mb-1 [&_ul]:list-disc [&_ul]:ps-6 [&_ul]:my-2 [&_ol]:list-decimal [&_ol]:ps-6 [&_ol]:my-2 [&_li]:my-0.5 [&_blockquote]:border-s-4 [&_blockquote]:border-persici-crimson [&_blockquote]:bg-white [&_blockquote]:ps-4 [&_blockquote]:py-2 [&_blockquote]:my-2 [&_blockquote]:italic [&_a]:text-persici-crimson [&_a]:underline [&_a]:font-medium"
-            dangerouslySetInnerHTML={{
-              __html:
-                toVisualHtml(currentValue) ||
-                `<p class="text-slate-400 italic">No content entered for ${activeTab.toUpperCase()}.</p>`,
-            }}
-          />
-        ) : editorMode === 'normal' ? (
+        {/* Content Canvas: 1) Normal (Visual Live Preview WYSIWYG) or 2) Code (Raw HTML) */}
+        {editorMode === 'normal' ? (
           <div className="relative bg-white">
             {!currentValue && (
               <div
@@ -939,7 +938,6 @@ export function RichTextEditor({
             rows={rows}
             value={currentValue}
             onChange={(e) => {
-              lastEmittedHtmlRef.current = e.target.value;
               currentSetter(e.target.value);
             }}
             placeholder={

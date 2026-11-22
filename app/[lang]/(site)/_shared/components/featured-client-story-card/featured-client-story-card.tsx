@@ -230,11 +230,26 @@ export function FeaturedClientStoryCard({
             </h2>
 
             {/* Story Description */}
-            {itemDesc && (
-              <p className="text-sm sm:text-base text-slate-600 leading-relaxed font-normal max-w-lg mb-8 sm:mb-10">
-                {itemDesc}
-              </p>
-            )}
+            {itemDesc &&
+              (() => {
+                const normalizedDesc = itemDesc.replace(
+                  /&lt;(\/?(?:b|strong|i|em|u|p|br)(?:\s+[^&]*?)?)&gt;/gi,
+                  '<$1>'
+                );
+                if (normalizedDesc.includes('<') && normalizedDesc.includes('>')) {
+                  return (
+                    <div
+                      className="text-sm sm:text-base text-slate-600 leading-relaxed font-normal max-w-lg mb-8 sm:mb-10 [&_p]:inline [&_strong]:font-semibold [&_b]:font-semibold [&_em]:italic [&_i]:italic [&_u]:underline"
+                      dangerouslySetInnerHTML={{ __html: normalizedDesc }}
+                    />
+                  );
+                }
+                return (
+                  <p className="text-sm sm:text-base text-slate-600 leading-relaxed font-normal max-w-lg mb-8 sm:mb-10">
+                    {normalizedDesc}
+                  </p>
+                );
+              })()}
 
             {/* Dynamic Metrics Section with Divider */}
             {metricCount > 0 && (
