@@ -24,9 +24,18 @@ export function ConsumerProductsTechStackSection({
   const isRtl = lang === 'ar';
 
   return (
-    <section id="tech-stack" className="py-20 sm:py-28 lg:py-36 bg-[#0E121B] relative overflow-hidden scroll-mt-24">
+    <section id="tech-stack" className="py-20 sm:py-28 lg:py-36 bg-gradient-to-br from-[#FFF7F6] via-[#FDF6F4] to-[#F5EFEA] border-y border-persici-crimson/10 relative overflow-hidden scroll-mt-24">
+      {/* Subtle Low-Opacity Background Image & Architectural Grid */}
+      <div
+        className="absolute inset-0 bg-[url('/images/about/heritage-card-bg.webp')] bg-cover bg-center opacity-[0.045] mix-blend-multiply pointer-events-none"
+        aria-hidden="true"
+      />
+      <div
+        className="absolute inset-0 bg-[radial-gradient(#c8102e_0.75px,transparent_0.75px)] [background-size:24px_24px] opacity-[0.06] pointer-events-none"
+        aria-hidden="true"
+      />
       {/* Soft Ambient Background Lighting */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-persici-crimson/10 rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-persici-crimson/5 rounded-full blur-[140px] pointer-events-none" />
 
       <div className={`${sectionContainer} relative z-10`}>
         {/* Header */}
@@ -34,16 +43,16 @@ export function ConsumerProductsTechStackSection({
           <span className="text-xs sm:text-sm font-semibold uppercase tracking-widest text-persici-crimson block mb-3">
             {badge || (isRtl ? 'البنية التقنية المتطورة' : 'Infrastructure & Platforms')}
           </span>
-          <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-white">
+          <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-slate-900">
             {title}
           </h2>
           {subtitle.includes('<') && subtitle.includes('>') ? (
             <div
-              className="mt-4 text-base sm:text-lg text-slate-300 leading-relaxed font-normal [&_p]:inline [&_strong]:font-semibold [&_b]:font-semibold [&_em]:italic [&_i]:italic"
+              className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed font-normal [&_p]:inline [&_strong]:font-semibold [&_b]:font-semibold [&_em]:italic [&_i]:italic"
               dangerouslySetInnerHTML={{ __html: subtitle }}
             />
           ) : (
-            <p className="mt-4 text-base sm:text-lg text-slate-300 leading-relaxed font-normal">
+            <p className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed font-normal">
               {subtitle}
             </p>
           )}

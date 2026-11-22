@@ -194,6 +194,7 @@ export function IndustriesView({ content, lang, dict }: IndustriesViewProps) {
             }
           }
           quoteAvatar={data.quoteAvatar || undefined}
+          reviewId={data.quoteReviewId || 'random'}
           lang={lang}
         />
       )}

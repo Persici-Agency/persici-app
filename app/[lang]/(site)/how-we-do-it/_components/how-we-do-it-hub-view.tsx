@@ -101,12 +101,16 @@ export function HowWeDoItHubView({
       )}
 
       {/* 6. Executive Client Review */}
-      <ClientReviewSection
-        quoteText={quoteText}
-        quoteAuthor={content.quoteAuthor}
-        quoteRole={quoteRole}
-        lang={lang}
-      />
+      {content.quoteEnabled !== false && (
+        <ClientReviewSection
+          quoteText={quoteText}
+          quoteAuthor={content.quoteAuthor}
+          quoteRole={quoteRole}
+          badge={content.quoteBadge}
+          reviewId={content.quoteReviewId || 'random'}
+          lang={lang}
+        />
+      )}
 
       {/* 7. Enterprise Delivery FAQs */}
       <FaqSection

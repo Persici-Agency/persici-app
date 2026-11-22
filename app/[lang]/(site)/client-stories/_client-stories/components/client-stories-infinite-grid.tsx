@@ -41,8 +41,10 @@ export function ClientStoriesInfiniteGrid({
     const map: Partial<Record<StoryCategorySlug, number>> = {
       all: initialStories.length,
       software: 0,
+      'ai-platforms': 0,
       branding: 0,
       marketing: 0,
+      'marketing-branding': 0,
       'video-production': 0,
     };
     initialStories.forEach((s) => {

@@ -3151,6 +3151,13 @@ export const clientStoriesHubPageData: ClientStoriesHubPageData = {
         },
       },
       {
+        slug: 'ai-platforms',
+        label: {
+          en: 'AI Platforms',
+          ar: 'منصات الذكاء الاصطناعي',
+        },
+      },
+      {
         slug: 'branding',
         label: {
           en: 'Branding & Identity',
@@ -3162,6 +3169,13 @@ export const clientStoriesHubPageData: ClientStoriesHubPageData = {
         label: {
           en: 'Growth & Campaigns',
           ar: 'الحملات ونمو الأعمال',
+        },
+      },
+      {
+        slug: 'marketing-branding',
+        label: {
+          en: 'Marketing & Branding',
+          ar: 'التسويق والهوية البصرية',
         },
       },
       {

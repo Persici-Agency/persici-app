@@ -1,153 +1,78 @@
-'use client';
-
-import React, { useState, useRef } from 'react';
+import React from 'react';
 import Image from 'next/image';
 import type { Dictionary } from '@dictionaries';
+import type { ApproachSectionContent, LocalizedString } from '@shared/types';
 import { sectionContainer, sectionPaddingY, HomeButton, FadeUp } from '@shared';
-import { getHomeApproachTeam } from '../services';
+
+type BilingualField = string | LocalizedString | { en?: string; ar?: string };
+
+export interface LegacyApproachContent extends Partial<ApproachSectionContent> {
+  teamImage?: string;
+  titleEn?: string;
+  titleAr?: string;
+  desc1En?: string;
+  desc1Ar?: string;
+  desc2En?: string;
+  desc2Ar?: string;
+  ctaPrimary?: BilingualField;
+  ctaPrimaryEn?: string;
+  ctaPrimaryAr?: string;
+  ctaSecondary?: BilingualField;
+  ctaSecondaryEn?: string;
+  ctaSecondaryAr?: string;
+}
+
+function readBiText(
+  field: unknown,
+  lang: string
+): string | undefined {
+  if (!field) return undefined;
+  if (typeof field === 'string') return field;
+  if (typeof field === 'object') {
+    const rec = field as Record<string, unknown>;
+    const candidate = lang === 'ar' ? rec.ar || rec.en : rec.en || rec.ar;
+    return typeof candidate === 'string' ? candidate : undefined;
+  }
+  return undefined;
+}
 
 export type ApproachSectionProps = {
   lang: string;
   dict: Dictionary;
-  content?: any;
+  content?: LegacyApproachContent | Record<string, unknown>;
 };
 
-export function TeamSpecialistsTrack({ teamAvatars }: { teamAvatars: any[] }) {
-  const trackRef = useRef<HTMLDivElement>(null);
-  const [isDragging, setIsDragging] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const [scrollLeft, setScrollLeft] = useState(0);
-
-  const handleMouseDown = (e: React.MouseEvent) => {
-    if (!trackRef.current) return;
-    setIsDragging(true);
-    setStartX(e.pageX - trackRef.current.offsetLeft);
-    setScrollLeft(trackRef.current.scrollLeft);
-  };
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging || !trackRef.current) return;
-    e.preventDefault();
-    const x = e.pageX - trackRef.current.offsetLeft;
-    const walk = (x - startX) * 1.5;
-    trackRef.current.scrollLeft = scrollLeft - walk;
-  };
-
-  const handleMouseUpOrLeave = () => {
-    setIsDragging(false);
-  };
-
-  // Touch swipe support
-  const touchStartXRef = useRef(0);
-  const touchScrollLeftRef = useRef(0);
-
-  const handleTouchStart = (e: React.TouchEvent) => {
-    if (!trackRef.current) return;
-    touchStartXRef.current = e.touches[0].pageX - trackRef.current.offsetLeft;
-    touchScrollLeftRef.current = trackRef.current.scrollLeft;
-  };
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (!trackRef.current) return;
-    const x = e.touches[0].pageX - trackRef.current.offsetLeft;
-    const walk = (x - touchStartXRef.current) * 1.5;
-    trackRef.current.scrollLeft = touchScrollLeftRef.current - walk;
-  };
-
-  return (
-    <div
-      ref={trackRef}
-      onMouseDown={handleMouseDown}
-      onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUpOrLeave}
-      onMouseLeave={handleMouseUpOrLeave}
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      className="w-full overflow-x-auto select-none pt-1 pb-1 cursor-grab active:cursor-grabbing [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-    >
-      <div className="min-w-full w-max flex items-center justify-center -space-x-2.5 rtl:space-x-reverse px-2">
-        {teamAvatars.map((member: any, idx: number) => {
-          const src = typeof member === 'string' ? member : (member?.avatar || member?.src || member?.url || '');
-          if (!src) return null;
-          const name = typeof member === 'string' ? '' : (member?.name || '');
-          const role = typeof member === 'string' ? '' : (member?.role || '');
-          const alt = typeof member === 'string' ? `Specialist ${idx + 1}` : (member?.alt || member?.name || `Specialist ${idx + 1}`);
-          const title = role ? `${name ? name + ' - ' : ''}${role}` : alt;
-
-          return (
-            <div
-              key={typeof member === 'object' && member?.id ? member.id : idx}
-              className="group relative h-9 w-9 sm:h-12 sm:w-12 shrink-0 overflow-hidden rounded-full border-2 sm:border-3 border-white bg-white shadow-xs transition-transform duration-300 hover:scale-115 hover:z-20 cursor-pointer pointer-events-auto"
-              title={title}
-            >
-              <Image
-                src={src}
-                alt={alt}
-                fill
-                sizes="64px"
-                className="object-cover pointer-events-none"
-              />
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-export function ApproachSection({ lang, dict, content }: ApproachSectionProps) {
+export function ApproachSection({
+  lang,
+  dict,
+  content: rawContent,
+}: ApproachSectionProps) {
   const isAr = lang === 'ar';
-  const defaultTeamAvatars = getHomeApproachTeam();
-  const teamAvatars =
-    (content?.teamMembers && content.teamMembers.length > 0)
-      ? content.teamMembers
-      : defaultTeamAvatars;
+  const content = rawContent as LegacyApproachContent | undefined;
 
   const teamImage =
     content?.teamImage ||
     'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1200&q=80';
 
-  const badgeLabel =
-    content?.badgeLabel?.[lang] ||
-    content?.teamBadgeLabel?.[lang] ||
-    (isAr ? (content?.teamBadgeLabelAr || content?.badgeLabelAr) : (content?.teamBadgeLabelEn || content?.badgeLabelEn)) ||
-    content?.badgeLabel ||
-    content?.teamBadgeLabel ||
-    dict.approach.teamBadgeLabel ||
-    'Team Persici';
-
-  const badgeTitle =
-    content?.badgeTitle?.[lang] ||
-    content?.teamBadgeTitle?.[lang] ||
-    (isAr ? (content?.teamBadgeTitleAr || content?.badgeTitleAr) : (content?.teamBadgeTitleEn || content?.badgeTitleEn)) ||
-    content?.badgeTitle ||
-    content?.teamBadgeTitle ||
-    dict.approach.teamBadgeTitle ||
-    'Your team of specialists';
-
   const title =
-    content?.title?.[lang] ||
+    readBiText(content?.title, lang) ||
     (isAr ? content?.titleAr : content?.titleEn) ||
-    content?.title ||
     dict.approach.title;
 
   const desc1 =
-    content?.desc1?.[lang] ||
+    readBiText(content?.desc1, lang) ||
     (isAr ? content?.desc1Ar : content?.desc1En) ||
-    content?.desc1 ||
     dict.approach.desc1;
 
   const desc2 =
-    content?.desc2?.[lang] ||
+    readBiText(content?.desc2, lang) ||
     (isAr ? content?.desc2Ar : content?.desc2En) ||
-    content?.desc2 ||
     dict.approach.desc2;
 
   const ctaPrimary =
-    content?.ctaPrimaryText?.[lang] ||
-    content?.ctaPrimary?.[lang] ||
+    readBiText(content?.ctaPrimaryText, lang) ||
+    readBiText(content?.ctaPrimary, lang) ||
     (isAr ? content?.ctaPrimaryAr : content?.ctaPrimaryEn) ||
-    content?.ctaPrimaryText ||
     dict.approach.ctaPrimary;
 
   const rawPrimaryHref = content?.ctaPrimaryHref || '/contact';
@@ -158,10 +83,9 @@ export function ApproachSection({ lang, dict, content }: ApproachSectionProps) {
     : rawPrimaryHref;
 
   const ctaSecondary =
-    content?.ctaSecondaryText?.[lang] ||
-    content?.ctaSecondary?.[lang] ||
+    readBiText(content?.ctaSecondaryText, lang) ||
+    readBiText(content?.ctaSecondary, lang) ||
     (isAr ? content?.ctaSecondaryAr : content?.ctaSecondaryEn) ||
-    content?.ctaSecondaryText ||
     dict.approach.ctaSecondary;
 
   const rawSecondaryHref = content?.ctaSecondaryHref || '/about';
@@ -179,7 +103,7 @@ export function ApproachSection({ lang, dict, content }: ApproachSectionProps) {
       </div>
 
       <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-16">
-        {/* Left Column: Team Image with Floating Badge Card */}
+        {/* Left Column: Team Image */}
         <FadeUp delay={0} duration={800} distance={28} className="relative lg:col-span-6">
           <div className="relative aspect-[4/3] sm:aspect-[1.15/1] overflow-hidden rounded-[2rem] sm:rounded-[2.5rem] border border-black/5 shadow-2xl bg-black/5">
             <Image
@@ -189,23 +113,6 @@ export function ApproachSection({ lang, dict, content }: ApproachSectionProps) {
               sizes="(max-width: 1024px) 100vw, 50vw"
               className="object-cover"
             />
-          </div>
-
-          {/* Floating "Team Persici / Your team of specialists" Card with Avatar Stack */}
-          <div className="absolute bottom-4 sm:bottom-6 start-4 sm:start-6 end-4 sm:end-6 rounded-2xl sm:rounded-3xl border border-black/10 bg-white/95 p-4 sm:p-5 shadow-2xl backdrop-blur-md">
-            <div className="flex flex-col gap-2.5">
-              <div>
-                <span className="block text-[9.5px] font-semibold tracking-wider uppercase text-persici-crimson">
-                  {badgeLabel}
-                </span>
-                <h4 className="font-primary text-sm sm:text-base font-medium text-foreground mt-0.5">
-                  {badgeTitle}
-                </h4>
-              </div>
-
-              {/* Horizontal Drag-To-Scroll Track for Specialists Avatars */}
-              <TeamSpecialistsTrack teamAvatars={teamAvatars} />
-            </div>
           </div>
         </FadeUp>
 
@@ -259,4 +166,3 @@ export function ApproachSection({ lang, dict, content }: ApproachSectionProps) {
     </section>
   );
 }
-

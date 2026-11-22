@@ -188,6 +188,7 @@ export function EcommerceGrowthView({ lang, dict, data: propData }: EcommerceGro
           quoteRole={data.clientReview.role}
           quoteAvatar={data.clientReview.avatar}
           badge={data.clientReview.badge}
+          reviewId={data.clientReview.reviewId || 'random'}
           lang={lang}
         />
       )}

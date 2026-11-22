@@ -170,6 +170,7 @@ export function DigitalEngineeringView({ lang, dict, data: propData }: DigitalEn
           quoteRole={data.clientReview.role}
           quoteAvatar={data.clientReview.avatar}
           badge={data.clientReview.badge}
+          reviewId={data.clientReview.reviewId || 'random'}
           lang={lang}
         />
       )}

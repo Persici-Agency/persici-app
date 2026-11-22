@@ -78,17 +78,72 @@ export default function ReviewsManagerPage({
     }
   };
 
+  const openEditReview = React.useCallback((r: ReviewItem) => {
+    setIsCreating(false);
+    setActiveFormTab('both');
+    const nameEn = extractEn(r.name, r.nameEn);
+    const nameAr = extractAr(r.name, r.nameAr, nameEn);
+    const roleEn = extractEn(r.role, r.roleEn);
+    const roleAr = extractAr(r.role, r.roleAr);
+    const companyEn = extractEn(r.company, r.companyEn);
+    const companyAr = extractAr(r.company, r.companyAr);
+    const reviewEn = extractEn(r.review, r.reviewEn);
+    const reviewAr = extractAr(r.review, r.reviewAr);
+    const verifiedEn = extractEn(r.verified, r.verifiedEn) || 'Verified Client';
+    const verifiedAr = extractAr(r.verified, r.verifiedAr) || 'عميل موثق';
+
+    setEditingReview({
+      ...r,
+      name: nameEn || nameAr,
+      nameEn,
+      nameAr,
+      role: roleEn || roleAr,
+      roleEn,
+      roleAr,
+      company: companyEn || companyAr,
+      companyEn,
+      companyAr,
+      review: reviewEn || reviewAr,
+      reviewEn,
+      reviewAr,
+      verified: verifiedEn,
+      verifiedEn,
+      verifiedAr,
+      rating: r.rating || 5,
+      active: r.active !== false,
+    });
+  }, []);
+
   useEffect(() => {
     let mounted = true;
-    queueMicrotask(() => {
-      if (mounted) {
-        fetchReviews();
-      }
-    });
+    fetch('/api/reviews', { cache: 'no-store' })
+      .then((res) => res.json())
+      .then((data) => {
+        if (!mounted || !data?.reviews) return;
+        const list = data.reviews as ReviewItem[];
+        setReviews(list);
+        if (typeof window !== 'undefined') {
+          const editTarget = new URLSearchParams(window.location.search).get('edit');
+          if (editTarget) {
+            const matched = list.find(
+              (r) => r.id === editTarget || r._id === editTarget
+            );
+            if (matched) {
+              openEditReview(matched);
+            }
+          }
+        }
+      })
+      .catch((err) => {
+        console.error('Failed to load reviews:', err);
+      })
+      .finally(() => {
+        if (mounted) setLoading(false);
+      });
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [openEditReview]);
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -165,42 +220,6 @@ export default function ReviewsManagerPage({
       verifiedAr: 'عميل موثق',
       rating: 5,
       active: true,
-    });
-  };
-
-  const openEditReview = (r: ReviewItem) => {
-    setIsCreating(false);
-    setActiveFormTab('both');
-    const nameEn = extractEn(r.name, r.nameEn);
-    const nameAr = extractAr(r.name, r.nameAr, nameEn);
-    const roleEn = extractEn(r.role, r.roleEn);
-    const roleAr = extractAr(r.role, r.roleAr);
-    const companyEn = extractEn(r.company, r.companyEn);
-    const companyAr = extractAr(r.company, r.companyAr);
-    const reviewEn = extractEn(r.review, r.reviewEn);
-    const reviewAr = extractAr(r.review, r.reviewAr);
-    const verifiedEn = extractEn(r.verified, r.verifiedEn) || 'Verified Client';
-    const verifiedAr = extractAr(r.verified, r.verifiedAr) || 'عميل موثق';
-
-    setEditingReview({
-      ...r,
-      name: nameEn || nameAr,
-      nameEn,
-      nameAr,
-      role: roleEn || roleAr,
-      roleEn,
-      roleAr,
-      company: companyEn || companyAr,
-      companyEn,
-      companyAr,
-      review: reviewEn || reviewAr,
-      reviewEn,
-      reviewAr,
-      verified: verifiedEn,
-      verifiedEn,
-      verifiedAr,
-      rating: r.rating || 5,
-      active: r.active !== false,
     });
   };
 

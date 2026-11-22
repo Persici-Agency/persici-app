@@ -3,6 +3,7 @@ import { getDictionary, hasLocale } from '@dictionaries';
 import { createMetadata } from '@lib/metadata';
 import type { Locale } from '@lib/i18n';
 import { getHomePageData, getDbReviews } from '@shared/services/db.service';
+import { getTeamMembersFromDb } from '@/lib/team-server';
 import { HomeView } from './_home';
 
 export const dynamic = 'force-dynamic';
@@ -29,11 +30,20 @@ export async function generateMetadata({ params }: PageProps<'/[lang]'>) {
 export default async function HomePage({ params }: PageProps<'/[lang]'>) {
   const { lang } = await params;
   if (!hasLocale(lang)) notFound();
-  const [dict, content, dbReviews] = await Promise.all([
+  const [dict, content, dbReviews, teamMembers] = await Promise.all([
     getDictionary(lang),
     getHomePageData(),
     getDbReviews(),
+    getTeamMembersFromDb({ activeOnly: true }),
   ]);
 
-  return <HomeView lang={lang} dict={dict} content={content} reviews={dbReviews} />;
+  return (
+    <HomeView
+      lang={lang}
+      dict={dict}
+      content={content}
+      reviews={dbReviews}
+      teamMembers={teamMembers}
+    />
+  );
 }

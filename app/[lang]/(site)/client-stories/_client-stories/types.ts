@@ -3,14 +3,18 @@ import type { LocalizedString } from '@shared/types';
 export type StoryTemplateType =
   | 'marketing-video-showcase'
   | 'image-gallery-showcase'
+  | 'marketing-branding-showcase'
   | 'software-web-app-showcase'
+  | 'ai-platform-showcase'
   | 'mobile-app-showcase';
 
 export type StoryCategorySlug =
   | 'all'
   | 'software'
+  | 'ai-platforms'
   | 'branding'
   | 'marketing'
+  | 'marketing-branding'
   | 'video-production';
 
 export interface StoryMetric {

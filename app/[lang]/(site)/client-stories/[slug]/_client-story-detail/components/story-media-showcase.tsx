@@ -101,7 +101,17 @@ export function StoryMediaShowcase({ story, lang }: StoryMediaShowcaseProps) {
       {/* Header */}
       <div className="mb-8 sm:mb-12">
         <span className="font-mono text-xs font-semibold uppercase tracking-wider text-persici-crimson mb-2 block">
-          {isRtl ? 'معرض المخرجات والإنتاج' : 'Deliverables & Production'}
+          {templateType === 'ai-platform-showcase'
+            ? isRtl
+              ? 'منصة ونظام ذكاء اصطناعي'
+              : 'AI Platform & Intelligent System'
+            : templateType === 'marketing-branding-showcase'
+            ? isRtl
+              ? 'الهوية البصرية والحملات التسويقية'
+              : 'Brand & Campaign Deliverables'
+            : isRtl
+            ? 'معرض المخرجات والإنتاج'
+            : 'Deliverables & Production'}
         </span>
         <h2 className="font-primary text-2xl sm:text-3xl lg:text-4xl font-medium text-slate-900 tracking-tight">
           {showcaseTitle}
@@ -129,8 +139,70 @@ export function StoryMediaShowcase({ story, lang }: StoryMediaShowcaseProps) {
       </div>
 
       {/* ========================================================================= */}
-      {/* TEMPLATE A: MULTI-VIDEO MARKETING REEL                                     */}
+      {/* TEMPLATE A & E: MARKETING VIDEO CAMPAIGN & MARKETING & BRANDING           */}
       {/* ========================================================================= */}
+      {templateType === 'marketing-branding-showcase' && videos.length > 0 && (
+        <div className="flex flex-col gap-8">
+          {videos.length === 1 ? (
+            <div className="space-y-3">
+              <div className="relative w-full aspect-16/9 rounded-2xl sm:rounded-3xl overflow-hidden bg-black shadow-2xl border border-slate-800">
+                <VideoPlayer
+                  key={videos[0].videoUrl}
+                  src={videos[0].videoUrl}
+                  poster={videos[0].posterUrl || story.heroImage}
+                  title={videos[0].title?.[lang as 'en' | 'ar'] || videos[0].title?.en}
+                  lang={lang as 'en' | 'ar'}
+                  className="w-full h-full"
+                  objectFit="contain"
+                />
+              </div>
+              {(videos[0].title?.[lang as 'en' | 'ar'] || videos[0].title?.en) && (
+                <div className="flex items-center justify-between px-1 text-xs sm:text-sm font-medium text-slate-700">
+                  <span>{videos[0].title?.[lang as 'en' | 'ar'] || videos[0].title?.en}</span>
+                  {videos[0].duration && (
+                    <span className="font-mono text-xs text-slate-500">{videos[0].duration}</span>
+                  )}
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+              {videos.map((vid, idx) => {
+                const vidTitle = vid.title?.[lang as 'en' | 'ar'] || vid.title?.en || '';
+                return (
+                  <div
+                    key={vid.id || idx}
+                    className="flex flex-col gap-3 rounded-2xl sm:rounded-3xl border border-slate-200/80 bg-slate-50/70 p-3 sm:p-4"
+                  >
+                    <div className="relative w-full aspect-16/9 rounded-xl sm:rounded-2xl overflow-hidden bg-black shadow-lg border border-slate-800/80">
+                      <VideoPlayer
+                        key={vid.videoUrl || idx}
+                        src={vid.videoUrl}
+                        poster={vid.posterUrl || story.heroImage}
+                        title={vidTitle}
+                        lang={lang as 'en' | 'ar'}
+                        className="w-full h-full"
+                        objectFit="contain"
+                      />
+                    </div>
+                    {(vidTitle || vid.duration) && (
+                      <div className="flex items-center justify-between px-1 text-xs sm:text-sm font-semibold text-slate-800">
+                        <span className="truncate">{vidTitle}</span>
+                        {vid.duration && (
+                          <span className="font-mono text-xs text-slate-500 shrink-0 ms-2">
+                            {vid.duration}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      )}
+
       {templateType === 'marketing-video-showcase' && videos.length > 0 && (
         <div className="flex flex-col gap-8">
           {/* Master Video Player */}
@@ -210,27 +282,48 @@ export function StoryMediaShowcase({ story, lang }: StoryMediaShowcaseProps) {
       )}
 
       {/* ========================================================================= */}
-      {/* GALLERY & LIGHTBOX ZOOM (Template B & Hybrid Video/Photo Stories)           */}
+      {/* GALLERY & LIGHTBOX ZOOM (Template B, Marketing & Branding, Hybrid)        */}
       {/* ========================================================================= */}
       {gallery.length > 0 && (
         <div className={videos.length > 0 ? 'mt-12 sm:mt-16' : ''}>
           {videos.length > 0 && (
             <h3 className="text-xs font-mono font-medium uppercase tracking-wider text-slate-500 mb-6">
-              {isRtl ? 'معرض الصور والإنتاج الميداني' : 'Campaign Photography & Production Stills'}
+              {templateType === 'marketing-branding-showcase'
+                ? isRtl
+                  ? 'المخرجات البصرية للعلامة التجارية'
+                  : 'Key Brand Visuals & Campaign Assets'
+                : isRtl
+                ? 'معرض الصور والإنتاج الميداني'
+                : 'Campaign Photography & Production Stills'}
             </h3>
           )}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+          <div
+            className={
+              templateType === 'marketing-branding-showcase' && gallery.length === 1
+                ? 'grid grid-cols-1 gap-6'
+                : templateType === 'marketing-branding-showcase' && gallery.length === 2
+                ? 'grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8'
+                : 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6'
+            }
+          >
             {gallery.map((img, idx) => {
               const alt = img.alt[lang as 'en' | 'ar'] || img.alt.en;
               const caption = img.caption?.[lang as 'en' | 'ar'] || img.caption?.en;
+              const isCompactShowcase = templateType === 'marketing-branding-showcase';
+              const aspectClass =
+                isCompactShowcase && gallery.length === 1
+                  ? 'aspect-16/9'
+                  : isCompactShowcase && gallery.length === 2
+                  ? 'aspect-4/3'
+                  : img.featured
+                  ? 'sm:col-span-2 aspect-16/9'
+                  : 'aspect-square';
 
               return (
                 <div
                   key={idx}
                   onClick={() => setLightboxIndex(idx)}
-                  className={`group relative overflow-hidden rounded-2xl sm:rounded-3xl border border-slate-200/80 bg-slate-100 cursor-pointer shadow-xs hover:shadow-xl transition-all duration-300 ${
-                    img.featured ? 'sm:col-span-2 aspect-16/9' : 'aspect-square'
-                  }`}
+                  className={`group relative overflow-hidden rounded-2xl sm:rounded-3xl border border-slate-200/80 bg-slate-100 cursor-pointer shadow-xs hover:shadow-xl transition-all duration-300 ${aspectClass}`}
                 >
                   <Image
                     src={img.src}
@@ -312,9 +405,10 @@ export function StoryMediaShowcase({ story, lang }: StoryMediaShowcaseProps) {
       )}
 
       {/* ========================================================================= */}
-      {/* TEMPLATE C: SOFTWARE / WEB APP DEMO & DEVICE MOCKUPS                       */}
+      {/* TEMPLATE C & F: SOFTWARE / WEB APP & AI PLATFORMS DEMO & DEVICE MOCKUPS   */}
       {/* ========================================================================= */}
-      {templateType === 'software-web-app-showcase' && (
+      {(templateType === 'software-web-app-showcase' ||
+        templateType === 'ai-platform-showcase') && (
         <div className="flex flex-col gap-10">
           {/* Device Mockup Switcher Controls */}
           {mockups.length > 1 && (
@@ -550,7 +644,13 @@ export function StoryMediaShowcase({ story, lang }: StoryMediaShowcaseProps) {
               <div className="flex items-center gap-2 text-slate-800 font-semibold mb-4">
                 <TbStack2 className="h-5 w-5 text-persici-crimson" />
                 <h3 className="text-base sm:text-lg">
-                  {isRtl ? 'المنظومة التقنية والبرمجية' : 'Engineered Tech Stack & Architecture'}
+                  {templateType === 'ai-platform-showcase'
+                    ? isRtl
+                      ? 'منظومة نماذج الذكاء الاصطناعي والبنية التقنية'
+                      : 'AI Models, Architecture & Tech Stack'
+                    : isRtl
+                    ? 'المنظومة التقنية والبرمجية'
+                    : 'Engineered Tech Stack & Architecture'}
                 </h3>
               </div>
 

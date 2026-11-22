@@ -24,6 +24,7 @@ import type { InsightsHubPageData, InsightDetail } from '@/app/[lang]/(site)/ins
 import type { ContentCardItem } from '@shared/components/content-card';
 import { getAllProjectsFromDb } from '@/lib/projects-server';
 import { getAllInsightsFromDb } from '@/lib/insights-server';
+import { getCommunicationConfigFromDb } from '@/lib/communication-server';
 import {
   clientStoryToFeaturedItem,
   aliasMappings,
@@ -276,19 +277,27 @@ export function normalizeClientStoriesPageData(
         ...clientStoriesHubPageData.allStoriesSection.emptySubtitle,
         ...(src.allStoriesSection?.emptySubtitle || {}),
       },
-      categories: hasValidCategories
-        ? src.allStoriesSection!.categories.map((cat, idx) => {
-            const defCat = defaultCategories[idx] || defaultCategories[0];
-            return {
-              ...defCat,
-              ...cat,
-              label: {
-                ...(defCat?.label || { en: '', ar: '' }),
-                ...(cat?.label || {}),
-              },
-            };
-          })
-        : defaultCategories,
+      categories: (() => {
+        if (!hasValidCategories) return defaultCategories;
+        const saved = src.allStoriesSection!.categories;
+        const merged = saved.map((cat) => {
+          const defCat = defaultCategories.find((d) => d.slug === cat?.slug);
+          return {
+            ...(defCat || {}),
+            ...cat,
+            label: {
+              ...(defCat?.label || { en: '', ar: '' }),
+              ...(cat?.label || {}),
+            },
+          };
+        });
+        for (const defCat of defaultCategories) {
+          if (!merged.some((c) => c.slug === defCat.slug)) {
+            merged.push(defCat);
+          }
+        }
+        return merged;
+      })(),
     },
   };
 }
@@ -429,8 +438,16 @@ export function normalizeContactPageData(raw?: Partial<ContactPageData> | null):
 }
 
 export async function getContactPageData(): Promise<ContactPageData> {
-  const raw = await getPageContent<ContactPageData>('contact', contactPageData);
-  return normalizeContactPageData(raw);
+  const [raw, commConfig] = await Promise.all([
+    getPageContent<ContactPageData>('contact', contactPageData),
+    getCommunicationConfigFromDb(),
+  ]);
+  const normalized = normalizeContactPageData(raw);
+  return {
+    ...normalized,
+    offices: commConfig.offices && commConfig.offices.length > 0 ? commConfig.offices : normalized.offices,
+    channels: commConfig.channels && commConfig.channels.length > 0 ? commConfig.channels : normalized.channels,
+  };
 }
 
 export async function getSharedContactData(): Promise<SharedContactContent> {
@@ -1481,8 +1498,18 @@ export function normalizeCareersPageData(raw?: Partial<CareersHubData> | null): 
 }
 
 export async function getCareersPageData(): Promise<CareersHubData> {
-  const raw = await getPageContent<CareersHubData>('careers', careersHubData);
-  return normalizeCareersPageData(raw);
+  const [raw, commConfig] = await Promise.all([
+    getPageContent<CareersHubData>('careers', careersHubData),
+    getCommunicationConfigFromDb(),
+  ]);
+  const normalized = normalizeCareersPageData(raw);
+  return {
+    ...normalized,
+    spontaneous: {
+      ...normalized.spontaneous,
+      email: commConfig.hrEmail || normalized.spontaneous.email,
+    },
+  };
 }
 
 /**

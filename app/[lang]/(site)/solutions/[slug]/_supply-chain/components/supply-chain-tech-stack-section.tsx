@@ -32,27 +32,36 @@ export function SupplyChainTechStackSection({
   const isRtl = lang === 'ar';
 
   return (
-    <section className={`${sectionPaddingY} bg-[#0E121B] relative overflow-hidden text-white`}>
+    <section className={`${sectionPaddingY} bg-gradient-to-br from-[#FFF7F6] via-[#FDF6F4] to-[#F5EFEA] border-y border-persici-crimson/10 relative overflow-hidden text-slate-900`}>
+      {/* Subtle Low-Opacity Background Image & Architectural Grid */}
+      <div
+        className="absolute inset-0 bg-[url('/images/about/heritage-card-bg.webp')] bg-cover bg-center opacity-[0.045] mix-blend-multiply pointer-events-none"
+        aria-hidden="true"
+      />
+      <div
+        className="absolute inset-0 bg-[radial-gradient(#c8102e_0.75px,transparent_0.75px)] [background-size:24px_24px] opacity-[0.06] pointer-events-none"
+        aria-hidden="true"
+      />
       {/* Ambient Crimson Glow Gradients */}
-      <div className="absolute top-0 right-1/4 w-96 h-96 bg-persici-crimson/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-persici-blush/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-0 right-1/4 w-96 h-96 bg-persici-crimson/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-persici-blush/10 rounded-full blur-3xl pointer-events-none" />
 
-      <div className={sectionContainer}>
+      <div className={`${sectionContainer} relative z-10`}>
         {/* Section Header */}
         <FadeUp delay={0} duration={700} distance={20} className="text-center max-w-3xl mx-auto mb-16 sm:mb-20 relative z-10">
           <span className="text-xs sm:text-sm font-semibold uppercase tracking-widest text-persici-crimson block mb-3">
             {badge || (isRtl ? 'المنظومة التقنية لسلاسل الإمداد' : 'Supply Chain Technology Matrix')}
           </span>
-          <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-white">
+          <h2 className="font-primary text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-slate-900">
             {title}
           </h2>
           {/<[a-z][\s\S]*>/i.test(subtitle || "") ? (
             <div
-              className="mt-4 text-base sm:text-lg text-slate-400 leading-relaxed font-normal [&_p]:mb-2 [&_p:last-child]:mb-0"
+              className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed font-normal [&_p]:mb-2 [&_p:last-child]:mb-0"
               dangerouslySetInnerHTML={{ __html: subtitle }}
             />
           ) : (
-            <p className="mt-4 text-base sm:text-lg text-slate-400 leading-relaxed font-normal">
+            <p className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed font-normal">
               {subtitle}
             </p>
           )}

@@ -7,6 +7,7 @@ export * from './growth-services-section';
 export * from './video-testimonials-carousel';
 export * from './clients-video-section';
 export * from './approach-section';
+export * from './home-team-carousel-section';
 export * from './reviews-section';
 export * from './discovery-form';
 export * from './home-contact-section';

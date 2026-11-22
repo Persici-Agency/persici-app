@@ -167,18 +167,27 @@ export function ProductManagementView({
 
       {/* 6. Technology & Infrastructure Matrix */}
       <div id="verticals">
-        <section className={`w-full bg-[#0E121B] text-white ${sectionPaddingY}`}>
-          <div className={sectionContainer}>
+        <section className={`w-full bg-gradient-to-br from-[#FFF7F6] via-[#FDF6F4] to-[#F5EFEA] border-y border-persici-crimson/10 text-slate-900 ${sectionPaddingY} relative overflow-hidden`}>
+          {/* Subtle Low-Opacity Background Image & Architectural Grid */}
+          <div
+            className="absolute inset-0 bg-[url('/images/about/heritage-card-bg.webp')] bg-cover bg-center opacity-[0.045] mix-blend-multiply pointer-events-none"
+            aria-hidden="true"
+          />
+          <div
+            className="absolute inset-0 bg-[radial-gradient(#c8102e_0.75px,transparent_0.75px)] [background-size:24px_24px] opacity-[0.06] pointer-events-none"
+            aria-hidden="true"
+          />
+          <div className={`${sectionContainer} relative z-10`}>
             <div className="max-w-3xl mb-12 sm:mb-16">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-persici-crimson/20 border border-persici-crimson/30 text-persici-crimson text-xs font-semibold uppercase tracking-wider mb-4">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-persici-crimson/10 border border-persici-crimson/20 text-persici-crimson text-xs font-semibold uppercase tracking-wider mb-4">
                 {isAr ? 'أدوات ومنصات المنتجات' : 'Product Toolchains'}
               </div>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-primary font-medium text-white tracking-tight leading-tight mb-5">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-primary font-medium text-slate-900 tracking-tight leading-tight mb-5">
                 {data.techStackPodsTitle
                   ? (data.techStackPodsTitle[isAr ? 'ar' : 'en'] || data.techStackPodsTitle.en)
                   : (isAr ? 'منظومة إدارة المنتجات والبيانات' : 'Product Analytics & Roadmapping Toolchains')}
               </h2>
-              <p className="text-base sm:text-lg text-slate-300 font-secondary leading-relaxed">
+              <p className="text-base sm:text-lg text-slate-600 font-secondary leading-relaxed">
                 {data.techStackPodsSubtitle
                   ? (data.techStackPodsSubtitle[isAr ? 'ar' : 'en'] || data.techStackPodsSubtitle.en)
                   : (isAr
@@ -238,12 +247,16 @@ export function ProductManagementView({
       )}
 
       {/* 8. Executive Client Review */}
-      <ClientReviewSection
-        quoteText={quoteText}
-        quoteAuthor={quoteAuthor}
-        quoteRole={quoteRole}
-        lang={lang}
-      />
+      {data.clientReview?.enabled !== false && (
+        <ClientReviewSection
+          quoteText={quoteText}
+          quoteAuthor={quoteAuthor}
+          quoteRole={quoteRole}
+          badge={data.clientReview?.badge}
+          reviewId={data.clientReview?.reviewId || 'random'}
+          lang={lang}
+        />
+      )}
 
       {/* 9. Enterprise FAQs Accordion */}
       <div id="faqs">

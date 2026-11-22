@@ -1,21 +1,22 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import {
-  TbRoute,
-  TbPlus,
-  TbTrash,
   TbDeviceFloppy,
   TbCheck,
   TbAlertCircle,
-  TbBrandLinkedin,
-  TbBrandX,
-  TbBrandInstagram,
-  TbBrandGithub,
-  TbMapPin,
   TbBuildingSkyscraper,
+  TbAddressBook,
+  TbExternalLink,
+  TbShare,
+  TbMail,
 } from 'react-icons/tb';
+import {
+  DEFAULT_COMMUNICATION_CONFIG,
+  type CommunicationSocialConfig,
+} from '@/lib/communication-types';
 
 interface OfficeHub {
   city: { en: string; ar: string };
@@ -67,18 +68,32 @@ export default function FooterBuilderPage() {
     ],
   });
 
+  const [commConfig, setCommConfig] = useState<CommunicationSocialConfig>(DEFAULT_COMMUNICATION_CONFIG);
+  const [passkeySuffix, setPasskeySuffix] = useState('');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saveStatus, setSaveStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
   useEffect(() => {
     async function loadFooter() {
+      const pk =
+        typeof window !== 'undefined'
+          ? new URLSearchParams(window.location.search).get('passkey')
+          : null;
       try {
-        const res = await fetch('/api/navigation');
-        const data = await res.json();
+        const [navRes, commRes] = await Promise.all([
+          fetch('/api/navigation'),
+          fetch('/api/communication', { cache: 'no-store' }),
+        ]);
+        if (pk) setPasskeySuffix(`?passkey=${encodeURIComponent(pk)}`);
+        const data = await navRes.json();
         if (data.success && data.footer) {
-          if (data.footer.hubs && data.footer.hubs.length > 0) {
-            setConfig((prev) => ({ ...prev, ...data.footer }));
+          setConfig((prev) => ({ ...prev, ...data.footer }));
+        }
+        if (commRes.ok) {
+          const commData = await commRes.json();
+          if (commData?.success && commData.config) {
+            setCommConfig(commData.config);
           }
         }
       } catch (err) {
@@ -90,73 +105,28 @@ export default function FooterBuilderPage() {
     loadFooter();
   }, []);
 
-  const handleAddHub = () => {
-    setConfig((prev) => ({
-      ...prev,
-      hubs: [
-        ...prev.hubs,
-        {
-          city: { en: 'New Hub', ar: 'مركز جديد' },
-          address: { en: 'City, Country', ar: 'المدينة، الدولة' },
-          phone: '',
-        },
-      ],
-    }));
-  };
-
-  const handleRemoveHub = (idx: number) => {
-    setConfig((prev) => ({
-      ...prev,
-      hubs: prev.hubs.filter((_, i) => i !== idx),
-    }));
-  };
-
-  const handleUpdateHub = (idx: number, field: string, value: string) => {
-    setConfig((prev) => {
-      const hubs = [...prev.hubs];
-      const hub = { ...hubs[idx] };
-      if (field === 'cityEn') hub.city = { ...hub.city, en: value };
-      else if (field === 'cityAr') hub.city = { ...hub.city, ar: value };
-      else if (field === 'addressEn') hub.address = { ...hub.address, en: value };
-      else if (field === 'addressAr') hub.address = { ...hub.address, ar: value };
-      else if (field === 'phone') hub.phone = value;
-      hubs[idx] = hub;
-      return { ...prev, hubs };
-    });
-  };
-
-  const handleAddSocial = () => {
-    setConfig((prev) => ({
-      ...prev,
-      socialLinks: [...prev.socialLinks, { platform: 'Platform', url: 'https://' }],
-    }));
-  };
-
-  const handleRemoveSocial = (idx: number) => {
-    setConfig((prev) => ({
-      ...prev,
-      socialLinks: prev.socialLinks.filter((_, i) => i !== idx),
-    }));
-  };
-
-  const handleUpdateSocial = (idx: number, field: 'platform' | 'url', value: string) => {
-    setConfig((prev) => {
-      const list = [...prev.socialLinks];
-      list[idx] = { ...list[idx], [field]: value };
-      return { ...prev, socialLinks: list };
-    });
-  };
-
   const handleSave = async () => {
     setSaving(true);
     setSaveStatus('idle');
     try {
+      const syncedHubs: OfficeHub[] = commConfig.offices.map((o) => ({
+        city: o.city,
+        address: o.address,
+        phone: o.phone,
+      }));
+      const syncedSocials: SocialLink[] = commConfig.socialLinks
+        .filter((s) => s.enabled && s.url)
+        .map((s) => ({ platform: s.platform, url: s.url }));
+
       const res = await fetch('/api/navigation', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           type: 'footer',
-          ...config,
+          tagline: config.tagline,
+          copyrightText: config.copyrightText,
+          hubs: syncedHubs.length > 0 ? syncedHubs : config.hubs,
+          socialLinks: syncedSocials.length > 0 ? syncedSocials : config.socialLinks,
         }),
       });
       if (res.ok) {
@@ -290,151 +260,117 @@ export default function FooterBuilderPage() {
             </div>
           </div>
 
-          {/* Regional Hubs Manager */}
+          {/* Regional Hubs Manager — Synced from Communication & Social Media */}
           <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <div>
-                <h2 className="text-sm font-bold text-slate-900">Regional Office Hubs</h2>
-                <p className="text-xs text-slate-500">Corporate offices displayed in the footer address grid</p>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 rounded-xl bg-persici-crimson/10 text-persici-crimson flex items-center justify-center shrink-0">
+                  <TbBuildingSkyscraper className="w-5 h-5" />
+                </div>
+                <div>
+                  <h2 className="text-sm font-bold text-slate-900">
+                    Regional Office Hubs & Footer Contact Info (Synced)
+                  </h2>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    To edit office cities, addresses, corporate emails, or phones, go to{' '}
+                    <span className="font-semibold text-slate-700">Communication & Social Media</span>{' '}
+                    so Footer, Contact, and Careers stay unified.
+                  </p>
+                </div>
               </div>
-              <button
-                type="button"
-                onClick={handleAddHub}
-                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-persici-crimson bg-persici-crimson/10 hover:bg-persici-crimson/20 rounded-xl transition-colors"
-              >
-                <TbPlus className="w-4 h-4" />
-                <span>Add Office Hub</span>
-              </button>
+
+              <div className="flex flex-wrap items-center gap-2 shrink-0">
+                <Link
+                  href={`/${lang}/dashboard/communication${passkeySuffix}#emails`}
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors"
+                >
+                  <TbMail className="w-4 h-4 text-persici-crimson" />
+                  <span>Edit Emails & Phone</span>
+                </Link>
+                <Link
+                  href={`/${lang}/dashboard/communication${passkeySuffix}#offices`}
+                  className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-persici-crimson hover:bg-red-700 rounded-xl transition-colors shadow-sm"
+                >
+                  <TbAddressBook className="w-4 h-4" />
+                  <span>Manage in Communication & Social</span>
+                  <TbExternalLink className="w-3.5 h-3.5" />
+                </Link>
+              </div>
             </div>
 
-            <div className="space-y-4">
-              {config.hubs.map((hub, idx) => (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+              {commConfig.offices.map((office) => (
                 <div
-                  key={idx}
-                  className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3"
+                  key={office.id}
+                  className="p-3.5 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-1"
                 >
-                  <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
-                    <div className="md:col-span-3">
-                      <label className="block text-[11px] font-semibold text-slate-500 mb-0.5">
-                        City Name (EN)
-                      </label>
-                      <input
-                        type="text"
-                        value={hub.city.en}
-                        onChange={(e) => handleUpdateHub(idx, 'cityEn', e.target.value)}
-                        className="w-full px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-lg focus:ring-1 focus:ring-persici-crimson font-medium"
-                      />
-                    </div>
-
-                    <div className="md:col-span-3">
-                      <label className="block text-[11px] font-semibold text-slate-500 mb-0.5">
-                        City Name (AR)
-                      </label>
-                      <input
-                        type="text"
-                        dir="rtl"
-                        value={hub.city.ar}
-                        onChange={(e) => handleUpdateHub(idx, 'cityAr', e.target.value)}
-                        className="w-full px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-lg focus:ring-1 focus:ring-persici-crimson font-arabic font-medium"
-                      />
-                    </div>
-
-                    <div className="md:col-span-3">
-                      <label className="block text-[11px] font-semibold text-slate-500 mb-0.5">
-                        Phone / Contact
-                      </label>
-                      <input
-                        type="text"
-                        value={hub.phone || ''}
-                        onChange={(e) => handleUpdateHub(idx, 'phone', e.target.value)}
-                        className="w-full px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-lg focus:ring-1 focus:ring-persici-crimson"
-                      />
-                    </div>
-
-                    <div className="md:col-span-3 flex justify-end">
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveHub(idx)}
-                        className="p-1.5 text-slate-400 hover:text-red-600 rounded-lg hover:bg-white"
-                      >
-                        <TbTrash className="w-4 h-4" />
-                      </button>
-                    </div>
-
-                    <div className="md:col-span-6">
-                      <label className="block text-[11px] font-semibold text-slate-500 mb-0.5">
-                        Address (English)
-                      </label>
-                      <input
-                        type="text"
-                        value={hub.address.en}
-                        onChange={(e) => handleUpdateHub(idx, 'addressEn', e.target.value)}
-                        className="w-full px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-lg focus:ring-1 focus:ring-persici-crimson"
-                      />
-                    </div>
-
-                    <div className="md:col-span-6">
-                      <label className="block text-[11px] font-semibold text-slate-500 mb-0.5">
-                        Address (Arabic)
-                      </label>
-                      <input
-                        type="text"
-                        dir="rtl"
-                        value={hub.address.ar}
-                        onChange={(e) => handleUpdateHub(idx, 'addressAr', e.target.value)}
-                        className="w-full px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-lg focus:ring-1 focus:ring-persici-crimson font-arabic"
-                      />
-                    </div>
+                  <div className="font-bold text-slate-900 flex items-center justify-between gap-2">
+                    <span>{lang === 'ar' ? office.city.ar || office.city.en : office.city.en}</span>
+                    {office.isHQ && (
+                      <span className="px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[10px] font-bold">
+                        HQ
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-slate-600 line-clamp-1">
+                    {lang === 'ar' ? office.address.ar || office.address.en : office.address.en}
+                  </div>
+                  <div className="font-mono text-[11px] text-slate-500">
+                    {office.phone} · {office.email}
                   </div>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Social Media Links */}
+          {/* Social Media Links — Synced from Communication & Social Media */}
           <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <div>
-                <h2 className="text-sm font-bold text-slate-900">Corporate Social Links</h2>
-                <p className="text-xs text-slate-500">Official agency channels displayed across footer badges</p>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 rounded-xl bg-persici-crimson/10 text-persici-crimson flex items-center justify-center shrink-0">
+                  <TbShare className="w-5 h-5" />
+                </div>
+                <div>
+                  <h2 className="text-sm font-bold text-slate-900">Corporate Social Links (Synced)</h2>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Managed centrally in <span className="font-semibold text-slate-700">Communication & Social Media</span>. Enabled links render in the live footer bar.
+                  </p>
+                </div>
               </div>
-              <button
-                type="button"
-                onClick={handleAddSocial}
-                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-persici-crimson bg-persici-crimson/10 hover:bg-persici-crimson/20 rounded-xl transition-colors"
+
+              <Link
+                href={`/${lang}/dashboard/communication${passkeySuffix}#social`}
+                className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-persici-crimson hover:bg-red-700 rounded-xl transition-colors shadow-sm shrink-0"
               >
-                <TbPlus className="w-4 h-4" />
-                <span>Add Social Channel</span>
-              </button>
+                <TbAddressBook className="w-4 h-4" />
+                <span>Edit Social Links in Communication & Social</span>
+                <TbExternalLink className="w-3.5 h-3.5" />
+              </Link>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {config.socialLinks.map((s, idx) => (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+              {commConfig.socialLinks.map((s) => (
                 <div
-                  key={idx}
-                  className="flex items-center gap-2 p-3 bg-slate-50 rounded-xl border border-slate-200"
+                  key={s.id}
+                  className={`flex items-center justify-between gap-3 p-3 rounded-xl border text-xs ${
+                    s.enabled
+                      ? 'bg-slate-50 border-slate-200 text-slate-800'
+                      : 'bg-slate-100/70 border-slate-200/70 text-slate-400 opacity-75'
+                  }`}
                 >
-                  <input
-                    type="text"
-                    placeholder="Platform (e.g. LinkedIn)"
-                    value={s.platform}
-                    onChange={(e) => handleUpdateSocial(idx, 'platform', e.target.value)}
-                    className="w-32 px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg font-medium"
-                  />
-                  <input
-                    type="url"
-                    placeholder="https://..."
-                    value={s.url}
-                    onChange={(e) => handleUpdateSocial(idx, 'url', e.target.value)}
-                    className="flex-1 px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg font-mono text-[11px]"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveSocial(idx)}
-                    className="p-1.5 text-slate-300 hover:text-red-600 rounded"
+                  <div className="min-w-0">
+                    <div className="font-bold">{s.platform}</div>
+                    <div className="font-mono text-[11px] truncate">{s.url}</div>
+                  </div>
+                  <span
+                    className={`px-2 py-0.5 rounded-full text-[10px] font-bold shrink-0 ${
+                      s.enabled
+                        ? 'bg-emerald-100 text-emerald-700'
+                        : 'bg-slate-200 text-slate-500'
+                    }`}
                   >
-                    <TbTrash className="w-4 h-4" />
-                  </button>
+                    {s.enabled ? 'Visible' : 'Hidden'}
+                  </span>
                 </div>
               ))}
             </div>

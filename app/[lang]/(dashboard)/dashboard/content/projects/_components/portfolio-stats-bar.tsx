@@ -22,11 +22,18 @@ export function PortfolioStatsBar({ stories, lang }: PortfolioStatsBarProps) {
   const webApps = stories.filter(
     (s) => s.templateType === 'software-web-app-showcase'
   ).length;
+  const aiPlatforms = stories.filter(
+    (s) => s.templateType === 'ai-platform-showcase' || s.categorySlug === 'ai-platforms'
+  ).length;
   const mobileApps = stories.filter(
     (s) => s.templateType === 'mobile-app-showcase'
   ).length;
-  const marketingVideos = stories.filter(
-    (s) => s.templateType === 'marketing-video-showcase' || s.categorySlug === 'video-production'
+  const marketingBranding = stories.filter(
+    (s) =>
+      s.templateType === 'marketing-video-showcase' ||
+      s.templateType === 'marketing-branding-showcase' ||
+      s.categorySlug === 'video-production' ||
+      s.categorySlug === 'marketing-branding'
   ).length;
   const featuredCount = stories.filter((s) => s.featured).length;
 
@@ -38,10 +45,16 @@ export function PortfolioStatsBar({ stories, lang }: PortfolioStatsBarProps) {
       color: 'text-persici-crimson bg-persici-crimson/10 border-persici-crimson/20',
     },
     {
-      label: isRtl ? 'تطبيقات الويب' : 'Web & Platforms',
+      label: isRtl ? 'تطبيقات الويب' : 'Web Platforms',
       value: webApps,
       icon: TbDeviceDesktop,
       color: 'text-blue-600 bg-blue-50 border-blue-200',
+    },
+    {
+      label: isRtl ? 'منصات الذكاء الاصطناعي' : 'AI Platforms',
+      value: aiPlatforms,
+      icon: TbDeviceDesktop,
+      color: 'text-indigo-600 bg-indigo-50 border-indigo-200',
     },
     {
       label: isRtl ? 'تطبيقات الجوال' : 'Mobile Apps',
@@ -50,8 +63,8 @@ export function PortfolioStatsBar({ stories, lang }: PortfolioStatsBarProps) {
       color: 'text-purple-600 bg-purple-50 border-purple-200',
     },
     {
-      label: isRtl ? 'حملات وإنتاج مرئي' : 'Marketing & Reels',
-      value: marketingVideos,
+      label: isRtl ? 'تسويق وهوية وفيديو' : 'Marketing & Brand',
+      value: marketingBranding,
       icon: TbMovie,
       color: 'text-amber-600 bg-amber-50 border-amber-200',
     },
@@ -64,7 +77,7 @@ export function PortfolioStatsBar({ stories, lang }: PortfolioStatsBarProps) {
   ];
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
       {stats.map((item, idx) => {
         const Icon = item.icon;
         return (

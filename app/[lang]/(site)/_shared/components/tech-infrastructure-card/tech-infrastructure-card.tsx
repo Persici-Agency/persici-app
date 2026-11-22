@@ -27,13 +27,13 @@ export function TechInfrastructureCard({
 }: TechInfrastructureCardProps) {
   return (
     <div
-      className={`group relative w-full h-full flex flex-col justify-between rounded-2xl sm:rounded-3xl bg-white/[0.03] border border-white/10 hover:border-white/25 hover:bg-white/[0.05] p-6 sm:p-8 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-black/50 ${className}`}
+      className={`group relative w-full h-full flex flex-col justify-between rounded-2xl sm:rounded-3xl bg-white border border-slate-200/90 hover:border-persici-crimson/35 p-6 sm:p-8 shadow-xs transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-slate-900/5 ${className}`}
     >
       <div>
         {/* Header */}
         {headerLayout === 'split' ? (
           <div className="flex items-center justify-between gap-3 mb-4">
-            <h3 className="font-primary text-xl sm:text-2xl font-medium text-white">
+            <h3 className="font-primary text-xl sm:text-2xl font-medium text-slate-900">
               {title}
             </h3>
             <span className="text-[9.5px] font-mono font-medium text-persici-crimson bg-persici-crimson/10 border border-persici-crimson/20 px-2.5 py-0.5 rounded-full shrink-0">
@@ -44,7 +44,7 @@ export function TechInfrastructureCard({
           <>
             <div className="flex items-center justify-between gap-3 mb-4">
               {Icon ? (
-                <div className="h-11 w-11 rounded-xl bg-persici-crimson/15 text-persici-crimson flex items-center justify-center group-hover:scale-110 transition-transform">
+                <div className="h-11 w-11 rounded-xl bg-persici-crimson/10 text-persici-crimson border border-persici-crimson/15 flex items-center justify-center group-hover:scale-110 transition-transform">
                   <Icon className="h-6 w-6" />
                 </div>
               ) : (
@@ -59,7 +59,7 @@ export function TechInfrastructureCard({
               )}
             </div>
 
-            <h3 className="font-primary text-xl sm:text-2xl font-medium text-white mb-3">
+            <h3 className="font-primary text-xl sm:text-2xl font-medium text-slate-900 mb-3">
               {title}
             </h3>
           </>
@@ -68,11 +68,11 @@ export function TechInfrastructureCard({
         {/* Description */}
         {/<[a-z][\s\S]*>/i.test(description || '') ? (
           <div
-            className="text-xs sm:text-sm text-slate-400 leading-relaxed font-normal mb-6 [&_p]:mb-1.5 [&_p:last-child]:mb-0"
+            className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal mb-6 [&_p]:mb-1.5 [&_p:last-child]:mb-0"
             dangerouslySetInnerHTML={{ __html: description }}
           />
         ) : (
-          <p className="text-xs sm:text-sm text-slate-400 leading-relaxed font-normal mb-6">
+          <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal mb-6">
             {description}
           </p>
         )}
@@ -80,18 +80,18 @@ export function TechInfrastructureCard({
 
       {/* Technologies Section */}
       {variant === 'grid' ? (
-        <div className="pt-4 border-t border-white/[0.06] grid grid-cols-2 gap-3 mt-auto">
+        <div className="pt-4 border-t border-slate-100 grid grid-cols-2 gap-3 mt-auto">
           {technologies.map((tech, tIdx) => (
             <div
               key={tIdx}
-              className="flex flex-col p-3 rounded-xl bg-white/[0.02] border border-white/[0.04] hover:bg-white/[0.05] hover:border-white/[0.1] transition-all"
+              className="flex flex-col p-3 rounded-xl bg-slate-50/80 border border-slate-200/70 hover:bg-white hover:border-persici-crimson/30 transition-all"
             >
               <div className="flex items-center justify-between gap-2">
-                <span className="text-sm font-semibold text-white">
+                <span className="text-sm font-semibold text-slate-900">
                   {tech.name}
                 </span>
                 {tech.badge && (
-                  <span className="text-[9.5px] font-mono text-slate-400 bg-white/[0.06] px-1.5 py-0.5 rounded">
+                  <span className="text-[9.5px] font-mono text-persici-crimson bg-persici-crimson/10 px-1.5 py-0.5 rounded">
                     {tech.badge}
                   </span>
                 )}
@@ -105,17 +105,17 @@ export function TechInfrastructureCard({
           ))}
         </div>
       ) : (
-        <div className="pt-5 border-t border-white/10 mt-auto">
+        <div className="pt-5 border-t border-slate-100 mt-auto">
           <div className="flex flex-wrap gap-2">
             {technologies.map((tech, tIdx) => (
               <span
                 key={tIdx}
-                className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-200 bg-white/[0.04] border border-white/[0.08] hover:bg-white/[0.08] hover:border-white/20 px-3 py-1.5 rounded-lg transition-colors"
+                className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-800 bg-slate-50 border border-slate-200/80 hover:bg-persici-crimson/5 hover:border-persici-crimson/30 px-3 py-1.5 rounded-lg transition-colors"
               >
                 <span className="h-1.5 w-1.5 rounded-full bg-persici-crimson shrink-0" />
                 <span>{tech.name}</span>
                 {tech.badge && (
-                  <span className="text-[9.5px] font-mono text-persici-crimson/90 bg-persici-crimson/15 px-1.5 py-0.5 rounded">
+                  <span className="text-[9.5px] font-mono text-persici-crimson bg-persici-crimson/10 px-1.5 py-0.5 rounded">
                     {tech.badge}
                   </span>
                 )}

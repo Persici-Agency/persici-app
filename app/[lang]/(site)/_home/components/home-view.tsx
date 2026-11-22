@@ -1,9 +1,11 @@
 import type { Dictionary } from '@dictionaries';
 import type { ReviewItem, HomePageContent } from '@shared/types';
+import type { TeamMemberDetail } from '@/lib/team-types';
 import { HeroSection } from './hero-section';
 import { HeritageSection } from './heritage-section';
 import { GrowthServicesSection } from './growth-services-section';
 import { ApproachSection } from './approach-section';
+import { HomeTeamCarouselSection } from './home-team-carousel-section';
 import { ReviewsSection } from './reviews-section';
 import { HomeContactSection } from './home-contact-section';
 
@@ -12,9 +14,16 @@ export type HomeViewProps = {
   dict: Dictionary;
   content?: HomePageContent | Record<string, unknown>;
   reviews?: ReviewItem[];
+  teamMembers?: TeamMemberDetail[];
 };
 
-export function HomeView({ lang, dict, content, reviews }: HomeViewProps) {
+export function HomeView({
+  lang,
+  dict,
+  content,
+  reviews,
+  teamMembers = [],
+}: HomeViewProps) {
   return (
     <div className="relative overflow-hidden">
       {/* 1. Hero Section */}
@@ -31,7 +40,18 @@ export function HomeView({ lang, dict, content, reviews }: HomeViewProps) {
       {/* 5. Meet Clients We Scale (Dark Video Testimonials Carousel) - reserved */}
 
       {/* 6. Our Approach to eCommerce Growth */}
-      <ApproachSection lang={lang} dict={dict} content={content?.approach} />
+      <ApproachSection
+        lang={lang}
+        dict={dict}
+        content={content?.approach as HomePageContent['approach']}
+      />
+
+      {/* 6B. Persici Team Members Carousel Section */}
+      <HomeTeamCarouselSection
+        lang={lang}
+        content={content?.teamSection as HomePageContent['teamSection']}
+        members={teamMembers}
+      />
 
       {/* 7. Words from Those We Scale (Reviews Wall) */}
       <ReviewsSection

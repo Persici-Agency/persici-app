@@ -45,8 +45,10 @@ import type { AiEffectLevel, AiProviderId } from '@/lib/ai-types';
 const CATEGORY_LABELS: Record<StoryCategorySlug, { en: string; ar: string }> = {
   all: { en: 'All Categories', ar: 'جميع التصنيفات' },
   software: { en: 'Software & Web Apps', ar: 'البرمجيات والتطبيقات الرقمية' },
+  'ai-platforms': { en: 'AI Platforms', ar: 'منصات الذكاء الاصطناعي' },
   branding: { en: 'Branding & Identity', ar: 'الهوية البصرية والعلامة التجارية' },
   marketing: { en: 'Marketing & Performance', ar: 'الحملات ونمو العلامة التجارية' },
+  'marketing-branding': { en: 'Marketing & Branding', ar: 'التسويق والهوية البصرية' },
   'video-production': { en: 'Media Production & Films', ar: 'الإنتاج المرئي والسينمائي' },
 };
 
@@ -859,8 +861,10 @@ export default function ProjectsManagerPage() {
             >
               <option value="all">{isRtl ? 'جميع القوالب' : 'All Showcase Templates'}</option>
               <option value="software-web-app-showcase">{isRtl ? 'تطبيقات الويب (Web App)' : 'Web App & Platform'}</option>
+              <option value="ai-platform-showcase">{isRtl ? 'منصات الذكاء الاصطناعي (AI Platforms)' : 'AI Platforms'}</option>
               <option value="mobile-app-showcase">{isRtl ? 'تطبيقات الجوال (Mobile App)' : 'Native Mobile App'}</option>
               <option value="marketing-video-showcase">{isRtl ? 'فيديو وحملات (Marketing Video)' : 'Marketing Video Reel'}</option>
+              <option value="marketing-branding-showcase">{isRtl ? 'التسويق والهوية البصرية (1-2 وسائط)' : 'Marketing & Branding (1-2 Assets)'}</option>
               <option value="image-gallery-showcase">{isRtl ? 'معرض صور (Image Gallery)' : 'Branding Image Gallery'}</option>
             </select>
 
@@ -884,8 +888,10 @@ export default function ProjectsManagerPage() {
           {[
             { id: 'all' as const, labelEn: 'All Categories', labelAr: 'الكل' },
             { id: 'software' as const, labelEn: 'Software & Web Apps', labelAr: 'البرمجيات والتطبيقات' },
+            { id: 'ai-platforms' as const, labelEn: 'AI Platforms', labelAr: 'منصات الذكاء الاصطناعي' },
             { id: 'branding' as const, labelEn: 'Branding & Identity', labelAr: 'الهوية البصرية' },
             { id: 'marketing' as const, labelEn: 'Marketing & Performance', labelAr: 'الحملات ونمو العلامة' },
+            { id: 'marketing-branding' as const, labelEn: 'Marketing & Branding', labelAr: 'التسويق والهوية البصرية' },
             { id: 'video-production' as const, labelEn: 'Media Production & Films', labelAr: 'الإنتاج المرئي' },
           ].map((cat) => {
             const isActive = categoryFilter === cat.id;

@@ -9,6 +9,8 @@ import {
   TbPlus,
   TbTrash,
   TbSparkles,
+  TbCpu,
+  TbPalette,
 } from 'react-icons/tb';
 import type {
   ClientStoryDetail,
@@ -31,6 +33,7 @@ const TEMPLATE_OPTIONS: {
   descEn: string;
   descAr: string;
   icon: React.ElementType;
+  suggestedCategorySlug?: StoryCategorySlug;
 }[] = [
   {
     id: 'software-web-app-showcase',
@@ -39,6 +42,16 @@ const TEMPLATE_OPTIONS: {
     descEn: 'macOS browser frame, tablet, mobile mockups, and tech stack badges',
     descAr: 'إطار متصفح ماك، أجهزة لوحية، شاشات جوال، وشارات التقنيات البرمجية',
     icon: TbDeviceDesktop,
+    suggestedCategorySlug: 'software',
+  },
+  {
+    id: 'ai-platform-showcase',
+    titleEn: 'AI Platforms',
+    titleAr: 'منصات الذكاء الاصطناعي',
+    descEn: 'Dedicated AI system & LLM platform showcase with interactive device frames and AI architecture stack',
+    descAr: 'عرض مخصص لمنصات وأنظمة الذكاء الاصطناعي مع معاينات تفاعلية ومنظومة نماذج الذكاء الاصطناعي',
+    icon: TbCpu,
+    suggestedCategorySlug: 'ai-platforms',
   },
   {
     id: 'mobile-app-showcase',
@@ -47,6 +60,7 @@ const TEMPLATE_OPTIONS: {
     descEn: 'Dedicated 660px smartphone chassis, animated GIFs, and portrait videos',
     descAr: 'هيكل هاتف ذكي مخصص 660px، ملفات GIF متحركة، وفيديوهات طولية',
     icon: TbDeviceMobile,
+    suggestedCategorySlug: 'software',
   },
   {
     id: 'marketing-video-showcase',
@@ -55,6 +69,16 @@ const TEMPLATE_OPTIONS: {
     descEn: 'Master VideoPlayer with episode cuts tabs and high-res stills lightbox',
     descAr: 'مشغل فيديو متطور مع حلقات متعددة ومعرض لقطات بدقة عالية',
     icon: TbMovie,
+    suggestedCategorySlug: 'video-production',
+  },
+  {
+    id: 'marketing-branding-showcase',
+    titleEn: 'Marketing & Branding',
+    titleAr: 'التسويق والهوية البصرية',
+    descEn: 'Focused layout for projects with 1–2 videos and/or 1–2 key branding visuals without large galleries',
+    descAr: 'تصميم مخصص للمشاريع التي تضم فيديو أو اثنين و/أو صورة أو صورتين رئيسيتين للهوية البصرية',
+    icon: TbPalette,
+    suggestedCategorySlug: 'marketing-branding',
   },
   {
     id: 'image-gallery-showcase',
@@ -63,6 +87,7 @@ const TEMPLATE_OPTIONS: {
     descEn: 'High-res image gallery with interactive full-screen lightbox modal',
     descAr: 'معرض بصري للعلامة التجارية مع استعراض صور عالي الجودة',
     icon: TbPhoto,
+    suggestedCategorySlug: 'branding',
   },
 ];
 
@@ -77,6 +102,11 @@ const CATEGORY_OPTIONS: {
     labelAr: 'البرمجيات والتطبيقات الرقمية',
   },
   {
+    slug: 'ai-platforms',
+    labelEn: 'AI Platforms',
+    labelAr: 'منصات الذكاء الاصطناعي',
+  },
+  {
     slug: 'branding',
     labelEn: 'Branding & Identity',
     labelAr: 'الهوية البصرية والعلامة التجارية',
@@ -85,6 +115,11 @@ const CATEGORY_OPTIONS: {
     slug: 'marketing',
     labelEn: 'Marketing & Performance',
     labelAr: 'الحملات ونمو العلامة التجارية',
+  },
+  {
+    slug: 'marketing-branding',
+    labelEn: 'Marketing & Branding',
+    labelAr: 'التسويق والهوية البصرية',
   },
   {
     slug: 'video-production',

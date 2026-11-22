@@ -34,6 +34,7 @@ export const COLLECTIONS = {
   CLIENT_LOGOS: 'client_logos',
   REVIEWS: 'reviews',
   TESTIMONIALS: 'testimonials',
+  TEAM_MEMBERS: 'team_members',
   CONTACT_SUBMISSIONS: 'contact_submissions',
   DISCOVERY_SUBMISSIONS: 'discovery_submissions',
   APPOINTMENTS: 'appointments',
