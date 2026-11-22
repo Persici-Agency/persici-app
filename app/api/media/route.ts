@@ -6,19 +6,49 @@ import {
   deleteFileFromR2,
   listFilesFromR2,
   renameFileInR2,
+  copyFileInR2,
   checkFileExistsInR2,
   toSeoFilename,
   isR2Configured,
+  getR2PublicUrl,
   type ImageQualityMode,
 } from '@/lib/storage';
 import { getDb, COLLECTIONS } from '@/lib/mongodb';
 import { getSessionUser } from '@/lib/auth/jwt';
 import { isRoleAllowed } from '@/lib/auth/rbac';
+import {
+  syncMediaUrlAcrossDatabase,
+  findMediaUrlUsages,
+} from '@/lib/media-url-sync';
+import { buildMergedFoldersList } from '@/lib/media-folders';
+import {
+  normalizeFolderPath,
+  type MediaItem,
+  type MediaType,
+  type MediaUrlSyncReport,
+} from '@/app/[lang]/(dashboard)/_shared/components/media/types';
 import path from 'node:path';
 
 export const runtime = 'nodejs';
 
-export type MediaType = 'image' | 'video' | 'document' | 'audio' | 'archive' | 'other';
+interface MediaDbRecord {
+  _id?: unknown;
+  key?: string;
+  url?: string;
+  filename?: string;
+  size?: number;
+  lastModified?: Date | string;
+  mediaType?: MediaType;
+  format?: string;
+  thumbnailUrl?: string | null;
+  alt?: string;
+  title?: string;
+  caption?: string;
+  folder?: string;
+  uploadedBy?: string;
+  width?: number;
+  height?: number;
+}
 
 function detectMediaType(keyOrFilename: string, mime?: string): MediaType {
   if (mime) {
@@ -60,22 +90,107 @@ function detectMediaType(keyOrFilename: string, mime?: string): MediaType {
   return 'other';
 }
 
+function extractFolderFromKey(key: string): string {
+  return key.includes('/') ? key.substring(0, key.lastIndexOf('/')) : '';
+}
+
+function buildHydratedMediaItem(
+  key: string,
+  url: string,
+  size: number,
+  lastModified: Date | string | undefined,
+  meta: MediaDbRecord = {}
+): MediaItem {
+  const detected = detectMediaType(key);
+  const ext = path.extname(key).toLowerCase().replace(/^\./, '');
+  const filename = path.basename(key);
+  const physicalFolder = extractFolderFromKey(key);
+  const effectiveFolder =
+    typeof meta.folder === 'string' && meta.folder !== '' ? meta.folder : physicalFolder;
+
+  return {
+    key,
+    url,
+    filename: (meta.filename || filename) as string,
+    size,
+    lastModified,
+    mediaType: meta.mediaType || detected,
+    format: meta.format || ext || 'file',
+    thumbnailUrl: meta.thumbnailUrl || (detected === 'image' ? url : null),
+    alt: (meta.alt || '') as string,
+    title: (meta.title || '') as string,
+    caption: (meta.caption || '') as string,
+    folder: effectiveFolder,
+    physicalFolder,
+    isVirtualFolder: Boolean(meta.folder && meta.folder !== physicalFolder),
+    uploadedBy: (meta.uploadedBy || '') as string,
+    width: meta.width || undefined,
+    height: meta.height || undefined,
+  };
+}
+
+function mergeSyncReports(reports: MediaUrlSyncReport[]): {
+  updatedDocumentsCount: number;
+  totalReplacements: number;
+  updatedCollections: Array<{ collection: string; count: number }>;
+} {
+  const colCounts = new Map<string, number>();
+  let updatedDocumentsCount = 0;
+  let totalReplacements = 0;
+
+  for (const r of reports) {
+    updatedDocumentsCount += r.updatedDocumentsCount;
+    totalReplacements += r.totalReplacements;
+    for (const c of r.updatedCollections) {
+      colCounts.set(c.collection, (colCounts.get(c.collection) || 0) + c.count);
+    }
+  }
+
+  return {
+    updatedDocumentsCount,
+    totalReplacements,
+    updatedCollections: Array.from(colCounts.entries()).map(([collection, count]) => ({
+      collection,
+      count,
+    })),
+  };
+}
+
 /**
  * GET /api/media
  * Lists media items from Cloudflare R2 merged with MongoDB records.
- * Supports query params: `folder`, `type` (all | image | video | document | audio | archive), `sort`, `search`, `limit`.
+ * Supports query params: `folder`, `includeSubfolders`, `type`, `sort`, `search`, `limit`, `usagesFor`.
  */
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const folder = searchParams.get('folder') || '';
+    const usagesFor = searchParams.get('usagesFor');
+
+    // Usage check inspection branch
+    if (usagesFor) {
+      const user = await getSessionUser();
+      if (!user || !isRoleAllowed(user.role, ['admin', 'editor', 'author', 'hr'])) {
+        return NextResponse.json(
+          { error: 'Unauthorized to inspect asset usages.' },
+          { status: 403 }
+        );
+      }
+      const usageSummary = await findMediaUrlUsages(usagesFor);
+      return NextResponse.json({
+        success: true,
+        ...usageSummary,
+      });
+    }
+
+    const folder = normalizeFolderPath(searchParams.get('folder') || '');
+    const includeSubfolders = searchParams.get('includeSubfolders') !== 'false';
     const typeFilter = (searchParams.get('type') || 'all').toLowerCase();
     const sort = searchParams.get('sort') || 'newest';
     const search = (searchParams.get('search') || '').toLowerCase().trim();
     const limit = Math.min(parseInt(searchParams.get('limit') || '500', 10), 1000);
 
     // If requesting resumes folder, require authenticated Admin or HR session
-    if (folder.startsWith('resumes')) {
+    if (folder === 'resumes' || folder.startsWith('resumes/')) {
       const user = await getSessionUser();
       if (!user || !isRoleAllowed(user.role, ['admin', 'hr'])) {
         return NextResponse.json(
@@ -90,48 +205,26 @@ export async function GET(request: NextRequest) {
         configured: false,
         message: 'Cloudflare R2 is not configured.',
         items: [],
+        folders: [],
       });
     }
 
-    const allR2Items = await listFilesFromR2(folder, limit);
+    // Fetch full R2 listing (up to max 1000) so virtual-moved items appear accurately inside target folders
+    const allR2Items = await listFilesFromR2('', Math.max(limit, 1000));
 
     // Safety: Resumes are hidden from unauthenticated callers
     const user = await getSessionUser();
-    const canSeeResumes = user && isRoleAllowed(user.role, ['admin', 'hr']);
-    const accessibleItems = canSeeResumes
-      ? allR2Items
-      : allR2Items.filter((i) => !i.key.startsWith('resumes/'));
+    const canSeeResumes = Boolean(user && isRoleAllowed(user.role, ['admin', 'hr']));
 
-    // Fetch MongoDB records to enrich items with custom thumbnails, alt text, title, caption, folder, etc.
-    interface MediaDbRecord {
-      key?: string;
-      filename?: string;
-      mediaType?: MediaType;
-      format?: string;
-      thumbnailUrl?: string | null;
-      alt?: string;
-      title?: string;
-      caption?: string;
-      folder?: string;
-      uploadedBy?: string;
-      width?: number;
-      height?: number;
-    }
-
+    // Fetch MongoDB records to enrich items with custom thumbnails, alt text, title, caption, virtual folder, etc.
     const dbMap: Record<string, MediaDbRecord> = {};
     const db = await getDb();
     if (db) {
       try {
-        const records = await db
-          .collection(COLLECTIONS.MEDIA)
-          .find({
-            ...(folder ? { folder } : {}),
-          })
-          .toArray();
-
+        const records = await db.collection(COLLECTIONS.MEDIA).find({}).toArray();
         for (const rec of records) {
           if (rec.key) {
-            dbMap[rec.key] = rec as unknown as MediaDbRecord;
+            dbMap[String(rec.key)] = rec as unknown as MediaDbRecord;
           }
         }
       } catch (dbErr) {
@@ -139,32 +232,43 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // Merge and classify media items
-    let items = accessibleItems.map((item) => {
-      const meta = dbMap[item.key] || {};
-      const detected = detectMediaType(item.key);
-      const ext = path.extname(item.key).toLowerCase().replace(/^\./, '');
-      const filename = path.basename(item.key);
-      const itemFolder = item.key.includes('/') ? item.key.substring(0, item.key.lastIndexOf('/')) : '';
+    // Merge R2 items + DB metadata
+    const allMergedItems: MediaItem[] = allR2Items
+      .map((item) =>
+        buildHydratedMediaItem(
+          item.key,
+          item.url,
+          item.size,
+          item.lastModified,
+          dbMap[item.key] || {}
+        )
+      )
+      .filter((item) => {
+        if (canSeeResumes) return true;
+        const f = item.folder || '';
+        return (
+          !item.key.startsWith('resumes/') &&
+          f !== 'resumes' &&
+          !f.startsWith('resumes/')
+        );
+      });
 
-      return {
-        key: item.key,
-        url: item.url,
-        filename: (meta.filename || filename) as string,
-        size: item.size,
-        lastModified: item.lastModified,
-        mediaType: meta.mediaType || detected,
-        format: meta.format || ext || 'file',
-        thumbnailUrl: meta.thumbnailUrl || (detected === 'image' ? item.url : null),
-        alt: (meta.alt || '') as string,
-        title: (meta.title || '') as string,
-        caption: (meta.caption || '') as string,
-        folder: (meta.folder || itemFolder) as string,
-        uploadedBy: (meta.uploadedBy || '') as string,
-        width: meta.width || undefined,
-        height: meta.height || undefined,
-      };
-    });
+    // Build complete merged hierarchical folder tree with accurate counts
+    const allFolders = await buildMergedFoldersList(allMergedItems);
+    const visibleFolders = canSeeResumes
+      ? allFolders
+      : allFolders.filter((f) => f.id !== 'resumes' && !f.id.startsWith('resumes/'));
+
+    // Apply folder filter (honoring nested subfolders when includeSubfolders is true)
+    let items = folder
+      ? allMergedItems.filter((item) => {
+          const itemFld = item.folder || '';
+          if (includeSubfolders) {
+            return itemFld === folder || itemFld.startsWith(`${folder}/`);
+          }
+          return itemFld === folder;
+        })
+      : allMergedItems;
 
     // Apply type filter if requested
     if (typeFilter && typeFilter !== 'all') {
@@ -173,11 +277,13 @@ export async function GET(request: NextRequest) {
 
     // Apply search filter if requested
     if (search) {
-      items = items.filter((item) =>
-        item.key.toLowerCase().includes(search) ||
-        item.filename.toLowerCase().includes(search) ||
-        item.alt.toLowerCase().includes(search) ||
-        item.title.toLowerCase().includes(search)
+      items = items.filter(
+        (item) =>
+          item.key.toLowerCase().includes(search) ||
+          item.filename.toLowerCase().includes(search) ||
+          (item.alt || '').toLowerCase().includes(search) ||
+          (item.title || '').toLowerCase().includes(search) ||
+          (item.folder || '').toLowerCase().includes(search)
       );
     }
 
@@ -208,10 +314,15 @@ export async function GET(request: NextRequest) {
       return 0;
     });
 
+    if (items.length > limit) {
+      items = items.slice(0, limit);
+    }
+
     return NextResponse.json({
       configured: true,
       count: items.length,
       items,
+      folders: visibleFolders,
     });
   } catch (error) {
     console.error('[API /api/media GET] Error:', error);
@@ -224,10 +335,7 @@ export async function GET(request: NextRequest) {
 
 /**
  * POST /api/media
- * Uploads media assets (Images, Videos, Documents, Archives).
- * - Images are automatically compressed to WebP using Sharp.
- * - Videos and other assets are uploaded directly without crashing Sharp.
- * - Auto-generates or uploads video poster thumbnails if provided.
+ * Uploads media assets (Images, Videos, Documents, Archives) to any root or nested folder.
  */
 export async function POST(request: NextRequest) {
   try {
@@ -248,7 +356,13 @@ export async function POST(request: NextRequest) {
 
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
-    const folder = (formData.get('folder') as string) || 'general';
+    const rawFolder = (formData.get('folder') as string) || 'general';
+    const normalizedFolder = normalizeFolderPath(rawFolder) || 'general';
+    const folder =
+      normalizedFolder === 'thumbnails' || normalizedFolder.startsWith('thumbnails/')
+        ? 'general'
+        : normalizedFolder;
+
     const alt = (formData.get('alt') as string) || '';
     const title = (formData.get('title') as string) || '';
     const caption = (formData.get('caption') as string) || '';
@@ -279,12 +393,10 @@ export async function POST(request: NextRequest) {
     };
 
     if (mediaType === 'image' && !file.name.toLowerCase().endsWith('.svg')) {
-      // Process image through Sharp to convert to WebP respecting qualityMode
       uploadResult = await uploadOptimizedImageToR2(fileBuffer, file.name, folder, {
         qualityMode,
       });
     } else {
-      // Direct stream upload for videos, documents, audio, SVG, archives
       uploadResult = await uploadGenericFileToR2(
         fileBuffer,
         file.name,
@@ -295,7 +407,6 @@ export async function POST(request: NextRequest) {
 
     let thumbnailUrl: string | null = mediaType === 'image' ? uploadResult.url : null;
 
-    // Handle companion thumbnail for videos if passed
     if (mediaType === 'video') {
       if (thumbnailFile) {
         const thumbAb = await thumbnailFile.arrayBuffer();
@@ -310,7 +421,6 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Persist into MongoDB media collection
     const db = await getDb();
     if (db) {
       await db.collection(COLLECTIONS.MEDIA).updateOne(
@@ -347,6 +457,8 @@ export async function POST(request: NextRequest) {
           title,
           caption,
           folder,
+          physicalFolder: folder,
+          isVirtualFolder: false,
         },
       },
       { status: 201 }
@@ -363,11 +475,12 @@ export async function POST(request: NextRequest) {
 /**
  * PUT /api/media
  * Supports:
- * 1. Renaming file & slug in Cloudflare R2 + MongoDB:
- *    { action: 'rename', key: string, newSlug?: string, newName?: string, targetFolder?: string }
- * 2. Updating media item metadata (title, caption, alt, folder, thumbnailUrl):
- *    { key: string, title?: string, caption?: string, alt?: string, folder?: string }
- * 3. Capturing/uploading a new video thumbnail via `thumbnailDataUrl` (base64) or `thumbnailFile`.
+ * 1. `action: 'move'` — Move single or bulk assets to a target root folder or nested subfolder.
+ *    - Option B (default, `keepOriginalUrl: false`): Physical R2 move + automatic sitewide MongoDB URL sync.
+ *    - Option A (`keepOriginalUrl: true`): Virtual folder reassignment in MongoDB without changing R2 URL.
+ * 2. `action: 'copy'` — Copy single or bulk assets into a target folder via Cloudflare R2 CopyObjectCommand.
+ * 3. `action: 'rename'` — Rename file slug (and optional target folder) in R2 + auto-sync DB URLs.
+ * 4. Metadata & video poster thumbnail updates.
  */
 export async function PUT(request: NextRequest) {
   try {
@@ -380,6 +493,7 @@ export async function PUT(request: NextRequest) {
     }
 
     let key = '';
+    let keys: string[] = [];
     let alt: string | undefined;
     let title: string | undefined;
     let caption: string | undefined;
@@ -390,11 +504,15 @@ export async function PUT(request: NextRequest) {
     let newSlug: string | undefined;
     let newName: string | undefined;
     let targetFolder: string | undefined;
+    let keepOriginalUrl = false;
 
     const contentType = request.headers.get('content-type') || '';
     if (contentType.includes('application/json')) {
       const body = await request.json();
       key = body.key || body.oldKey || '';
+      if (Array.isArray(body.keys)) {
+        keys = body.keys.filter((k: unknown): k is string => typeof k === 'string' && k.trim().length > 0);
+      }
       alt = body.alt;
       title = body.title;
       caption = body.caption;
@@ -405,6 +523,7 @@ export async function PUT(request: NextRequest) {
       newSlug = body.newSlug;
       newName = body.newName;
       targetFolder = body.targetFolder;
+      keepOriginalUrl = Boolean(body.keepOriginalUrl);
     } else if (contentType.includes('multipart/form-data')) {
       const formData = await request.formData();
       key = (formData.get('key') as string) || (formData.get('oldKey') as string) || '';
@@ -418,6 +537,7 @@ export async function PUT(request: NextRequest) {
       newSlug = (formData.get('newSlug') as string) || undefined;
       newName = (formData.get('newName') as string) || undefined;
       targetFolder = (formData.get('targetFolder') as string) || undefined;
+      keepOriginalUrl = formData.get('keepOriginalUrl') === 'true';
 
       const thumbFile = formData.get('thumbnailFile') as File | null;
       if (thumbFile && key) {
@@ -428,6 +548,303 @@ export async function PUT(request: NextRequest) {
       }
     }
 
+    const db = await getDb();
+    const publicBase = getR2PublicUrl();
+
+    // -------------------------------------------------------------
+    // ACTION A: MOVE SINGLE OR MULTIPLE ASSETS TO FOLDER / SUBFOLDER
+    // -------------------------------------------------------------
+    if (action === 'move') {
+      const targetKeys = (keys.length > 0 ? keys : key ? [key] : []).map((k) =>
+        k.replace(/^\/+/, '')
+      );
+      if (targetKeys.length === 0) {
+        return NextResponse.json({ error: 'Missing asset key(s) to move.' }, { status: 400 });
+      }
+
+      const destFolder = normalizeFolderPath(targetFolder ?? folder ?? '');
+      if (!destFolder) {
+        return NextResponse.json(
+          { error: 'Please choose a destination folder (cannot move to "All Folders").' },
+          { status: 400 }
+        );
+      }
+      if (destFolder === 'thumbnails' || destFolder.startsWith('thumbnails/')) {
+        return NextResponse.json(
+          { error: 'Cannot move assets into the internal thumbnails folder.' },
+          { status: 400 }
+        );
+      }
+
+      const movedItems: Array<{ oldKey: string; item: MediaItem }> = [];
+      const syncReports: MediaUrlSyncReport[] = [];
+
+      for (const cleanOldKey of targetKeys) {
+        const existingDoc = db
+          ? ((await db
+              .collection(COLLECTIONS.MEDIA)
+              .findOne({ key: cleanOldKey })) as MediaDbRecord | null)
+          : null;
+
+        const baseFilename = path.basename(cleanOldKey);
+        const currentPhysicalFolder = extractFolderFromKey(cleanOldKey);
+        const currentUrl = existingDoc?.url || `${publicBase}/${cleanOldKey}`;
+        const detectedType = existingDoc?.mediaType || detectMediaType(cleanOldKey);
+
+        if (keepOriginalUrl) {
+          // Option A: Keep exact CDN URL unchanged, organize virtually in MongoDB
+          if (!db) {
+            return NextResponse.json(
+              { error: 'Database connection unavailable for virtual folder assignment.' },
+              { status: 503 }
+            );
+          }
+
+          await db.collection(COLLECTIONS.MEDIA).updateOne(
+            { key: cleanOldKey },
+            {
+              $set: {
+                key: cleanOldKey,
+                url: currentUrl,
+                filename: existingDoc?.filename || baseFilename,
+                folder: destFolder,
+                mediaType: detectedType,
+                updatedAt: new Date(),
+                updatedBy: user.email,
+              },
+              $setOnInsert: {
+                createdAt: new Date(),
+              },
+            },
+            { upsert: true }
+          );
+
+          movedItems.push({
+            oldKey: cleanOldKey,
+            item: buildHydratedMediaItem(
+              cleanOldKey,
+              currentUrl,
+              existingDoc?.size || 0,
+              existingDoc?.lastModified,
+              {
+                ...(existingDoc || {}),
+                folder: destFolder,
+              }
+            ),
+          });
+        } else {
+          // Option B (Default): Physical Cloudflare R2 move + Automatic Sitewide URL Sync
+          if (!isR2Configured()) {
+            return NextResponse.json(
+              { error: 'Cloudflare R2 is not configured.' },
+              { status: 503 }
+            );
+          }
+
+          let nextKey = `${destFolder}/${baseFilename}`;
+
+          if (nextKey !== cleanOldKey) {
+            const exists = await checkFileExistsInR2(nextKey);
+            if (exists) {
+              const ext = path.extname(baseFilename);
+              const baseNameNoExt = path.basename(baseFilename, ext);
+              nextKey = `${destFolder}/${baseNameNoExt}-${Date.now()}${ext}`;
+            }
+
+            const renameRes = await renameFileInR2(cleanOldKey, nextKey);
+            const nextThumbUrl =
+              detectedType === 'image' ? renameRes.newUrl : existingDoc?.thumbnailUrl || null;
+
+            if (db) {
+              await db.collection(COLLECTIONS.MEDIA).updateOne(
+                { key: cleanOldKey },
+                {
+                  $set: {
+                    key: renameRes.newKey,
+                    url: renameRes.newUrl,
+                    filename: renameRes.newFilename,
+                    folder: destFolder,
+                    mediaType: detectedType,
+                    ...(nextThumbUrl ? { thumbnailUrl: nextThumbUrl } : {}),
+                    updatedAt: new Date(),
+                    updatedBy: user.email,
+                  },
+                  $setOnInsert: {
+                    createdAt: new Date(),
+                  },
+                },
+                { upsert: true }
+              );
+            }
+
+            const report = await syncMediaUrlAcrossDatabase(currentUrl, renameRes.newUrl);
+            syncReports.push(report);
+
+            movedItems.push({
+              oldKey: cleanOldKey,
+              item: buildHydratedMediaItem(
+                renameRes.newKey,
+                renameRes.newUrl,
+                existingDoc?.size || 0,
+                existingDoc?.lastModified,
+                {
+                  ...(existingDoc || {}),
+                  key: renameRes.newKey,
+                  url: renameRes.newUrl,
+                  filename: renameRes.newFilename,
+                  thumbnailUrl: nextThumbUrl,
+                  folder: destFolder,
+                }
+              ),
+            });
+          } else {
+            // Already at that physical R2 path (e.g., syncing virtual folder back to R2 path)
+            if (db && existingDoc?.folder !== destFolder && currentPhysicalFolder === destFolder) {
+              await db.collection(COLLECTIONS.MEDIA).updateOne(
+                { key: cleanOldKey },
+                {
+                  $set: {
+                    folder: destFolder,
+                    updatedAt: new Date(),
+                    updatedBy: user.email,
+                  },
+                }
+              );
+            }
+
+            movedItems.push({
+              oldKey: cleanOldKey,
+              item: buildHydratedMediaItem(
+                cleanOldKey,
+                currentUrl,
+                existingDoc?.size || 0,
+                existingDoc?.lastModified,
+                {
+                  ...(existingDoc || {}),
+                  folder: destFolder,
+                }
+              ),
+            });
+          }
+        }
+      }
+
+      const syncSummary = mergeSyncReports(syncReports);
+      const folders = await buildMergedFoldersList();
+
+      return NextResponse.json({
+        success: true,
+        mode: keepOriginalUrl ? 'virtual' : 'physical-sync',
+        message: keepOriginalUrl
+          ? `Organized ${movedItems.length} asset(s) into "${destFolder}" while keeping exact CDN URLs.`
+          : `Moved ${movedItems.length} asset(s) in Cloudflare R2 to "${destFolder}" and synced ${syncSummary.totalReplacements} website link(s).`,
+        moved: movedItems,
+        totalMoved: movedItems.length,
+        syncSummary,
+        folders,
+      });
+    }
+
+    // -------------------------------------------------------------
+    // ACTION B: COPY SINGLE OR MULTIPLE ASSETS TO ANOTHER FOLDER IN R2
+    // -------------------------------------------------------------
+    if (action === 'copy') {
+      const sourceKeys = (keys.length > 0 ? keys : key ? [key] : []).map((k) =>
+        k.replace(/^\/+/, '')
+      );
+      if (sourceKeys.length === 0) {
+        return NextResponse.json({ error: 'Missing asset key(s) to copy.' }, { status: 400 });
+      }
+      if (!isR2Configured()) {
+        return NextResponse.json(
+          { error: 'Cloudflare R2 is not configured.' },
+          { status: 503 }
+        );
+      }
+
+      const destFolder = normalizeFolderPath(targetFolder ?? folder ?? '');
+      if (!destFolder) {
+        return NextResponse.json(
+          { error: 'Please choose a destination folder to copy into.' },
+          { status: 400 }
+        );
+      }
+      if (destFolder === 'thumbnails' || destFolder.startsWith('thumbnails/')) {
+        return NextResponse.json(
+          { error: 'Cannot copy assets into the internal thumbnails folder.' },
+          { status: 400 }
+        );
+      }
+
+      const copiedItems: MediaItem[] = [];
+
+      for (const cleanSourceKey of sourceKeys) {
+        const existingDoc = db
+          ? ((await db
+              .collection(COLLECTIONS.MEDIA)
+              .findOne({ key: cleanSourceKey })) as MediaDbRecord | null)
+          : null;
+
+        const baseFilename = path.basename(cleanSourceKey);
+        const candidateTargetKey = `${destFolder}/${baseFilename}`;
+        const copyRes = await copyFileInR2(cleanSourceKey, candidateTargetKey);
+
+        const detectedType = existingDoc?.mediaType || detectMediaType(copyRes.targetKey);
+        const copiedThumbUrl =
+          detectedType === 'image' ? copyRes.targetUrl : existingDoc?.thumbnailUrl || null;
+
+        const cloneFields: Record<string, unknown> = {
+          key: copyRes.targetKey,
+          url: copyRes.targetUrl,
+          filename: copyRes.targetFilename,
+          folder: destFolder,
+          mediaType: detectedType,
+          format:
+            existingDoc?.format ||
+            path.extname(copyRes.targetKey).toLowerCase().replace(/^\./, '') ||
+            'file',
+          thumbnailUrl: copiedThumbUrl,
+          alt: existingDoc?.alt || '',
+          title: existingDoc?.title ? `${existingDoc.title} (Copy)` : '',
+          caption: existingDoc?.caption || '',
+          ...(existingDoc?.size !== undefined ? { size: existingDoc.size } : {}),
+          ...(existingDoc?.width !== undefined ? { width: existingDoc.width } : {}),
+          ...(existingDoc?.height !== undefined ? { height: existingDoc.height } : {}),
+          uploadedBy: user.email,
+          updatedAt: new Date(),
+          createdAt: new Date(),
+        };
+
+        if (db) {
+          await db.collection(COLLECTIONS.MEDIA).updateOne(
+            { key: copyRes.targetKey },
+            { $set: cloneFields },
+            { upsert: true }
+          );
+        }
+
+        copiedItems.push(
+          buildHydratedMediaItem(
+            copyRes.targetKey,
+            copyRes.targetUrl,
+            existingDoc?.size || 0,
+            new Date(),
+            cloneFields as unknown as MediaDbRecord
+          )
+        );
+      }
+
+      const folders = await buildMergedFoldersList();
+
+      return NextResponse.json({
+        success: true,
+        message: `Copied ${copiedItems.length} asset(s) into "${destFolder}". Original files remain unchanged.`,
+        copied: copiedItems,
+        totalCopied: copiedItems.length,
+        folders,
+      });
+    }
+
     if (!key) {
       return NextResponse.json({ error: 'Missing asset key.' }, { status: 400 });
     }
@@ -435,40 +852,89 @@ export async function PUT(request: NextRequest) {
     const cleanOldKey = key.replace(/^\/+/, '');
 
     // -------------------------------------------------------------
-    // ACTION 1: RENAME FILE / SLUG IN CLOUDFLARE R2 AND DATABASE
+    // ACTION 1: RENAME FILE / SLUG IN CLOUDFLARE R2 + AUTO-SYNC DB URLS
     // -------------------------------------------------------------
     if (action === 'rename' || newSlug || newName) {
       const candidateName = (newSlug || newName || '').trim();
       if (!candidateName) {
-        return NextResponse.json({ error: 'New name or slug is required for renaming.' }, { status: 400 });
+        return NextResponse.json(
+          { error: 'New name or slug is required for renaming.' },
+          { status: 400 }
+        );
       }
 
-      const oldFolder = cleanOldKey.includes('/')
-        ? cleanOldKey.substring(0, cleanOldKey.lastIndexOf('/'))
-        : '';
+      const oldFolder = extractFolderFromKey(cleanOldKey);
       const oldExt = path.extname(cleanOldKey); // includes dot e.g. .webp
-      const activeFolder = targetFolder !== undefined ? targetFolder.replace(/^\/+|\/+$/g, '') : (folder !== undefined ? folder : oldFolder);
+      const rawTargetFolder =
+        targetFolder !== undefined ? targetFolder : folder !== undefined ? folder : oldFolder;
+      const activeFolder = normalizeFolderPath(rawTargetFolder);
 
-      // Parse candidate name
       const inputExt = path.extname(candidateName);
       const effectiveExt = (inputExt ? inputExt : oldExt).toLowerCase();
       const rawBase = inputExt ? path.basename(candidateName, inputExt) : candidateName;
       const cleanSlug = toSeoFilename(rawBase);
 
-      let targetKey = activeFolder ? `${activeFolder}/${cleanSlug}${effectiveExt}` : `${cleanSlug}${effectiveExt}`;
+      let targetKey = activeFolder
+        ? `${activeFolder}/${cleanSlug}${effectiveExt}`
+        : `${cleanSlug}${effectiveExt}`;
+
+      const existingDoc = db
+        ? ((await db
+            .collection(COLLECTIONS.MEDIA)
+            .findOne({ key: cleanOldKey })) as MediaDbRecord | null)
+        : null;
+      const oldUrl = existingDoc?.url || `${publicBase}/${cleanOldKey}`;
+      const detectedType = existingDoc?.mediaType || detectMediaType(cleanOldKey);
 
       if (targetKey === cleanOldKey) {
+        if (db) {
+          await db.collection(COLLECTIONS.MEDIA).updateOne(
+            { key: cleanOldKey },
+            {
+              $set: {
+                folder: activeFolder,
+                ...(alt !== undefined ? { alt } : {}),
+                ...(title !== undefined ? { title } : {}),
+                ...(caption !== undefined ? { caption } : {}),
+                updatedAt: new Date(),
+                updatedBy: user.email,
+              },
+            },
+            { upsert: true }
+          );
+        }
+
+        const currentUrl = `${publicBase}/${cleanOldKey}`;
         return NextResponse.json({
           success: true,
-          message: 'Filename is already identical.',
+          message: 'Metadata saved (filename is already identical).',
           oldKey: cleanOldKey,
           newKey: cleanOldKey,
-          newUrl: `${(process.env.CLOUDFLARE_R2_PUBLIC_URL || '').replace(/\/$/, '')}/${cleanOldKey}`,
+          newUrl: currentUrl,
           newFilename: path.basename(cleanOldKey),
+          syncReport: {
+            oldUrl: currentUrl,
+            newUrl: currentUrl,
+            updatedCollections: [],
+            updatedDocumentsCount: 0,
+            totalReplacements: 0,
+          },
+          media: buildHydratedMediaItem(
+            cleanOldKey,
+            currentUrl,
+            existingDoc?.size || 0,
+            existingDoc?.lastModified,
+            {
+              ...(existingDoc || {}),
+              folder: activeFolder,
+              alt: alt ?? existingDoc?.alt,
+              title: title ?? existingDoc?.title,
+              caption: caption ?? existingDoc?.caption,
+            }
+          ),
         });
       }
 
-      // Check collision in R2
       const exists = await checkFileExistsInR2(targetKey);
       if (exists) {
         targetKey = activeFolder
@@ -476,11 +942,10 @@ export async function PUT(request: NextRequest) {
           : `${cleanSlug}-${Date.now()}${effectiveExt}`;
       }
 
-      // Execute rename in Cloudflare R2
       const renameRes = await renameFileInR2(cleanOldKey, targetKey);
+      const updatedThumbUrl =
+        detectedType === 'image' ? renameRes.newUrl : existingDoc?.thumbnailUrl || null;
 
-      // Synchronize in MongoDB
-      const db = await getDb();
       if (db) {
         await db.collection(COLLECTIONS.MEDIA).updateOne(
           { key: cleanOldKey },
@@ -490,6 +955,8 @@ export async function PUT(request: NextRequest) {
               url: renameRes.newUrl,
               filename: renameRes.newFilename,
               folder: activeFolder,
+              mediaType: detectedType,
+              ...(updatedThumbUrl ? { thumbnailUrl: updatedThumbUrl } : {}),
               ...(alt !== undefined ? { alt } : {}),
               ...(title !== undefined ? { title } : {}),
               ...(caption !== undefined ? { caption } : {}),
@@ -501,29 +968,41 @@ export async function PUT(request: NextRequest) {
         );
       }
 
+      const syncReport = await syncMediaUrlAcrossDatabase(oldUrl, renameRes.newUrl);
+      const folders = await buildMergedFoldersList();
+
       return NextResponse.json({
         success: true,
-        message: 'Asset successfully renamed in Cloudflare R2 and database.',
+        message: 'Asset successfully renamed in Cloudflare R2 and synchronized across the website.',
         oldKey: renameRes.oldKey,
         newKey: renameRes.newKey,
         newUrl: renameRes.newUrl,
         filename: renameRes.newFilename,
-        media: {
-          key: renameRes.newKey,
-          url: renameRes.newUrl,
-          filename: renameRes.newFilename,
-          folder: activeFolder,
-          alt,
-          title,
-          caption,
-        },
+        syncReport,
+        folders,
+        media: buildHydratedMediaItem(
+          renameRes.newKey,
+          renameRes.newUrl,
+          existingDoc?.size || 0,
+          existingDoc?.lastModified,
+          {
+            ...(existingDoc || {}),
+            key: renameRes.newKey,
+            url: renameRes.newUrl,
+            filename: renameRes.newFilename,
+            thumbnailUrl: updatedThumbUrl,
+            folder: activeFolder,
+            alt: alt ?? existingDoc?.alt,
+            title: title ?? existingDoc?.title,
+            caption: caption ?? existingDoc?.caption,
+          }
+        ),
       });
     }
 
     // -------------------------------------------------------------
     // ACTION 2: METADATA & THUMBNAIL UPDATES
     // -------------------------------------------------------------
-    // If client supplied a captured frame in base64 data URL, upload to R2 thumbnail folder
     if (thumbnailDataUrl && thumbnailDataUrl.includes('base64,')) {
       const base64Data = thumbnailDataUrl.split('base64,')[1];
       const thumbBuf = Buffer.from(base64Data, 'base64');
@@ -531,13 +1010,15 @@ export async function PUT(request: NextRequest) {
       thumbnailUrl = thumbRes.url;
     }
 
-    const db = await getDb();
     if (!db) {
       return NextResponse.json(
         { error: 'Database connection unavailable.' },
         { status: 503 }
       );
     }
+
+    const normalizedMetaFolder =
+      folder !== undefined ? normalizeFolderPath(folder) : undefined;
 
     const updateFields: Record<string, unknown> = {
       updatedAt: new Date(),
@@ -547,13 +1028,15 @@ export async function PUT(request: NextRequest) {
     if (alt !== undefined) updateFields.alt = alt;
     if (title !== undefined) updateFields.title = title;
     if (caption !== undefined) updateFields.caption = caption;
-    if (folder !== undefined) updateFields.folder = folder;
+    if (normalizedMetaFolder !== undefined) updateFields.folder = normalizedMetaFolder;
 
     await db.collection(COLLECTIONS.MEDIA).updateOne(
       { key: cleanOldKey },
       { $set: updateFields },
       { upsert: true }
     );
+
+    const folders = await buildMergedFoldersList();
 
     return NextResponse.json({
       success: true,
@@ -563,7 +1046,8 @@ export async function PUT(request: NextRequest) {
       alt,
       title,
       caption,
-      folder,
+      folder: normalizedMetaFolder,
+      folders,
     });
   } catch (error) {
     console.error('[API /api/media PUT] Error:', error);
@@ -613,10 +1097,8 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    // Delete from Cloudflare R2
     const result = await deleteFileFromR2(key);
 
-    // Delete record from MongoDB if available
     const db = await getDb();
     if (db) {
       await db.collection(COLLECTIONS.MEDIA).deleteOne({ key: result.key });

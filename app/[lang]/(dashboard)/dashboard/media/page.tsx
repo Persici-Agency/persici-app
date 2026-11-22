@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'next/navigation';
 import {
   TbPhoto,
@@ -29,7 +29,7 @@ export default function MediaLibraryPage() {
   });
 
   // Calculate live stats
-  useEffect(() => {
+  const refreshStats = useCallback(() => {
     fetch('/api/media?limit=1000', { cache: 'no-store' })
       .then((res) => res.json())
       .then((data) => {
@@ -54,6 +54,10 @@ export default function MediaLibraryPage() {
       })
       .catch((err) => console.warn('Could not load storage stats:', err));
   }, []);
+
+  useEffect(() => {
+    refreshStats();
+  }, [refreshStats]);
 
   const formatSize = (bytes: number) => {
     if (bytes >= 1024 * 1024 * 1024) {
@@ -155,7 +159,7 @@ export default function MediaLibraryPage() {
       </div>
 
       {/* Universal Media Storage Browser */}
-      <MediaStorageBrowser mode="standalone" />
+      <MediaStorageBrowser mode="standalone" onMediaMutated={refreshStats} />
     </div>
   );
 }

@@ -131,6 +131,22 @@ export async function optimizeImageBuffer(
   };
 }
 
+function normalizeR2Key(keyOrUrl: string): string {
+  const trimmed = keyOrUrl.trim();
+  const withoutBase = trimmed.startsWith(publicUrl)
+    ? trimmed.slice(publicUrl.length)
+    : trimmed;
+  return withoutBase.replace(/^\/+/, '');
+}
+
+function normalizeR2Folder(folder: string, fallback: string): string {
+  return folder.trim().replace(/^\/+|\/+$/g, '').replace(/\/+/g, '/') || fallback;
+}
+
+export function getR2PublicUrl(): string {
+  return publicUrl;
+}
+
 /**
  * Optimizes an image and uploads it directly to Cloudflare R2.
  */
@@ -150,7 +166,8 @@ export async function uploadOptimizedImageToR2(
     await optimizeImageBuffer(fileBuffer, options);
 
   const seoBase = toSeoFilename(originalFilename);
-  const uniqueKey = `${folder}/${seoBase}-${Date.now()}.webp`;
+  const cleanFolder = normalizeR2Folder(folder, 'uploads');
+  const uniqueKey = `${cleanFolder}/${seoBase}-${Date.now()}.webp`;
 
   const command = new PutObjectCommand({
     Bucket: bucketName,
@@ -185,7 +202,7 @@ export async function checkFileExistsInR2(key: string): Promise<boolean> {
   const s3 = getS3Client();
   if (!s3) return false;
 
-  const cleanKey = key.replace(new RegExp(`^${publicUrl}/?`), '').replace(/^\/+/, '');
+  const cleanKey = normalizeR2Key(key);
   try {
     const command = new HeadObjectCommand({
       Bucket: bucketName,
@@ -210,6 +227,53 @@ export interface RenameResult {
   newFilename: string;
 }
 
+export interface CopyResult {
+  success: boolean;
+  sourceKey: string;
+  targetKey: string;
+  targetUrl: string;
+  targetFilename: string;
+}
+
+/**
+ * Copies an object in Cloudflare R2 from sourceKey to targetKey without deleting the source.
+ * Automatically resolves filename collisions in the target folder.
+ */
+export async function copyFileInR2(sourceKey: string, targetKey: string): Promise<CopyResult> {
+  const s3 = getS3Client();
+  if (!s3) {
+    throw new Error('Cloudflare R2 is not configured.');
+  }
+
+  const cleanSourceKey = normalizeR2Key(sourceKey);
+  let finalTargetKey = normalizeR2Key(targetKey);
+
+  if (finalTargetKey === cleanSourceKey || (await checkFileExistsInR2(finalTargetKey))) {
+    const ext = path.extname(finalTargetKey);
+    const dir = path.posix.dirname(finalTargetKey);
+    const base = path.basename(finalTargetKey, ext);
+    const stampedName = `${base}-copy-${Date.now()}${ext}`;
+    finalTargetKey = dir && dir !== '.' ? `${dir}/${stampedName}` : stampedName;
+  }
+
+  const copySource = `${bucketName}/${encodeURI(cleanSourceKey)}`;
+  const copyCommand = new CopyObjectCommand({
+    Bucket: bucketName,
+    CopySource: copySource,
+    Key: finalTargetKey,
+  });
+
+  await s3.send(copyCommand);
+
+  return {
+    success: true,
+    sourceKey: cleanSourceKey,
+    targetKey: finalTargetKey,
+    targetUrl: `${publicUrl}/${finalTargetKey}`,
+    targetFilename: path.basename(finalTargetKey),
+  };
+}
+
 /**
  * Renames (moves) an object in Cloudflare R2 by copying to newKey and deleting oldKey.
  */
@@ -219,8 +283,8 @@ export async function renameFileInR2(oldKey: string, newKey: string): Promise<Re
     throw new Error('Cloudflare R2 is not configured.');
   }
 
-  const cleanOldKey = oldKey.replace(new RegExp(`^${publicUrl}/?`), '').replace(/^\/+/, '');
-  const cleanNewKey = newKey.replace(new RegExp(`^${publicUrl}/?`), '').replace(/^\/+/, '');
+  const cleanOldKey = normalizeR2Key(oldKey);
+  const cleanNewKey = normalizeR2Key(newKey);
 
   if (cleanOldKey === cleanNewKey) {
     return {
@@ -268,7 +332,7 @@ export async function deleteFileFromR2(key: string): Promise<{ success: boolean;
     throw new Error('Cloudflare R2 is not configured.');
   }
 
-  const cleanKey = key.replace(new RegExp(`^${publicUrl}/?`), '').replace(/^\/+/, '');
+  const cleanKey = normalizeR2Key(key);
 
   const command = new DeleteObjectCommand({
     Bucket: bucketName,
@@ -344,7 +408,8 @@ export async function uploadDocumentToR2(
 
   const ext = path.extname(originalFilename);
   const baseName = toSeoFilename(originalFilename);
-  const uniqueKey = `${folder}/${baseName}-${Date.now()}${ext}`;
+  const cleanFolder = normalizeR2Folder(folder, 'resumes');
+  const uniqueKey = `${cleanFolder}/${baseName}-${Date.now()}${ext}`;
 
   const command = new PutObjectCommand({
     Bucket: bucketName,
@@ -379,7 +444,8 @@ export async function uploadGenericFileToR2(
 
   const ext = path.extname(originalFilename);
   const baseName = toSeoFilename(originalFilename);
-  const uniqueKey = `${folder}/${baseName}-${Date.now()}${ext}`;
+  const cleanFolder = normalizeR2Folder(folder, 'media');
+  const uniqueKey = `${cleanFolder}/${baseName}-${Date.now()}${ext}`;
 
   const command = new PutObjectCommand({
     Bucket: bucketName,

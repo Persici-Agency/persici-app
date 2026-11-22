@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import {
   TbFileText,
@@ -14,31 +14,51 @@ import {
   TbTrash,
   TbExternalLink,
   TbDeviceFloppy,
+  TbFolderShare,
+  TbCopyPlus,
+  TbFolderPlus,
+  TbLink,
 } from 'react-icons/tb';
-import { MediaItem, FOLDERS } from './types';
+import {
+  MediaItem,
+  FolderOption,
+  DEFAULT_FOLDERS,
+  formatFolderDisplayPath,
+  MAX_FOLDER_DEPTH,
+  getFolderDepth,
+  type MediaUrlUsageSummary,
+} from './types';
 
 export interface MediaDetailsInspectorProps {
   item: MediaItem | null;
+  folders?: FolderOption[];
   onClose: () => void;
   onSelect?: (url: string, item: MediaItem) => void;
   onItemUpdated: (updated: MediaItem) => void;
   onItemDeleted: (key: string) => void;
   onOpenPreview: (item: MediaItem) => void;
+  onOpenMoveCopy?: (item: MediaItem, actionMode: 'move' | 'copy') => void;
+  onOpenCreateFolder?: (parentFolder?: string) => void;
   isRtl?: boolean;
   mode?: 'standalone' | 'picker';
 }
 
 export function MediaDetailsInspector({
   item,
+  folders,
   onClose,
   onSelect,
   onItemUpdated,
   onItemDeleted,
   onOpenPreview,
+  onOpenMoveCopy,
+  onOpenCreateFolder,
   isRtl = false,
   mode = 'standalone',
 }: MediaDetailsInspectorProps) {
   const [copiedUrl, setCopiedUrl] = useState(false);
+
+  const activeFolders = folders && folders.length > 0 ? folders : DEFAULT_FOLDERS;
 
   const getInitialSlug = () => {
     if (!item) return '';
@@ -54,15 +74,51 @@ export function MediaDetailsInspector({
   const [titleText, setTitleText] = useState(item?.title || '');
   const [captionText, setCaptionText] = useState(item?.caption || '');
   const [folderValue, setFolderValue] = useState(
-    item?.folder || (item?.key.includes('/') ? item.key.split('/')[0] : '')
+    item?.folder || (item?.key.includes('/') ? item.key.substring(0, item.key.lastIndexOf('/')) : '')
   );
+
+  // Linked Website Usages
+  const [usageSummary, setUsageSummary] = useState<MediaUrlUsageSummary | null>(null);
+  const [loadingUsages, setLoadingUsages] = useState<boolean>(Boolean(item?.url));
+  const [showAllUsages, setShowAllUsages] = useState(false);
 
   // Status flags
   const [renaming, setRenaming] = useState(false);
-  const [renameSuccess, setRenameSuccess] = useState(false);
+  const [renameStatusMsg, setRenameStatusMsg] = useState<string | null>(null);
   const [savingMeta, setSavingMeta] = useState(false);
   const [metaSuccess, setMetaSuccess] = useState(false);
   const [deleting, setDeleting] = useState(false);
+
+  const itemUrl = item?.url || '';
+
+  useEffect(() => {
+    if (!itemUrl) return;
+    let ignore = false;
+    const loadUsages = async () => {
+      try {
+        const res = await fetch(`/api/media?usagesFor=${encodeURIComponent(itemUrl)}`, {
+          cache: 'no-store',
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+        if (!ignore && data.success) {
+          setUsageSummary({
+            url: data.url,
+            totalUsages: data.totalUsages || 0,
+            usages: Array.isArray(data.usages) ? data.usages : [],
+          });
+        }
+      } catch {
+        // Non-blocking diagnostic info
+      } finally {
+        if (!ignore) setLoadingUsages(false);
+      }
+    };
+    void loadUsages();
+    return () => {
+      ignore = true;
+    };
+  }, [itemUrl]);
 
   if (!item) return null;
 
@@ -72,7 +128,7 @@ export function MediaDetailsInspector({
     setTimeout(() => setCopiedUrl(false), 2000);
   };
 
-  // Live calculation of preview URL when renaming slug
+  // Safe live preview URL calculation supporting deep nested subfolders (e.g., projects/client-a/file.webp)
   const currentExt = item.key.includes('.') ? item.key.substring(item.key.lastIndexOf('.')) : '';
   const sanitizedPreviewSlug = slugName
     .toLowerCase()
@@ -82,14 +138,21 @@ export function MediaDetailsInspector({
   const previewTargetKey = folderValue
     ? `${folderValue}/${sanitizedPreviewSlug || 'asset'}${currentExt}`
     : `${sanitizedPreviewSlug || 'asset'}${currentExt}`;
-  const cdnBase = item.url.substring(0, item.url.lastIndexOf('/') - (item.folder ? item.folder.length : 0));
+
+  const cdnBase = (() => {
+    try {
+      return new URL(item.url).origin;
+    } catch {
+      return 'https://pub-e908bcd9e763481eb2c8ac2e24869f18.r2.dev';
+    }
+  })();
   const previewTargetUrl = `${cdnBase.replace(/\/$/, '')}/${previewTargetKey}`;
 
-  // Execute Rename via PUT /api/media
+  // Execute Rename via PUT /api/media (automatically syncs linked DB URLs on the backend)
   const handleRename = async () => {
     if (!slugName.trim() || renaming) return;
     setRenaming(true);
-    setRenameSuccess(false);
+    setRenameStatusMsg(null);
 
     try {
       const res = await fetch('/api/media', {
@@ -108,19 +171,30 @@ export function MediaDetailsInspector({
 
       const data = await res.json();
       if (res.ok && data.success && data.media) {
+        const syncedCount: number = data.syncReport?.totalReplacements || 0;
         const updatedItem: MediaItem = {
           ...item,
           key: data.media.key,
           url: data.media.url,
           filename: data.media.filename,
           folder: data.media.folder,
+          physicalFolder: data.media.physicalFolder ?? data.media.folder,
+          isVirtualFolder: false,
           alt: altText,
           title: titleText,
           caption: captionText,
         };
         onItemUpdated(updatedItem);
-        setRenameSuccess(true);
-        setTimeout(() => setRenameSuccess(false), 3000);
+        setRenameStatusMsg(
+          syncedCount > 0
+            ? isRtl
+              ? `تم الحفظ ومزامنة ${syncedCount} رابط بالموقع!`
+              : `Renamed & Synced ${syncedCount} link${syncedCount > 1 ? 's' : ''}!`
+            : isRtl
+            ? 'تم تغيير الاسم والرابط!'
+            : 'Renamed Successfully!'
+        );
+        setTimeout(() => setRenameStatusMsg(null), 4000);
       } else {
         alert(data.error || 'Failed to rename file.');
       }
@@ -132,7 +206,7 @@ export function MediaDetailsInspector({
     }
   };
 
-  // Save metadata (alt, title, caption)
+  // Save metadata (alt, title, caption, virtual folder)
   const handleSaveMetadata = async () => {
     if (savingMeta) return;
     setSavingMeta(true);
@@ -153,12 +227,16 @@ export function MediaDetailsInspector({
 
       const data = await res.json();
       if (res.ok && data.success) {
+        const physical =
+          item.physicalFolder ??
+          (item.key.includes('/') ? item.key.substring(0, item.key.lastIndexOf('/')) : '');
         const updatedItem: MediaItem = {
           ...item,
           alt: altText,
           title: titleText,
           caption: captionText,
           folder: folderValue,
+          isVirtualFolder: Boolean(folderValue && folderValue !== physical),
         };
         onItemUpdated(updatedItem);
         setMetaSuccess(true);
@@ -201,6 +279,10 @@ export function MediaDetailsInspector({
     }
   };
 
+  const selectableFolderOptions = activeFolders.filter(
+    (f) => f.id !== '' && !f.id.startsWith('thumbnails')
+  );
+
   return (
     <div className="bg-white rounded-3xl border border-slate-200 shadow-sm flex flex-col h-full overflow-hidden">
       {/* Inspector Header */}
@@ -232,6 +314,7 @@ export function MediaDetailsInspector({
               src={item.url}
               alt={item.alt || item.filename}
               fill
+              unoptimized
               className="object-contain group-hover:scale-102 transition-transform duration-300"
               sizes="(max-width: 768px) 100vw, 400px"
             />
@@ -242,6 +325,7 @@ export function MediaDetailsInspector({
                   src={item.thumbnailUrl}
                   alt={item.key}
                   fill
+                  unoptimized
                   className="object-cover opacity-80 group-hover:scale-105 transition-transform"
                 />
               ) : null}
@@ -290,24 +374,113 @@ export function MediaDetailsInspector({
           </button>
         )}
 
+        {/* Quick Move & Copy Folder Organization Actions */}
+        {onOpenMoveCopy && (
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              type="button"
+              onClick={() => onOpenMoveCopy(item, 'move')}
+              className="py-2 px-3 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer shadow-2xs"
+            >
+              <TbFolderShare className="w-4 h-4 text-persici-crimson" />
+              <span>{isRtl ? 'نقل إلى مجلد' : 'Move to Folder'}</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => onOpenMoveCopy(item, 'copy')}
+              className="py-2 px-3 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+            >
+              <TbCopyPlus className="w-4 h-4 text-slate-600" />
+              <span>{isRtl ? 'نسخ إلى مجلد' : 'Copy to Folder'}</span>
+            </button>
+          </div>
+        )}
+
+        {/* Linked Website Usages Card */}
+        <div className="p-3 bg-slate-50 rounded-2xl border border-slate-200/80 space-y-2">
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+              <TbLink className="w-3.5 h-3.5 text-persici-crimson" />
+              <span>{isRtl ? 'روابط الملف في الموقع' : 'Website Link Usages'}</span>
+            </span>
+            {loadingUsages ? (
+              <span className="text-[10px] text-slate-400">{isRtl ? 'فحص...' : 'Scanning...'}</span>
+            ) : usageSummary ? (
+              <span
+                className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                  usageSummary.totalUsages > 0
+                    ? 'bg-emerald-100 text-emerald-800'
+                    : 'bg-slate-200 text-slate-600'
+                }`}
+              >
+                {usageSummary.totalUsages > 0
+                  ? isRtl
+                    ? `${usageSummary.totalUsages} ارتباط (${usageSummary.usages.length} مستند)`
+                    : `${usageSummary.totalUsages} ref${usageSummary.totalUsages > 1 ? 's' : ''} (${usageSummary.usages.length} doc${usageSummary.usages.length > 1 ? 's' : ''})`
+                  : isRtl
+                  ? 'غير مستخدم حالياً'
+                  : 'Unused on site'}
+              </span>
+            ) : null}
+          </div>
+
+          {usageSummary && usageSummary.usages.length > 0 && (
+            <div className="space-y-1">
+              {(showAllUsages ? usageSummary.usages : usageSummary.usages.slice(0, 3)).map((u, idx) => (
+                <div
+                  key={`${u.collection}-${u.documentId}-${idx}`}
+                  className="flex items-center justify-between text-[10px] bg-white px-2.5 py-1 rounded-lg border border-slate-200/70"
+                >
+                  <span className="truncate font-medium text-slate-700" title={u.label}>
+                    {u.label}
+                  </span>
+                  <span className="text-slate-400 font-mono shrink-0 ms-2">
+                    {u.collection}
+                  </span>
+                </div>
+              ))}
+              {usageSummary.usages.length > 3 && (
+                <button
+                  type="button"
+                  onClick={() => setShowAllUsages((v) => !v)}
+                  className="text-[10px] font-bold text-persici-crimson hover:underline cursor-pointer"
+                >
+                  {showAllUsages
+                    ? isRtl
+                      ? 'إظهار أقل'
+                      : 'Show less'
+                    : isRtl
+                    ? `عرض الكل (${usageSummary.usages.length})`
+                    : `View all ${usageSummary.usages.length} linked documents`}
+                </button>
+              )}
+              <p className="text-[10px] text-slate-400 leading-relaxed pt-0.5">
+                {isRtl
+                  ? 'أي نقل فعلي في R2 أو إعادة تسمية سيُحدّث هذه الروابط تلقائياً.'
+                  : 'Moving via R2 (Option B) or renaming auto-updates these links.'}
+              </p>
+            </div>
+          )}
+        </div>
+
         {/* WordPress-Style File Renaming & Slug Engine */}
         <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200/80 space-y-3">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-2">
             <label className="text-[11px] font-bold uppercase tracking-wider text-slate-700">
               {isRtl ? 'تعديل اسم الملف والرابط (Slug)' : 'File Name & URL Slug'}
             </label>
-            {renameSuccess && (
+            {renameStatusMsg && (
               <span className="text-[10px] text-emerald-700 font-bold bg-emerald-100 px-2 py-0.5 rounded-full flex items-center gap-1 animate-in fade-in">
-                <TbCheck className="w-3 h-3" />
-                <span>{isRtl ? 'تم تغيير الاسم والرابط!' : 'Renamed Successfully!'}</span>
+                <TbCheck className="w-3 h-3 shrink-0" />
+                <span>{renameStatusMsg}</span>
               </span>
             )}
           </div>
 
           <p className="text-[11px] text-slate-500 leading-relaxed">
             {isRtl
-              ? 'تغيير الاسم هنا يحدث مفتاح Cloudflare R2 ورابط CDN العام فوراً لتتمكن من نسخه ومشاركته.'
-              : 'Renaming updates the Cloudflare R2 storage key and its public CDN URL immediately.'}
+              ? 'تغيير الاسم هنا يحدث مفتاح Cloudflare R2 ويزامن الروابط المرتبطة في الموقع تلقائياً.'
+              : 'Renaming updates the Cloudflare R2 key and automatically syncs all linked pages.'}
           </p>
 
           <div className="flex items-center gap-1.5">
@@ -335,10 +508,18 @@ export function MediaDetailsInspector({
             type="button"
             disabled={renaming || !slugName.trim()}
             onClick={handleRename}
-            className="w-full py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors shadow-xs disabled:opacity-50"
+            className="w-full py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors shadow-xs disabled:opacity-50 cursor-pointer"
           >
             <TbDeviceFloppy className="w-4 h-4" />
-            <span>{renaming ? (isRtl ? 'جارٍ إعادة التسمية في R2...' : 'Renaming in R2...') : isRtl ? 'حفظ وتحديث الرابط' : 'Apply & Rename in R2'}</span>
+            <span>
+              {renaming
+                ? isRtl
+                  ? 'جارٍ إعادة التسمية والمزامنة...'
+                  : 'Renaming & Syncing Links...'
+                : isRtl
+                ? 'حفظ وتحديث ومزامنة الروابط'
+                : 'Apply, Rename & Auto-Sync'}
+            </span>
           </button>
         </div>
 
@@ -367,6 +548,13 @@ export function MediaDetailsInspector({
               )}
             </button>
           </div>
+          {item.isVirtualFolder && (
+            <p className="text-[10px] text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-2.5 py-1">
+              {isRtl
+                ? `ملاحظة: الرابط الفعلي في R2 موجود في "${item.physicalFolder || 'root'}" (نقل تنظيمي عبر الخيار A).`
+                : `Note: R2 key remains under "${item.physicalFolder || 'root'}" (Virtual Folder Mode).`}
+            </p>
+          )}
         </div>
 
         {/* Editable Metadata: Title, Alt Text, Caption, Folder */}
@@ -423,19 +611,36 @@ export function MediaDetailsInspector({
           </div>
 
           <div>
-            <label className="block text-[11px] font-semibold text-slate-600 mb-1">
-              {isRtl ? 'المجلد (Folder)' : 'Folder'}
-            </label>
+            <div className="flex items-center justify-between mb-1">
+              <label className="block text-[11px] font-semibold text-slate-600">
+                {isRtl ? 'المجلد (Folder / Subfolder)' : 'Folder / Subfolder'}
+              </label>
+              {onOpenCreateFolder && getFolderDepth(folderValue) < MAX_FOLDER_DEPTH && (
+                <button
+                  type="button"
+                  onClick={() => onOpenCreateFolder(folderValue)}
+                  className="text-[10px] font-bold text-persici-crimson hover:underline inline-flex items-center gap-0.5 cursor-pointer"
+                >
+                  <TbFolderPlus className="w-3 h-3" />
+                  <span>{isRtl ? 'مجلد فرعي جديد' : '+ Subfolder'}</span>
+                </button>
+              )}
+            </div>
             <select
               value={folderValue}
               onChange={(e) => setFolderValue(e.target.value)}
               className="w-full px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-persici-crimson/20"
             >
-              {FOLDERS.map((f) => (
-                <option key={f.id} value={f.id}>
-                  {isRtl ? f.labelAr : f.labelEn}
-                </option>
-              ))}
+              {selectableFolderOptions.map((f) => {
+                const depth = getFolderDepth(f.id);
+                const prefix = depth > 1 ? `${'— '.repeat(depth - 1)}` : '';
+                return (
+                  <option key={f.id} value={f.id}>
+                    {prefix}
+                    {formatFolderDisplayPath(f.id, activeFolders, isRtl)}
+                  </option>
+                );
+              })}
             </select>
           </div>
 
@@ -443,7 +648,7 @@ export function MediaDetailsInspector({
             type="button"
             disabled={savingMeta}
             onClick={handleSaveMetadata}
-            className="w-full py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors disabled:opacity-50"
+            className="w-full py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors disabled:opacity-50 cursor-pointer"
           >
             <TbDeviceFloppy className="w-3.5 h-3.5 text-slate-600" />
             <span>{savingMeta ? (isRtl ? 'جارٍ الحفظ...' : 'Saving...') : isRtl ? 'حفظ البيانات الوصفية' : 'Save Metadata'}</span>
@@ -508,7 +713,7 @@ export function MediaDetailsInspector({
           type="button"
           disabled={deleting}
           onClick={handleDelete}
-          className="flex items-center gap-1 px-3 py-1.5 bg-red-50 text-red-600 hover:bg-red-100 rounded-xl text-xs font-semibold transition-colors disabled:opacity-50"
+          className="flex items-center gap-1 px-3 py-1.5 bg-red-50 text-red-600 hover:bg-red-100 rounded-xl text-xs font-semibold transition-colors disabled:opacity-50 cursor-pointer"
         >
           <TbTrash className="w-3.5 h-3.5" />
           <span>{deleting ? (isRtl ? 'جارٍ الحذف...' : 'Deleting...') : isRtl ? 'حذف نهائياً' : 'Delete Permanently'}</span>
