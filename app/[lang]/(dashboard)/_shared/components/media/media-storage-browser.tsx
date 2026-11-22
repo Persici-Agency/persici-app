@@ -76,7 +76,7 @@ export function MediaStorageBrowser({
   const [folders, setFolders] = useState<FolderOption[]>(DEFAULT_FOLDERS);
   const [loading, setLoading] = useState(true);
   const [activeFolder, setActiveFolder] = useState(defaultFolder);
-  const [includeSubfolders, setIncludeSubfolders] = useState(true);
+  const [includeSubfolders, setIncludeSubfolders] = useState(false);
   const [activeType, setActiveType] = useState<string>(allowedType);
   const [prevAllowedType, setPrevAllowedType] = useState(allowedType);
   if (allowedType !== prevAllowedType) {
@@ -580,16 +580,34 @@ export function MediaStorageBrowser({
     [folders]
   );
 
-  const childSubfolders = useMemo(
-    () => (activeFolder ? folders.filter((f) => f.parentId === activeFolder) : []),
-    [folders, activeFolder]
+  const activeSegments = useMemo(
+    () => (activeFolder ? activeFolder.split('/') : []),
+    [activeFolder]
+  );
+  const activeTopLevelRoot = activeSegments[0] || '';
+  const activeLevel2Folder =
+    activeSegments.length >= 2 ? `${activeSegments[0]}/${activeSegments[1]}` : '';
+
+  const level2Subfolders = useMemo(
+    () =>
+      activeTopLevelRoot
+        ? folders.filter((f) => f.parentId === activeTopLevelRoot)
+        : [],
+    [folders, activeTopLevelRoot]
   );
 
-  const activeTopLevelRoot = activeFolder
-    ? activeFolder.includes('/')
-      ? activeFolder.split('/')[0]
-      : activeFolder
-    : '';
+  const level3Subfolders = useMemo(
+    () =>
+      activeLevel2Folder
+        ? folders.filter((f) => f.parentId === activeLevel2Folder)
+        : [],
+    [folders, activeLevel2Folder]
+  );
+
+  const hasChildSubfoldersOfActive = useMemo(
+    () => (activeFolder ? folders.some((f) => f.parentId === activeFolder) : false),
+    [folders, activeFolder]
+  );
 
   const breadcrumbTrail = useMemo(
     () => getFolderBreadcrumbTrail(activeFolder, folders),
@@ -603,6 +621,114 @@ export function MediaStorageBrowser({
     }
     return map;
   }, [folders]);
+
+  const handleSelectFolder = useCallback((folderId: string) => {
+    setActiveFolder(folderId);
+    setIncludeSubfolders(false);
+  }, []);
+
+  const renderSubfolderStrip = (
+    parentFolderId: string,
+    subfoldersList: FolderOption[],
+    activeBranchId: string,
+    rowTitle: string,
+    addBtnLabel: string
+  ) => {
+    const parentObj = folders.find((f) => f.id === parentFolderId);
+    const isDirectParentSelected = activeFolder === parentFolderId;
+    const parentDirectCount = parentObj?.directCount ?? 0;
+
+    return (
+      <div className="flex flex-wrap items-center gap-1.5 bg-slate-50 p-2 rounded-2xl border border-slate-100">
+        <span className="text-[10px] font-bold uppercase text-slate-400 tracking-wider me-1 px-1 shrink-0">
+          {rowTitle}
+        </span>
+
+        {/* Direct files inside this exact parent folder only */}
+        <button
+          type="button"
+          onClick={() => handleSelectFolder(parentFolderId)}
+          className={`flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-semibold transition-colors cursor-pointer ${
+            isDirectParentSelected
+              ? 'bg-slate-900 text-white shadow-2xs'
+              : 'bg-white border border-slate-200 text-slate-600 hover:border-slate-300 hover:text-slate-900'
+          }`}
+        >
+          <TbFolderOpen className={`w-3.5 h-3.5 ${isDirectParentSelected ? 'text-persici-crimson' : 'text-slate-400'}`} />
+          <span>
+            {isRtl
+              ? `مباشر في ${parentObj?.labelAr || parentFolderId}`
+              : `Direct (${parentObj?.labelEn || parentFolderId})`}
+          </span>
+          <span
+            className={`px-1.5 py-0.2 rounded-full text-[10px] ${
+              isDirectParentSelected ? 'bg-white/15 text-white' : 'bg-slate-100 text-slate-500'
+            }`}
+          >
+            {parentDirectCount}
+          </span>
+        </button>
+
+        {/* Subfolder tabs */}
+        {subfoldersList.map((sub) => {
+          const isSubActive =
+            activeFolder === sub.id || activeFolder.startsWith(`${sub.id}/`) || activeBranchId === sub.id;
+          return (
+            <div
+              key={sub.id}
+              className={`group/sub inline-flex items-center rounded-xl transition-colors ${
+                isSubActive
+                  ? 'bg-persici-crimson text-white shadow-2xs border border-persici-crimson'
+                  : 'bg-white border border-slate-200 hover:border-persici-crimson/50 text-slate-700'
+              }`}
+            >
+              <button
+                type="button"
+                onClick={() => handleSelectFolder(sub.id)}
+                className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold cursor-pointer"
+              >
+                <TbFolder className={`w-3.5 h-3.5 ${isSubActive ? 'text-white' : 'text-persici-crimson'}`} />
+                <span>{isRtl ? sub.labelAr : sub.labelEn}</span>
+                <span
+                  className={`px-1.5 py-0.2 rounded-full text-[10px] ${
+                    isSubActive ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-500'
+                  }`}
+                >
+                  {sub.directCount ?? sub.count ?? 0}
+                </span>
+              </button>
+              {sub.isCustom && (
+                <button
+                  type="button"
+                  disabled={deletingFolderId === sub.id}
+                  onClick={(e) => handleDeleteCustomFolder(sub, e)}
+                  className={`pe-2 py-1 transition-colors cursor-pointer ${
+                    isSubActive ? 'text-white/80 hover:text-white' : 'text-slate-400 hover:text-red-600'
+                  }`}
+                  title={isRtl ? 'حذف المجلد الفرعي' : 'Delete subfolder'}
+                >
+                  <TbTrash className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
+          );
+        })}
+
+        {getFolderDepth(parentFolderId) < MAX_FOLDER_DEPTH && (
+          <button
+            type="button"
+            onClick={() =>
+              setCreateFolderModalState({ isOpen: true, parentFolder: parentFolderId })
+            }
+            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl border border-dashed border-slate-300 bg-white/80 hover:border-persici-crimson hover:text-persici-crimson text-slate-600 text-[11px] font-bold transition-colors cursor-pointer"
+          >
+            <TbFolderPlus className="w-3.5 h-3.5" />
+            <span>{addBtnLabel}</span>
+          </button>
+        )}
+      </div>
+    );
+  };
 
   const selectedKeySet = useMemo(() => new Set(selectedKeys), [selectedKeys]);
   const selectedMediaItems = useMemo(
@@ -842,7 +968,7 @@ export function MediaStorageBrowser({
                 >
                   <button
                     type="button"
-                    onClick={() => setActiveFolder(f.id)}
+                    onClick={() => handleSelectFolder(f.id)}
                     className="flex items-center gap-1.5 px-2.5 py-1 cursor-pointer"
                   >
                     {isTabActive && f.id !== '' ? (
@@ -989,7 +1115,7 @@ export function MediaStorageBrowser({
           </div>
         </div>
 
-        {/* Row 3: Hierarchical Breadcrumb & Nested Subfolders Explorer Strip */}
+        {/* Row 3: Hierarchical Breadcrumb & Persistent Second-Layer Subfolder Selector */}
         {activeFolder !== '' && (
           <div className="pt-2.5 border-t border-slate-100 flex flex-col gap-2.5 text-xs">
             <div className="flex flex-wrap items-center justify-between gap-2">
@@ -1006,7 +1132,7 @@ export function MediaStorageBrowser({
                       )}
                       <button
                         type="button"
-                        onClick={() => setActiveFolder(crumb.id)}
+                        onClick={() => handleSelectFolder(crumb.id)}
                         className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-lg transition-colors cursor-pointer ${
                           isLast
                             ? 'bg-slate-900 text-white font-bold'
@@ -1024,25 +1150,25 @@ export function MediaStorageBrowser({
                 </span>
               </div>
 
-              {/* Subfolder Include Toggle & Create Subfolder Action */}
+              {/* Isolated Folder Filter Mode Toggle & Create Subfolder */}
               <div className="flex flex-wrap items-center gap-2">
-                {childSubfolders.length > 0 && (
+                {hasChildSubfoldersOfActive && (
                   <button
                     type="button"
                     onClick={() => setIncludeSubfolders((prev) => !prev)}
                     className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold border transition-colors cursor-pointer ${
                       includeSubfolders
                         ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
-                        : 'bg-amber-50 border-amber-200 text-amber-800'
+                        : 'bg-slate-100 border-slate-200 text-slate-700 hover:bg-slate-200'
                     }`}
                   >
                     {includeSubfolders
                       ? isRtl
-                        ? 'العرض: شامل المجلدات الفرعية'
-                        : 'Showing: Includes Subfolders'
+                        ? 'العرض: دمج المجلدات الفرعية'
+                        : 'Mode: Combine Subfolders'
                       : isRtl
-                      ? 'العرض: هذا المجلد فقط'
-                      : 'Showing: Direct Files Only'}
+                      ? 'العرض: هذا المجلد فقط (محدد)'
+                      : 'Mode: This Folder Only'}
                   </button>
                 )}
 
@@ -1055,49 +1181,32 @@ export function MediaStorageBrowser({
                     className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-[11px] font-bold transition-colors cursor-pointer"
                   >
                     <TbFolderPlus className="w-3.5 h-3.5 text-persici-crimson" />
-                    <span>{isRtl ? '+ مجلد فرعي جديد' : '+ New Subfolder'}</span>
+                    <span>{isRtl ? '+ مجلد فرعي هنا' : '+ Subfolder Here'}</span>
                   </button>
                 )}
               </div>
             </div>
 
-            {/* Child Subfolder Chips */}
-            {childSubfolders.length > 0 && (
-              <div className="flex flex-wrap items-center gap-1.5 bg-slate-50 p-2 rounded-2xl border border-slate-100">
-                <span className="text-[10px] font-bold uppercase text-slate-400 tracking-wider me-1 px-1">
-                  {isRtl ? 'المجلدات الفرعية:' : 'Subfolders:'}
-                </span>
-                {childSubfolders.map((sub) => (
-                  <div
-                    key={sub.id}
-                    className="group/sub inline-flex items-center bg-white border border-slate-200 hover:border-persici-crimson/50 rounded-xl shadow-2xs transition-colors"
-                  >
-                    <button
-                      type="button"
-                      onClick={() => setActiveFolder(sub.id)}
-                      className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold text-slate-700 hover:text-persici-crimson cursor-pointer"
-                    >
-                      <TbFolder className="w-3.5 h-3.5 text-persici-crimson" />
-                      <span>{isRtl ? sub.labelAr : sub.labelEn}</span>
-                      <span className="px-1.5 py-0.2 rounded-full bg-slate-100 text-slate-500 text-[10px]">
-                        {sub.count || 0}
-                      </span>
-                    </button>
-                    {sub.isCustom && (
-                      <button
-                        type="button"
-                        disabled={deletingFolderId === sub.id}
-                        onClick={(e) => handleDeleteCustomFolder(sub, e)}
-                        className="pe-2 py-1 text-slate-400 hover:text-red-600 transition-colors cursor-pointer"
-                        title={isRtl ? 'حذف المجلد الفرعي' : 'Delete subfolder'}
-                      >
-                        <TbTrash className="w-3.5 h-3.5" />
-                      </button>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
+            {/* Persistent Second Layer: Subfolders of Active Root (stays visible inside any selected subfolder!) */}
+            {activeTopLevelRoot &&
+              renderSubfolderStrip(
+                activeTopLevelRoot,
+                level2Subfolders,
+                activeLevel2Folder,
+                isRtl ? 'المجلدات الفرعية:' : 'Subfolders:',
+                isRtl ? '+ مجلد فرعي جديد' : '+ New Subfolder'
+              )}
+
+            {/* Optional Third Layer: Nested folders inside the selected Level-2 Subfolder */}
+            {activeLevel2Folder &&
+              level3Subfolders.length > 0 &&
+              renderSubfolderStrip(
+                activeLevel2Folder,
+                level3Subfolders,
+                activeFolder,
+                isRtl ? 'المستوى الثالث:' : 'Nested Folders:',
+                isRtl ? '+ مجلد متفرع' : '+ Nested Folder'
+              )}
           </div>
         )}
       </div>
@@ -1749,7 +1858,7 @@ export function MediaStorageBrowser({
           isRtl={isRtl}
           onCreated={(createdFolder, updatedFolders) => {
             setFolders(updatedFolders);
-            setActiveFolder(createdFolder.id);
+            handleSelectFolder(createdFolder.id);
             showNotice(
               isRtl
                 ? `تم إنشاء المجلد "${createdFolder.labelAr}" (${createdFolder.id}) بنجاح.`

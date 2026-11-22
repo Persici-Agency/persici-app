@@ -20,6 +20,8 @@ import {
   TbBook2,
   TbArrowUp,
   TbArrowDown,
+  TbSortAscending,
+  TbSortDescending,
 } from 'react-icons/tb';
 import { RichTextEditor } from '@dashboard-shared/components';
 import type { MediaItem } from '@dashboard-shared/components/media/types';
@@ -29,6 +31,7 @@ import type {
   StorySoftwareDeviceMockup,
   StoryGalleryImage,
   StoryGalleryDesign,
+  StoryGalleryOrder,
   StoryTechBadge,
 } from '@/app/[lang]/(site)/client-stories/_client-stories/types';
 import { AiFieldTrigger, type StoryAiFieldControls } from './ai-field-trigger';
@@ -207,6 +210,17 @@ export function PortfolioMediaShowcaseSection({
   };
 
   const activeGalleryDesign: StoryGalleryDesign = showcase.galleryDesign || 'editorial-bento';
+  const activeGalleryOrder: StoryGalleryOrder = showcase.galleryOrder || 'normal';
+
+  const handleGalleryOrderChange = (order: StoryGalleryOrder) => {
+    onChange({
+      ...story,
+      mediaShowcase: {
+        ...showcase,
+        galleryOrder: order,
+      },
+    });
+  };
 
   // Gallery
   const handleAddGalleryImage = () => {
@@ -1105,6 +1119,47 @@ export function PortfolioMediaShowcaseSection({
               );
             })}
           </div>
+
+          {/* Gallery Display Order Selector (Normal 1..N vs Reverse N..1) */}
+          <div className="pt-3 border-t border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-700 block">
+                {isRtl ? 'ترتيب عرض صور المعرض (Gallery Display Order)' : 'Gallery Display Order'}
+              </span>
+              <p className="text-[11px] text-slate-500 mt-0.5">
+                {isRtl
+                  ? 'اختر الترتيب العادي (من الأولى للأخيرة) أو العكسي (من الأخيرة للأولى).'
+                  : 'Choose Normal order (1, 2, 3...) or Reverse order so the last image appears first.'}
+              </p>
+            </div>
+
+            <div className="inline-flex items-center p-1 rounded-xl bg-white border border-slate-200 shadow-2xs shrink-0 self-start sm:self-auto">
+              <button
+                type="button"
+                onClick={() => handleGalleryOrderChange('normal')}
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                  activeGalleryOrder === 'normal'
+                    ? 'bg-slate-900 text-white shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                <TbSortAscending className="w-3.5 h-3.5" />
+                <span>{isRtl ? 'الترتيب العادي (1 ← الأخير)' : 'Normal Order (1 → N)'}</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => handleGalleryOrderChange('reverse')}
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                  activeGalleryOrder === 'reverse'
+                    ? 'bg-persici-crimson text-white shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                <TbSortDescending className="w-3.5 h-3.5" />
+                <span>{isRtl ? 'الترتيب العكسي (الأخير ← 1)' : 'Reverse Order (N → 1)'}</span>
+              </button>
+            </div>
+          </div>
         </div>
 
         {/* Gallery Images Grid */}
@@ -1130,9 +1185,18 @@ export function PortfolioMediaShowcaseSection({
                 className="p-3.5 bg-slate-50/80 rounded-2xl border border-slate-200 space-y-2.5 relative"
               >
                 <div className="flex items-center justify-between text-[11px] font-mono text-slate-500">
-                  <span className="font-bold text-slate-700">
-                    {isRtl ? `صورة #${gIdx + 1}` : `Image #${gIdx + 1}`}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold text-slate-700">
+                      {isRtl ? `صورة #${gIdx + 1}` : `Image #${gIdx + 1}`}
+                    </span>
+                    {activeGalleryOrder === 'reverse' && gallery.length > 1 && (
+                      <span className="px-1.5 py-0.2 rounded bg-persici-crimson/10 text-persici-crimson text-[10px] font-bold">
+                        {isRtl
+                          ? `تظهر كـ #${gallery.length - gIdx}`
+                          : `Displays #${gallery.length - gIdx}`}
+                      </span>
+                    )}
+                  </div>
                   <div className="flex items-center gap-1.5">
                     {activeGalleryDesign === 'editorial-bento' && (
                       <label className="flex items-center gap-1 text-[10px] text-slate-600 cursor-pointer me-1">

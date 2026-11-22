@@ -183,7 +183,7 @@ export async function GET(request: NextRequest) {
     }
 
     const folder = normalizeFolderPath(searchParams.get('folder') || '');
-    const includeSubfolders = searchParams.get('includeSubfolders') !== 'false';
+    const includeSubfolders = searchParams.get('includeSubfolders') === 'true';
     const typeFilter = (searchParams.get('type') || 'all').toLowerCase();
     const sort = searchParams.get('sort') || 'newest';
     const search = (searchParams.get('search') || '').toLowerCase().trim();
