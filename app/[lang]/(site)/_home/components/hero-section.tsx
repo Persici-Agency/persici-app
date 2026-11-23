@@ -36,8 +36,8 @@ export function HeroSection({ lang, dict, content, className }: HeroSectionProps
   const ctaHref = rawCtaHref.startsWith(`/${lang}`)
     ? rawCtaHref
     : rawCtaHref.startsWith('/')
-    ? `/${lang}${rawCtaHref}`
-    : rawCtaHref;
+      ? `/${lang}${rawCtaHref}`
+      : rawCtaHref;
 
   const ctaEnabled = content?.heroCtaEnabled !== false && content?.ctaEnabled !== false;
 
@@ -57,22 +57,22 @@ export function HeroSection({ lang, dict, content, className }: HeroSectionProps
     (content?.clientLogos && content.clientLogos.length > 0)
       ? content.clientLogos
       : (content?.hero?.clientLogos && content.hero.clientLogos.length > 0)
-      ? content.hero.clientLogos
-      : undefined;
+        ? content.hero.clientLogos
+        : undefined;
 
   const avatars =
     (Array.isArray(content?.heroAvatars) && content.heroAvatars.length > 0)
       ? content.heroAvatars
       : (Array.isArray(content?.avatars) && content.avatars.length > 0)
-      ? content.avatars
-      : (Array.isArray(content?.hero?.heroAvatars) && content.hero.heroAvatars.length > 0)
-      ? content.hero.heroAvatars
-      : (Array.isArray(content?.hero?.avatars) && content.hero.avatars.length > 0)
-      ? content.hero.avatars
-      : socialProofAvatars;
+        ? content.avatars
+        : (Array.isArray(content?.hero?.heroAvatars) && content.hero.heroAvatars.length > 0)
+          ? content.hero.heroAvatars
+          : (Array.isArray(content?.hero?.avatars) && content.hero.avatars.length > 0)
+            ? content.hero.avatars
+            : socialProofAvatars;
 
   return (
-    <section className={cn('relative pt-30 pb-20 sm:pt-55 sm:pb-30', className)}>
+    <section className={cn('relative pt-30 pb-10 sm:pt-55 sm:pb-10', className)}>
       {/* Subtle Ambient Radial Glow */}
       <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 flex justify-center overflow-hidden">
         <div className="h-[480px] w-[800px] rounded-full bg-gradient-to-b from-persici-blush/25 via-persici-crimson/10 to-transparent blur-3xl opacity-70" />
