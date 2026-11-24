@@ -18,7 +18,7 @@ export type StoryGalleryDesign =
 
 export type StoryGalleryOrder = 'normal' | 'reverse';
 
-export type StoryCategorySlug =
+export type DefaultStoryCategorySlug =
   | 'all'
   | 'software'
   | 'ai-platforms'
@@ -26,6 +26,67 @@ export type StoryCategorySlug =
   | 'marketing'
   | 'marketing-branding'
   | 'video-production';
+
+export type StoryCategorySlug = DefaultStoryCategorySlug | (string & {});
+
+export interface ClientStoryCategory {
+  id: string;
+  slug: string;
+  name: LocalizedString;
+  description?: LocalizedString;
+  order: number;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export const DEFAULT_CLIENT_STORY_CATEGORIES: ClientStoryCategory[] = [
+  {
+    id: 'software',
+    slug: 'software',
+    name: { en: 'Software & Web Apps', ar: 'البرمجيات والتطبيقات الرقمية' },
+    order: 1,
+  },
+  {
+    id: 'ai-platforms',
+    slug: 'ai-platforms',
+    name: { en: 'AI Platforms', ar: 'منصات الذكاء الاصطناعي' },
+    order: 2,
+  },
+  {
+    id: 'branding',
+    slug: 'branding',
+    name: { en: 'Branding & Identity', ar: 'الهوية البصرية والعلامة التجارية' },
+    order: 3,
+  },
+  {
+    id: 'marketing',
+    slug: 'marketing',
+    name: { en: 'Marketing & Performance', ar: 'الحملات ونمو العلامة التجارية' },
+    order: 4,
+  },
+  {
+    id: 'marketing-branding',
+    slug: 'marketing-branding',
+    name: { en: 'Marketing & Branding', ar: 'التسويق والهوية البصرية' },
+    order: 5,
+  },
+  {
+    id: 'video-production',
+    slug: 'video-production',
+    name: { en: 'Media Production & Films', ar: 'الإنتاج المرئي والسينمائي' },
+    order: 6,
+  },
+];
+
+export function slugifyCategorySlug(raw: string): string {
+  return raw
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
+}
 
 export interface StoryMetric {
   value: string;
@@ -48,6 +109,24 @@ export interface StoryGalleryImage {
   width?: number;
   height?: number;
   featured?: boolean;
+}
+
+export interface StoryHeroSliderImage {
+  src: string;
+  alt?: LocalizedString;
+}
+
+export interface StoryHeroSliderConfig {
+  enabled: boolean;
+  autoScroll: boolean;
+  infinite: boolean;
+  /** Auto-scroll delay between slides in milliseconds (1500..10000, default 4000) */
+  intervalMs: number;
+  /** Slide glide transition duration in milliseconds (250..1500, default 650) */
+  transitionMs: number;
+  showArrows: boolean;
+  /** Additional slider images displayed after `heroImage` (Slide #1 is always `heroImage`) */
+  images: StoryHeroSliderImage[];
 }
 
 export interface StorySoftwareDeviceMockup {
@@ -133,7 +212,8 @@ export interface ClientStoryDetail {
   title: LocalizedString;
   leadSubtitle: LocalizedString;
   executiveSummary: LocalizedString;
-  client: string;
+  partner?: LocalizedString;
+  client: LocalizedString;
   topic: LocalizedString;
   services: LocalizedString[];
   region: LocalizedString;
@@ -142,6 +222,7 @@ export interface ClientStoryDetail {
 
   // High-res Featured Media
   heroImage: string;
+  heroSlider?: StoryHeroSliderConfig;
   heroVideo?: string;
   heroVideoPoster?: string;
 
@@ -208,5 +289,45 @@ export interface ClientStoriesHubPageData {
     emptySubtitle: LocalizedString;
     categories: ClientStoriesHubCategoryFilter[];
   };
+}
+
+export function normalizeBilingualInput(
+  val: unknown,
+  fallback?: LocalizedString | string
+): LocalizedString {
+  if (typeof val === 'string') {
+    const trimmed = val.trim();
+    if (!trimmed && fallback) return normalizeBilingualInput(fallback);
+    return { en: trimmed, ar: '' };
+  }
+  if (val && typeof val === 'object') {
+    const obj = val as Record<string, unknown>;
+    const en = typeof obj.en === 'string' ? obj.en : '';
+    const ar = typeof obj.ar === 'string' ? obj.ar : '';
+    return { en, ar };
+  }
+  if (fallback) return normalizeBilingualInput(fallback);
+  return { en: '', ar: '' };
+}
+
+/**
+ * Resolves localized text for `lang` ('en' | 'ar').
+ * If the requested language is empty, automatically falls back to the other language.
+ */
+export function resolveBilingualText(
+  val: LocalizedString | string | null | undefined,
+  lang: string = 'en'
+): string {
+  if (typeof val === 'string') return val.trim();
+  if (!val || typeof val !== 'object') return '';
+  const en = typeof val.en === 'string' ? val.en.trim() : '';
+  const ar = typeof val.ar === 'string' ? val.ar.trim() : '';
+  return lang === 'ar' ? ar || en : en || ar;
+}
+
+export function hasAnyBilingualText(
+  val: LocalizedString | string | null | undefined
+): boolean {
+  return resolveBilingualText(val, 'en').length > 0;
 }
 

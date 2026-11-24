@@ -36,19 +36,13 @@ export function ClientStoriesInfiniteGrid({
     return initialStories.filter((s) => s.categorySlug === selectedCategory);
   }, [initialStories, selectedCategory]);
 
-  // Calculate counts per category
+  // Calculate counts per category (supporting default & custom categories)
   const counts = useMemo(() => {
-    const map: Partial<Record<StoryCategorySlug, number>> = {
+    const map: Record<string, number> = {
       all: initialStories.length,
-      software: 0,
-      'ai-platforms': 0,
-      branding: 0,
-      marketing: 0,
-      'marketing-branding': 0,
-      'video-production': 0,
     };
     initialStories.forEach((s) => {
-      if (s.categorySlug && map[s.categorySlug] !== undefined) {
+      if (s.categorySlug) {
         map[s.categorySlug] = (map[s.categorySlug] || 0) + 1;
       }
     });

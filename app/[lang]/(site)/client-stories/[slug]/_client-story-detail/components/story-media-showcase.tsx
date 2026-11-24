@@ -2,7 +2,11 @@
 
 import React, { useState, useRef } from 'react';
 import Image from 'next/image';
-import type { ClientStoryDetail, StoryVideoItem } from '../../../_client-stories/types';
+import {
+  resolveBilingualText,
+  type ClientStoryDetail,
+  type StoryVideoItem,
+} from '../../../_client-stories/types';
 import { VideoPlayer } from '@shared/components/video-player';
 import { StoryGalleryShowcase } from './story-gallery-showcase';
 import {
@@ -391,7 +395,15 @@ export function StoryMediaShowcase({ story, lang }: StoryMediaShowcaseProps) {
                     <div className="flex items-center justify-center gap-2 bg-slate-800/80 border border-slate-700/60 px-4 py-1 rounded-lg text-slate-300 text-xs font-mono max-w-md w-full mx-4 shadow-inner">
                       <TbLock className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
                       <span className="truncate">
-                        https://{story.client.toLowerCase().replace(/[^a-z0-9]/g, '')}.com
+                        https://
+                        {(
+                          (story.client?.en || resolveBilingualText(story.client, 'en'))
+                            .toLowerCase()
+                            .replace(/[^a-z0-9]/g, '') ||
+                          story.slug.toLowerCase().replace(/[^a-z0-9-]/g, '') ||
+                          'enterprise'
+                        )}
+                        .com
                       </span>
                     </div>
 

@@ -27,6 +27,7 @@ let clientPromise: Promise<MongoClient> | null = null;
 export const COLLECTIONS = {
   PAGES: 'page_contents',
   PROJECTS: 'projects',
+  PROJECT_CATEGORIES: 'project_categories',
   SERVICES: 'services',
   SOLUTIONS: 'solutions',
   INDUSTRIES: 'industries',

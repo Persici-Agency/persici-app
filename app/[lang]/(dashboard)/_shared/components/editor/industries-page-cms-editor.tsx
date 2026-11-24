@@ -39,6 +39,7 @@ import {
 import type { LocalizedString, SolutionDiagramType } from '@shared/types';
 import type { ContentCardItem } from '@shared/components/content-card';
 import { clientStoriesData } from '@/app/[lang]/(site)/client-stories/_client-stories/data/client-stories.data';
+import { resolveBilingualText } from '@/app/[lang]/(site)/client-stories/_client-stories/types';
 import { insightsData } from '@/app/[lang]/(site)/insights/_insights/data/insights.data';
 
 type SolutionClientStoriesSectionConfig = IndustryClientStoriesSectionConfig;
@@ -134,7 +135,7 @@ function mapStoryOption(s: Record<string, unknown>): AvailableStoryOption {
   return {
     slug: String(s.slug || ''),
     title: (s.title as LocalizedString) || { en: String(s.slug || ''), ar: '' },
-    client: String(s.client || ''),
+    client: resolveBilingualText(s.client as LocalizedString | string | undefined, 'en'),
     categorySlug: catSlug,
     categoryLabel: catObj || { en: catSlug || 'Enterprise', ar: catSlug || 'مؤسسي' },
     featured: Boolean(s.featured),

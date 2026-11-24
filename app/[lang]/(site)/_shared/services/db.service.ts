@@ -17,12 +17,15 @@ import {
 import { aboutPageData, type AboutPageData } from '@/app/[lang]/(site)/about/_about/data/about.data';
 import { contactPageData, type ContactPageData } from '@/app/[lang]/(site)/contact/_contact/data/contact.data';
 import { clientStoriesHubPageData } from '@/app/[lang]/(site)/client-stories/_client-stories/data/client-stories.data';
-import type { ClientStoriesHubPageData } from '@/app/[lang]/(site)/client-stories/_client-stories/types';
+import {
+  resolveBilingualText,
+  type ClientStoriesHubPageData,
+} from '@/app/[lang]/(site)/client-stories/_client-stories/types';
 import { careersHubData, type CareersHubData } from '@/app/[lang]/(site)/careers/_careers/data/careers.data';
 import { insightsHubPageData } from '@/app/[lang]/(site)/insights/_insights/data/insights.data';
 import type { InsightsHubPageData, InsightDetail } from '@/app/[lang]/(site)/insights/_insights/types';
 import type { ContentCardItem } from '@shared/components/content-card';
-import { getAllProjectsFromDb } from '@/lib/projects-server';
+import { getAllProjectsFromDb, getAllProjectCategoriesFromDb } from '@/lib/projects-server';
 import { getAllInsightsFromDb } from '@/lib/insights-server';
 import { getCommunicationConfigFromDb } from '@/lib/communication-server';
 import {
@@ -303,11 +306,34 @@ export function normalizeClientStoriesPageData(
 }
 
 export async function getClientStoriesPageData(): Promise<ClientStoriesHubPageData> {
-  const raw = await getPageContent<ClientStoriesHubPageData>(
-    'client-stories',
-    clientStoriesHubPageData
-  );
-  return normalizeClientStoriesPageData(raw);
+  const [raw, liveCategories] = await Promise.all([
+    getPageContent<ClientStoriesHubPageData>('client-stories', clientStoriesHubPageData),
+    getAllProjectCategoriesFromDb(),
+  ]);
+  const normalized = normalizeClientStoriesPageData(raw);
+  const existingAllPill = normalized.allStoriesSection.categories.find(
+    (c) => c.slug === 'all'
+  ) || {
+    slug: 'all',
+    label: { en: 'All Stories', ar: 'جميع القصص' },
+  };
+
+  return {
+    ...normalized,
+    allStoriesSection: {
+      ...normalized.allStoriesSection,
+      categories: [
+        existingAllPill,
+        ...liveCategories.map((cat) => ({
+          slug: cat.slug,
+          label: {
+            en: resolveBilingualText(cat.name, 'en'),
+            ar: resolveBilingualText(cat.name, 'ar'),
+          },
+        })),
+      ],
+    },
+  };
 }
 
 export function normalizeContactPageData(raw?: Partial<ContactPageData> | null): ContactPageData {

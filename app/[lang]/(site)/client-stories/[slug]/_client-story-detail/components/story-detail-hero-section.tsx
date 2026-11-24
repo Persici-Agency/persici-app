@@ -1,6 +1,9 @@
 import React from 'react';
 import Link from 'next/link';
-import type { ClientStoryDetail } from '../../../_client-stories/types';
+import {
+  resolveBilingualText,
+  type ClientStoryDetail,
+} from '../../../_client-stories/types';
 import { sectionContainer } from '@shared/constants';
 import { TbChevronRight, TbChevronLeft, TbBriefcase } from 'react-icons/tb';
 
@@ -13,9 +16,10 @@ export function StoryDetailHeroSection({ story, lang }: StoryDetailHeroSectionPr
   const isRtl = lang === 'ar';
   const ChevronIcon = isRtl ? TbChevronLeft : TbChevronRight;
 
-  const title = story.title[lang as 'en' | 'ar'] || story.title.en;
-  const category = story.category[lang as 'en' | 'ar'] || story.category.en;
-  const lead = story.leadSubtitle[lang as 'en' | 'ar'] || story.leadSubtitle.en;
+  const title = resolveBilingualText(story.title, lang);
+  const category = resolveBilingualText(story.category, lang);
+  const lead = resolveBilingualText(story.leadSubtitle, lang);
+  const clientName = resolveBilingualText(story.client, lang);
 
   return (
     <section
@@ -54,7 +58,7 @@ export function StoryDetailHeroSection({ story, lang }: StoryDetailHeroSectionPr
             </Link>
             <ChevronIcon className="h-3 w-3 text-slate-400 shrink-0" />
             <span className="text-slate-800 font-semibold truncate max-w-[200px] sm:max-w-xs">
-              {story.client}
+              {clientName}
             </span>
           </nav>
 
@@ -65,7 +69,7 @@ export function StoryDetailHeroSection({ story, lang }: StoryDetailHeroSectionPr
             </span>
             <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 border border-slate-200 px-3.5 py-1 text-xs font-medium text-slate-700">
               <TbBriefcase className="h-3.5 w-3.5 text-slate-500" />
-              <span>{story.client}</span>
+              <span>{clientName}</span>
             </span>
           </div>
 

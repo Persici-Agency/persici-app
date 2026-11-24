@@ -15,7 +15,11 @@ import {
   TbCpu,
   TbPalette,
 } from 'react-icons/tb';
-import type { ClientStoryDetail, StoryTemplateType } from '@/app/[lang]/(site)/client-stories/_client-stories/types';
+import {
+  resolveBilingualText,
+  type ClientStoryDetail,
+  type StoryTemplateType,
+} from '@/app/[lang]/(site)/client-stories/_client-stories/types';
 
 interface PortfolioCardProps {
   story: ClientStoryDetail;
@@ -75,16 +79,10 @@ export function PortfolioCard({
   onToggleFeatured,
 }: PortfolioCardProps) {
   const isRtl = lang === 'ar';
-  const title = story.title[lang as 'en' | 'ar'] || story.title.en;
-  const summary = story.executiveSummary[lang as 'en' | 'ar'] || story.executiveSummary.en;
-  const clientName =
-    typeof story.client === 'string'
-      ? story.client
-      : String(
-          (story.client as Record<string, string>)?.[lang] ||
-            (story.client as Record<string, string>)?.en ||
-            'Client'
-        );
+  const title = resolveBilingualText(story.title, lang);
+  const summary = resolveBilingualText(story.executiveSummary, lang);
+  const partnerName = resolveBilingualText(story.partner, lang);
+  const clientName = resolveBilingualText(story.client, lang) || 'Client';
 
   const template = TEMPLATE_CONFIG[story.templateType] || TEMPLATE_CONFIG['marketing-video-showcase'];
   const TemplateIcon = template.icon;
@@ -140,17 +138,24 @@ export function PortfolioCard({
 
           {/* Category Pill at Bottom-Left of Cover */}
           <div className="absolute bottom-2.5 start-3 pointer-events-none">
-            <span className="px-2 py-0.5 rounded-md text-[10px] font-semibold uppercase tracking-wider bg-black/60 text-white/90 backdrop-blur-md border border-white/10">
-              {story.category[lang as 'en' | 'ar'] || story.category.en}
+            <span className="px-2 py-0.5 rounded-md text-[10px] font-semibold uppercase tracking-wider rtl:normal-case rtl:tracking-normal bg-black/60 text-white/90 backdrop-blur-md border border-white/10">
+              {resolveBilingualText(story.category, lang)}
             </span>
           </div>
         </div>
 
         {/* Content Body */}
         <div className="p-5 space-y-3">
-          <div className="flex items-center justify-between text-xs">
-            <span className="font-semibold text-persici-crimson">{clientName}</span>
-            <span className="font-mono text-[11px] text-slate-400">/{story.slug}</span>
+          <div className="flex items-center justify-between gap-2 text-xs">
+            <div className="flex items-center gap-1.5 min-w-0">
+              {partnerName && (
+                <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 text-[10px] font-semibold truncate max-w-[110px]" title={partnerName}>
+                  {partnerName}
+                </span>
+              )}
+              <span className="font-semibold text-persici-crimson truncate">{clientName}</span>
+            </div>
+            <span className="font-mono text-[11px] text-slate-400 shrink-0">/{story.slug}</span>
           </div>
 
           <h3 className="text-base font-bold text-slate-900 leading-snug line-clamp-2">

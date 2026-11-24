@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import {
   TbPlus,
@@ -22,6 +22,8 @@ import {
   TbArrowDown,
   TbSortAscending,
   TbSortDescending,
+  TbChevronDown,
+  TbCheck,
 } from 'react-icons/tb';
 import { RichTextEditor } from '@dashboard-shared/components';
 import type { MediaItem } from '@dashboard-shared/components/media/types';
@@ -211,6 +213,48 @@ export function PortfolioMediaShowcaseSection({
 
   const activeGalleryDesign: StoryGalleryDesign = showcase.galleryDesign || 'editorial-bento';
   const activeGalleryOrder: StoryGalleryOrder = showcase.galleryOrder || 'normal';
+
+  const [galleryDropdownOpen, setGalleryDropdownOpen] = useState(false);
+  const [hoveredGalleryDesign, setHoveredGalleryDesign] = useState<StoryGalleryDesign | null>(
+    null
+  );
+  const [isTriggerHovered, setIsTriggerHovered] = useState(false);
+  const galleryDropdownRef = useRef<HTMLDivElement | null>(null);
+
+  const selectedGalleryOption =
+    GALLERY_DESIGN_OPTIONS.find((opt) => opt.id === activeGalleryDesign) ||
+    GALLERY_DESIGN_OPTIONS[0];
+  const hoveredGalleryOption = hoveredGalleryDesign
+    ? GALLERY_DESIGN_OPTIONS.find((opt) => opt.id === hoveredGalleryDesign) || null
+    : null;
+
+  useEffect(() => {
+    if (!galleryDropdownOpen) return;
+
+    const handlePointerDown = (e: MouseEvent) => {
+      if (
+        galleryDropdownRef.current &&
+        !galleryDropdownRef.current.contains(e.target as Node)
+      ) {
+        setGalleryDropdownOpen(false);
+        setHoveredGalleryDesign(null);
+      }
+    };
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setGalleryDropdownOpen(false);
+        setHoveredGalleryDesign(null);
+      }
+    };
+
+    document.addEventListener('mousedown', handlePointerDown);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', handlePointerDown);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [galleryDropdownOpen]);
 
   const handleGalleryOrderChange = (order: StoryGalleryOrder) => {
     onChange({
@@ -1065,99 +1109,196 @@ export function PortfolioMediaShowcaseSection({
           </div>
         </div>
 
-        {/* 6 Best-Practice Gallery Designs Selector */}
-        <div className="p-4 rounded-2xl bg-slate-50/90 border border-slate-200/90 space-y-3">
-          <div className="flex items-center justify-between gap-2">
-            <label className="text-[11px] font-bold uppercase tracking-wider text-slate-700">
-              {isRtl ? 'تصميم عرض المعرض (Gallery Display Design)' : 'Select Gallery Display Design'}
-            </label>
-            <span className="text-[11px] font-medium text-slate-500">
-              {isRtl ? 'الافتراضي:' : 'Default:'}{' '}
-              <strong className="text-slate-800">Editorial Bento Grid</strong>
-            </span>
-          </div>
+        {/* 6 Best-Practice Gallery Designs Selector + Display Order */}
+        <div className="p-4 rounded-2xl bg-slate-50/90 border border-slate-200/90">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
+            {/* Column 1: Select Gallery Display Design Dropdown */}
+            <div ref={galleryDropdownRef} className="relative">
+              <div className="flex items-center justify-between gap-2 mb-1.5 min-h-[20px]">
+                <label className="text-[11px] font-bold uppercase tracking-wider text-slate-700">
+                  {isRtl
+                    ? 'تصميم عرض المعرض (Gallery Display Design)'
+                    : 'Select Gallery Display Design'}
+                </label>
+                <span className="text-[10px] font-medium text-slate-400">
+                  {isRtl ? 'مرّر لعرض الوصف' : 'Hover for description'}
+                </span>
+              </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
-            {GALLERY_DESIGN_OPTIONS.map((opt) => {
-              const isSelected = activeGalleryDesign === opt.id;
-              return (
-                <button
-                  key={opt.id}
-                  type="button"
-                  onClick={() => handleGalleryDesignChange(opt.id)}
-                  className={`p-3 rounded-xl border text-start transition-all flex items-start gap-2.5 cursor-pointer ${
-                    isSelected
-                      ? 'border-persici-crimson bg-white ring-2 ring-persici-crimson/20 shadow-xs'
-                      : 'border-slate-200 bg-white/70 hover:border-slate-300 hover:bg-white'
+              <button
+                type="button"
+                aria-haspopup="listbox"
+                aria-expanded={galleryDropdownOpen}
+                onMouseEnter={() => setIsTriggerHovered(true)}
+                onMouseLeave={() => setIsTriggerHovered(false)}
+                onClick={() => {
+                  setGalleryDropdownOpen((prev) => !prev);
+                  setIsTriggerHovered(false);
+                  setHoveredGalleryDesign(null);
+                }}
+                title={`${
+                  isRtl ? selectedGalleryOption.nameAr : selectedGalleryOption.nameEn
+                }: ${isRtl ? selectedGalleryOption.descAr : selectedGalleryOption.descEn}`}
+                className={`w-full h-10 px-3 rounded-xl border text-xs font-semibold text-slate-800 flex items-center justify-between gap-2.5 transition-all cursor-pointer ${
+                  galleryDropdownOpen
+                    ? 'bg-white border-persici-crimson ring-2 ring-persici-crimson/15 shadow-xs'
+                    : 'bg-white hover:border-slate-300 border-slate-200 shadow-2xs'
+                }`}
+              >
+                <span className="flex items-center gap-2.5 min-w-0">
+                  <span className="w-6 h-6 rounded-lg bg-persici-crimson/10 text-persici-crimson flex items-center justify-center shrink-0">
+                    {renderGalleryDesignIcon(selectedGalleryOption.id, 'w-3.5 h-3.5')}
+                  </span>
+                  <span className="truncate">
+                    {isRtl ? selectedGalleryOption.nameAr : selectedGalleryOption.nameEn}
+                  </span>
+                  {selectedGalleryOption.isDefault && (
+                    <span className="px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[9px] font-bold uppercase shrink-0">
+                      {isRtl ? 'افتراضي' : 'Default'}
+                    </span>
+                  )}
+                </span>
+                <TbChevronDown
+                  className={`w-4 h-4 text-slate-400 shrink-0 transition-transform duration-200 ${
+                    galleryDropdownOpen ? 'rotate-180 text-persici-crimson' : ''
                   }`}
-                >
-                  <div
-                    className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${
-                      isSelected
-                        ? 'bg-persici-crimson text-white'
-                        : 'bg-slate-100 text-slate-600'
-                    }`}
-                  >
-                    {renderGalleryDesignIcon(opt.id, 'w-4 h-4')}
-                  </div>
-                  <div className="min-w-0 flex-1 space-y-1">
-                    <div className="flex flex-wrap items-center gap-1.5">
-                      <span className="text-xs font-bold text-slate-900">
-                        {isRtl ? opt.nameAr : opt.nameEn}
-                      </span>
-                      {opt.isDefault && (
-                        <span className="px-1.5 py-0.2 rounded-full bg-emerald-100 text-emerald-800 text-[9px] font-bold uppercase">
-                          {isRtl ? 'افتراضي' : 'Default'}
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-[11px] text-slate-500 leading-snug">
-                      {isRtl ? opt.descAr : opt.descEn}
-                    </p>
-                  </div>
-                </button>
-              );
-            })}
-          </div>
+                />
+              </button>
 
-          {/* Gallery Display Order Selector (Normal 1..N vs Reverse N..1) */}
-          <div className="pt-3 border-t border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div>
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-700 block">
-                {isRtl ? 'ترتيب عرض صور المعرض (Gallery Display Order)' : 'Gallery Display Order'}
-              </span>
-              <p className="text-[11px] text-slate-500 mt-0.5">
-                {isRtl
-                  ? 'اختر الترتيب العادي (من الأولى للأخيرة) أو العكسي (من الأخيرة للأولى).'
-                  : 'Choose Normal order (1, 2, 3...) or Reverse order so the last image appears first.'}
-              </p>
+              {/* Closed-Trigger Hover Tooltip */}
+              {!galleryDropdownOpen && isTriggerHovered && (
+                <div
+                  role="tooltip"
+                  className="absolute z-40 bottom-full mb-2 inset-x-0 p-2.5 rounded-xl bg-slate-900 text-white shadow-xl border border-slate-800 pointer-events-none space-y-0.5"
+                >
+                  <div className="text-[11px] font-bold text-white flex items-center gap-1.5">
+                    <span className="text-persici-crimson shrink-0">
+                      {renderGalleryDesignIcon(selectedGalleryOption.id, 'w-3.5 h-3.5')}
+                    </span>
+                    <span>
+                      {isRtl ? selectedGalleryOption.nameAr : selectedGalleryOption.nameEn}
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-300 leading-relaxed">
+                    {isRtl ? selectedGalleryOption.descAr : selectedGalleryOption.descEn}
+                  </p>
+                </div>
+              )}
+
+              {/* Open Dropdown Menu + Live Hover Description Panel */}
+              {galleryDropdownOpen && (
+                <div
+                  role="listbox"
+                  onMouseLeave={() => setHoveredGalleryDesign(null)}
+                  className="absolute z-30 mt-1.5 inset-x-0 bg-white border border-slate-200 rounded-2xl shadow-xl overflow-hidden"
+                >
+                  <div className="py-1.5">
+                    {GALLERY_DESIGN_OPTIONS.map((opt) => {
+                      const isSelected = activeGalleryDesign === opt.id;
+                      return (
+                        <button
+                          key={opt.id}
+                          type="button"
+                          role="option"
+                          aria-selected={isSelected}
+                          title={`${isRtl ? opt.nameAr : opt.nameEn}: ${
+                            isRtl ? opt.descAr : opt.descEn
+                          }`}
+                          onMouseEnter={() => setHoveredGalleryDesign(opt.id)}
+                          onFocus={() => setHoveredGalleryDesign(opt.id)}
+                          onClick={() => {
+                            handleGalleryDesignChange(opt.id);
+                            setGalleryDropdownOpen(false);
+                            setHoveredGalleryDesign(null);
+                          }}
+                          className={`w-full px-3 py-2 text-start text-xs flex items-center justify-between gap-2.5 transition-colors cursor-pointer ${
+                            isSelected
+                              ? 'bg-persici-crimson/8 text-persici-crimson font-bold'
+                              : 'text-slate-700 font-medium hover:bg-slate-50 hover:text-slate-900'
+                          }`}
+                        >
+                          <span className="flex items-center gap-2.5 min-w-0">
+                            <span
+                              className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${
+                                isSelected
+                                  ? 'bg-persici-crimson text-white'
+                                  : 'bg-slate-100 text-slate-600'
+                              }`}
+                            >
+                              {renderGalleryDesignIcon(opt.id, 'w-4 h-4')}
+                            </span>
+                            <span className="truncate">
+                              {isRtl ? opt.nameAr : opt.nameEn}
+                            </span>
+                            {opt.isDefault && (
+                              <span className="px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[9px] font-bold uppercase shrink-0">
+                                {isRtl ? 'افتراضي' : 'Default'}
+                              </span>
+                            )}
+                          </span>
+                          {isSelected && <TbCheck className="w-4 h-4 shrink-0" />}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {hoveredGalleryOption && (
+                    <div className="px-3.5 py-2.5 bg-slate-900 text-white border-t border-slate-800 space-y-0.5">
+                      <div className="flex items-center gap-1.5 text-[11px] font-bold text-white">
+                        <span className="text-persici-crimson shrink-0">
+                          {renderGalleryDesignIcon(hoveredGalleryOption.id, 'w-3.5 h-3.5')}
+                        </span>
+                        <span>
+                          {isRtl ? hoveredGalleryOption.nameAr : hoveredGalleryOption.nameEn}
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-slate-300 leading-relaxed">
+                        {isRtl ? hoveredGalleryOption.descAr : hoveredGalleryOption.descEn}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
-            <div className="inline-flex items-center p-1 rounded-xl bg-white border border-slate-200 shadow-2xs shrink-0 self-start sm:self-auto">
-              <button
-                type="button"
-                onClick={() => handleGalleryOrderChange('normal')}
-                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                  activeGalleryOrder === 'normal'
-                    ? 'bg-slate-900 text-white shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                <TbSortAscending className="w-3.5 h-3.5" />
-                <span>{isRtl ? 'الترتيب العادي (1 ← الأخير)' : 'Normal Order (1 → N)'}</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => handleGalleryOrderChange('reverse')}
-                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                  activeGalleryOrder === 'reverse'
-                    ? 'bg-persici-crimson text-white shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                <TbSortDescending className="w-3.5 h-3.5" />
-                <span>{isRtl ? 'الترتيب العكسي (الأخير ← 1)' : 'Reverse Order (N → 1)'}</span>
-              </button>
+            {/* Column 2: Gallery Display Order Selector (Normal 1..N vs Reverse N..1) */}
+            <div>
+              <div className="flex items-center justify-between gap-2 mb-1.5 min-h-[20px]">
+                <label className="text-[11px] font-bold uppercase tracking-wider text-slate-700">
+                  {isRtl ? 'ترتيب عرض صور المعرض (Gallery Display Order)' : 'Gallery Display Order'}
+                </label>
+              </div>
+
+              <div className="h-10 p-1 rounded-xl bg-white border border-slate-200 shadow-2xs grid grid-cols-2 gap-1">
+                <button
+                  type="button"
+                  onClick={() => handleGalleryOrderChange('normal')}
+                  className={`h-full inline-flex items-center justify-center gap-1.5 px-2.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                    activeGalleryOrder === 'normal'
+                      ? 'bg-slate-900 text-white shadow-xs'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  <TbSortAscending className="w-3.5 h-3.5 shrink-0" />
+                  <span className="truncate">
+                    {isRtl ? 'الترتيب العادي (1 ← الأخير)' : 'Normal Order (1 → N)'}
+                  </span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleGalleryOrderChange('reverse')}
+                  className={`h-full inline-flex items-center justify-center gap-1.5 px-2.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                    activeGalleryOrder === 'reverse'
+                      ? 'bg-persici-crimson text-white shadow-xs'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  <TbSortDescending className="w-3.5 h-3.5 shrink-0" />
+                  <span className="truncate">
+                    {isRtl ? 'الترتيب العكسي (الأخير ← 1)' : 'Reverse Order (N → 1)'}
+                  </span>
+                </button>
+              </div>
             </div>
           </div>
         </div>

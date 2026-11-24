@@ -14,16 +14,22 @@ import {
   TbSparkles,
   TbDatabaseImport,
   TbLayout,
+  TbCategory,
 } from 'react-icons/tb';
 import { MediaPickerModal } from '@dashboard-shared/components';
 import type {
   ImageUploadQualityMode,
   MediaItem,
 } from '@dashboard-shared/components/media/types';
-import type {
-  ClientStoryDetail,
-  StoryCategorySlug,
-  StoryTemplateType,
+import {
+  DEFAULT_CLIENT_STORY_CATEGORIES,
+  hasAnyBilingualText,
+  normalizeBilingualInput,
+  resolveBilingualText,
+  type ClientStoryCategory,
+  type ClientStoryDetail,
+  type StoryCategorySlug,
+  type StoryTemplateType,
 } from '@/app/[lang]/(site)/client-stories/_client-stories/types';
 import {
   PortfolioStatsBar,
@@ -45,15 +51,15 @@ import type {
 } from '@/app/api/ai/generate-story-field/route';
 import type { AiEffectLevel, AiProviderId } from '@/lib/ai-types';
 
-const CATEGORY_LABELS: Record<StoryCategorySlug, { en: string; ar: string }> = {
-  all: { en: 'All Categories', ar: 'جميع التصنيفات' },
-  software: { en: 'Software & Web Apps', ar: 'البرمجيات والتطبيقات الرقمية' },
-  'ai-platforms': { en: 'AI Platforms', ar: 'منصات الذكاء الاصطناعي' },
-  branding: { en: 'Branding & Identity', ar: 'الهوية البصرية والعلامة التجارية' },
-  marketing: { en: 'Marketing & Performance', ar: 'الحملات ونمو العلامة التجارية' },
-  'marketing-branding': { en: 'Marketing & Branding', ar: 'التسويق والهوية البصرية' },
-  'video-production': { en: 'Media Production & Films', ar: 'الإنتاج المرئي والسينمائي' },
-};
+function resolveCategoryBySlug(
+  slug: string,
+  list: ClientStoryCategory[]
+): ClientStoryCategory | undefined {
+  return (
+    list.find((c) => c.slug === slug) ||
+    DEFAULT_CLIENT_STORY_CATEGORIES.find((c) => c.slug === slug)
+  );
+}
 
 const DEFAULT_NEW_STORY: ClientStoryDetail = {
   id: '',
@@ -78,7 +84,8 @@ const DEFAULT_NEW_STORY: ClientStoryDetail = {
     en: 'Persici partnered with the enterprise leadership to engineer scalable digital systems, resulting in measurable business growth.',
     ar: 'شاركت بيرسيشي القيادة المؤسسية في بناء منظومة برمجية متطورة، محققة قفزات نوعية في نمو الأعمال.',
   },
-  client: 'Enterprise Client',
+  partner: { en: '', ar: '' },
+  client: { en: 'Enterprise Client', ar: 'عميل مؤسسي' },
   topic: {
     en: 'Enterprise Software & Cloud',
     ar: 'البرمجيات السحابية والمؤسسية',
@@ -93,6 +100,15 @@ const DEFAULT_NEW_STORY: ClientStoryDetail = {
   },
   date: '2025',
   heroImage: '/images/hero/hero-poster.webp',
+  heroSlider: {
+    enabled: false,
+    autoScroll: true,
+    infinite: true,
+    intervalMs: 4000,
+    transitionMs: 650,
+    showArrows: true,
+    images: [],
+  },
   metrics: [
     {
       value: '+240%',
@@ -209,6 +225,10 @@ export default function ProjectsManagerPage() {
   const isRtl = lang === 'ar';
 
   const [stories, setStories] = useState<ClientStoryDetail[]>([]);
+  const [categories, setCategories] = useState<ClientStoryCategory[]>(
+    DEFAULT_CLIENT_STORY_CATEGORIES
+  );
+  const [passkey, setPasskey] = useState('');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [seeding, setSeeding] = useState(false);
@@ -254,13 +274,26 @@ export default function ProjectsManagerPage() {
   >(null);
   const [uploadQualityMode, setUploadQualityMode] = useState<ImageUploadQualityMode>('high-webp');
 
+  const getHref = (href: string) => {
+    if (!passkey) return href;
+    const sep = href.includes('?') ? '&' : '?';
+    return `${href}${sep}passkey=${encodeURIComponent(passkey)}`;
+  };
+
   const loadStories = useCallback(async (showLoading = false) => {
     if (showLoading) setLoading(true);
     try {
-      const res = await fetch('/api/projects', { cache: 'no-store' });
-      const data = await res.json();
+      const [projRes, catRes] = await Promise.all([
+        fetch('/api/projects', { cache: 'no-store' }),
+        fetch('/api/projects/categories', { cache: 'no-store' }),
+      ]);
+      const data = await projRes.json();
       if (data.projects) {
         setStories(data.projects);
+      }
+      const catData = await catRes.json().catch(() => ({}));
+      if (Array.isArray(catData.categories) && catData.categories.length > 0) {
+        setCategories(catData.categories);
       }
     } catch (err) {
       console.error('Failed to load portfolio stories:', err);
@@ -271,11 +304,65 @@ export default function ProjectsManagerPage() {
 
   useEffect(() => {
     let active = true;
-    fetch('/api/projects', { cache: 'no-store' })
-      .then((res) => res.json())
-      .then((data) => {
-        if (active && data.projects) {
-          setStories(data.projects);
+    Promise.all([
+      fetch('/api/projects', { cache: 'no-store' }).then((res) => res.json()),
+      fetch('/api/projects/categories', { cache: 'no-store' })
+        .then((res) => res.json())
+        .catch(() => ({})),
+    ])
+      .then(([projData, catData]) => {
+        if (!active) return;
+        const loadedCategories: ClientStoryCategory[] =
+          Array.isArray(catData?.categories) && catData.categories.length > 0
+            ? catData.categories
+            : DEFAULT_CLIENT_STORY_CATEGORIES;
+
+        setCategories(loadedCategories);
+        if (projData?.projects) {
+          setStories(projData.projects);
+        }
+
+        if (typeof window !== 'undefined') {
+          const sp = new URLSearchParams(window.location.search);
+          const pk = sp.get('passkey') || sp.get('key') || '';
+          if (pk) setPasskey(pk);
+
+          const filterCat = sp.get('category');
+          if (filterCat && filterCat !== 'all') {
+            setCategoryFilter(filterCat);
+          }
+
+          const newCat = sp.get('newCategory');
+          if (newCat && newCat !== 'all') {
+            const matched = resolveCategoryBySlug(newCat, loadedCategories);
+            const fallbackSlug = matched?.slug || newCat;
+            const fallbackCatName = matched
+              ? {
+                  en: resolveBilingualText(matched.name, 'en'),
+                  ar: resolveBilingualText(matched.name, 'ar'),
+                }
+              : { en: newCat, ar: newCat };
+
+            setIsCreating(true);
+            setPersistedSlug(null);
+            setActiveTocSection('sec-meta');
+            setReferences([]);
+            setReferenceWarning(null);
+            setLastUsageBanner(null);
+            setEditingStory({
+              ...DEFAULT_NEW_STORY,
+              id: `story-${Date.now()}`,
+              slug: `case-study-${Date.now()}`,
+              categorySlug: fallbackSlug,
+              category: fallbackCatName,
+              aiReferences: [],
+            });
+
+            sp.delete('newCategory');
+            const nextQs = sp.toString();
+            const cleanUrl = `${window.location.pathname}${nextQs ? `?${nextQs}` : ''}`;
+            window.history.replaceState({}, '', cleanUrl);
+          }
         }
       })
       .catch((err) => {
@@ -500,12 +587,27 @@ export default function ProjectsManagerPage() {
         if (targetField === 'all') {
           if (r.meta && typeof r.meta === 'object') {
             const m = r.meta as Record<string, unknown>;
-            if (typeof m.client === 'string' && m.client) next.client = m.client;
+            if (m.partner !== undefined) {
+              const p = normalizeBilingualInput(m.partner);
+              next.partner = { en: p.en.trim(), ar: p.ar.trim() };
+            }
+            if (m.client !== undefined) {
+              const c = normalizeBilingualInput(m.client);
+              if (hasAnyBilingualText(c)) {
+                next.client = { en: c.en.trim(), ar: c.ar.trim() };
+              }
+            }
             if (typeof m.slug === 'string' && m.slug) next.slug = m.slug;
-            if (typeof m.categorySlug === 'string' && m.categorySlug in CATEGORY_LABELS) {
-              const catSlug = m.categorySlug as StoryCategorySlug;
-              next.categorySlug = catSlug;
-              next.category = CATEGORY_LABELS[catSlug];
+            if (typeof m.categorySlug === 'string' && m.categorySlug.trim()) {
+              const catSlug = m.categorySlug.trim();
+              const matched = resolveCategoryBySlug(catSlug, categories);
+              if (matched) {
+                next.categorySlug = matched.slug;
+                next.category = {
+                  en: resolveBilingualText(matched.name, 'en'),
+                  ar: resolveBilingualText(matched.name, 'ar'),
+                };
+              }
             }
             if (typeof m.templateType === 'string') {
               next.templateType = m.templateType as StoryTemplateType;
@@ -542,12 +644,27 @@ export default function ProjectsManagerPage() {
             next.relatedSlugs = r.relatedSlugs;
           }
         } else if (targetField === 'meta') {
-          if (typeof r.client === 'string' && r.client) next.client = r.client;
+          if (r.partner !== undefined) {
+            const p = normalizeBilingualInput(r.partner);
+            next.partner = { en: p.en.trim(), ar: p.ar.trim() };
+          }
+          if (r.client !== undefined) {
+            const c = normalizeBilingualInput(r.client);
+            if (hasAnyBilingualText(c)) {
+              next.client = { en: c.en.trim(), ar: c.ar.trim() };
+            }
+          }
           if (typeof r.slug === 'string' && r.slug) next.slug = r.slug;
-          if (typeof r.categorySlug === 'string' && r.categorySlug in CATEGORY_LABELS) {
-            const catSlug = r.categorySlug as StoryCategorySlug;
-            next.categorySlug = catSlug;
-            next.category = CATEGORY_LABELS[catSlug];
+          if (typeof r.categorySlug === 'string' && r.categorySlug.trim()) {
+            const catSlug = r.categorySlug.trim();
+            const matched = resolveCategoryBySlug(catSlug, categories);
+            if (matched) {
+              next.categorySlug = matched.slug;
+              next.category = {
+                en: resolveBilingualText(matched.name, 'en'),
+                ar: resolveBilingualText(matched.name, 'ar'),
+              };
+            }
           }
           if (typeof r.templateType === 'string') {
             next.templateType = r.templateType as StoryTemplateType;
@@ -558,8 +675,14 @@ export default function ProjectsManagerPage() {
           if (Array.isArray(r.services) && r.services.length > 0) next.services = r.services;
         } else if (targetField === 'slug' && typeof r.slug === 'string') {
           next.slug = r.slug;
-        } else if (targetField === 'client' && typeof r.client === 'string') {
-          next.client = r.client;
+        } else if (targetField === 'partner' && r.partner !== undefined) {
+          const p = normalizeBilingualInput(r.partner);
+          next.partner = { en: p.en.trim(), ar: p.ar.trim() };
+        } else if (targetField === 'client' && r.client !== undefined) {
+          const c = normalizeBilingualInput(r.client);
+          if (hasAnyBilingualText(c)) {
+            next.client = { en: c.en.trim(), ar: c.ar.trim() };
+          }
         } else if (targetField === 'topic' && r.topic) {
           next.topic = r.topic;
         } else if (targetField === 'region' && r.region) {
@@ -695,8 +818,16 @@ export default function ProjectsManagerPage() {
     if (e) e.preventDefault();
     if (!editingStory) return;
 
-    if (!editingStory.slug || !editingStory.title?.en) {
-      alert(isRtl ? 'يرجى إدخال المعرف (Slug) وعنوان المشروع بالإنجليزية على الأقل.' : 'Please provide at least a slug and English title.');
+    if (
+      !editingStory.slug?.trim() ||
+      !hasAnyBilingualText(editingStory.title) ||
+      !hasAnyBilingualText(editingStory.client)
+    ) {
+      alert(
+        isRtl
+          ? 'يرجى إدخال المعرف (Slug)، وعنوان للمشروع واسم العميل بلغة واحدة على الأقل (العربية أو الإنجليزية).'
+          : 'Please provide a URL slug, at least one title (EN or AR), and at least one client name (EN or AR).'
+      );
       return;
     }
 
@@ -704,8 +835,23 @@ export default function ProjectsManagerPage() {
     try {
       const url = '/api/projects';
       const method = isCreating ? 'POST' : 'PUT';
+      const normalizedTitle = normalizeBilingualInput(editingStory.title);
+      const normalizedPartner = normalizeBilingualInput(editingStory.partner);
+      const normalizedClient = normalizeBilingualInput(editingStory.client);
       const payloadToSave: ClientStoryDetail = {
         ...editingStory,
+        title: {
+          en: normalizedTitle.en.trim(),
+          ar: normalizedTitle.ar.trim(),
+        },
+        partner: {
+          en: normalizedPartner.en.trim(),
+          ar: normalizedPartner.ar.trim(),
+        },
+        client: {
+          en: normalizedClient.en.trim(),
+          ar: normalizedClient.ar.trim(),
+        },
         aiReferences: references,
       };
 
@@ -795,10 +941,23 @@ export default function ProjectsManagerPage() {
     const q = searchQuery.toLowerCase().trim();
     const titleEn = story.title?.en?.toLowerCase() || '';
     const titleAr = story.title?.ar?.toLowerCase() || '';
-    const clientName = typeof story.client === 'string' ? story.client.toLowerCase() : '';
+    const p = normalizeBilingualInput(story.partner);
+    const c = normalizeBilingualInput(story.client);
+    const partnerEn = p.en.toLowerCase();
+    const partnerAr = p.ar.toLowerCase();
+    const clientEn = c.en.toLowerCase();
+    const clientAr = c.ar.toLowerCase();
     const slug = story.slug?.toLowerCase() || '';
 
-    const matchesQuery = !q || titleEn.includes(q) || titleAr.includes(q) || clientName.includes(q) || slug.includes(q);
+    const matchesQuery =
+      !q ||
+      titleEn.includes(q) ||
+      titleAr.includes(q) ||
+      partnerEn.includes(q) ||
+      partnerAr.includes(q) ||
+      clientEn.includes(q) ||
+      clientAr.includes(q) ||
+      slug.includes(q);
     const matchesCategory = categoryFilter === 'all' || story.categorySlug === categoryFilter;
     const matchesTemplate = templateFilter === 'all' || story.templateType === templateFilter;
     const matchesFeatured = !featuredOnly || Boolean(story.featured);
@@ -834,6 +993,14 @@ export default function ProjectsManagerPage() {
             <TbPlus className="w-4 h-4" />
             <span>{isRtl ? 'إضافة قصة عميل جديدة' : 'Add Client Story'}</span>
           </button>
+
+          <Link
+            href={getHref(`/${lang}/dashboard/content/projects/categories`)}
+            className="flex items-center gap-2 px-3.5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 rounded-xl text-xs font-semibold transition-colors"
+          >
+            <TbCategory className="w-4 h-4 text-persici-crimson" />
+            <span>{isRtl ? 'التصنيفات' : 'Categories'}</span>
+          </Link>
 
           <Link
             href={`/${lang}/dashboard/pages/client-stories`}
@@ -914,36 +1081,67 @@ export default function ProjectsManagerPage() {
           </div>
         </div>
 
-        {/* Category Filter Pills */}
+        {/* Category Filter Pills (Synced Live with Client Story Categories) */}
         <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none border-t border-slate-100 pt-3">
           <span className="text-[11px] font-bold font-mono text-slate-400 uppercase tracking-wider shrink-0 me-1">
             {isRtl ? 'التصنيف:' : 'Category:'}
           </span>
-          {[
-            { id: 'all' as const, labelEn: 'All Categories', labelAr: 'الكل' },
-            { id: 'software' as const, labelEn: 'Software & Web Apps', labelAr: 'البرمجيات والتطبيقات' },
-            { id: 'ai-platforms' as const, labelEn: 'AI Platforms', labelAr: 'منصات الذكاء الاصطناعي' },
-            { id: 'branding' as const, labelEn: 'Branding & Identity', labelAr: 'الهوية البصرية' },
-            { id: 'marketing' as const, labelEn: 'Marketing & Performance', labelAr: 'الحملات ونمو العلامة' },
-            { id: 'marketing-branding' as const, labelEn: 'Marketing & Branding', labelAr: 'التسويق والهوية البصرية' },
-            { id: 'video-production' as const, labelEn: 'Media Production & Films', labelAr: 'الإنتاج المرئي' },
-          ].map((cat) => {
-            const isActive = categoryFilter === cat.id;
-            return (
-              <button
-                key={cat.id}
-                type="button"
-                onClick={() => setCategoryFilter(cat.id)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all shrink-0 cursor-pointer ${
-                  isActive
-                    ? 'bg-slate-900 text-white font-semibold shadow-xs'
-                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                }`}
-              >
-                {isRtl ? cat.labelAr : cat.labelEn}
-              </button>
-            );
-          })}
+          {(() => {
+            const knownSlugs = new Set(categories.map((c) => c.slug));
+            const dynamicCats: ClientStoryCategory[] = [...categories];
+            for (const st of stories) {
+              if (st.categorySlug && st.categorySlug !== 'all' && !knownSlugs.has(st.categorySlug)) {
+                knownSlugs.add(st.categorySlug);
+                dynamicCats.push({
+                  id: st.categorySlug,
+                  slug: st.categorySlug,
+                  name: {
+                    en: resolveBilingualText(st.category, 'en') || st.categorySlug,
+                    ar: resolveBilingualText(st.category, 'ar') || st.categorySlug,
+                  },
+                  order: dynamicCats.length + 1,
+                });
+              }
+            }
+
+            const filterPills = [
+              {
+                id: 'all',
+                label: isRtl ? 'الكل' : 'All Categories',
+                count: stories.length,
+              },
+              ...dynamicCats.map((cat) => ({
+                id: cat.slug,
+                label: resolveBilingualText(cat.name, lang),
+                count: stories.filter((s) => s.categorySlug === cat.slug).length,
+              })),
+            ];
+
+            return filterPills.map((cat) => {
+              const isActive = categoryFilter === cat.id;
+              return (
+                <button
+                  key={cat.id}
+                  type="button"
+                  onClick={() => setCategoryFilter(cat.id)}
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium transition-all shrink-0 cursor-pointer ${
+                    isActive
+                      ? 'bg-slate-900 text-white font-semibold shadow-xs'
+                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  }`}
+                >
+                  <span>{cat.label}</span>
+                  <span
+                    className={`px-1.5 py-0.2 rounded-full text-[10px] font-mono ${
+                      isActive ? 'bg-white/20 text-white' : 'bg-white text-slate-500'
+                    }`}
+                  >
+                    {cat.count}
+                  </span>
+                </button>
+              );
+            });
+          })()}
         </div>
       </div>
 
@@ -1132,6 +1330,13 @@ export default function ProjectsManagerPage() {
                   story={editingStory}
                   onChange={setEditingStory}
                   lang={lang}
+                  categories={categories}
+                  onCategoryCreated={(cat) =>
+                    setCategories((prev) => [
+                      ...prev.filter((c) => c.slug !== cat.slug),
+                      cat,
+                    ])
+                  }
                   aiControls={aiControls}
                 />
 
@@ -1141,6 +1346,7 @@ export default function ProjectsManagerPage() {
                   onChange={setEditingStory}
                   lang={lang}
                   onOpenMediaPicker={handleOpenMediaPicker}
+                  onOpenMultiMediaPicker={handleOpenMultiMediaPicker}
                   aiControls={aiControls}
                 />
 

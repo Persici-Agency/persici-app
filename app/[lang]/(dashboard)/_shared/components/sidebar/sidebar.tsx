@@ -18,9 +18,6 @@ import {
   TbRoute,
   TbArticle,
   TbUserCheck,
-  TbBulb,
-  TbBuildingFactory2,
-  TbTransform,
   TbLayoutSidebarLeftCollapse,
   TbLayoutSidebarLeftExpand,
   TbLayoutSidebarRightCollapse,
@@ -117,6 +114,9 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
     careers: true,
     leads: true,
     content: true,
+    clientStories:
+      pathname.includes('/dashboard/content/projects') ||
+      pathname.includes('/dashboard/pages/client-stories'),
   }));
 
   const toggleSection = (key: string) => {
@@ -131,6 +131,61 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
 
   const isActive = (href: string) =>
     pathname === `/${lang}${href}` || pathname.startsWith(`/${lang}${href}/`);
+
+  const isExactPath = (href: string) => pathname === `/${lang}${href}`;
+
+  const isSolutionsActive = pathname.startsWith(`/${lang}/dashboard/pages/solutions`);
+  const isIndustriesActive = pathname.startsWith(`/${lang}/dashboard/pages/industries`);
+  const isHowWeDoItActive = pathname.startsWith(`/${lang}/dashboard/pages/how-we-do-it`);
+  const isPagesActive =
+    isActive('/dashboard/pages/home') ||
+    isActive('/dashboard/pages/about') ||
+    isActive('/dashboard/pages/contact') ||
+    isActive('/dashboard/pages/insights') ||
+    isSolutionsActive ||
+    isIndustriesActive ||
+    isHowWeDoItActive;
+  const isNavActive = isActive('/dashboard/navigation');
+  const isCareersActive = isActive('/dashboard/careers') || isActive('/dashboard/pages/careers');
+  const isLeadsActive = isActive('/dashboard/leads');
+  const isClientStoriesActive =
+    isActive('/dashboard/content/projects') || isActive('/dashboard/pages/client-stories');
+
+  const topTabLinkClass = (active: boolean) =>
+    `flex items-center ${
+      isCollapsed ? 'justify-center p-3' : 'gap-3 px-3.5 py-2.5'
+    } rounded-xl text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-persici-crimson/60 ${
+      active
+        ? 'bg-persici-crimson text-white shadow-lg shadow-persici-crimson/25'
+        : 'text-white/70 hover:bg-white/5 hover:text-white'
+    }`;
+
+  const accordionButtonClass = (active: boolean, isOpen: boolean) =>
+    `w-full flex items-center ${
+      isCollapsed ? 'justify-center p-3' : 'justify-between px-3.5 py-2.5'
+    } rounded-xl text-sm font-medium transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-persici-crimson/60 ${
+      active
+        ? 'bg-white/10 text-white font-semibold'
+        : isOpen
+        ? 'bg-white/5 text-white hover:bg-white/10'
+        : 'text-white/70 hover:bg-white/5 hover:text-white'
+    }`;
+
+  const subLinkClass = (active: boolean) =>
+    `block px-3 py-1.5 rounded-lg text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-persici-crimson/60 ${
+      active
+        ? 'bg-persici-crimson text-white font-semibold shadow-md shadow-persici-crimson/25'
+        : 'text-white/70 hover:bg-white/5 hover:text-white'
+    }`;
+
+  const subAccordionButtonClass = (active: boolean, isOpen: boolean) =>
+    `w-full flex items-center justify-between px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-persici-crimson/60 ${
+      active
+        ? 'bg-white/10 text-white font-semibold'
+        : isOpen
+        ? 'bg-white/5 text-white hover:bg-white/10'
+        : 'text-white/70 hover:bg-white/5 hover:text-white'
+    }`;
 
   // Permission guards
   const canSeePages = ['admin', 'editor'].includes(role);
@@ -185,7 +240,7 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
     communicationSocial: isRtl ? 'التواصل والسوشيال ميديا' : 'Communication & Social',
     sharedContact: isRtl ? 'القسم العام للتواصل' : 'Shared Contact Form',
     media: isRtl ? 'مكتبة التخزين (R2)' : 'Storage Library (R2)',
-    careersAts: isRtl ? 'نظام التوظيف ATS' : 'Careers ATS (HR)',
+    careersAts: isRtl ? 'الوظائف' : 'Careers',
     candidatePipeline: isRtl ? 'طلبات التوظيف والمتقدمين' : 'Candidate Pipeline',
     activeOpenings: isRtl ? 'الوظائف الشاغرة النشطة' : 'Active Job Postings',
     dispatchedEmails: isRtl ? 'سجل المراسلات الإلكترونية' : 'Dispatched HR Emails',
@@ -198,6 +253,8 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
     editorial: isRtl ? 'المدونة والمقالات' : 'Blogs & Insights',
     insights: isRtl ? 'المدونة والمقالات' : 'Blogs & Insights',
     projects: isRtl ? 'قصص نجاح العملاء' : 'Client Stories',
+    editClientStories: isRtl ? 'تعديل قصص العملاء' : 'Edit Client Stories',
+    clientStoryCategories: isRtl ? 'التصنيفات' : 'Categories',
     reviews: isRtl ? 'التقييمات والشهادات' : 'Reviews & Testimonials',
     teamMembers: isRtl ? 'فريق العمل والموظفون' : 'Team Members',
     aiStudio: isRtl ? 'الذكاء الاصطناعي والنماذج' : 'AI Studio & Models',
@@ -274,13 +331,7 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
         <div className="relative group">
           <Link
             href={getHref(`/${lang}/dashboard`)}
-            className={`flex items-center ${
-              isCollapsed ? 'justify-center p-3' : 'gap-3 px-3.5 py-2.5'
-            } rounded-xl text-sm font-medium transition-all ${
-              pathname === `/${lang}/dashboard`
-                ? 'bg-persici-crimson text-white shadow-lg shadow-persici-crimson/25'
-                : 'text-white/70 hover:bg-white/5 hover:text-white'
-            }`}
+            className={topTabLinkClass(pathname === `/${lang}/dashboard`)}
           >
             <TbLayoutDashboard className="w-5 h-5 shrink-0" />
             {!isCollapsed && <span>{t.overview}</span>}
@@ -288,23 +339,21 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
           {isCollapsed && <div className={tooltipClass}>{t.overview}</div>}
         </div>
 
-        {/* 2. Pages CMS Accordion */}
+        {/* 2. Site Pages CMS Accordion */}
         {canSeePages && (
-          <div className="pt-2">
+          <div>
             <div className="relative group">
               <button
                 type="button"
                 onClick={() => toggleSection('pages')}
-                className={`w-full flex items-center ${
-                  isCollapsed ? 'justify-center p-3' : 'justify-between px-3.5 py-2'
-                } text-xs font-semibold text-white/40 uppercase tracking-wider hover:text-white/70 transition-colors rounded-xl hover:bg-white/5`}
+                className={accordionButtonClass(isPagesActive, Boolean(openSections.pages))}
               >
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-3 min-w-0">
                   <TbFiles className="w-5 h-5 shrink-0" />
-                  {!isCollapsed && <span>{t.pagesSection}</span>}
+                  {!isCollapsed && <span className="truncate">{t.pagesSection}</span>}
                 </div>
                 {!isCollapsed && (
-                  <div>
+                  <div className="shrink-0">
                     {openSections.pages ? (
                       <TbChevronDown className="w-4 h-4" />
                     ) : isRtl ? (
@@ -322,298 +371,279 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
               <div className="mt-1 ps-3 space-y-1 border-s border-white/10 ms-4">
                 <Link
                   href={getHref(`/${lang}/dashboard/pages/home`)}
-                  className={`block px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                    isActive('/dashboard/pages/home')
-                      ? 'bg-white/15 text-white font-semibold'
-                      : 'text-white/60 hover:text-white'
-                  }`}
+                  className={subLinkClass(isActive('/dashboard/pages/home'))}
                 >
                   {t.home}
                 </Link>
                 <Link
                   href={getHref(`/${lang}/dashboard/pages/about`)}
-                  className={`block px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                    isActive('/dashboard/pages/about')
-                      ? 'bg-white/15 text-white font-semibold'
-                      : 'text-white/60 hover:text-white'
-                  }`}
+                  className={subLinkClass(isActive('/dashboard/pages/about'))}
                 >
                   {t.about}
                 </Link>
                 <Link
                   href={getHref(`/${lang}/dashboard/pages/contact`)}
-                  className={`block px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                    isActive('/dashboard/pages/contact')
-                      ? 'bg-white/15 text-white font-semibold'
-                      : 'text-white/60 hover:text-white'
-                  }`}
+                  className={subLinkClass(isActive('/dashboard/pages/contact'))}
                 >
                   {t.contact}
                 </Link>
                 <Link
-                  href={getHref(`/${lang}/dashboard/pages/client-stories`)}
-                  className={`block px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                    isActive('/dashboard/pages/client-stories')
-                      ? 'bg-white/15 text-white font-semibold'
-                      : 'text-white/60 hover:text-white'
-                  }`}
-                >
-                  {t.clientStories}
-                </Link>
-                <Link
-                  href={getHref(`/${lang}/dashboard/pages/careers`)}
-                  className={`block px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                    isActive('/dashboard/pages/careers')
-                      ? 'bg-white/15 text-white font-semibold'
-                      : 'text-white/60 hover:text-white'
-                  }`}
-                >
-                  {t.careersPage}
-                </Link>
-                <Link
                   href={getHref(`/${lang}/dashboard/pages/insights`)}
-                  className={`block px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                    isActive('/dashboard/pages/insights')
-                      ? 'bg-white/15 text-white font-semibold'
-                      : 'text-white/60 hover:text-white'
-                  }`}
+                  className={subLinkClass(isActive('/dashboard/pages/insights'))}
                 >
                   {t.insightsPage}
                 </Link>
 
                 {/* Sub-Accordion: Solutions */}
-                <div className="pt-1">
+                <div>
                   <button
                     type="button"
                     onClick={() => toggleSection('solutions')}
-                    className="w-full flex items-center justify-between px-3 py-1 text-xs text-white/50 hover:text-white transition-colors"
+                    className={subAccordionButtonClass(
+                      isSolutionsActive,
+                      Boolean(openSections.solutions)
+                    )}
                   >
-                    <div className="flex items-center gap-1.5">
-                      <TbBulb className="w-3.5 h-3.5 text-amber-400" />
-                      <span>{t.solutions}</span>
-                    </div>
+                    <span className="truncate">{t.solutions}</span>
                     {openSections.solutions ? (
-                      <TbChevronDown className="w-3 h-3" />
+                      <TbChevronDown className="w-3.5 h-3.5 shrink-0" />
                     ) : isRtl ? (
-                      <TbChevronLeft className="w-3 h-3" />
+                      <TbChevronLeft className="w-3.5 h-3.5 shrink-0" />
                     ) : (
-                      <TbChevronRight className="w-3 h-3" />
+                      <TbChevronRight className="w-3.5 h-3.5 shrink-0" />
                     )}
                   </button>
 
                   {openSections.solutions && (
-                    <div className="mt-1 ps-2.5 space-y-1 border-s border-white/10 ms-2 text-[11px]">
-                      <Link href={getHref(`/${lang}/dashboard/pages/solutions`)} className="block px-2.5 py-1 text-white/50 hover:text-white">
-                        &bull; {t.solutionsHub}
+                    <div className="mt-1 ps-3 space-y-1 border-s border-white/10 ms-3">
+                      <Link
+                        href={getHref(`/${lang}/dashboard/pages/solutions`)}
+                        className={subLinkClass(isExactPath('/dashboard/pages/solutions'))}
+                      >
+                        {t.solutionsHub}
                       </Link>
-                      <Link href={getHref(`/${lang}/dashboard/pages/solutions-ai-integration`)} className="block px-2.5 py-1 text-white/50 hover:text-white">
-                        &bull; {t.aiIntegration}
+                      <Link
+                        href={getHref(`/${lang}/dashboard/pages/solutions-ai-integration`)}
+                        className={subLinkClass(isActive('/dashboard/pages/solutions-ai-integration'))}
+                      >
+                        {t.aiIntegration}
                       </Link>
-                      <Link href={getHref(`/${lang}/dashboard/pages/solutions-application-management`)} className="block px-2.5 py-1 text-white/50 hover:text-white">
-                        &bull; {t.appManagement}
+                      <Link
+                        href={getHref(`/${lang}/dashboard/pages/solutions-application-management`)}
+                        className={subLinkClass(
+                          isActive('/dashboard/pages/solutions-application-management')
+                        )}
+                      >
+                        {t.appManagement}
                       </Link>
-                      <Link href={getHref(`/${lang}/dashboard/pages/solutions-digital-engineering`)} className="block px-2.5 py-1 text-white/50 hover:text-white">
-                        &bull; {t.digitalEngineering}
+                      <Link
+                        href={getHref(`/${lang}/dashboard/pages/solutions-digital-engineering`)}
+                        className={subLinkClass(
+                          isActive('/dashboard/pages/solutions-digital-engineering')
+                        )}
+                      >
+                        {t.digitalEngineering}
                       </Link>
-                      <Link href={getHref(`/${lang}/dashboard/pages/solutions-ux-and-product-design`)} className="block px-2.5 py-1 text-white/50 hover:text-white">
-                        &bull; {t.uxDesign}
+                      <Link
+                        href={getHref(`/${lang}/dashboard/pages/solutions-ux-and-product-design`)}
+                        className={subLinkClass(
+                          isActive('/dashboard/pages/solutions-ux-and-product-design')
+                        )}
+                      >
+                        {t.uxDesign}
                       </Link>
-                      <Link href={getHref(`/${lang}/dashboard/pages/solutions-ecommerce-growth`)} className="block px-2.5 py-1 text-white/50 hover:text-white">
-                        &bull; {t.ecommerce}
+                      <Link
+                        href={getHref(`/${lang}/dashboard/pages/solutions-ecommerce-growth`)}
+                        className={subLinkClass(
+                          isActive('/dashboard/pages/solutions-ecommerce-growth')
+                        )}
+                      >
+                        {t.ecommerce}
                       </Link>
-                      <Link href={getHref(`/${lang}/dashboard/pages/solutions-marketing-communications`)} className="block px-2.5 py-1 text-white/50 hover:text-white">
-                        &bull; {t.marketingComms}
+                      <Link
+                        href={getHref(`/${lang}/dashboard/pages/solutions-marketing-communications`)}
+                        className={subLinkClass(
+                          isActive('/dashboard/pages/solutions-marketing-communications')
+                        )}
+                      >
+                        {t.marketingComms}
                       </Link>
-                      <Link href={getHref(`/${lang}/dashboard/pages/solutions-customer-engagement`)} className="block px-2.5 py-1 text-white/50 hover:text-white">
-                        &bull; {t.customerEngagement}
+                      <Link
+                        href={getHref(`/${lang}/dashboard/pages/solutions-customer-engagement`)}
+                        className={subLinkClass(
+                          isActive('/dashboard/pages/solutions-customer-engagement')
+                        )}
+                      >
+                        {t.customerEngagement}
                       </Link>
-                      <Link href={getHref(`/${lang}/dashboard/pages/solutions-crm-management`)} className="block px-2.5 py-1 text-white/50 hover:text-white">
-                        &bull; {t.crmManagement}
+                      <Link
+                        href={getHref(`/${lang}/dashboard/pages/solutions-crm-management`)}
+                        className={subLinkClass(isActive('/dashboard/pages/solutions-crm-management'))}
+                      >
+                        {t.crmManagement}
                       </Link>
-                      <Link href={getHref(`/${lang}/dashboard/pages/solutions-supply-chain`)} className="block px-2.5 py-1 text-white/50 hover:text-white">
-                        &bull; {t.supplyChain}
+                      <Link
+                        href={getHref(`/${lang}/dashboard/pages/solutions-supply-chain`)}
+                        className={subLinkClass(isActive('/dashboard/pages/solutions-supply-chain'))}
+                      >
+                        {t.supplyChain}
                       </Link>
                     </div>
                   )}
                 </div>
 
                 {/* Sub-Accordion: Industries */}
-                <div className="pt-1">
+                <div>
                   <button
                     type="button"
                     onClick={() => toggleSection('industries')}
-                    className="w-full flex items-center justify-between px-3 py-1 text-xs text-white/50 hover:text-white transition-colors"
+                    className={subAccordionButtonClass(
+                      isIndustriesActive,
+                      Boolean(openSections.industries)
+                    )}
                   >
-                    <div className="flex items-center gap-1.5">
-                      <TbBuildingFactory2 className="w-3.5 h-3.5 text-blue-400" />
-                      <span>{t.industries}</span>
-                    </div>
+                    <span className="truncate">{t.industries}</span>
                     {openSections.industries ? (
-                      <TbChevronDown className="w-3 h-3" />
+                      <TbChevronDown className="w-3.5 h-3.5 shrink-0" />
                     ) : isRtl ? (
-                      <TbChevronLeft className="w-3 h-3" />
+                      <TbChevronLeft className="w-3.5 h-3.5 shrink-0" />
                     ) : (
-                      <TbChevronRight className="w-3 h-3" />
+                      <TbChevronRight className="w-3.5 h-3.5 shrink-0" />
                     )}
                   </button>
 
                   {openSections.industries && (
-                    <div className="mt-1 ps-2.5 space-y-1 border-s border-white/10 ms-2 text-[11px]">
+                    <div className="mt-1 ps-3 space-y-1 border-s border-white/10 ms-3">
                       <Link
                         href={getHref(`/${lang}/dashboard/pages/industries`)}
-                        className={`block px-2.5 py-1 rounded ${
-                          pathname === `/${lang}/dashboard/pages/industries`
-                            ? 'text-white font-semibold bg-white/10'
-                            : 'text-white/50 hover:text-white'
-                        }`}
+                        className={subLinkClass(isExactPath('/dashboard/pages/industries'))}
                       >
-                        &bull; {t.industriesHub}
+                        {t.industriesHub}
                       </Link>
                       <Link
                         href={getHref(`/${lang}/dashboard/pages/industries-consumer-products`)}
-                        className={`block px-2.5 py-1 rounded ${
+                        className={subLinkClass(
                           isActive('/dashboard/pages/industries-consumer-products')
-                            ? 'text-white font-semibold bg-white/10'
-                            : 'text-white/50 hover:text-white'
-                        }`}
+                        )}
                       >
-                        &bull; {t.consumerProducts}
+                        {t.consumerProducts}
                       </Link>
                       <Link
                         href={getHref(`/${lang}/dashboard/pages/industries-telecom-media-technology`)}
-                        className={`block px-2.5 py-1 rounded ${
+                        className={subLinkClass(
                           isActive('/dashboard/pages/industries-telecom-media-technology')
-                            ? 'text-white font-semibold bg-white/10'
-                            : 'text-white/50 hover:text-white'
-                        }`}
+                        )}
                       >
-                        &bull; {t.telecomMediaTech}
+                        {t.telecomMediaTech}
                       </Link>
                       <Link
                         href={getHref(`/${lang}/dashboard/pages/industries-public-sector`)}
-                        className={`block px-2.5 py-1 rounded ${
+                        className={subLinkClass(
                           isActive('/dashboard/pages/industries-public-sector')
-                            ? 'text-white font-semibold bg-white/10'
-                            : 'text-white/50 hover:text-white'
-                        }`}
+                        )}
                       >
-                        &bull; {t.publicSector}
+                        {t.publicSector}
                       </Link>
                       <Link
                         href={getHref(`/${lang}/dashboard/pages/industries-retail`)}
-                        className={`block px-2.5 py-1 rounded ${
-                          isActive('/dashboard/pages/industries-retail')
-                            ? 'text-white font-semibold bg-white/10'
-                            : 'text-white/50 hover:text-white'
-                        }`}
+                        className={subLinkClass(isActive('/dashboard/pages/industries-retail'))}
                       >
-                        &bull; {t.retail}
+                        {t.retail}
                       </Link>
                       <Link
                         href={getHref(`/${lang}/dashboard/pages/industries-health`)}
-                        className={`block px-2.5 py-1 rounded ${
-                          isActive('/dashboard/pages/industries-health')
-                            ? 'text-white font-semibold bg-white/10'
-                            : 'text-white/50 hover:text-white'
-                        }`}
+                        className={subLinkClass(isActive('/dashboard/pages/industries-health'))}
                       >
-                        &bull; {t.health}
+                        {t.health}
                       </Link>
                       <Link
                         href={getHref(`/${lang}/dashboard/pages/industries-energy-commodities`)}
-                        className={`block px-2.5 py-1 rounded ${
+                        className={subLinkClass(
                           isActive('/dashboard/pages/industries-energy-commodities')
-                            ? 'text-white font-semibold bg-white/10'
-                            : 'text-white/50 hover:text-white'
-                        }`}
+                        )}
                       >
-                        &bull; {t.energyCommodities}
+                        {t.energyCommodities}
                       </Link>
                     </div>
                   )}
                 </div>
 
                 {/* Sub-Accordion: How We Do It */}
-                <div className="pt-1">
+                <div>
                   <button
                     type="button"
                     onClick={() => toggleSection('howWeDoIt')}
-                    className="w-full flex items-center justify-between px-3 py-1 text-xs text-white/50 hover:text-white transition-colors"
+                    className={subAccordionButtonClass(
+                      isHowWeDoItActive,
+                      Boolean(openSections.howWeDoIt)
+                    )}
                   >
-                    <div className="flex items-center gap-1.5">
-                      <TbTransform className="w-3.5 h-3.5 text-emerald-400" />
-                      <span>{t.howWeDoIt}</span>
-                    </div>
+                    <span className="truncate">{t.howWeDoIt}</span>
                     {openSections.howWeDoIt ? (
-                      <TbChevronDown className="w-3 h-3" />
+                      <TbChevronDown className="w-3.5 h-3.5 shrink-0" />
                     ) : isRtl ? (
-                      <TbChevronLeft className="w-3 h-3" />
+                      <TbChevronLeft className="w-3.5 h-3.5 shrink-0" />
                     ) : (
-                      <TbChevronRight className="w-3 h-3" />
+                      <TbChevronRight className="w-3.5 h-3.5 shrink-0" />
                     )}
                   </button>
 
                   {openSections.howWeDoIt && (
-                    <div className="mt-1 ps-2.5 space-y-1 border-s border-white/10 ms-2 text-[11px]">
+                    <div className="mt-1 ps-3 space-y-1 border-s border-white/10 ms-3">
                       <Link
                         href={getHref(`/${lang}/dashboard/pages/how-we-do-it`)}
-                        className={`block px-2.5 py-1 rounded ${
-                          isActive('/dashboard/pages/how-we-do-it')
-                            ? 'text-white font-semibold bg-white/10'
-                            : 'text-white/50 hover:text-white'
-                        }`}
+                        className={subLinkClass(isExactPath('/dashboard/pages/how-we-do-it'))}
                       >
-                        &bull; {t.howWeDoItHub}
+                        {t.howWeDoItHub}
                       </Link>
                       <Link
                         href={getHref(`/${lang}/dashboard/pages/how-we-do-it-strategy-consulting`)}
-                        className={`block px-2.5 py-1 rounded ${
-                          isActive('/dashboard/pages/how-we-do-it-strategy-consulting') || isActive('/dashboard/pages/how-we-do-it-strategy')
-                            ? 'text-white font-semibold bg-white/10'
-                            : 'text-white/50 hover:text-white'
-                        }`}
+                        className={subLinkClass(
+                          isActive('/dashboard/pages/how-we-do-it-strategy-consulting') ||
+                            isActive('/dashboard/pages/how-we-do-it-strategy')
+                        )}
                       >
-                        &bull; {t.strategyConsulting}
+                        {t.strategyConsulting}
                       </Link>
                       <Link
-                        href={getHref(`/${lang}/dashboard/pages/how-we-do-it-digital-transformation-framework`)}
-                        className={`block px-2.5 py-1 rounded ${
-                          isActive('/dashboard/pages/how-we-do-it-digital-transformation-framework') || isActive('/dashboard/pages/how-we-do-it-framework')
-                            ? 'text-white font-semibold bg-white/10'
-                            : 'text-white/50 hover:text-white'
-                        }`}
+                        href={getHref(
+                          `/${lang}/dashboard/pages/how-we-do-it-digital-transformation-framework`
+                        )}
+                        className={subLinkClass(
+                          isActive('/dashboard/pages/how-we-do-it-digital-transformation-framework') ||
+                            isActive('/dashboard/pages/how-we-do-it-framework')
+                        )}
                       >
-                        &bull; {t.framework}
+                        {t.framework}
                       </Link>
                       <Link
                         href={getHref(`/${lang}/dashboard/pages/how-we-do-it-product-management`)}
-                        className={`block px-2.5 py-1 rounded ${
-                          isActive('/dashboard/pages/how-we-do-it-product-management') || isActive('/dashboard/pages/how-we-do-it-product')
-                            ? 'text-white font-semibold bg-white/10'
-                            : 'text-white/50 hover:text-white'
-                        }`}
+                        className={subLinkClass(
+                          isActive('/dashboard/pages/how-we-do-it-product-management') ||
+                            isActive('/dashboard/pages/how-we-do-it-product')
+                        )}
                       >
-                        &bull; {t.productMgmt}
+                        {t.productMgmt}
                       </Link>
                       <Link
                         href={getHref(`/${lang}/dashboard/pages/how-we-do-it-engineering-technology`)}
-                        className={`block px-2.5 py-1 rounded ${
-                          isActive('/dashboard/pages/how-we-do-it-engineering-technology') || isActive('/dashboard/pages/how-we-do-it-engineering')
-                            ? 'text-white font-semibold bg-white/10'
-                            : 'text-white/50 hover:text-white'
-                        }`}
+                        className={subLinkClass(
+                          isActive('/dashboard/pages/how-we-do-it-engineering-technology') ||
+                            isActive('/dashboard/pages/how-we-do-it-engineering')
+                        )}
                       >
-                        &bull; {t.engineering}
+                        {t.engineering}
                       </Link>
                       <Link
-                        href={getHref(`/${lang}/dashboard/pages/how-we-do-it-experience-transformation`)}
-                        className={`block px-2.5 py-1 rounded ${
-                          isActive('/dashboard/pages/how-we-do-it-experience-transformation') || isActive('/dashboard/pages/how-we-do-it-experience')
-                            ? 'text-white font-semibold bg-white/10'
-                            : 'text-white/50 hover:text-white'
-                        }`}
+                        href={getHref(
+                          `/${lang}/dashboard/pages/how-we-do-it-experience-transformation`
+                        )}
+                        className={subLinkClass(
+                          isActive('/dashboard/pages/how-we-do-it-experience-transformation') ||
+                            isActive('/dashboard/pages/how-we-do-it-experience')
+                        )}
                       >
-                        &bull; {t.experience}
+                        {t.experience}
                       </Link>
                     </div>
                   )}
@@ -625,21 +655,19 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
 
         {/* 3. Global Navigation Builders */}
         {canSeeNav && (
-          <div className="pt-2">
+          <div>
             <div className="relative group">
               <button
                 type="button"
                 onClick={() => toggleSection('navigation')}
-                className={`w-full flex items-center ${
-                  isCollapsed ? 'justify-center p-3' : 'justify-between px-3.5 py-2'
-                } text-xs font-semibold text-white/40 uppercase tracking-wider hover:text-white/70 transition-colors rounded-xl hover:bg-white/5`}
+                className={accordionButtonClass(isNavActive, Boolean(openSections.navigation))}
               >
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-3 min-w-0">
                   <TbRoute className="w-5 h-5 shrink-0" />
-                  {!isCollapsed && <span>{t.navigation}</span>}
+                  {!isCollapsed && <span className="truncate">{t.navigation}</span>}
                 </div>
                 {!isCollapsed && (
-                  <div>
+                  <div className="shrink-0">
                     {openSections.navigation ? (
                       <TbChevronDown className="w-4 h-4" />
                     ) : isRtl ? (
@@ -657,21 +685,13 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
               <div className="mt-1 ps-3 space-y-1 border-s border-white/10 ms-4">
                 <Link
                   href={getHref(`/${lang}/dashboard/navigation/header`)}
-                  className={`block px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                    isActive('/dashboard/navigation/header')
-                      ? 'bg-white/15 text-white font-semibold'
-                      : 'text-white/60 hover:text-white'
-                  }`}
+                  className={subLinkClass(isActive('/dashboard/navigation/header'))}
                 >
                   {t.headerBuilder}
                 </Link>
                 <Link
                   href={getHref(`/${lang}/dashboard/navigation/footer`)}
-                  className={`block px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                    isActive('/dashboard/navigation/footer')
-                      ? 'bg-white/15 text-white font-semibold'
-                      : 'text-white/60 hover:text-white'
-                  }`}
+                  className={subLinkClass(isActive('/dashboard/navigation/footer'))}
                 >
                   {t.footerBuilder}
                 </Link>
@@ -682,17 +702,11 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
 
         {/* 4. Standalone Communication & Social Media Tab */}
         {(canSeePages || canSeeNav) && (
-          <div className="pt-2">
+          <div>
             <div className="relative group">
               <Link
                 href={getHref(`/${lang}/dashboard/communication`)}
-                className={`flex items-center ${
-                  isCollapsed ? 'justify-center p-3' : 'gap-3 px-3.5 py-2.5'
-                } rounded-xl text-sm font-medium transition-all ${
-                  isActive('/dashboard/communication')
-                    ? 'bg-persici-crimson text-white shadow-lg shadow-persici-crimson/25'
-                    : 'text-white/70 hover:bg-white/5 hover:text-white'
-                }`}
+                className={topTabLinkClass(isActive('/dashboard/communication'))}
               >
                 <TbAddressBook className="w-5 h-5 shrink-0" />
                 {!isCollapsed && <span>{t.communicationSocial}</span>}
@@ -704,17 +718,11 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
 
         {/* 4b. Standalone Global Shared Contact Section Tab */}
         {canSeePages && (
-          <div className="pt-2">
+          <div>
             <div className="relative group">
               <Link
                 href={getHref(`/${lang}/dashboard/shared-contact`)}
-                className={`flex items-center ${
-                  isCollapsed ? 'justify-center p-3' : 'gap-3 px-3.5 py-2.5'
-                } rounded-xl text-sm font-medium transition-all ${
-                  isActive('/dashboard/shared-contact')
-                    ? 'bg-persici-crimson text-white shadow-lg shadow-persici-crimson/25'
-                    : 'text-white/70 hover:bg-white/5 hover:text-white'
-                }`}
+                className={topTabLinkClass(isActive('/dashboard/shared-contact'))}
               >
                 <TbForms className="w-5 h-5 shrink-0" />
                 {!isCollapsed && <span>{t.sharedContact}</span>}
@@ -726,17 +734,11 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
 
         {/* 5. Media Browser */}
         {canSeeMedia && (
-          <div className="pt-2">
+          <div>
             <div className="relative group">
               <Link
                 href={getHref(`/${lang}/dashboard/media`)}
-                className={`flex items-center ${
-                  isCollapsed ? 'justify-center p-3' : 'gap-3 px-3.5 py-2.5'
-                } rounded-xl text-sm font-medium transition-all ${
-                  isActive('/dashboard/media')
-                    ? 'bg-persici-crimson text-white shadow-lg shadow-persici-crimson/25'
-                    : 'text-white/70 hover:bg-white/5 hover:text-white'
-                }`}
+                className={topTabLinkClass(isActive('/dashboard/media'))}
               >
                 <TbPhoto className="w-5 h-5 shrink-0" />
                 {!isCollapsed && <span>{t.media}</span>}
@@ -746,23 +748,21 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
           </div>
         )}
 
-        {/* 5. Careers ATS (HR) */}
+        {/* 6. Careers */}
         {canSeeCareersAts && (
-          <div className="pt-2">
+          <div>
             <div className="relative group">
               <button
                 type="button"
                 onClick={() => toggleSection('careers')}
-                className={`w-full flex items-center ${
-                  isCollapsed ? 'justify-center p-3' : 'justify-between px-3.5 py-2'
-                } text-xs font-semibold text-amber-400/80 uppercase tracking-wider hover:text-amber-300 transition-colors rounded-xl hover:bg-white/5`}
+                className={accordionButtonClass(isCareersActive, Boolean(openSections.careers))}
               >
-                <div className="flex items-center gap-2">
-                  <TbUserCheck className="w-5 h-5 text-amber-400 shrink-0" />
-                  {!isCollapsed && <span>{t.careersAts}</span>}
+                <div className="flex items-center gap-3 min-w-0">
+                  <TbUserCheck className="w-5 h-5 shrink-0" />
+                  {!isCollapsed && <span className="truncate">{t.careersAts}</span>}
                 </div>
                 {!isCollapsed && (
-                  <div>
+                  <div className="shrink-0">
                     {openSections.careers ? (
                       <TbChevronDown className="w-4 h-4" />
                     ) : isRtl ? (
@@ -777,44 +777,28 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
             </div>
 
             {!isCollapsed && openSections.careers && (
-              <div className="mt-1 ps-3 space-y-1 border-s border-amber-500/20 ms-4">
+              <div className="mt-1 ps-3 space-y-1 border-s border-white/10 ms-4">
                 <Link
                   href={getHref(`/${lang}/dashboard/pages/careers`)}
-                  className={`block px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                    isActive('/dashboard/pages/careers')
-                      ? 'bg-amber-500/20 text-amber-200 font-semibold'
-                      : 'text-white/60 hover:text-white'
-                  }`}
+                  className={subLinkClass(isActive('/dashboard/pages/careers'))}
                 >
                   {t.careersPage}
                 </Link>
                 <Link
                   href={getHref(`/${lang}/dashboard/careers/openings`)}
-                  className={`block px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                    isActive('/dashboard/careers/openings')
-                      ? 'bg-amber-500/20 text-amber-200 font-semibold'
-                      : 'text-white/60 hover:text-white'
-                  }`}
+                  className={subLinkClass(isActive('/dashboard/careers/openings'))}
                 >
                   {t.activeOpenings}
                 </Link>
                 <Link
                   href={getHref(`/${lang}/dashboard/careers/applicants`)}
-                  className={`block px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                    isActive('/dashboard/careers/applicants')
-                      ? 'bg-amber-500/20 text-amber-200 font-semibold'
-                      : 'text-white/60 hover:text-white'
-                  }`}
+                  className={subLinkClass(isActive('/dashboard/careers/applicants'))}
                 >
                   {t.candidatePipeline}
                 </Link>
                 <Link
                   href={getHref(`/${lang}/dashboard/careers/communications`)}
-                  className={`block px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                    isActive('/dashboard/careers/communications')
-                      ? 'bg-amber-500/20 text-amber-200 font-semibold'
-                      : 'text-white/60 hover:text-white'
-                  }`}
+                  className={subLinkClass(isActive('/dashboard/careers/communications'))}
                 >
                   {t.dispatchedEmails}
                 </Link>
@@ -823,23 +807,21 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
           </div>
         )}
 
-        {/* 6. Leads & Media Buying */}
+        {/* 7. Leads & Media Buying */}
         {canSeeLeads && (
-          <div className="pt-2">
+          <div>
             <div className="relative group">
               <button
                 type="button"
                 onClick={() => toggleSection('leads')}
-                className={`w-full flex items-center ${
-                  isCollapsed ? 'justify-center p-3' : 'justify-between px-3.5 py-2'
-                } text-xs font-semibold text-purple-400/80 uppercase tracking-wider hover:text-purple-300 transition-colors rounded-xl hover:bg-white/5`}
+                className={accordionButtonClass(isLeadsActive, Boolean(openSections.leads))}
               >
-                <div className="flex items-center gap-2">
-                  <TbTrendingUp className="w-5 h-5 text-purple-400 shrink-0" />
-                  {!isCollapsed && <span>{t.leads}</span>}
+                <div className="flex items-center gap-3 min-w-0">
+                  <TbTrendingUp className="w-5 h-5 shrink-0" />
+                  {!isCollapsed && <span className="truncate">{t.leads}</span>}
                 </div>
                 {!isCollapsed && (
-                  <div>
+                  <div className="shrink-0">
                     {openSections.leads ? (
                       <TbChevronDown className="w-4 h-4" />
                     ) : isRtl ? (
@@ -854,54 +836,34 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
             </div>
 
             {!isCollapsed && openSections.leads && (
-              <div className="mt-1 ps-3 space-y-1 border-s border-purple-500/20 ms-4">
+              <div className="mt-1 ps-3 space-y-1 border-s border-white/10 ms-4">
                 <Link
                   href={getHref(`/${lang}/dashboard/leads/contact`)}
-                  className={`block px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                    isActive('/dashboard/leads/contact')
-                      ? 'bg-purple-500/20 text-purple-200 font-semibold'
-                      : 'text-white/60 hover:text-white'
-                  }`}
+                  className={subLinkClass(isActive('/dashboard/leads/contact'))}
                 >
                   {t.contactInquiries}
                 </Link>
                 <Link
                   href={getHref(`/${lang}/dashboard/leads/appointments`)}
-                  className={`block px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                    isActive('/dashboard/leads/appointments')
-                      ? 'bg-purple-500/20 text-purple-200 font-semibold'
-                      : 'text-white/60 hover:text-white'
-                  }`}
+                  className={subLinkClass(isActive('/dashboard/leads/appointments'))}
                 >
                   {t.appointments}
                 </Link>
                 <Link
                   href={getHref(`/${lang}/dashboard/leads/discovery`)}
-                  className={`block px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                    isActive('/dashboard/leads/discovery')
-                      ? 'bg-purple-500/20 text-purple-200 font-semibold'
-                      : 'text-white/60 hover:text-white'
-                  }`}
+                  className={subLinkClass(isActive('/dashboard/leads/discovery'))}
                 >
                   {t.discovery}
                 </Link>
                 <Link
                   href={getHref(`/${lang}/dashboard/leads/analytics`)}
-                  className={`block px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                    isActive('/dashboard/leads/analytics')
-                      ? 'bg-purple-500/20 text-purple-200 font-semibold'
-                      : 'text-white/60 hover:text-white'
-                  }`}
+                  className={subLinkClass(isActive('/dashboard/leads/analytics'))}
                 >
                   {t.campaignAnalytics}
                 </Link>
                 <Link
                   href={getHref(`/${lang}/dashboard/leads/tracking`)}
-                  className={`block px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                    isActive('/dashboard/leads/tracking')
-                      ? 'bg-purple-500/20 text-purple-200 font-semibold'
-                      : 'text-white/60 hover:text-white'
-                  }`}
+                  className={subLinkClass(isActive('/dashboard/leads/tracking'))}
                 >
                   {t.trackingPixels}
                 </Link>
@@ -910,41 +872,71 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
           </div>
         )}
 
-        {/* 7. Client Stories (Standalone Single Tab) */}
+        {/* 8. Client Stories Accordion (Client Stories Hub, Edit Client Stories & Categories) */}
         {canSeeContent && (
-          <div className="pt-2">
+          <div>
             <div className="relative group">
-              <Link
-                href={getHref(`/${lang}/dashboard/content/projects`)}
-                className={`flex items-center ${
-                  isCollapsed ? 'justify-center p-3' : 'gap-3 px-3.5 py-2.5'
-                } rounded-xl text-sm font-medium transition-all ${
-                  isActive('/dashboard/content/projects')
-                    ? 'bg-persici-crimson text-white shadow-lg shadow-persici-crimson/25'
-                    : 'text-white/70 hover:bg-white/5 hover:text-white'
-                }`}
+              <button
+                type="button"
+                onClick={() => toggleSection('clientStories')}
+                className={accordionButtonClass(
+                  isClientStoriesActive,
+                  Boolean(openSections.clientStories)
+                )}
               >
-                <TbBriefcase className="w-5 h-5 shrink-0" />
-                {!isCollapsed && <span>{t.projects}</span>}
-              </Link>
+                <div className="flex items-center gap-3 min-w-0">
+                  <TbBriefcase className="w-5 h-5 shrink-0" />
+                  {!isCollapsed && <span className="truncate">{t.projects}</span>}
+                </div>
+                {!isCollapsed && (
+                  <div className="shrink-0">
+                    {openSections.clientStories ? (
+                      <TbChevronDown className="w-4 h-4" />
+                    ) : isRtl ? (
+                      <TbChevronLeft className="w-4 h-4" />
+                    ) : (
+                      <TbChevronRight className="w-4 h-4" />
+                    )}
+                  </div>
+                )}
+              </button>
               {isCollapsed && <div className={tooltipClass}>{t.projects}</div>}
             </div>
+
+            {!isCollapsed && openSections.clientStories && (
+              <div className="mt-1 ps-3 space-y-1 border-s border-white/10 ms-4">
+                {canSeePages && (
+                  <Link
+                    href={getHref(`/${lang}/dashboard/pages/client-stories`)}
+                    className={subLinkClass(isActive('/dashboard/pages/client-stories'))}
+                  >
+                    {t.clientStories}
+                  </Link>
+                )}
+                <Link
+                  href={getHref(`/${lang}/dashboard/content/projects`)}
+                  className={subLinkClass(isExactPath('/dashboard/content/projects'))}
+                >
+                  {t.editClientStories}
+                </Link>
+                <Link
+                  href={getHref(`/${lang}/dashboard/content/projects/categories`)}
+                  className={subLinkClass(isActive('/dashboard/content/projects/categories'))}
+                >
+                  {t.clientStoryCategories}
+                </Link>
+              </div>
+            )}
           </div>
         )}
 
-        {/* 8. Blogs & Insights (Standalone Single Tab) */}
+        {/* 9. Blogs & Insights (Standalone Single Tab) */}
         {canSeeContent && (
-          <div className="pt-1">
+          <div>
             <div className="relative group">
               <Link
                 href={getHref(`/${lang}/dashboard/content/insights`)}
-                className={`flex items-center ${
-                  isCollapsed ? 'justify-center p-3' : 'gap-3 px-3.5 py-2.5'
-                } rounded-xl text-sm font-medium transition-all ${
-                  isActive('/dashboard/content/insights')
-                    ? 'bg-persici-crimson text-white shadow-lg shadow-persici-crimson/25'
-                    : 'text-white/70 hover:bg-white/5 hover:text-white'
-                }`}
+                className={topTabLinkClass(isActive('/dashboard/content/insights'))}
               >
                 <TbArticle className="w-5 h-5 shrink-0" />
                 {!isCollapsed && <span>{t.insights}</span>}
@@ -954,19 +946,13 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
           </div>
         )}
 
-        {/* 9. Reviews & Testimonials (Standalone Single Tab) */}
+        {/* 10. Reviews & Testimonials (Standalone Single Tab) */}
         {canSeeContent && (
-          <div className="pt-1">
+          <div>
             <div className="relative group">
               <Link
                 href={getHref(`/${lang}/dashboard/content/reviews`)}
-                className={`flex items-center ${
-                  isCollapsed ? 'justify-center p-3' : 'gap-3 px-3.5 py-2.5'
-                } rounded-xl text-sm font-medium transition-all ${
-                  isActive('/dashboard/content/reviews')
-                    ? 'bg-persici-crimson text-white shadow-lg shadow-persici-crimson/25'
-                    : 'text-white/70 hover:bg-white/5 hover:text-white'
-                }`}
+                className={topTabLinkClass(isActive('/dashboard/content/reviews'))}
               >
                 <TbStar className="w-5 h-5 shrink-0" />
                 {!isCollapsed && <span>{t.reviews}</span>}
@@ -976,19 +962,13 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
           </div>
         )}
 
-        {/* 9b. Team Members Directory & Carousel (Standalone Single Tab) */}
+        {/* 11. Team Members Directory & Carousel (Standalone Single Tab) */}
         {(canSeeContent || canSeeCareersAts) && (
-          <div className="pt-1">
+          <div>
             <div className="relative group">
               <Link
                 href={getHref(`/${lang}/dashboard/team`)}
-                className={`flex items-center ${
-                  isCollapsed ? 'justify-center p-3' : 'gap-3 px-3.5 py-2.5'
-                } rounded-xl text-sm font-medium transition-all ${
-                  isActive('/dashboard/team')
-                    ? 'bg-persici-crimson text-white shadow-lg shadow-persici-crimson/25'
-                    : 'text-white/70 hover:bg-white/5 hover:text-white'
-                }`}
+                className={topTabLinkClass(isActive('/dashboard/team'))}
               >
                 <TbIdBadge2 className="w-5 h-5 shrink-0" />
                 {!isCollapsed && <span>{t.teamMembers}</span>}
@@ -998,19 +978,13 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
           </div>
         )}
 
-        {/* 10. AI Studio & Models */}
+        {/* 12. AI Studio & Models */}
         {canSeeContent && (
-          <div className="pt-1">
+          <div>
             <div className="relative group">
               <Link
                 href={getHref(`/${lang}/dashboard/ai`)}
-                className={`flex items-center ${
-                  isCollapsed ? 'justify-center p-3' : 'gap-3 px-3.5 py-2.5'
-                } rounded-xl text-sm font-medium transition-all ${
-                  isActive('/dashboard/ai')
-                    ? 'bg-persici-crimson text-white shadow-lg shadow-persici-crimson/25'
-                    : 'text-white/70 hover:bg-white/5 hover:text-white'
-                }`}
+                className={topTabLinkClass(isActive('/dashboard/ai'))}
               >
                 <TbSparkles className="w-5 h-5 shrink-0" />
                 {!isCollapsed && <span>{t.aiStudio}</span>}
@@ -1020,19 +994,13 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
           </div>
         )}
 
-        {/* 10. Maintenance Mode & Global Redirect */}
+        {/* 13. Maintenance Mode & Global Redirect */}
         {canSeeMaintenance && (
-          <div className="pt-2">
+          <div>
             <div className="relative group">
               <Link
                 href={getHref(`/${lang}/dashboard/maintenance`)}
-                className={`flex items-center ${
-                  isCollapsed ? 'justify-center p-3' : 'gap-3 px-3.5 py-2.5'
-                } rounded-xl text-sm font-medium transition-all ${
-                  isActive('/dashboard/maintenance')
-                    ? 'bg-persici-crimson text-white shadow-lg shadow-persici-crimson/25'
-                    : 'text-white/70 hover:bg-white/5 hover:text-white'
-                }`}
+                className={topTabLinkClass(isActive('/dashboard/maintenance'))}
               >
                 <TbTool className="w-5 h-5 shrink-0" />
                 {!isCollapsed && <span>{t.maintenance}</span>}
@@ -1042,19 +1010,13 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
           </div>
         )}
 
-        {/* 11. Team & RBAC Users */}
+        {/* 14. Team & RBAC Users */}
         {canSeeUsers && (
-          <div className="pt-2">
+          <div>
             <div className="relative group">
               <Link
                 href={getHref(`/${lang}/dashboard/users`)}
-                className={`flex items-center ${
-                  isCollapsed ? 'justify-center p-3' : 'gap-3 px-3.5 py-2.5'
-                } rounded-xl text-sm font-medium transition-all ${
-                  isActive('/dashboard/users')
-                    ? 'bg-persici-crimson text-white shadow-lg shadow-persici-crimson/25'
-                    : 'text-white/70 hover:bg-white/5 hover:text-white'
-                }`}
+                className={topTabLinkClass(isActive('/dashboard/users'))}
               >
                 <TbUsers className="w-5 h-5 shrink-0" />
                 {!isCollapsed && <span>{t.users}</span>}
@@ -1064,19 +1026,13 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
           </div>
         )}
 
-        {/* 9. System Settings */}
+        {/* 15. System Settings */}
         {canSeeSettings && (
-          <div className="pt-2">
+          <div>
             <div className="relative group">
               <Link
                 href={getHref(`/${lang}/dashboard/settings`)}
-                className={`flex items-center ${
-                  isCollapsed ? 'justify-center p-3' : 'gap-3 px-3.5 py-2.5'
-                } rounded-xl text-sm font-medium transition-all ${
-                  isActive('/dashboard/settings')
-                    ? 'bg-persici-crimson text-white shadow-lg shadow-persici-crimson/25'
-                    : 'text-white/70 hover:bg-white/5 hover:text-white'
-                }`}
+                className={topTabLinkClass(isActive('/dashboard/settings'))}
               >
                 <TbSettings className="w-5 h-5 shrink-0" />
                 {!isCollapsed && <span>{t.settings}</span>}

@@ -1,7 +1,7 @@
 ﻿import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import type { ClientStoryDetail } from '../types';
+import { resolveBilingualText, type ClientStoryDetail } from '../types';
 import { TbArrowRight, TbArrowLeft, TbTrendingUp } from 'react-icons/tb';
 
 export interface ClientStoriesCardProps {
@@ -14,9 +14,10 @@ export function ClientStoriesCard({ story, lang, className = '' }: ClientStories
   const isRtl = lang === 'ar';
   const ArrowIcon = isRtl ? TbArrowLeft : TbArrowRight;
 
-  const title = story.title[lang as 'en' | 'ar'] || story.title.en;
-  const category = story.category[lang as 'en' | 'ar'] || story.category.en;
-  const summary = story.executiveSummary[lang as 'en' | 'ar'] || story.executiveSummary.en;
+  const title = resolveBilingualText(story.title, lang);
+  const category = resolveBilingualText(story.category, lang);
+  const summary = resolveBilingualText(story.executiveSummary, lang);
+  const clientName = resolveBilingualText(story.client, lang);
   const primaryMetric = story.metrics?.[0];
 
   return (
@@ -39,8 +40,8 @@ export function ClientStoriesCard({ story, lang, className = '' }: ClientStories
 
         {/* Client Tag on Image */}
         <div className="absolute top-4 start-4 z-10">
-          <span className="inline-flex items-center rounded-full bg-slate-900/75 backdrop-blur-md px-3 py-1 text-[9.5px] font-semibold uppercase tracking-wider text-white">
-            {story.client}
+          <span className="inline-flex items-center rounded-full bg-slate-900/75 backdrop-blur-md px-3 py-1 text-[9.5px] font-semibold uppercase tracking-wider rtl:normal-case rtl:tracking-normal text-white">
+            {clientName}
           </span>
         </div>
 
