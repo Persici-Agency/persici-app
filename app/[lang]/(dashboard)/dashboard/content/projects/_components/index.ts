@@ -8,3 +8,4 @@ export * from './portfolio-narrative-section';
 export * from './portfolio-media-showcase-section';
 export * from './ai-field-trigger';
 export * from './portfolio-ai-reference-bar';
+export * from './story-draft-storage';

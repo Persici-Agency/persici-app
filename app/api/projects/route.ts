@@ -71,35 +71,57 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const isDraftOnly = body.status === 'draft' || body.action === 'save-draft';
+    const {
+      action: _action,
+      lookupSlug: _lookupSlug,
+      draftData: _draftData,
+      draftUpdatedAt: _draftUpdatedAt,
+      ...cleanBody
+    } = body;
+    void _action;
+    void _lookupSlug;
+    void _draftData;
+    void _draftUpdatedAt;
+
+    const nowIso = new Date().toISOString();
     const newProject = {
-      ...body,
-      id: body.id || body.slug,
-      isActive: body.isActive !== undefined ? body.isActive : true,
+      ...cleanBody,
+      id: cleanBody.id || cleanBody.slug,
+      status: isDraftOnly ? 'draft' : 'published',
+      isActive: !isDraftOnly,
+      ...(isDraftOnly ? { draftUpdatedAt: nowIso } : {}),
       createdAt: new Date(),
       updatedAt: new Date(),
     };
 
-    const res = await db.collection(COLLECTIONS.PROJECTS).insertOne(newProject as unknown as import('mongodb').Document);
+    const res = await db
+      .collection(COLLECTIONS.PROJECTS)
+      .insertOne(newProject as unknown as import('mongodb').Document);
 
-    revalidatePageContent('work');
-    revalidatePageContent('client-stories');
-    revalidatePageContent('solutions');
-    revalidatePageContent('industries');
-    revalidatePageContent('how-we-do-it');
-    if (body.slug) {
-      try {
-        revalidatePath('/[lang]/client-stories/[slug]', 'page');
-        revalidatePath(`/en/client-stories/${body.slug}`);
-        revalidatePath(`/ar/client-stories/${body.slug}`);
-        revalidatePath('/', 'layout');
-      } catch {}
+    if (!isDraftOnly) {
+      revalidatePageContent('work');
+      revalidatePageContent('client-stories');
+      revalidatePageContent('solutions');
+      revalidatePageContent('industries');
+      revalidatePageContent('how-we-do-it');
+      if (body.slug) {
+        try {
+          revalidatePath('/[lang]/client-stories/[slug]', 'page');
+          revalidatePath(`/en/client-stories/${body.slug}`);
+          revalidatePath(`/ar/client-stories/${body.slug}`);
+          revalidatePath('/', 'layout');
+        } catch {}
+      }
     }
 
     return NextResponse.json(
       {
         success: true,
-        message: 'Project created successfully.',
+        mode: isDraftOnly ? 'draft' : 'published',
+        message: isDraftOnly ? 'Draft saved successfully.' : 'Project created successfully.',
         id: res.insertedId.toString(),
+        ...(isDraftOnly ? { draftUpdatedAt: nowIso } : {}),
       },
       { status: 201 }
     );
@@ -114,7 +136,7 @@ export async function POST(request: NextRequest) {
 
 /**
  * PUT /api/projects
- * Updates an existing project.
+ * Updates an existing project, or manages server-side drafts (save-draft / discard-draft / publish).
  * PROTECTED: Requires 'admin', 'editor', or 'author' role.
  */
 export async function PUT(request: NextRequest) {
@@ -127,8 +149,15 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    const body = await request.json().catch(() => null);
-    if (!body || (!body.id && !body._id && !body.slug)) {
+    const body = (await request.json().catch(() => null)) as Record<string, unknown> | null;
+    const lookupSlug =
+      typeof body?.lookupSlug === 'string' && body.lookupSlug.trim()
+        ? body.lookupSlug.trim()
+        : typeof body?.slug === 'string'
+        ? body.slug.trim()
+        : '';
+
+    if (!body || (!body.id && !body._id && !lookupSlug)) {
       return NextResponse.json(
         { error: 'Project ID, _id, or slug is required for updating.' },
         { status: 400 }
@@ -143,23 +172,120 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    const filter = body._id && ObjectId.isValid(body._id)
-      ? { _id: new ObjectId(body._id) }
-      : body.id && ObjectId.isValid(body.id)
-      ? { _id: new ObjectId(body.id) }
-      : { slug: body.slug };
+    const filter =
+      typeof body._id === 'string' && ObjectId.isValid(body._id)
+        ? { _id: new ObjectId(body._id) }
+        : typeof body.id === 'string' && ObjectId.isValid(body.id)
+        ? { _id: new ObjectId(body.id) }
+        : { slug: lookupSlug };
 
-    const { id, _id, ...updateFields } = body;
-    void id;
-    void _id;
+    const col = db.collection(COLLECTIONS.PROJECTS);
+    const action = typeof body.action === 'string' ? body.action : undefined;
 
-    await db.collection(COLLECTIONS.PROJECTS).updateOne(
+    if (action === 'save-draft') {
+      const {
+        id: _idVal,
+        _id: _mongoId,
+        action: _action,
+        lookupSlug: _lookup,
+        draftData: _draftData,
+        draftUpdatedAt: _draftAt,
+        ...draftPayload
+      } = body;
+      void _idVal;
+      void _mongoId;
+      void _action;
+      void _lookup;
+      void _draftData;
+      void _draftAt;
+
+      const nowIso = new Date().toISOString();
+      const existing = await col.findOne(filter);
+
+      if (!existing || existing.status === 'draft' || existing.isActive === false) {
+        await col.updateOne(
+          filter,
+          {
+            $set: {
+              ...draftPayload,
+              id: (draftPayload.id as string) || (draftPayload.slug as string) || lookupSlug,
+              slug: (draftPayload.slug as string) || lookupSlug,
+              status: 'draft',
+              isActive: false,
+              draftUpdatedAt: nowIso,
+              updatedAt: new Date(),
+              ...(existing ? {} : { createdAt: new Date() }),
+            },
+            $unset: { draftData: '' },
+          },
+          { upsert: true }
+        );
+      } else {
+        await col.updateOne(filter, {
+          $set: {
+            draftData: draftPayload,
+            draftUpdatedAt: nowIso,
+          },
+        });
+      }
+
+      return NextResponse.json({
+        success: true,
+        mode: 'draft',
+        message: 'Draft saved successfully.',
+        draftUpdatedAt: nowIso,
+      });
+    }
+
+    if (action === 'discard-draft') {
+      const existing = await col.findOne(filter);
+      if (existing && (existing.status === 'draft' || existing.isActive === false)) {
+        await col.deleteOne(filter);
+        return NextResponse.json({
+          success: true,
+          deletedStory: true,
+          message: 'Unpublished draft deleted.',
+        });
+      }
+
+      await col.updateOne(filter, {
+        $unset: { draftData: '', draftUpdatedAt: '' },
+      });
+
+      return NextResponse.json({
+        success: true,
+        deletedStory: false,
+        message: 'Draft changes discarded.',
+      });
+    }
+
+    const {
+      id: _idVal,
+      _id: _mongoId,
+      action: _action,
+      lookupSlug: _lookup,
+      draftData: _draftData,
+      draftUpdatedAt: _draftAt,
+      ...updateFields
+    } = body;
+    void _idVal;
+    void _mongoId;
+    void _action;
+    void _lookup;
+    void _draftData;
+    void _draftAt;
+
+    const isExplicitPublish = action === 'publish';
+
+    await col.updateOne(
       filter,
       {
         $set: {
           ...updateFields,
+          ...(isExplicitPublish ? { status: 'published', isActive: true } : {}),
           updatedAt: new Date(),
         },
+        ...(isExplicitPublish ? { $unset: { draftData: '', draftUpdatedAt: '' } } : {}),
       },
       { upsert: true }
     );
@@ -169,17 +295,25 @@ export async function PUT(request: NextRequest) {
     revalidatePageContent('solutions');
     revalidatePageContent('industries');
     revalidatePageContent('how-we-do-it');
-    if (body.slug) {
+    const slugsToRevalidate = Array.from(
+      new Set(
+        [typeof body.slug === 'string' ? body.slug : '', lookupSlug].filter(Boolean)
+      )
+    );
+    if (slugsToRevalidate.length > 0) {
       try {
         revalidatePath('/[lang]/client-stories/[slug]', 'page');
-        revalidatePath(`/en/client-stories/${body.slug}`);
-        revalidatePath(`/ar/client-stories/${body.slug}`);
+        for (const s of slugsToRevalidate) {
+          revalidatePath(`/en/client-stories/${s}`);
+          revalidatePath(`/ar/client-stories/${s}`);
+        }
         revalidatePath('/', 'layout');
       } catch {}
     }
 
     return NextResponse.json({
       success: true,
+      mode: 'published',
       message: 'Project updated successfully.',
     });
   } catch (error) {

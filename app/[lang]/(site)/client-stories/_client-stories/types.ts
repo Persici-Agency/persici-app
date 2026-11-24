@@ -14,9 +14,30 @@ export type StoryGalleryDesign =
   | 'interactive-carousel'
   | 'masonry-lookbook'
   | 'spotlight-filmstrip'
-  | 'magazine-spread';
+  | 'magazine-spread'
+  | 'stacked-rows';
 
 export type StoryGalleryOrder = 'normal' | 'reverse';
+
+export type StoryGalleryRowFit = 'cover' | 'contain' | 'scale-down' | 'fill';
+export type StoryGalleryVerticalPos = 'top' | 'center' | 'bottom';
+export type StoryGalleryHorizontalPos = 'left' | 'center' | 'right';
+
+export interface StoryGalleryRowsConfig {
+  height: number;
+  objectFit: StoryGalleryRowFit;
+  verticalPosition: StoryGalleryVerticalPos;
+  horizontalPosition: StoryGalleryHorizontalPos;
+}
+
+export const DEFAULT_GALLERY_ROWS_CONFIG: StoryGalleryRowsConfig = {
+  height: 560,
+  objectFit: 'cover',
+  verticalPosition: 'center',
+  horizontalPosition: 'center',
+};
+
+export type ClientStoryPublishStatus = 'published' | 'draft';
 
 export type DefaultStoryCategorySlug =
   | 'all'
@@ -245,6 +266,7 @@ export interface ClientStoryDetail {
     gallery?: StoryGalleryImage[];
     galleryDesign?: StoryGalleryDesign;
     galleryOrder?: StoryGalleryOrder;
+    galleryRowsConfig?: StoryGalleryRowsConfig;
     // Template C (Software demo & mockups)
     mockups?: StorySoftwareDeviceMockup[];
     demoVideo?: string;
@@ -257,6 +279,11 @@ export interface ClientStoryDetail {
 
   // Persisted AI Reference Files & Text Notes
   aiReferences?: StoryAiReferenceItem[];
+
+  // Editorial Publish & Draft Persistence State
+  status?: ClientStoryPublishStatus;
+  draftData?: Omit<ClientStoryDetail, 'draftData' | 'draftUpdatedAt'>;
+  draftUpdatedAt?: string;
 }
 
 export interface ClientStoriesHubCategoryFilter {

@@ -6,7 +6,11 @@ import type {
   ClientStoryDetail,
   StoryMetric,
 } from '@/app/[lang]/(site)/client-stories/_client-stories/types';
-import { AiFieldTrigger, type StoryAiFieldControls } from './ai-field-trigger';
+import {
+  AiFieldTrigger,
+  AiTranslateTrigger,
+  type StoryAiFieldControls,
+} from './ai-field-trigger';
 
 interface PortfolioMetricsSectionProps {
   story: ClientStoryDetail;
@@ -149,11 +153,41 @@ export function PortfolioMetricsSection({
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 <div>
-                  <label className="block text-[10px] font-semibold text-slate-600 mb-1">
-                    {isRtl ? 'الوصف (EN)' : 'Label (EN)'}
-                  </label>
+                  <div className="flex items-center justify-between gap-1.5 mb-1">
+                    <label className="block text-[10px] font-semibold text-slate-600">
+                      {isRtl ? 'الوصف (EN)' : 'Label (EN)'}
+                    </label>
+                    {aiControls?.onTranslate && (
+                      <AiTranslateTrigger
+                        size="xs"
+                        lang={lang}
+                        targetLang="en"
+                        sourceText={m.label.ar}
+                        isLoading={Boolean(aiControls.translatingKeys?.[`metric:${idx}:en`])}
+                        onTranslate={() =>
+                          aiControls.onTranslate!({
+                            key: `metric:${idx}:en`,
+                            text: m.label.ar,
+                            sourceLang: 'ar',
+                            targetLang: 'en',
+                            fieldHint: 'KPI Metric Label',
+                            updateStory: (prev, translated) => {
+                              const nextMetrics = [...(prev.metrics || [])];
+                              if (nextMetrics[idx]) {
+                                nextMetrics[idx] = {
+                                  ...nextMetrics[idx],
+                                  label: { ...nextMetrics[idx].label, en: translated },
+                                };
+                              }
+                              return { ...prev, metrics: nextMetrics };
+                            },
+                          })
+                        }
+                      />
+                    )}
+                  </div>
                   <input
                     type="text"
                     required
@@ -164,9 +198,39 @@ export function PortfolioMetricsSection({
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] font-semibold text-slate-600 mb-1">
-                    {isRtl ? 'الوصف (AR)' : 'Label (AR)'}
-                  </label>
+                  <div className="flex items-center justify-between gap-1.5 mb-1">
+                    <label className="block text-[10px] font-semibold text-slate-600">
+                      {isRtl ? 'الوصف (AR)' : 'Label (AR)'}
+                    </label>
+                    {aiControls?.onTranslate && (
+                      <AiTranslateTrigger
+                        size="xs"
+                        lang={lang}
+                        targetLang="ar"
+                        sourceText={m.label.en}
+                        isLoading={Boolean(aiControls.translatingKeys?.[`metric:${idx}:ar`])}
+                        onTranslate={() =>
+                          aiControls.onTranslate!({
+                            key: `metric:${idx}:ar`,
+                            text: m.label.en,
+                            sourceLang: 'en',
+                            targetLang: 'ar',
+                            fieldHint: 'KPI Metric Label',
+                            updateStory: (prev, translated) => {
+                              const nextMetrics = [...(prev.metrics || [])];
+                              if (nextMetrics[idx]) {
+                                nextMetrics[idx] = {
+                                  ...nextMetrics[idx],
+                                  label: { ...nextMetrics[idx].label, ar: translated },
+                                };
+                              }
+                              return { ...prev, metrics: nextMetrics };
+                            },
+                          })
+                        }
+                      />
+                    )}
+                  </div>
                   <input
                     type="text"
                     dir="rtl"

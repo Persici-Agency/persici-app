@@ -27,7 +27,11 @@ import {
   type ClientStoryDetail,
   type StoryTemplateType,
 } from '@/app/[lang]/(site)/client-stories/_client-stories/types';
-import { AiFieldTrigger, type StoryAiFieldControls } from './ai-field-trigger';
+import {
+  AiFieldTrigger,
+  AiTranslateTrigger,
+  type StoryAiFieldControls,
+} from './ai-field-trigger';
 
 interface PortfolioMetaSectionProps {
   story: ClientStoryDetail;
@@ -508,39 +512,103 @@ export function PortfolioMetaSection({
                   </div>
                 )}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-                  <input
-                    type="text"
-                    value={quickCatNameEn}
-                    onChange={(e) => {
-                      const val = e.target.value;
-                      setQuickCatNameEn(val);
-                      if (!quickCatSlugTouched) {
-                        setQuickCatSlug(slugifyCategorySlug(val));
-                      }
-                    }}
-                    placeholder={isRtl ? 'اسم التصنيف (EN)' : 'Category Name (EN)'}
-                    className="px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg focus:border-persici-crimson outline-none"
-                  />
-                  <input
-                    type="text"
-                    dir="rtl"
-                    value={quickCatNameAr}
-                    onChange={(e) => setQuickCatNameAr(e.target.value)}
-                    placeholder={isRtl ? 'اسم التصنيف (AR)' : 'اسم التصنيف (AR)'}
-                    className="px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg focus:border-persici-crimson outline-none font-arabic"
-                  />
-                  <input
-                    type="text"
-                    value={quickCatSlug}
-                    onChange={(e) => {
-                      setQuickCatSlugTouched(true);
-                      setQuickCatSlug(
-                        e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '-')
-                      );
-                    }}
-                    placeholder="slug (e.g. fintech)"
-                    className="px-2.5 py-1.5 text-xs font-mono bg-white border border-slate-200 rounded-lg focus:border-persici-crimson outline-none"
-                  />
+                  <div>
+                    <div className="flex items-center justify-between gap-1 mb-1">
+                      <label className="text-[10px] font-semibold text-slate-600">
+                        {isRtl ? 'اسم التصنيف (EN)' : 'Category Name (EN)'}
+                      </label>
+                      {aiControls?.onTranslate && (
+                        <AiTranslateTrigger
+                          size="xs"
+                          lang={lang}
+                          targetLang="en"
+                          sourceText={quickCatNameAr}
+                          isLoading={Boolean(aiControls.translatingKeys?.['quickCat:en'])}
+                          onTranslate={() =>
+                            aiControls.onTranslate!({
+                              key: 'quickCat:en',
+                              text: quickCatNameAr,
+                              sourceLang: 'ar',
+                              targetLang: 'en',
+                              fieldHint: 'Category Name (English)',
+                              onSuccess: (translated) => {
+                                setQuickCatNameEn(translated);
+                                if (!quickCatSlugTouched) {
+                                  setQuickCatSlug(slugifyCategorySlug(translated));
+                                }
+                              },
+                            })
+                          }
+                        />
+                      )}
+                    </div>
+                    <input
+                      type="text"
+                      value={quickCatNameEn}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setQuickCatNameEn(val);
+                        if (!quickCatSlugTouched) {
+                          setQuickCatSlug(slugifyCategorySlug(val));
+                        }
+                      }}
+                      placeholder={isRtl ? 'اسم التصنيف (EN)' : 'Category Name (EN)'}
+                      className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg focus:border-persici-crimson outline-none"
+                    />
+                  </div>
+                  <div>
+                    <div className="flex items-center justify-between gap-1 mb-1">
+                      <label className="text-[10px] font-semibold text-slate-600">
+                        {isRtl ? 'اسم التصنيف (AR)' : 'Category Name (AR)'}
+                      </label>
+                      {aiControls?.onTranslate && (
+                        <AiTranslateTrigger
+                          size="xs"
+                          lang={lang}
+                          targetLang="ar"
+                          sourceText={quickCatNameEn}
+                          isLoading={Boolean(aiControls.translatingKeys?.['quickCat:ar'])}
+                          onTranslate={() =>
+                            aiControls.onTranslate!({
+                              key: 'quickCat:ar',
+                              text: quickCatNameEn,
+                              sourceLang: 'en',
+                              targetLang: 'ar',
+                              fieldHint: 'Category Name (Arabic)',
+                              onSuccess: (translated) => setQuickCatNameAr(translated),
+                            })
+                          }
+                        />
+                      )}
+                    </div>
+                    <input
+                      type="text"
+                      dir="rtl"
+                      value={quickCatNameAr}
+                      onChange={(e) => setQuickCatNameAr(e.target.value)}
+                      placeholder={isRtl ? 'اسم التصنيف (AR)' : 'اسم التصنيف (AR)'}
+                      className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg focus:border-persici-crimson outline-none font-arabic"
+                    />
+                  </div>
+                  <div>
+                    <div className="flex items-center justify-between gap-1 mb-1">
+                      <label className="text-[10px] font-semibold text-slate-600">
+                        {isRtl ? 'المعرف (Slug)' : 'Category Slug'}
+                      </label>
+                    </div>
+                    <input
+                      type="text"
+                      value={quickCatSlug}
+                      onChange={(e) => {
+                        setQuickCatSlugTouched(true);
+                        setQuickCatSlug(
+                          e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '-')
+                        );
+                      }}
+                      placeholder="slug (e.g. fintech)"
+                      className="w-full px-2.5 py-1.5 text-xs font-mono bg-white border border-slate-200 rounded-lg focus:border-persici-crimson outline-none"
+                    />
+                  </div>
                 </div>
                 <div className="flex items-center justify-end gap-2">
                   <button
@@ -644,9 +712,36 @@ export function PortfolioMetaSection({
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
-                {isRtl ? 'اسم الشريك (English)' : 'Partner Name (EN)'}
-              </label>
+              <div className="flex items-center justify-between gap-2 mb-1">
+                <label className="block text-xs font-semibold text-slate-700">
+                  {isRtl ? 'اسم الشريك (English)' : 'Partner Name (EN)'}
+                </label>
+                {aiControls?.onTranslate && (
+                  <AiTranslateTrigger
+                    size="xs"
+                    lang={lang}
+                    targetLang="en"
+                    sourceText={partnerAr}
+                    isLoading={Boolean(aiControls.translatingKeys?.['partner:en'])}
+                    onTranslate={() =>
+                      aiControls.onTranslate!({
+                        key: 'partner:en',
+                        text: partnerAr,
+                        sourceLang: 'ar',
+                        targetLang: 'en',
+                        fieldHint: 'Partner Organization Name',
+                        updateStory: (prev, translated) => ({
+                          ...prev,
+                          partner: {
+                            en: translated,
+                            ar: normalizeBilingualInput(prev.partner).ar,
+                          },
+                        }),
+                      })
+                    }
+                  />
+                )}
+              </div>
               <input
                 type="text"
                 value={partnerEn}
@@ -669,9 +764,36 @@ export function PortfolioMetaSection({
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
-                {isRtl ? 'اسم الشريك (العربية)' : 'Partner Name (AR)'}
-              </label>
+              <div className="flex items-center justify-between gap-2 mb-1">
+                <label className="block text-xs font-semibold text-slate-700">
+                  {isRtl ? 'اسم الشريك (العربية)' : 'Partner Name (AR)'}
+                </label>
+                {aiControls?.onTranslate && (
+                  <AiTranslateTrigger
+                    size="xs"
+                    lang={lang}
+                    targetLang="ar"
+                    sourceText={partnerEn}
+                    isLoading={Boolean(aiControls.translatingKeys?.['partner:ar'])}
+                    onTranslate={() =>
+                      aiControls.onTranslate!({
+                        key: 'partner:ar',
+                        text: partnerEn,
+                        sourceLang: 'en',
+                        targetLang: 'ar',
+                        fieldHint: 'Partner Organization Name',
+                        updateStory: (prev, translated) => ({
+                          ...prev,
+                          partner: {
+                            en: normalizeBilingualInput(prev.partner).en,
+                            ar: translated,
+                          },
+                        }),
+                      })
+                    }
+                  />
+                )}
+              </div>
               <input
                 type="text"
                 dir="rtl"
@@ -732,9 +854,36 @@ export function PortfolioMetaSection({
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
-                {isRtl ? 'اسم العميل / المؤسسة (English)' : 'Client Organization Name (EN)'}
-              </label>
+              <div className="flex items-center justify-between gap-2 mb-1">
+                <label className="block text-xs font-semibold text-slate-700">
+                  {isRtl ? 'اسم العميل / المؤسسة (English)' : 'Client Organization Name (EN)'}
+                </label>
+                {aiControls?.onTranslate && (
+                  <AiTranslateTrigger
+                    size="xs"
+                    lang={lang}
+                    targetLang="en"
+                    sourceText={clientAr}
+                    isLoading={Boolean(aiControls.translatingKeys?.['client:en'])}
+                    onTranslate={() =>
+                      aiControls.onTranslate!({
+                        key: 'client:en',
+                        text: clientAr,
+                        sourceLang: 'ar',
+                        targetLang: 'en',
+                        fieldHint: 'Client Organization Name',
+                        updateStory: (prev, translated) => ({
+                          ...prev,
+                          client: {
+                            en: translated,
+                            ar: normalizeBilingualInput(prev.client).ar,
+                          },
+                        }),
+                      })
+                    }
+                  />
+                )}
+              </div>
               <input
                 type="text"
                 required={!hasClientAr}
@@ -756,9 +905,36 @@ export function PortfolioMetaSection({
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
-                {isRtl ? 'اسم العميل / المؤسسة (العربية)' : 'Client Organization Name (AR)'}
-              </label>
+              <div className="flex items-center justify-between gap-2 mb-1">
+                <label className="block text-xs font-semibold text-slate-700">
+                  {isRtl ? 'اسم العميل / المؤسسة (العربية)' : 'Client Organization Name (AR)'}
+                </label>
+                {aiControls?.onTranslate && (
+                  <AiTranslateTrigger
+                    size="xs"
+                    lang={lang}
+                    targetLang="ar"
+                    sourceText={clientEn}
+                    isLoading={Boolean(aiControls.translatingKeys?.['client:ar'])}
+                    onTranslate={() =>
+                      aiControls.onTranslate!({
+                        key: 'client:ar',
+                        text: clientEn,
+                        sourceLang: 'en',
+                        targetLang: 'ar',
+                        fieldHint: 'Client Organization Name',
+                        updateStory: (prev, translated) => ({
+                          ...prev,
+                          client: {
+                            en: normalizeBilingualInput(prev.client).en,
+                            ar: translated,
+                          },
+                        }),
+                      })
+                    }
+                  />
+                )}
+              </div>
               <input
                 type="text"
                 dir="rtl"
@@ -814,9 +990,33 @@ export function PortfolioMetaSection({
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label className="block text-xs font-semibold text-slate-700 mb-1">
-            {isRtl ? 'المجال / الصناعة (English)' : 'Topic / Industry (EN)'}
-          </label>
+          <div className="flex items-center justify-between gap-2 mb-1">
+            <label className="block text-xs font-semibold text-slate-700">
+              {isRtl ? 'المجال / الصناعة (English)' : 'Topic / Industry (EN)'}
+            </label>
+            {aiControls?.onTranslate && (
+              <AiTranslateTrigger
+                size="xs"
+                lang={lang}
+                targetLang="en"
+                sourceText={story.topic?.ar || ''}
+                isLoading={Boolean(aiControls.translatingKeys?.['topic:en'])}
+                onTranslate={() =>
+                  aiControls.onTranslate!({
+                    key: 'topic:en',
+                    text: story.topic?.ar || '',
+                    sourceLang: 'ar',
+                    targetLang: 'en',
+                    fieldHint: 'Topic / Industry',
+                    updateStory: (prev, translated) => ({
+                      ...prev,
+                      topic: { en: translated, ar: prev.topic?.ar || '' },
+                    }),
+                  })
+                }
+              />
+            )}
+          </div>
           <input
             type="text"
             value={story.topic?.en || ''}
@@ -831,9 +1031,33 @@ export function PortfolioMetaSection({
           />
         </div>
         <div>
-          <label className="block text-xs font-semibold text-slate-700 mb-1">
-            {isRtl ? 'المجال / الصناعة (العربية)' : 'Topic / Industry (AR)'}
-          </label>
+          <div className="flex items-center justify-between gap-2 mb-1">
+            <label className="block text-xs font-semibold text-slate-700">
+              {isRtl ? 'المجال / الصناعة (العربية)' : 'Topic / Industry (AR)'}
+            </label>
+            {aiControls?.onTranslate && (
+              <AiTranslateTrigger
+                size="xs"
+                lang={lang}
+                targetLang="ar"
+                sourceText={story.topic?.en || ''}
+                isLoading={Boolean(aiControls.translatingKeys?.['topic:ar'])}
+                onTranslate={() =>
+                  aiControls.onTranslate!({
+                    key: 'topic:ar',
+                    text: story.topic?.en || '',
+                    sourceLang: 'en',
+                    targetLang: 'ar',
+                    fieldHint: 'Topic / Industry',
+                    updateStory: (prev, translated) => ({
+                      ...prev,
+                      topic: { en: prev.topic?.en || '', ar: translated },
+                    }),
+                  })
+                }
+              />
+            )}
+          </div>
           <input
             type="text"
             dir="rtl"
@@ -869,9 +1093,33 @@ export function PortfolioMetaSection({
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div>
-          <label className="block text-xs font-semibold text-slate-700 mb-1">
-            {isRtl ? 'المنطقة الجغرافية (EN)' : 'Region (EN)'}
-          </label>
+          <div className="flex items-center justify-between gap-2 mb-1">
+            <label className="block text-xs font-semibold text-slate-700">
+              {isRtl ? 'المنطقة الجغرافية (EN)' : 'Region (EN)'}
+            </label>
+            {aiControls?.onTranslate && (
+              <AiTranslateTrigger
+                size="xs"
+                lang={lang}
+                targetLang="en"
+                sourceText={story.region?.ar || ''}
+                isLoading={Boolean(aiControls.translatingKeys?.['region:en'])}
+                onTranslate={() =>
+                  aiControls.onTranslate!({
+                    key: 'region:en',
+                    text: story.region?.ar || '',
+                    sourceLang: 'ar',
+                    targetLang: 'en',
+                    fieldHint: 'Geographic Region',
+                    updateStory: (prev, translated) => ({
+                      ...prev,
+                      region: { en: translated, ar: prev.region?.ar || '' },
+                    }),
+                  })
+                }
+              />
+            )}
+          </div>
           <input
             type="text"
             value={story.region?.en || ''}
@@ -886,9 +1134,33 @@ export function PortfolioMetaSection({
           />
         </div>
         <div>
-          <label className="block text-xs font-semibold text-slate-700 mb-1">
-            {isRtl ? 'المنطقة الجغرافية (AR)' : 'Region (AR)'}
-          </label>
+          <div className="flex items-center justify-between gap-2 mb-1">
+            <label className="block text-xs font-semibold text-slate-700">
+              {isRtl ? 'المنطقة الجغرافية (AR)' : 'Region (AR)'}
+            </label>
+            {aiControls?.onTranslate && (
+              <AiTranslateTrigger
+                size="xs"
+                lang={lang}
+                targetLang="ar"
+                sourceText={story.region?.en || ''}
+                isLoading={Boolean(aiControls.translatingKeys?.['region:ar'])}
+                onTranslate={() =>
+                  aiControls.onTranslate!({
+                    key: 'region:ar',
+                    text: story.region?.en || '',
+                    sourceLang: 'en',
+                    targetLang: 'ar',
+                    fieldHint: 'Geographic Region',
+                    updateStory: (prev, translated) => ({
+                      ...prev,
+                      region: { en: prev.region?.en || '', ar: translated },
+                    }),
+                  })
+                }
+              />
+            )}
+          </div>
           <input
             type="text"
             dir="rtl"
@@ -980,31 +1252,103 @@ export function PortfolioMetaSection({
           </div>
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-2.5">
           {(story.services || []).map((srv, sIdx) => (
             <div
               key={sIdx}
-              className="flex items-center gap-2 p-2 bg-slate-50 rounded-xl border border-slate-200"
+              className="flex items-end gap-2.5 p-2.5 bg-slate-50 rounded-xl border border-slate-200"
             >
-              <input
-                type="text"
-                value={srv.en}
-                onChange={(e) => handleUpdateService(sIdx, 'en', e.target.value)}
-                placeholder="Service (English)"
-                className="flex-1 px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg"
-              />
-              <input
-                type="text"
-                dir="rtl"
-                value={srv.ar}
-                onChange={(e) => handleUpdateService(sIdx, 'ar', e.target.value)}
-                placeholder="الخدمة (بالعربية)"
-                className="flex-1 px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg font-arabic"
-              />
+              <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <div>
+                  <div className="flex items-center justify-between gap-1.5 mb-1">
+                    <label className="text-[10px] font-semibold text-slate-600">
+                      {isRtl ? 'الخدمة (EN)' : 'Service (EN)'}
+                    </label>
+                    {aiControls?.onTranslate && (
+                      <AiTranslateTrigger
+                        size="xs"
+                        lang={lang}
+                        targetLang="en"
+                        sourceText={srv.ar}
+                        isLoading={Boolean(aiControls.translatingKeys?.[`service:${sIdx}:en`])}
+                        onTranslate={() =>
+                          aiControls.onTranslate!({
+                            key: `service:${sIdx}:en`,
+                            text: srv.ar,
+                            sourceLang: 'ar',
+                            targetLang: 'en',
+                            fieldHint: 'Delivered Agency Service',
+                            updateStory: (prev, translated) => {
+                              const nextServices = [...(prev.services || [])];
+                              if (nextServices[sIdx]) {
+                                nextServices[sIdx] = {
+                                  ...nextServices[sIdx],
+                                  en: translated,
+                                };
+                              }
+                              return { ...prev, services: nextServices };
+                            },
+                          })
+                        }
+                      />
+                    )}
+                  </div>
+                  <input
+                    type="text"
+                    value={srv.en}
+                    onChange={(e) => handleUpdateService(sIdx, 'en', e.target.value)}
+                    placeholder="Service (English)"
+                    className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg focus:border-persici-crimson outline-none"
+                  />
+                </div>
+                <div>
+                  <div className="flex items-center justify-between gap-1.5 mb-1">
+                    <label className="text-[10px] font-semibold text-slate-600">
+                      {isRtl ? 'الخدمة (AR)' : 'Service (AR)'}
+                    </label>
+                    {aiControls?.onTranslate && (
+                      <AiTranslateTrigger
+                        size="xs"
+                        lang={lang}
+                        targetLang="ar"
+                        sourceText={srv.en}
+                        isLoading={Boolean(aiControls.translatingKeys?.[`service:${sIdx}:ar`])}
+                        onTranslate={() =>
+                          aiControls.onTranslate!({
+                            key: `service:${sIdx}:ar`,
+                            text: srv.en,
+                            sourceLang: 'en',
+                            targetLang: 'ar',
+                            fieldHint: 'Delivered Agency Service',
+                            updateStory: (prev, translated) => {
+                              const nextServices = [...(prev.services || [])];
+                              if (nextServices[sIdx]) {
+                                nextServices[sIdx] = {
+                                  ...nextServices[sIdx],
+                                  ar: translated,
+                                };
+                              }
+                              return { ...prev, services: nextServices };
+                            },
+                          })
+                        }
+                      />
+                    )}
+                  </div>
+                  <input
+                    type="text"
+                    dir="rtl"
+                    value={srv.ar}
+                    onChange={(e) => handleUpdateService(sIdx, 'ar', e.target.value)}
+                    placeholder="الخدمة (بالعربية)"
+                    className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg font-arabic focus:border-persici-crimson outline-none"
+                  />
+                </div>
+              </div>
               <button
                 type="button"
                 onClick={() => handleRemoveService(sIdx)}
-                className="p-1.5 text-slate-400 hover:text-red-600 rounded-lg hover:bg-white"
+                className="p-1.5 text-slate-400 hover:text-red-600 rounded-lg hover:bg-white cursor-pointer shrink-0"
               >
                 <TbTrash className="w-4 h-4" />
               </button>

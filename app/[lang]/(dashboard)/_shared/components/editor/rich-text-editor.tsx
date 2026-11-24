@@ -24,6 +24,8 @@ import {
   TbArrowForwardUp,
   TbCheck,
   TbX,
+  TbLanguage,
+  TbLoader2,
 } from 'react-icons/tb';
 
 export interface RichTextEditorProps {
@@ -34,6 +36,13 @@ export interface RichTextEditorProps {
   onChangeAr: (val: string) => void;
   helperText?: string;
   rows?: number;
+  onTranslate?: (params: {
+    sourceLang: 'en' | 'ar';
+    targetLang: 'en' | 'ar';
+    text: string;
+  }) => void | Promise<void>;
+  isTranslating?: boolean;
+  uiLang?: string;
 }
 
 interface ActiveFormatsState {
@@ -101,6 +110,16 @@ function cleanVisualHtml(html: string): string {
   return trimmed;
 }
 
+function hasVisibleRichText(html?: string): boolean {
+  if (!html) return false;
+  return (
+    html
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/&nbsp;/gi, ' ')
+      .trim().length > 0
+  );
+}
+
 export function RichTextEditor({
   label,
   valueEn,
@@ -109,7 +128,11 @@ export function RichTextEditor({
   onChangeAr,
   helperText,
   rows = 6,
+  onTranslate,
+  isTranslating = false,
+  uiLang = 'en',
 }: RichTextEditorProps) {
+  const uiRtl = uiLang === 'ar';
   const [activeTab, setActiveTab] = useState<'en' | 'ar'>('en');
   // WordPress-style two toggle buttons: 'normal' (default visual live preview WYSIWYG) and 'code' (HTML source)
   const [editorMode, setEditorMode] = useState<'normal' | 'code'>('normal');
@@ -591,9 +614,114 @@ export function RichTextEditor({
         : 'text-slate-700 hover:bg-slate-200/80 hover:text-slate-900'
     }`;
 
+  const hasEnText = hasVisibleRichText(valueEn);
+  const hasArText = hasVisibleRichText(valueAr);
+
+  const translateConfig = (() => {
+    if (!onTranslate) return null;
+
+    if (activeTab === 'ar') {
+      if (hasEnText) {
+        return {
+          canTranslate: true,
+          sourceLang: 'en' as const,
+          targetLang: 'ar' as const,
+          switchTabTo: null as 'en' | 'ar' | null,
+          label: uiRtl ? 'ترجمة' : 'Translate',
+          tooltip: uiRtl
+            ? 'ترجمة المحتوى الإنجليزي إلى العربية بالذكاء الاصطناعي'
+            : 'Translate English content → Arabic with AI',
+        };
+      }
+      if (hasArText) {
+        return {
+          canTranslate: true,
+          sourceLang: 'ar' as const,
+          targetLang: 'en' as const,
+          switchTabTo: 'en' as 'en' | 'ar' | null,
+          label: uiRtl ? 'ترجمة للإنجليزية' : 'Translate → EN',
+          tooltip: uiRtl
+            ? 'ترجمة المحتوى العربي الحالي إلى الإنجليزية بالذكاء الاصطناعي'
+            : 'Translate Arabic content → English with AI',
+        };
+      }
+      return {
+        canTranslate: false,
+        sourceLang: 'en' as const,
+        targetLang: 'ar' as const,
+        switchTabTo: null as 'en' | 'ar' | null,
+        label: uiRtl ? 'ترجمة' : 'Translate',
+        tooltip: uiRtl
+          ? 'أدخل المحتوى بالإنجليزية أو العربية أولاً للترجمة'
+          : 'Enter English or Arabic content first to translate',
+      };
+    }
+
+    // activeTab === 'en'
+    if (hasArText) {
+      return {
+        canTranslate: true,
+        sourceLang: 'ar' as const,
+        targetLang: 'en' as const,
+        switchTabTo: null as 'en' | 'ar' | null,
+        label: uiRtl ? 'ترجمة' : 'Translate',
+        tooltip: uiRtl
+          ? 'ترجمة المحتوى العربي إلى الإنجليزية بالذكاء الاصطناعي'
+          : 'Translate Arabic content → English with AI',
+      };
+    }
+    if (hasEnText) {
+      return {
+        canTranslate: true,
+        sourceLang: 'en' as const,
+        targetLang: 'ar' as const,
+        switchTabTo: 'ar' as 'en' | 'ar' | null,
+        label: uiRtl ? 'ترجمة للعربية' : 'Translate → AR',
+        tooltip: uiRtl
+          ? 'ترجمة المحتوى الإنجليزي الحالي إلى العربية بالذكاء الاصطناعي'
+          : 'Translate English content → Arabic with AI',
+      };
+    }
+    return {
+      canTranslate: false,
+      sourceLang: 'ar' as const,
+      targetLang: 'en' as const,
+      switchTabTo: null as 'en' | 'ar' | null,
+      label: uiRtl ? 'ترجمة' : 'Translate',
+      tooltip: uiRtl
+        ? 'أدخل المحتوى بالإنجليزية أو العربية أولاً للترجمة'
+        : 'Enter English or Arabic content first to translate',
+    };
+  })();
+
+  const handleTriggerRichTranslate = () => {
+    if (!onTranslate || !translateConfig || !translateConfig.canTranslate || isTranslating) {
+      return;
+    }
+
+    let sourceText = translateConfig.sourceLang === 'en' ? valueEn || '' : valueAr || '';
+    if (
+      activeTab === translateConfig.sourceLang &&
+      editorMode === 'normal' &&
+      visualRef.current
+    ) {
+      sourceText = cleanVisualHtml(visualRef.current.innerHTML) || sourceText;
+    }
+
+    if (translateConfig.switchTabTo) {
+      setActiveTab(translateConfig.switchTabTo);
+    }
+
+    void onTranslate({
+      sourceLang: translateConfig.sourceLang,
+      targetLang: translateConfig.targetLang,
+      text: sourceText,
+    });
+  };
+
   return (
     <div className="space-y-2">
-      {/* Header Row: Label + Language Tabs + [Normal | Code] Toggle Buttons + Live Preview */}
+      {/* Header Row: Label + Language Tabs + [Translate] + [Normal | Code] Toggle Buttons */}
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div>
           <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
@@ -628,6 +756,33 @@ export function RichTextEditor({
               العربية (AR)
             </button>
           </div>
+
+          {translateConfig && (
+            <button
+              type="button"
+              onClick={handleTriggerRichTranslate}
+              disabled={!translateConfig.canTranslate || isTranslating}
+              title={translateConfig.tooltip}
+              className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold border transition-all ${
+                translateConfig.canTranslate
+                  ? 'bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border-indigo-200 cursor-pointer'
+                  : 'bg-slate-100 text-slate-400 border-slate-200 cursor-not-allowed opacity-65'
+              }`}
+            >
+              {isTranslating ? (
+                <TbLoader2 className="w-3.5 h-3.5 animate-spin shrink-0" />
+              ) : (
+                <TbLanguage className="w-3.5 h-3.5 shrink-0" />
+              )}
+              <span>
+                {isTranslating
+                  ? uiRtl
+                    ? 'جاري الترجمة...'
+                    : 'Translating...'
+                  : translateConfig.label}
+              </span>
+            </button>
+          )}
 
           {/* Two WordPress-Style Mode Toggle Buttons ("Normal" and "Code") */}
           <div className="flex rounded-lg bg-slate-100 p-0.5 border border-slate-200 text-xs font-semibold">

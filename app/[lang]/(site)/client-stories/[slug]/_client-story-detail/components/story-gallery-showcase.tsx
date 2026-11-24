@@ -8,17 +8,20 @@ import {
   TbChevronRight,
   TbChevronLeft,
 } from 'react-icons/tb';
-import type {
-  StoryGalleryDesign,
-  StoryGalleryImage,
-  StoryGalleryOrder,
-  StoryTemplateType,
+import {
+  DEFAULT_GALLERY_ROWS_CONFIG,
+  type StoryGalleryDesign,
+  type StoryGalleryImage,
+  type StoryGalleryOrder,
+  type StoryGalleryRowsConfig,
+  type StoryTemplateType,
 } from '../../../_client-stories/types';
 
 export interface StoryGalleryShowcaseProps {
   gallery: StoryGalleryImage[];
   galleryDesign?: StoryGalleryDesign;
   galleryOrder?: StoryGalleryOrder;
+  galleryRowsConfig?: StoryGalleryRowsConfig;
   templateType: StoryTemplateType;
   lang: string;
   hasPrimaryContent?: boolean;
@@ -28,6 +31,7 @@ export function StoryGalleryShowcase({
   gallery,
   galleryDesign = 'editorial-bento',
   galleryOrder = 'normal',
+  galleryRowsConfig,
   templateType,
   lang,
   hasPrimaryContent = false,
@@ -35,6 +39,17 @@ export function StoryGalleryShowcase({
   const isRtl = lang === 'ar';
   const activeDesign: StoryGalleryDesign = galleryDesign || 'editorial-bento';
   const isReverseOrder = galleryOrder === 'reverse';
+  const rowsCfg: StoryGalleryRowsConfig = {
+    height: Math.min(
+      2200,
+      Math.max(160, Number(galleryRowsConfig?.height) || DEFAULT_GALLERY_ROWS_CONFIG.height)
+    ),
+    objectFit: galleryRowsConfig?.objectFit || DEFAULT_GALLERY_ROWS_CONFIG.objectFit,
+    verticalPosition:
+      galleryRowsConfig?.verticalPosition || DEFAULT_GALLERY_ROWS_CONFIG.verticalPosition,
+    horizontalPosition:
+      galleryRowsConfig?.horizontalPosition || DEFAULT_GALLERY_ROWS_CONFIG.horizontalPosition,
+  };
 
   const validGallery = useMemo(() => {
     const filtered = gallery.filter((img) => Boolean(img.src && img.src.trim()));
@@ -638,7 +653,55 @@ export function StoryGalleryShowcase({
       )}
 
       {/* =================================================================== */}
-      {/* FULL-SCREEN LIGHTBOX MODAL (SHARED BY ALL 6 GALLERY DESIGNS)        */}
+      {/* DESIGN 7: STACKED FULL-WIDTH ROWS                                   */}
+      {/* =================================================================== */}
+      {activeDesign === 'stacked-rows' && (
+        <div
+          className="flex flex-col gap-6 sm:gap-8"
+          style={{ '--gallery-row-h': `${rowsCfg.height}px` } as React.CSSProperties}
+        >
+          {validGallery.map((img, idx) => {
+            const alt = getAlt(img, idx);
+            const caption = getCaption(img);
+            return (
+              <div
+                key={`${img.src}-row-${idx}`}
+                onClick={() => setLightboxIndex(idx)}
+                className="group relative w-full h-[min(var(--gallery-row-h),75vh)] sm:h-[var(--gallery-row-h)] rounded-2xl sm:rounded-3xl overflow-hidden border border-slate-200/80 bg-slate-100 shadow-xs hover:shadow-xl transition-all duration-300 cursor-pointer"
+              >
+                <Image
+                  src={img.src}
+                  alt={alt}
+                  fill
+                  unoptimized
+                  sizes="100vw"
+                  style={{
+                    objectFit: rowsCfg.objectFit,
+                    objectPosition: `${rowsCfg.horizontalPosition} ${rowsCfg.verticalPosition}`,
+                  }}
+                  className="transition-transform duration-500 group-hover:scale-[1.01]"
+                />
+                <div className="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/20 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
+                  <span className="flex h-11 w-11 items-center justify-center rounded-full bg-white/95 text-slate-900 shadow-lg">
+                    <TbMaximize className="h-5 w-5" />
+                  </span>
+                </div>
+                {caption && (
+                  <div className="absolute inset-x-0 bottom-0 p-4 sm:p-6 bg-linear-to-t from-black/75 via-black/25 to-transparent text-white flex items-end justify-between gap-4">
+                    <p className="text-xs sm:text-sm font-medium truncate">{caption}</p>
+                    <span className="font-mono text-[10px] font-bold text-white/80 shrink-0">
+                      {String(idx + 1).padStart(2, '0')} / {String(validGallery.length).padStart(2, '0')}
+                    </span>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* =================================================================== */}
+      {/* FULL-SCREEN LIGHTBOX MODAL (SHARED BY ALL 7 GALLERY DESIGNS)        */}
       {/* =================================================================== */}
       {lightboxIndex !== null && validGallery[lightboxIndex] && (
         <div

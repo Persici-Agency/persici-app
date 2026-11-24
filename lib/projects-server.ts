@@ -12,8 +12,13 @@ import {
   normalizeBilingualInput,
   resolveBilingualText,
   slugifyCategorySlug,
+  DEFAULT_GALLERY_ROWS_CONFIG,
   type ClientStoryCategory,
   type ClientStoryDetail,
+  type StoryGalleryHorizontalPos,
+  type StoryGalleryRowFit,
+  type StoryGalleryRowsConfig,
+  type StoryGalleryVerticalPos,
   type StoryHeroSliderConfig,
   type StoryHeroSliderImage,
 } from '@/app/[lang]/(site)/client-stories/_client-stories/types';
@@ -24,6 +29,36 @@ function clampNumber(val: unknown, min: number, max: number, fallback: number): 
   const n = typeof val === 'number' ? val : Number(val);
   if (!Number.isFinite(n)) return fallback;
   return Math.min(max, Math.max(min, Math.round(n)));
+}
+
+const VALID_ROW_FITS = new Set<StoryGalleryRowFit>(['cover', 'contain', 'scale-down', 'fill']);
+const VALID_V_POS = new Set<StoryGalleryVerticalPos>(['top', 'center', 'bottom']);
+const VALID_H_POS = new Set<StoryGalleryHorizontalPos>(['left', 'center', 'right']);
+
+function normalizeGalleryRowsConfig(raw: unknown): StoryGalleryRowsConfig | undefined {
+  if (!raw || typeof raw !== 'object') return undefined;
+  const obj = raw as Record<string, unknown>;
+  const objectFit =
+    typeof obj.objectFit === 'string' && VALID_ROW_FITS.has(obj.objectFit as StoryGalleryRowFit)
+      ? (obj.objectFit as StoryGalleryRowFit)
+      : DEFAULT_GALLERY_ROWS_CONFIG.objectFit;
+  const verticalPosition =
+    typeof obj.verticalPosition === 'string' &&
+    VALID_V_POS.has(obj.verticalPosition as StoryGalleryVerticalPos)
+      ? (obj.verticalPosition as StoryGalleryVerticalPos)
+      : DEFAULT_GALLERY_ROWS_CONFIG.verticalPosition;
+  const horizontalPosition =
+    typeof obj.horizontalPosition === 'string' &&
+    VALID_H_POS.has(obj.horizontalPosition as StoryGalleryHorizontalPos)
+      ? (obj.horizontalPosition as StoryGalleryHorizontalPos)
+      : DEFAULT_GALLERY_ROWS_CONFIG.horizontalPosition;
+
+  return {
+    height: clampNumber(obj.height, 160, 2200, DEFAULT_GALLERY_ROWS_CONFIG.height),
+    objectFit,
+    verticalPosition,
+    horizontalPosition,
+  };
 }
 
 function normalizeHeroSlider(
@@ -75,7 +110,10 @@ function normalizeHeroSlider(
 /**
  * Maps raw MongoDB document to fully typed ClientStoryDetail with fallbacks.
  */
-function mapDocToClientStory(d: Document | Record<string, unknown>): ClientStoryDetail {
+function mapDocToClientStory(
+  d: Document | Record<string, unknown>,
+  includeDraftMeta = false
+): ClientStoryDetail {
   const slug = String(d.slug || '');
   const fallback = getClientStoryBySlug(slug);
 
@@ -155,12 +193,18 @@ function mapDocToClientStory(d: Document | Record<string, unknown>): ClientStory
         paragraphs: [{ en: (d.results as Record<string, string>)?.en || '', ar: (d.results as Record<string, string>)?.ar || '' }],
       });
 
-  const mediaShowcase = (d.mediaShowcase && typeof d.mediaShowcase === 'object')
-    ? (d.mediaShowcase as unknown as ClientStoryDetail['mediaShowcase'])
-    : (fallback?.mediaShowcase || {
-        title: { en: 'Deliverables & Production', ar: 'معرض المخرجات والإنتاج' },
-        description: { en: '', ar: '' },
-      });
+  const rawShowcase =
+    d.mediaShowcase && typeof d.mediaShowcase === 'object'
+      ? (d.mediaShowcase as unknown as ClientStoryDetail['mediaShowcase'])
+      : fallback?.mediaShowcase || {
+          title: { en: 'Deliverables & Production', ar: 'معرض المخرجات والإنتاج' },
+          description: { en: '', ar: '' },
+        };
+  const normalizedRowsCfg = normalizeGalleryRowsConfig(rawShowcase.galleryRowsConfig);
+  const mediaShowcase: ClientStoryDetail['mediaShowcase'] = {
+    ...rawShowcase,
+    ...(normalizedRowsCfg ? { galleryRowsConfig: normalizedRowsCfg } : {}),
+  };
 
   const rawPartner =
     d.partner !== undefined
@@ -205,6 +249,16 @@ function mapDocToClientStory(d: Document | Record<string, unknown>): ClientStory
   })();
 
   const heroSlider = normalizeHeroSlider(d.heroSlider, fallback?.heroSlider);
+  const status: ClientStoryDetail['status'] =
+    d.status === 'draft' || d.isActive === false ? 'draft' : 'published';
+  const mappedDraftData =
+    includeDraftMeta && d.draftData && typeof d.draftData === 'object'
+      ? mapDocToClientStory(d.draftData as Record<string, unknown>, false)
+      : undefined;
+  const draftUpdatedAt =
+    includeDraftMeta && d.draftUpdatedAt
+      ? new Date(d.draftUpdatedAt as string | Date).toISOString()
+      : undefined;
 
   return {
     id: (d.id as string) || String(d._id),
@@ -238,6 +292,9 @@ function mapDocToClientStory(d: Document | Record<string, unknown>): ClientStory
     aiReferences: Array.isArray(d.aiReferences)
       ? (d.aiReferences as ClientStoryDetail['aiReferences'])
       : (fallback?.aiReferences || []),
+    ...(includeDraftMeta ? { status } : {}),
+    ...(mappedDraftData ? { draftData: mappedDraftData } : {}),
+    ...(draftUpdatedAt ? { draftUpdatedAt } : {}),
   };
 }
 
@@ -291,14 +348,14 @@ export async function getAllProjectsFromDb(onlyActive = true): Promise<ClientSto
     const db = await getDb();
     if (!db) return getAllClientStories();
 
-    const query = onlyActive ? { isActive: { $ne: false } } : {};
+    const query = onlyActive ? { isActive: { $ne: false }, status: { $ne: 'draft' } } : {};
     const docs = await db.collection(COLLECTIONS.PROJECTS).find(query).toArray();
 
     if (!docs || docs.length === 0) {
       return getAllClientStories();
     }
 
-    return docs.map(mapDocToClientStory);
+    return docs.map((doc) => mapDocToClientStory(doc, !onlyActive));
   } catch (err) {
     console.warn('[Projects DB] Failed to fetch from DB, falling back to static:', err);
     return getAllClientStories();
@@ -319,7 +376,11 @@ export async function getProjectBySlugFromDb(slug: string): Promise<ClientStoryD
       return getClientStoryBySlug(slug) || null;
     }
 
-    return mapDocToClientStory(doc);
+    if (doc.isActive === false || doc.status === 'draft') {
+      return null;
+    }
+
+    return mapDocToClientStory(doc, false);
   } catch (err) {
     console.warn('[Projects DB] Failed to fetch project by slug, falling back to static:', err);
     return getClientStoryBySlug(slug) || null;
