@@ -31,6 +31,16 @@ import {
   TbSparkles,
 } from 'react-icons/tb';
 
+type SectionKey =
+  | 'pages'
+  | 'solutions'
+  | 'industries'
+  | 'howWeDoIt'
+  | 'navigation'
+  | 'careers'
+  | 'leads'
+  | 'clientStories';
+
 export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
   const pathname = usePathname();
   const role = user?.role || 'editor';
@@ -104,31 +114,6 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
     });
   };
 
-  // Accordion open/close state
-  const [openSections, setOpenSections] = useState<Record<string, boolean>>(() => ({
-    pages: true,
-    solutions: pathname.includes('/solutions'),
-    industries: pathname.includes('/industries'),
-    howWeDoIt: pathname.includes('/how-we-do-it'),
-    navigation: false,
-    careers: true,
-    leads: true,
-    content: true,
-    clientStories:
-      pathname.includes('/dashboard/content/projects') ||
-      pathname.includes('/dashboard/pages/client-stories'),
-  }));
-
-  const toggleSection = (key: string) => {
-    if (isCollapsed) {
-      setIsCollapsed(false);
-      try {
-        localStorage.setItem('persici_sidebar_collapsed', 'false');
-      } catch {}
-    }
-    setOpenSections((prev) => ({ ...prev, [key]: !prev[key] }));
-  };
-
   const isActive = (href: string) =>
     pathname === `/${lang}${href}` || pathname.startsWith(`/${lang}${href}/`);
 
@@ -150,6 +135,82 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
   const isLeadsActive = isActive('/dashboard/leads');
   const isClientStoriesActive =
     isActive('/dashboard/content/projects') || isActive('/dashboard/pages/client-stories');
+
+  // Accordion open/close state: collapsed by default except for the currently active route's section
+  const routeOpenSections: Record<SectionKey, boolean> = {
+    pages: isPagesActive,
+    solutions: isSolutionsActive,
+    industries: isIndustriesActive,
+    howWeDoIt: isHowWeDoItActive,
+    navigation: isNavActive,
+    careers: isCareersActive,
+    leads: isLeadsActive,
+    clientStories: isClientStoriesActive,
+  };
+
+  const [manualSectionState, setManualSectionState] = useState<{
+    forPathname: string;
+    sections: Record<SectionKey, boolean>;
+  } | null>(null);
+
+  const openSections: Record<SectionKey, boolean> =
+    manualSectionState && manualSectionState.forPathname === pathname
+      ? manualSectionState.sections
+      : routeOpenSections;
+
+  const toggleSection = (key: SectionKey) => {
+    const current =
+      manualSectionState && manualSectionState.forPathname === pathname
+        ? manualSectionState.sections
+        : routeOpenSections;
+    const willOpen = isCollapsed ? true : !current[key];
+
+    if (isCollapsed) {
+      setIsCollapsed(false);
+      try {
+        localStorage.setItem('persici_sidebar_collapsed', 'false');
+      } catch {}
+    }
+
+    const empty: Record<SectionKey, boolean> = {
+      pages: false,
+      solutions: false,
+      industries: false,
+      howWeDoIt: false,
+      navigation: false,
+      careers: false,
+      leads: false,
+      clientStories: false,
+    };
+
+    let next: Record<SectionKey, boolean>;
+    if (key === 'solutions' || key === 'industries' || key === 'howWeDoIt') {
+      next = {
+        ...empty,
+        pages: true,
+        [key]: willOpen,
+      };
+    } else if (willOpen) {
+      next = {
+        ...empty,
+        [key]: true,
+        ...(key === 'pages'
+          ? {
+              solutions: isSolutionsActive,
+              industries: isIndustriesActive,
+              howWeDoIt: isHowWeDoItActive,
+            }
+          : {}),
+      };
+    } else {
+      next = empty;
+    }
+
+    setManualSectionState({
+      forPathname: pathname,
+      sections: next,
+    });
+  };
 
   const topTabLinkClass = (active: boolean) =>
     `flex items-center ${
@@ -326,7 +387,14 @@ export function DashboardSidebar({ lang, user }: DashboardSidebarProps) {
       </div>
 
       {/* Navigation List */}
-      <nav className="p-3 space-y-1.5 flex-1 overflow-y-auto overflow-x-hidden scrollbar-none">
+      <nav
+        onClick={(e) => {
+          if ((e.target as HTMLElement).closest('a')) {
+            setManualSectionState(null);
+          }
+        }}
+        className="p-3 space-y-1.5 flex-1 overflow-y-auto overflow-x-hidden scrollbar-none"
+      >
         {/* 1. Overview */}
         <div className="relative group">
           <Link
