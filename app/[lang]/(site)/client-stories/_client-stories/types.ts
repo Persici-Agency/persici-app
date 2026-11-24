@@ -31,7 +31,7 @@ export interface StoryGalleryRowsConfig {
 }
 
 export const DEFAULT_GALLERY_ROWS_CONFIG: StoryGalleryRowsConfig = {
-  height: 560,
+  height: 350,
   objectFit: 'cover',
   verticalPosition: 'center',
   horizontalPosition: 'center',

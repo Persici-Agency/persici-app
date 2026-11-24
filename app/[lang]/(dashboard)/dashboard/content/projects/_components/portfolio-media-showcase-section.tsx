@@ -1603,7 +1603,7 @@ export function PortfolioMediaShowcaseSection({
                 </div>
 
                 <div className="flex flex-wrap items-center gap-1.5">
-                  {[420, 560, 720, 900].map((preset) => {
+                  {[300, 350, 400, 450, 500, 560].map((preset) => {
                     const isPresetActive = activeRowsConfig.height === preset;
                     return (
                       <button
