@@ -6,9 +6,71 @@ import {
   getClientStoryBySlug,
   getRelatedClientStories,
 } from '@/app/[lang]/(site)/client-stories/_client-stories/data/client-stories.data';
-import type { ClientStoryDetail } from '@/app/[lang]/(site)/client-stories/_client-stories/types';
+import {
+  DEFAULT_CLIENT_STORY_CATEGORIES,
+  hasAnyBilingualText,
+  normalizeBilingualInput,
+  resolveBilingualText,
+  slugifyCategorySlug,
+  type ClientStoryCategory,
+  type ClientStoryDetail,
+  type StoryHeroSliderConfig,
+  type StoryHeroSliderImage,
+} from '@/app/[lang]/(site)/client-stories/_client-stories/types';
 
 import type { Document } from 'mongodb';
+
+function clampNumber(val: unknown, min: number, max: number, fallback: number): number {
+  const n = typeof val === 'number' ? val : Number(val);
+  if (!Number.isFinite(n)) return fallback;
+  return Math.min(max, Math.max(min, Math.round(n)));
+}
+
+function normalizeHeroSlider(
+  raw: unknown,
+  fallback?: StoryHeroSliderConfig
+): StoryHeroSliderConfig | undefined {
+  if (!raw || typeof raw !== 'object') {
+    return fallback;
+  }
+
+  const s = raw as Record<string, unknown>;
+  const rawImages = Array.isArray(s.images) ? s.images : fallback?.images || [];
+  const images: StoryHeroSliderImage[] = rawImages
+    .map((item): StoryHeroSliderImage | null => {
+      if (typeof item === 'string') {
+        const src = item.trim();
+        return src ? { src } : null;
+      }
+      if (!item || typeof item !== 'object') return null;
+      const obj = item as Record<string, unknown>;
+      const src = typeof obj.src === 'string' ? obj.src.trim() : '';
+      if (!src) return null;
+
+      const rawAlt =
+        obj.alt && typeof obj.alt === 'object'
+          ? (obj.alt as Record<string, unknown>)
+          : undefined;
+      const altEn = typeof rawAlt?.en === 'string' ? rawAlt.en.trim() : '';
+      const altAr = typeof rawAlt?.ar === 'string' ? rawAlt.ar.trim() : '';
+
+      return {
+        src,
+        ...(altEn || altAr ? { alt: { en: altEn, ar: altAr } } : {}),
+      };
+    })
+    .filter((item): item is StoryHeroSliderImage => item !== null);
+
+  return {
+    enabled: Boolean(s.enabled),
+    autoScroll: s.autoScroll !== undefined ? Boolean(s.autoScroll) : true,
+    infinite: s.infinite !== undefined ? Boolean(s.infinite) : true,
+    intervalMs: clampNumber(s.intervalMs, 1000, 15000, fallback?.intervalMs ?? 4000),
+    transitionMs: clampNumber(s.transitionMs, 200, 2000, fallback?.transitionMs ?? 650),
+    showArrows: s.showArrows !== undefined ? Boolean(s.showArrows) : true,
+    images,
+  };
+}
 
 /**
  * Maps raw MongoDB document to fully typed ClientStoryDetail with fallbacks.
@@ -100,6 +162,50 @@ function mapDocToClientStory(d: Document | Record<string, unknown>): ClientStory
         description: { en: '', ar: '' },
       });
 
+  const rawPartner =
+    d.partner !== undefined
+      ? normalizeBilingualInput(d.partner)
+      : fallback?.partner
+      ? normalizeBilingualInput(fallback.partner)
+      : { en: '', ar: '' };
+  const partner = {
+    en: rawPartner.en.trim(),
+    ar: rawPartner.ar.trim(),
+  };
+
+  const client = (() => {
+    if (typeof d.client === 'string') {
+      const trimmed = d.client.trim();
+      if (trimmed) {
+        if (
+          fallback?.client?.en &&
+          trimmed.toLowerCase() === fallback.client.en.trim().toLowerCase()
+        ) {
+          return {
+            en: trimmed,
+            ar: fallback.client.ar || '',
+          };
+        }
+        return { en: trimmed, ar: '' };
+      }
+    } else if (d.client && typeof d.client === 'object') {
+      const obj = d.client as Record<string, unknown>;
+      const en = typeof obj.en === 'string' ? obj.en.trim() : '';
+      const ar = typeof obj.ar === 'string' ? obj.ar.trim() : '';
+      if (en || ar) {
+        return { en, ar };
+      }
+    }
+    return (
+      fallback?.client || {
+        en: 'Persici Enterprise Partner',
+        ar: 'شريك بيرسيشي المؤسسي',
+      }
+    );
+  })();
+
+  const heroSlider = normalizeHeroSlider(d.heroSlider, fallback?.heroSlider);
+
   return {
     id: (d.id as string) || String(d._id),
     slug: d.slug as string,
@@ -111,13 +217,15 @@ function mapDocToClientStory(d: Document | Record<string, unknown>): ClientStory
     title,
     leadSubtitle,
     executiveSummary,
-    client: (d.client as string) || fallback?.client || 'Persici Enterprise Partner',
+    ...(hasAnyBilingualText(partner) ? { partner } : {}),
+    client,
     topic,
     services: Array.isArray(d.services) ? (d.services as ClientStoryDetail['services']) : (fallback?.services || []),
     region,
     date: (d.date as string) || fallback?.date || '2025',
     link: (d.link as string) || fallback?.link,
     heroImage: (d.heroImage as string) || (d.featuredImage as string) || fallback?.heroImage || '/images/hero/hero-poster.webp',
+    ...(heroSlider ? { heroSlider } : {}),
     heroVideo: (d.heroVideo as string) || (d.videoUrl as string) || fallback?.heroVideo,
     heroVideoPoster: (d.heroVideoPoster as string) || fallback?.heroVideoPoster,
     metrics: metrics as ClientStoryDetail['metrics'],
@@ -268,4 +376,244 @@ export async function getRelatedProjectsFromDb(
   } catch {
     return getRelatedClientStories(currentSlug, limitCount);
   }
+}
+
+export function mapDocToProjectCategory(
+  d: Document | Record<string, unknown>,
+  idx = 0
+): ClientStoryCategory {
+  const rawSlug = typeof d.slug === 'string' ? d.slug.trim() : '';
+  const slug = slugifyCategorySlug(rawSlug) || `category-${idx + 1}`;
+  const rawName = normalizeBilingualInput(d.name ?? d.label);
+  const name = {
+    en: rawName.en.trim(),
+    ar: rawName.ar.trim(),
+  };
+  const rawDesc = normalizeBilingualInput(d.description);
+  const desc = {
+    en: rawDesc.en.trim(),
+    ar: rawDesc.ar.trim(),
+  };
+
+  return {
+    id: (typeof d.id === 'string' && d.id.trim()) || slug,
+    slug,
+    name: hasAnyBilingualText(name) ? name : { en: slug, ar: slug },
+    ...(hasAnyBilingualText(desc) ? { description: desc } : {}),
+    order: typeof d.order === 'number' && Number.isFinite(d.order) ? d.order : idx + 1,
+    ...(d.createdAt ? { createdAt: new Date(d.createdAt as string | Date).toISOString() } : {}),
+    ...(d.updatedAt ? { updatedAt: new Date(d.updatedAt as string | Date).toISOString() } : {}),
+  };
+}
+
+let categoriesSeedPromise: Promise<void> | null = null;
+
+async function runEnsureProjectCategoriesSeeded(): Promise<void> {
+  try {
+    const db = await getDb();
+    if (!db) return;
+
+    const col = db.collection(COLLECTIONS.PROJECT_CATEGORIES);
+    const existingDocs = await col
+      .find({})
+      .sort({ updatedAt: -1, createdAt: 1 })
+      .toArray();
+
+    if (existingDocs.length > 0) {
+      const seenSlugs = new Set<string>();
+      const duplicateIds: Document['_id'][] = [];
+
+      for (const doc of existingDocs) {
+        const slug =
+          typeof doc.slug === 'string' ? slugifyCategorySlug(doc.slug) : '';
+        if (!slug || slug === 'all' || seenSlugs.has(slug)) {
+          duplicateIds.push(doc._id);
+          continue;
+        }
+        seenSlugs.add(slug);
+      }
+
+      if (duplicateIds.length > 0) {
+        await col.deleteMany({ _id: { $in: duplicateIds } });
+        const cleaned = await col
+          .find({})
+          .sort({ order: 1, createdAt: 1 })
+          .toArray();
+        if (cleaned.length > 0) {
+          await col.bulkWrite(
+            cleaned.map((doc, idx) => ({
+              updateOne: {
+                filter: { _id: doc._id },
+                update: { $set: { order: idx + 1 } },
+              },
+            }))
+          );
+        }
+      }
+
+      await col.createIndex({ slug: 1 }, { unique: true }).catch(() => {});
+      return;
+    }
+
+    await col.createIndex({ slug: 1 }, { unique: true }).catch(() => {});
+
+    const now = new Date();
+    const seededMap = new Map<string, Record<string, unknown>>();
+
+    DEFAULT_CLIENT_STORY_CATEGORIES.forEach((cat, idx) => {
+      seededMap.set(cat.slug, {
+        id: cat.slug,
+        slug: cat.slug,
+        name: cat.name,
+        order: cat.order ?? idx + 1,
+        createdAt: now,
+        updatedAt: now,
+      });
+    });
+
+    const projectDocs = await db
+      .collection(COLLECTIONS.PROJECTS)
+      .find({}, { projection: { categorySlug: 1, category: 1 } })
+      .toArray();
+
+    for (const p of projectDocs) {
+      const rawSlug =
+        typeof p.categorySlug === 'string'
+          ? slugifyCategorySlug(p.categorySlug)
+          : '';
+      if (!rawSlug || rawSlug === 'all' || seededMap.has(rawSlug)) continue;
+      const pName = normalizeBilingualInput(p.category);
+      seededMap.set(rawSlug, {
+        id: rawSlug,
+        slug: rawSlug,
+        name: hasAnyBilingualText(pName)
+          ? { en: pName.en.trim(), ar: pName.ar.trim() }
+          : { en: rawSlug, ar: rawSlug },
+        order: seededMap.size + 1,
+        createdAt: now,
+        updatedAt: now,
+      });
+    }
+
+    const docs = Array.from(seededMap.values());
+    if (docs.length > 0) {
+      await col.bulkWrite(
+        docs.map((doc) => ({
+          updateOne: {
+            filter: { slug: doc.slug },
+            update: { $setOnInsert: doc },
+            upsert: true,
+          },
+        })),
+        { ordered: false }
+      );
+    }
+  } catch (err) {
+    console.warn('[ProjectCategories DB] Seed check warning:', err);
+  }
+}
+
+/**
+ * Ensures initial Client Story categories are seeded idempotently in MongoDB Atlas
+ * and prevents concurrent request races or duplicate slug entries.
+ */
+export async function ensureProjectCategoriesSeeded(): Promise<void> {
+  if (!categoriesSeedPromise) {
+    categoriesSeedPromise = runEnsureProjectCategoriesSeeded().finally(() => {
+      categoriesSeedPromise = null;
+    });
+  }
+  return categoriesSeedPromise;
+}
+
+/**
+ * Fetches ordered Client Story categories from MongoDB Atlas (with default fallback).
+ */
+export async function getAllProjectCategoriesFromDb(): Promise<ClientStoryCategory[]> {
+  try {
+    await ensureProjectCategoriesSeeded();
+    const db = await getDb();
+    if (!db) return DEFAULT_CLIENT_STORY_CATEGORIES;
+
+    const docs = await db
+      .collection(COLLECTIONS.PROJECT_CATEGORIES)
+      .find({})
+      .sort({ order: 1, createdAt: 1 })
+      .toArray();
+
+    if (!docs || docs.length === 0) {
+      return DEFAULT_CLIENT_STORY_CATEGORIES;
+    }
+
+    const seen = new Set<string>();
+    const result: ClientStoryCategory[] = [];
+    for (const doc of docs) {
+      const mapped = mapDocToProjectCategory(doc, result.length);
+      if (seen.has(mapped.slug)) continue;
+      seen.add(mapped.slug);
+      result.push(mapped);
+    }
+    return result;
+  } catch (err) {
+    console.warn('[ProjectCategories DB] Failed to fetch from DB, falling back to defaults:', err);
+    return DEFAULT_CLIENT_STORY_CATEGORIES;
+  }
+}
+
+export interface ClientStoryCategoryWithCount extends ClientStoryCategory {
+  storyCount: number;
+}
+
+/**
+ * Fetches all categories along with live story counts across all projects.
+ */
+export async function getProjectCategoriesWithCounts(): Promise<{
+  categories: ClientStoryCategoryWithCount[];
+  totalStories: number;
+}> {
+  const [dbCategories, stories] = await Promise.all([
+    getAllProjectCategoriesFromDb(),
+    getAllProjectsFromDb(false),
+  ]);
+
+  const countsBySlug = new Map<string, number>();
+  const sampleLabelBySlug = new Map<string, ClientStoryDetail['category']>();
+
+  for (const s of stories) {
+    const slug = slugifyCategorySlug(String(s.categorySlug || ''));
+    if (!slug || slug === 'all') continue;
+    countsBySlug.set(slug, (countsBySlug.get(slug) || 0) + 1);
+    if (!sampleLabelBySlug.has(slug) && s.category) {
+      sampleLabelBySlug.set(slug, s.category);
+    }
+  }
+
+  const seenSlugs = new Set<string>();
+  const categories: ClientStoryCategoryWithCount[] = dbCategories.map((cat) => {
+    seenSlugs.add(cat.slug);
+    return {
+      ...cat,
+      storyCount: countsBySlug.get(cat.slug) || 0,
+    };
+  });
+
+  // Include any legacy/ad-hoc categorySlug still used on stories so zero stories are orphaned
+  for (const [slug, count] of countsBySlug.entries()) {
+    if (seenSlugs.has(slug)) continue;
+    const sample = sampleLabelBySlug.get(slug);
+    const nameEn = resolveBilingualText(sample, 'en') || slug;
+    const nameAr = resolveBilingualText(sample, 'ar') || nameEn;
+    categories.push({
+      id: slug,
+      slug,
+      name: { en: nameEn, ar: nameAr },
+      order: categories.length + 1,
+      storyCount: count,
+    });
+  }
+
+  return {
+    categories,
+    totalStories: stories.length,
+  };
 }

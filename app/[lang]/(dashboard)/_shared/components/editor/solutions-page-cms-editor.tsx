@@ -32,7 +32,11 @@ import {
 } from '@/app/[lang]/(site)/solutions/_solutions/data/solutions-cms.data';
 import { clientStoriesData } from '@/app/[lang]/(site)/client-stories/_client-stories/data/client-stories.data';
 import { insightsData } from '@/app/[lang]/(site)/insights/_insights/data/insights.data';
-import type { ClientStoryDetail } from '@/app/[lang]/(site)/client-stories/_client-stories/types';
+import {
+  hasAnyBilingualText,
+  resolveBilingualText,
+  type ClientStoryDetail,
+} from '@/app/[lang]/(site)/client-stories/_client-stories/types';
 import type { InsightDetail } from '@/app/[lang]/(site)/insights/_insights/types';
 import type { SolutionDiagramType } from '@shared/types';
 
@@ -238,7 +242,8 @@ export function SolutionsPageCmsEditor({
       return (
         s.title?.en?.toLowerCase().includes(q) ||
         s.title?.ar?.toLowerCase().includes(q) ||
-        s.client?.toLowerCase().includes(q) ||
+        resolveBilingualText(s.client, 'en').toLowerCase().includes(q) ||
+        resolveBilingualText(s.client, 'ar').toLowerCase().includes(q) ||
         s.slug?.toLowerCase().includes(q) ||
         s.category?.en?.toLowerCase().includes(q)
       );
@@ -557,9 +562,9 @@ export function SolutionsPageCmsEditor({
                               <span className="font-semibold">
                                 {st?.title?.en || sl}
                               </span>
-                              {st?.client && (
+                              {hasAnyBilingualText(st?.client) && (
                                 <span className="text-[11px] text-slate-500 ml-2">
-                                  ({st.client} • {st.category?.en || st.categorySlug})
+                                  ({resolveBilingualText(st?.client, lang)} • {st?.category?.en || st?.categorySlug})
                                 </span>
                               )}
                             </div>
@@ -698,7 +703,7 @@ export function SolutionsPageCmsEditor({
                   <div className="min-w-0 flex-1">
                     <div className="font-semibold text-white truncate">{st.title?.en}</div>
                     <div className="text-[10px] text-slate-400 truncate">
-                      {st.client} • {st.category?.en || st.categorySlug}
+                      {resolveBilingualText(st.client, lang)} • {st.category?.en || st.categorySlug}
                     </div>
                   </div>
                 </div>

@@ -29,7 +29,10 @@ export const clientStoriesData: ClientStoryDetail[] = [
       "en": "Persici engineered a multi-episode cinematic marketing campaign for Khazan, humanizing the brand through relatable family narratives (\"The Dinner Princess\", \"The Weekend Hero\", \"The Playtime Pro\", \"The Selfie Queen\"), resulting in 14.2M+ video impressions and a +28% surge in retail sell-through.",
       "ar": "طوّرت بيرسيشي حملة تسويقية سينمائية متعددة الحلقات لعلامة \"خزان\"، ركزت على إبراز الجانب الإنساني من خلال شخصيات عائلية قريبة من القلب، محققة أكثر من 14.2 مليون مشاهدة وارتفاعاً بنسبة +28% في المبيعات المباشرة."
     },
-    "client": "Khazan (Al-Wataniya)",
+    "client": {
+      "en": "Khazan (Al-Wataniya)",
+      "ar": "خزان (الوطنية)"
+    },
     "topic": {
       "en": "Food & Beverage / FMCG Marketing",
       "ar": "الأغذية والمنتجات الاستهلاكية"
@@ -298,7 +301,10 @@ export const clientStoriesData: ClientStoryDetail[] = [
       "en": "Persici engineered ChopOn UAE from architectural inception to cloud deployment, delivering sub-50ms query latency across certified timepiece registries, bank-grade escrow integration, and bespoke responsive interfaces tailored for VIP desktop, tablet, and mobile collectors.",
       "ar": "قامت بيرسيشي بتصميم وتطوير منصة \"شوب أون\" الإماراتية بأحدث التقنيات البرمجية، متضمنة محرك بحث فائق السرعة، ونظام تحقق مشفر، وتجربة مستخدم فاخرة تتكيف بسلاسة مع شاشات الحواسيب والأجهزة اللوحية والهواتف الذكية."
     },
-    "client": "ChopOn UAE",
+    "client": {
+      "en": "ChopOn UAE",
+      "ar": "شوب أون الإمارات"
+    },
     "topic": {
       "en": "Luxury E-Commerce & FinTech Verification",
       "ar": "التجارة الإلكترونية الفاخرة والتحقق المالي"
@@ -507,7 +513,10 @@ export const clientStoriesData: ClientStoryDetail[] = [
       "en": "Persici conceptualized, branded, and launched Lahfaa Perfumes with bespoke bottle geometry, tactile unboxing engineering, and a comprehensive sensory marketing framework that propelled the brand into 12+ premier GCC luxury boutiques with +340% brand recall surge.",
       "ar": "صممت بيرسيشي الهوية الكاملة لدار عطور \"لهفة\" الخليجية، متضمنة الهيكل المعماري لزجاجة العطر، وتجربة فتح الصندوق الفاخرة، واستراتيجية تسويق حسي أثمرت عن انتشار العلامة في أكثر من 12 بوتيكاً فاخراً."
     },
-    "client": "Lahfaa Perfumes",
+    "client": {
+      "en": "Lahfaa Perfumes",
+      "ar": "دار عطور لهفة"
+    },
     "topic": {
       "en": "Haute Parfumerie & Packaging Engineering",
       "ar": "العطور الفاخرة وهندسة التغليف"
@@ -710,7 +719,10 @@ export const clientStoriesData: ClientStoryDetail[] = [
       "en": "Persici rebuilt the digital storefront for Lahfaa Perfumes, reducing page loads to 1.8s, eliminating cart abandonment friction, and integrating automated regional shipping calculation across Saudi Arabia, UAE, and Kuwait.",
       "ar": "أعادت بيرسيشي بناء المتجر الإلكتروني لدار عطور لهفة، مخفضة زمن تحميل الصفحات إلى 1.8 ثانية، ومحققة قفزة في إتمام الطلبات مع ربط آلي لشركات الشحن السريع في السعودية والإمارات والكويت."
     },
-    "client": "Lahfaa Perfumes",
+    "client": {
+      "en": "Lahfaa Perfumes",
+      "ar": "دار عطور لهفة"
+    },
     "topic": {
       "en": "Luxury E-Commerce & Checkout Optimization",
       "ar": "التجارة الإلكترونية الفاخرة وتحسين مسار الدفع"
@@ -898,7 +910,10 @@ export const clientStoriesData: ClientStoryDetail[] = [
       "en": "Persici created the complete visual identity, packaging systems, and digital go-to-market campaign for Hala Food, establishing a recognizable household brand and generating 45K+ registered households across Riyadh and Dubai in month one.",
       "ar": "صممت بيرسيشي منظومة الهوية البصرية المتكاملة وتغليف المنتجات وحملة التدشين الرقمية لعلامة \"هلا فود\"، مما أثمر عن تسجيل أكثر من 45 ألف أسرة في الرياض ودبي خلال الشهر الأول فقط."
     },
-    "client": "Hala Food",
+    "client": {
+      "en": "Hala Food",
+      "ar": "هلا فود"
+    },
     "topic": {
       "en": "Fresh Food Technology & Culinary Branding",
       "ar": "تقنيات الأغذية الطازجة والهوية التجارية"
@@ -1074,7 +1089,10 @@ export const clientStoriesData: ClientStoryDetail[] = [
       "en": "Persici engineered the cross-platform mobile application for Hala Food using React Native, handling dynamic nutritional filters, recurring weekly subscription billing, and real-time cold-chain delivery tracking for 120K+ users.",
       "ar": "قامت بيرسيشي بتطوير تطبيق الهاتف الذكي المتكامل لعلامة هلا فود باستخدام تقنية React Native، متضمناً تخصيص الوجبات، والفوترة المتكررة، والتتبع المباشر لمركبات التوصيل المبردة لأكثر من 120 ألف مستخدم."
     },
-    "client": "Hala Food",
+    "client": {
+      "en": "Hala Food",
+      "ar": "هلا فود"
+    },
     "topic": {
       "en": "Mobile Apps & Subscription E-Commerce",
       "ar": "تطبيقات الهاتف والتجارة القائمة على الاشتراكات"
@@ -1309,7 +1327,10 @@ export const clientStoriesData: ClientStoryDetail[] = [
       "en": "Persici developed a high-performance web portal for Metal Fuze in alignment with Saudi Vision 2030 megaproject procurement standards, featuring custom CPT technical datasheets, interactive finish selectors, and direct B2B tender RFP pipelines.",
       "ar": "طوّرت بيرسيشي بوابة رقمية مؤسسية لشركة ميتال فيوز تتوافق مع متطلبات مناقصات المشاريع الكبرى في رؤية السعودية 2030، مع تحميل فوري للمواصفات الهندسية ومسار رقمي سريع لطلبات عروض الأسعار."
     },
-    "client": "Metal Fuze",
+    "client": {
+      "en": "Metal Fuze",
+      "ar": "ميتال فيوز"
+    },
     "topic": {
       "en": "Architectural Engineering & Mega-Project Procurement",
       "ar": "الهندسة المعمارية ومناقصات المشاريع الكبرى"
@@ -1497,7 +1518,10 @@ export const clientStoriesData: ClientStoryDetail[] = [
       "en": "Persici engineered a visually arresting, high-trust digital platform for Land of Exotics, connecting royal sanctuaries and private GCC breeders with documented pedigree histories, resulting in +450% lead capture lift.",
       "ar": "طورت بيرسيشي منصة رقمية فائقة التميز والموثوقية لمحمية \"أرض الغرائب\"، ربطت بين كبار المربين والمحميات الخاصة في الخليج مع سجلات نسب موثقة، محققة زيادة بنسبة +450% في الاستفسارات المؤكدة."
     },
-    "client": "Land of Exotics",
+    "client": {
+      "en": "Land of Exotics",
+      "ar": "أرض الغرائب"
+    },
     "topic": {
       "en": "Exotic Wildlife Conservation & Pedigree Registry",
       "ar": "حماية الحياة الفطرية وتوثيق السلالات"
@@ -1682,7 +1706,10 @@ export const clientStoriesData: ClientStoryDetail[] = [
       "en": "Persici was summoned to resolve catastrophic checkout crashes for PROTES Sports, diagnosing database memory locks, refactoring the PHP execution pipeline, and developing an automated one-click thermal shipping label printer that saved 3 hours per fulfillment shift.",
       "ar": "تم استدعاء بيرسيشي لحل مشاكل انهيار المتجر الإلكتروني لـ \"بروتيس للرياضة\"، حيث تمت إعادة بناء الاستعلامات البرمجية، وتحسين إدارة الذاكرة، وابتكار طابعة بوالص شحن حرارية آلية وفرت 3 ساعات يومياً لفريق الشحن."
     },
-    "client": "PROTES Sports",
+    "client": {
+      "en": "PROTES Sports",
+      "ar": "بروتيس للرياضة"
+    },
     "topic": {
       "en": "Sports Apparel & Automated Fulfillment Logistics",
       "ar": "الملابس الرياضية وأتمتة العمليات اللوجستية"
@@ -1871,7 +1898,10 @@ export const clientStoriesData: ClientStoryDetail[] = [
       "en": "Persici produced a series of high-energy lifestyle films and photographic assets for Meraas' 'The Beach' opposite JBR, capturing coastal dining, seaside fitness, and beachfront leisure, driving a +42% boost in international visitor footfall.",
       "ar": "أنتجت بيرسيشي سلسلة أفلام ومحتوى بصري عالي الحيوية لوجهة \"ذا بيتش\" قبالة جميرا بيتش ريزيدنس التابعة لمِراس، مبرزة تجارب المطاعم الشاطئية والرياضة والترفيه، مما ساهم في زيادة تدفق الزوار الدوليين بنسبة +42%."
     },
-    "client": "Meraas",
+    "client": {
+      "en": "Meraas",
+      "ar": "مِراس"
+    },
     "topic": {
       "en": "Urban Destinations & Coastal Hospitality",
       "ar": "الوجهات الحضرية والضيافة الشاطئية"
@@ -2029,7 +2059,10 @@ export const clientStoriesData: ClientStoryDetail[] = [
       "en": "Persici delivered an immersive media campaign for Meraas' 'Port de La Mer', framing its Mediterranean-inspired marina apartments and vibrant promenades for high-net-worth property investors and regional tourists.",
       "ar": "قدمت بيرسيشي حملة إعلامية سينمائية متطورة لوجهة \"بورت دي لا مير\" لمِراس، سلطت الضوء على الشقق الفاخرة المطلة على المرسى المستوحاة من سواحل البحر المتوسط، محققة زيادة بنسبة +125% في الاستفسارات العقارية والسياحية."
     },
-    "client": "Meraas",
+    "client": {
+      "en": "Meraas",
+      "ar": "مِراس"
+    },
     "topic": {
       "en": "Luxury Waterfront Real Estate & Tourism",
       "ar": "العقارات الشاطئية الفاخرة والسياحة"
@@ -2187,7 +2220,10 @@ export const clientStoriesData: ClientStoryDetail[] = [
       "en": "Persici developed a signature residential branding and film suite for Meraas, celebrating Dubai as the premier global haven for families, innovators, and investors, resulting in 100% Phase 1 sell-out and 3 international real estate creative awards.",
       "ar": "طوّرت بيرسيشي هوية سكنية متكاملة وسلسلة أفلام ترويجية لمشاريع مِراس السكنية، تبرز دبي كوجهة مفضلة للعائلات والمبتكرين، مما أسفر عن بيع المرحلة الأولى بنسبة 100% وحصد 3 جوائز عقارية دولية."
     },
-    "client": "Meraas",
+    "client": {
+      "en": "Meraas",
+      "ar": "مِراس"
+    },
     "topic": {
       "en": "Luxury Master Community Branding",
       "ar": "العلامات العقارية للمجتمعات السكنية الكبرى"
@@ -2345,7 +2381,10 @@ export const clientStoriesData: ClientStoryDetail[] = [
       "en": "Persici developed a nationwide multimedia social awareness campaign for Saudi Food Bank (Eta'am), creating heartwarming educational films and school outreach content reaching 3.5M+ youth and lowering targeted school cafeteria food waste by 24%.",
       "ar": "طورت بيرسيشي حملة توعوية وطنية متكاملة لبنك الطعام السعودي (إطعام)، تضمنت أفلاماً توعوية مؤثرة ومحتوى مدرسياً تفاعلياً وصل لأكثر من 3.5 مليون شاب وخفض الهدر الغذائي في المدارس المشاركة بنسبة 24%."
     },
-    "client": "Saudi Food Bank (Eta'am)",
+    "client": {
+      "en": "Saudi Food Bank (Eta'am)",
+      "ar": "بنك الطعام السعودي (إطعام)"
+    },
     "topic": {
       "en": "Sustainability & Public Good Awareness",
       "ar": "الاستدامة والتوعية المجتمعية والقطاع غير الربحي"
@@ -2572,7 +2611,10 @@ export const clientStoriesData: ClientStoryDetail[] = [
       "en": "Persici scripted, directed, and produced the official corporate introduction master film for AIWIN, creating an emotional bridge between foundational industrial heritage and future tech investments, achieving 2.4M+ high-net-worth views.",
       "ar": "أعدت بيرسيشي وأخرجت الفيلم المؤسسي الرئيسي لمجموعة \"آيوين\"، بأسلوب سردي يربط بين التاريخ الصناعي العريق والاستثمارات التقنية المستقبلية، محققة أكثر من 2.4 مليون مشاهدة بين كبار المستثمرين والشركاء."
     },
-    "client": "AIWIN",
+    "client": {
+      "en": "AIWIN",
+      "ar": "آيوين"
+    },
     "topic": {
       "en": "Industrial Conglomerate & Corporate Film",
       "ar": "المجموعات الصناعية الكبرى والإنتاج المؤسسي"
@@ -2730,7 +2772,10 @@ export const clientStoriesData: ClientStoryDetail[] = [
       "en": "Persici directed an exclusive cinematic portraiture session for prominent Arab media icon Ola Al-Fares, orchestrating lighting, wardrobe framing, and motion aesthetics that achieved 10M+ organic impressions across the Arab world.",
       "ar": "أدارت بيرسيشي جلسة تصوير سينمائية حصرية للإعلامية العربية البارزة علا الفارس، متضمنة الإضاءة الدرامية، والتنسيق البصري الفاخر، وحركة الكاميرا التي حققت أكثر من 10 ملايين تفاعل في العالم العربي."
     },
-    "client": "Ola Al-Fares",
+    "client": {
+      "en": "Ola Al-Fares",
+      "ar": "علا الفارس"
+    },
     "topic": {
       "en": "High-Fashion Celebrity & Media Production",
       "ar": "المشاهير والأزياء الراقية والإنتاج الإعلامي"
@@ -2888,7 +2933,10 @@ export const clientStoriesData: ClientStoryDetail[] = [
       "en": "Persici collaborated with celebrated poet Amr Sharaf on \"Letters to Thalia\", marrying classical Arabic verse with avant-garde visual metaphors, earning 1.8M+ cultural views and invitations to international film and poetry festivals.",
       "ar": "تعاونت بيرسيشي مع الشاعر عمرو شرف في إنتاج عمل \"رسائل إلى ثاليا\"، ممزوجاً بالقصيدة العربية الفصيحة والمشاهد التعبيرية المبتكرة، محققاً أكثر من 1.8 مليون مشاهدة واختياره في مهرجانات شعرية وفنية دولية."
     },
-    "client": "Amr Sharaf",
+    "client": {
+      "en": "Amr Sharaf",
+      "ar": "عمرو شرف"
+    },
     "topic": {
       "en": "Cultural Arts & Poetic Cinematography",
       "ar": "الفنون الثقافية والإنتاج الشعري السينمائي"

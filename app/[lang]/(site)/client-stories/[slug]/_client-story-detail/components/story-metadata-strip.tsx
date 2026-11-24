@@ -1,9 +1,18 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import type { ClientStoryDetail } from '../../../_client-stories/types';
+import {
+  resolveBilingualText,
+  type ClientStoryDetail,
+} from '../../../_client-stories/types';
 import { sectionContainer } from '@shared/constants';
-import { TbBriefcase, TbWorld, TbBolt, TbMapPin } from 'react-icons/tb';
+import {
+  TbBriefcase,
+  TbWorld,
+  TbBolt,
+  TbMapPin,
+  TbHeartHandshake,
+} from 'react-icons/tb';
 
 export interface StoryMetadataStripProps {
   story: ClientStoryDetail;
@@ -15,12 +24,17 @@ export function StoryMetadataStrip({ story, lang }: StoryMetadataStripProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [isVisible, setIsVisible] = useState(false);
 
-  const topic = story.topic[lang as 'en' | 'ar'] || story.topic.en;
-  const region = story.region[lang as 'en' | 'ar'] || story.region.en;
+  const partnerName = resolveBilingualText(story.partner, lang);
+  const hasPartner = Boolean(partnerName);
+  const clientName = resolveBilingualText(story.client, lang);
+
+  const topic = resolveBilingualText(story.topic, lang);
+  const region = resolveBilingualText(story.region, lang);
   const servicesList = story.services || [];
   const servicesText = servicesList
-    .map((s) => s[lang as 'en' | 'ar'] || s.en)
-    .join(', ');
+    .map((s) => resolveBilingualText(s, lang))
+    .filter(Boolean)
+    .join(isRtl ? '، ' : ', ');
 
   useEffect(() => {
     const el = containerRef.current;
@@ -52,11 +66,21 @@ export function StoryMetadataStrip({ story, lang }: StoryMetadataStripProps) {
   }, []);
 
   const items = [
+    ...(hasPartner
+      ? [
+          {
+            id: 'partner',
+            icon: TbHeartHandshake,
+            label: isRtl ? 'الشريك' : 'Partner',
+            value: partnerName,
+          },
+        ]
+      : []),
     {
       id: 'client',
       icon: TbBriefcase,
       label: isRtl ? 'العميل' : 'Client',
-      value: story.client,
+      value: clientName,
     },
     {
       id: 'topic',
@@ -78,6 +102,14 @@ export function StoryMetadataStrip({ story, lang }: StoryMetadataStripProps) {
     },
   ];
 
+  const gridColsClass = hasPartner
+    ? 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-6 xl:gap-0 xl:divide-x rtl:xl:divide-x-reverse divide-slate-200/70'
+    : 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-0 lg:divide-x rtl:lg:divide-x-reverse divide-slate-200/70';
+
+  const itemPaddingClass = hasPartner
+    ? 'flex items-center gap-3.5 px-0 xl:px-4 2xl:px-5 first:xl:ps-0 last:xl:pe-0 will-change-transform'
+    : 'flex items-center gap-3.5 px-0 lg:px-6 first:lg:ps-0 last:lg:pe-0 will-change-transform';
+
   return (
     <section
       data-header-luminance="light"
@@ -85,7 +117,7 @@ export function StoryMetadataStrip({ story, lang }: StoryMetadataStripProps) {
       className="w-full bg-white border-b border-slate-200/80 py-8 sm:py-10"
     >
       <div ref={containerRef} className={sectionContainer}>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-0 lg:divide-x rtl:lg:divide-x-reverse divide-slate-200/70">
+        <div className={gridColsClass}>
           {items.map((item, idx) => {
             const Icon = item.icon;
             // Wave animation: each item cascades in sequence
@@ -102,7 +134,7 @@ export function StoryMetadataStrip({ story, lang }: StoryMetadataStripProps) {
                   transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)',
                   transitionDelay: `${waveDelay}ms`,
                 }}
-                className="flex items-center gap-3.5 px-0 lg:px-6 first:lg:ps-0 last:lg:pe-0 will-change-transform"
+                className={itemPaddingClass}
               >
                 {/* Clean Icon Container */}
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-50 border border-slate-200/80 text-slate-800 shadow-2xs">
@@ -115,7 +147,7 @@ export function StoryMetadataStrip({ story, lang }: StoryMetadataStripProps) {
                     {item.label}
                   </span>
                   <span
-                    className="text-sm text-slate-600 font-medium truncate mt-0.5"
+                    className="text-sm text-slate-600 font-medium line-clamp-2 leading-snug mt-0.5"
                     title={item.value}
                   >
                     {item.value}

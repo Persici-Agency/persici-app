@@ -2,9 +2,13 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
-import type { ClientStoryDetail } from '../../../_client-stories/types';
+import {
+  resolveBilingualText,
+  type ClientStoryDetail,
+} from '../../../_client-stories/types';
 import { sectionContainer } from '@shared/constants';
 import { CountUp } from '@shared/components/count-up';
+import { StoryHeroImageSlider, type StoryHeroSlideItem } from './story-hero-image-slider';
 
 export interface StorySummaryStatsSectionProps {
   story: ClientStoryDetail;
@@ -159,18 +163,59 @@ export function StorySummaryStatsSection({ story, lang }: StorySummaryStatsSecti
             )}
           </div>
 
-          {/* Right Column: Featured Image */}
+          {/* Right Column: Featured Image or Interactive Hero Image Slider */}
           <div className="lg:col-span-6 w-full">
-            <div className="relative w-full aspect-16/10 rounded-2xl sm:rounded-3xl overflow-hidden shadow-lg border border-slate-200/80 bg-slate-100">
-              <Image
-                src={story.heroImage}
-                alt={story.title[lang as 'en' | 'ar'] || story.title.en}
-                fill
-                priority
-                sizes="(max-width: 1024px) 100vw, 50vw"
-                className="object-cover"
-              />
-            </div>
+            {(() => {
+              const baseTitle =
+                resolveBilingualText(story.title, lang) ||
+                resolveBilingualText(story.client, lang);
+              const sliderConfig = story.heroSlider;
+              const extraSliderImages = (sliderConfig?.images || []).filter(
+                (img) => Boolean(img?.src?.trim())
+              );
+
+              if (sliderConfig?.enabled && extraSliderImages.length > 0) {
+                const heroSlides: StoryHeroSlideItem[] = [
+                  {
+                    src: story.heroImage,
+                    alt: baseTitle,
+                  },
+                  ...extraSliderImages.map((img, idx) => ({
+                    src: img.src,
+                    alt:
+                      img.alt?.[lang as 'en' | 'ar'] ||
+                      img.alt?.en ||
+                      `${baseTitle} — ${idx + 2}`,
+                  })),
+                ];
+
+                return (
+                  <StoryHeroImageSlider
+                    key={`${story.slug}-${Boolean(sliderConfig.infinite)}-${heroSlides.length}`}
+                    slides={heroSlides}
+                    autoScroll={sliderConfig.autoScroll ?? true}
+                    infinite={sliderConfig.infinite ?? true}
+                    intervalMs={sliderConfig.intervalMs ?? 4000}
+                    transitionMs={sliderConfig.transitionMs ?? 650}
+                    showArrows={sliderConfig.showArrows ?? true}
+                    isRtl={isRtl}
+                  />
+                );
+              }
+
+              return (
+                <div className="relative w-full aspect-16/10 rounded-2xl sm:rounded-3xl overflow-hidden shadow-lg border border-slate-200/80 bg-slate-100">
+                  <Image
+                    src={story.heroImage}
+                    alt={baseTitle}
+                    fill
+                    preload
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    className="object-cover"
+                  />
+                </div>
+              );
+            })()}
           </div>
         </div>
       </div>

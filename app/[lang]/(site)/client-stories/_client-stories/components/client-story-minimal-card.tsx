@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import type { ClientStoryDetail } from '../types';
+import { resolveBilingualText, type ClientStoryDetail } from '../types';
 
 export interface ClientStoryMinimalCardProps {
   story: ClientStoryDetail;
@@ -91,7 +91,7 @@ export function ClientStoryMinimalCard({
     };
   }, []);
 
-  const title = story.title[lang as 'en' | 'ar'] || story.title.en;
+  const title = resolveBilingualText(story.title, lang);
 
   // Gradient IDs unique to avoid collisions
   const safeId = (story.id || story.slug || 'card').replace(/[^a-zA-Z0-9-_]/g, '-');

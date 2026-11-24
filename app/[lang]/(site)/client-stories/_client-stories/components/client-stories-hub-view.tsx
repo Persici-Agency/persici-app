@@ -1,5 +1,9 @@
 import React from 'react';
-import type { ClientStoryDetail, ClientStoriesHubPageData } from '../types';
+import {
+  resolveBilingualText,
+  type ClientStoryDetail,
+  type ClientStoriesHubPageData,
+} from '../types';
 import type { Dictionary } from '@dictionaries';
 import { sectionContainer } from '@shared/constants';
 import { ClientStoriesHeroSection } from './client-stories-hero-section';
@@ -34,9 +38,10 @@ export function ClientStoriesHubView({
     .filter((s) => s.featured)
     .sort((a, b) => (a.featuredOrder || 99) - (b.featuredOrder || 99))
     .map((s) => {
-      const title = s.title[lang as 'en' | 'ar'] || s.title.en;
-      const category = s.category[lang as 'en' | 'ar'] || s.category.en;
-      const description = s.executiveSummary[lang as 'en' | 'ar'] || s.executiveSummary.en;
+      const title = resolveBilingualText(s.title, lang);
+      const category = resolveBilingualText(s.category, lang);
+      const description = resolveBilingualText(s.executiveSummary, lang);
+      const clientName = resolveBilingualText(s.client, lang);
 
       return {
         id: s.id || s.slug,
@@ -46,7 +51,7 @@ export function ClientStoriesHubView({
         title,
         description,
         summary: description,
-        client: s.client,
+        client: clientName,
         metrics: s.metrics.map((m) => ({
           value: m.value,
           label: m.label,

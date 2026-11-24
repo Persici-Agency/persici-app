@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import type { StoryCategorySlug } from '../types';
+import { resolveBilingualText, type StoryCategorySlug } from '../types';
 
 export interface FilterCategoryOption {
   slug: StoryCategorySlug;
@@ -66,7 +66,7 @@ export const FILTER_CATEGORIES: FilterCategoryOption[] = [
 export interface ClientStoriesFilterBarProps {
   activeCategory: StoryCategorySlug;
   onSelectCategory: (slug: StoryCategorySlug) => void;
-  counts?: Partial<Record<StoryCategorySlug, number>>;
+  counts?: Record<string, number | undefined>;
   categories?: FilterCategoryOption[];
   lang: string;
   className?: string;
@@ -92,7 +92,7 @@ export function ClientStoriesFilterBar({
       <div className="flex items-center justify-center flex-wrap gap-2 sm:gap-3 pb-1">
         {resolvedCategories.map((cat) => {
           const isActive = activeCategory === cat.slug;
-          const label = isRtl ? cat.label.ar : cat.label.en;
+          const label = resolveBilingualText(cat.label, lang);
           const count = counts[cat.slug];
 
           return (

@@ -2,11 +2,14 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getSessionUser } from '@/lib/auth/jwt';
 import { isRoleAllowed } from '@/lib/auth/rbac';
 import { generateStructuredAiJson } from '@/lib/ai-server';
-import { getAllProjectsFromDb } from '@/lib/projects-server';
+import { getAllProjectsFromDb, getAllProjectCategoriesFromDb } from '@/lib/projects-server';
 import type { AiEffectLevel, AiProviderId } from '@/lib/ai-types';
-import type {
-  ClientStoryDetail,
-  StoryTechBadge,
+import {
+  DEFAULT_CLIENT_STORY_CATEGORIES,
+  resolveBilingualText,
+  type ClientStoryCategory,
+  type ClientStoryDetail,
+  type StoryTechBadge,
 } from '@/app/[lang]/(site)/client-stories/_client-stories/types';
 
 export const runtime = 'nodejs';
@@ -15,6 +18,7 @@ export type StoryAiTargetField =
   | 'all'
   | 'meta'
   | 'slug'
+  | 'partner'
   | 'client'
   | 'topic'
   | 'region'
@@ -156,7 +160,7 @@ function buildStoriesCatalogSummary(
     .filter((s) => s.slug && s.slug.toLowerCase() !== excluded)
     .map((s) => ({
       slug: s.slug,
-      client: s.client || '',
+      client: resolveBilingualText(s.client, 'en'),
       title: s.title?.en || s.title?.ar || s.slug,
       categorySlug: s.categorySlug,
       templateType: s.templateType,
@@ -366,6 +370,7 @@ function buildPromptForTarget(params: {
   codeBlockIndex?: number;
   codeLanguage?: string;
   availableStoriesCatalog?: StoryCatalogEntry[];
+  availableCategories?: ClientStoryCategory[];
 }): { systemPrompt: string; userPrompt: string } {
   const {
     targetField,
@@ -376,7 +381,16 @@ function buildPromptForTarget(params: {
     codeBlockIndex,
     codeLanguage,
     availableStoriesCatalog,
+    availableCategories,
   } = params;
+  const resolvedCategories =
+    availableCategories && availableCategories.length > 0
+      ? availableCategories
+      : DEFAULT_CLIENT_STORY_CATEGORIES;
+  const allowedCategorySlugsList = resolvedCategories
+    .map((c) => `"${c.slug}" (${resolveBilingualText(c.name, 'en')})`)
+    .join(' | ');
+  const firstCategorySlug = resolvedCategories[0]?.slug || 'software';
   const role: NarrativeSectionRole = sectionContext || 'intro';
   const hasRef = Boolean(referenceText && referenceText.trim().length > 0);
 
@@ -401,6 +415,7 @@ CORE RULES:
     ? JSON.stringify(
         {
           slug: currentStoryContext.slug,
+          partner: currentStoryContext.partner,
           client: currentStoryContext.client,
           categorySlug: currentStoryContext.categorySlug,
           templateType: currentStoryContext.templateType,
@@ -424,17 +439,23 @@ CORE RULES:
   switch (targetField) {
     case 'meta':
       fieldInstructions = `TARGET: Extract Case Study Meta & Classification.
-Allowed "categorySlug" values ONLY: "software" | "ai-platforms" | "branding" | "marketing" | "marketing-branding" | "video-production".
+Allowed "categorySlug" values ONLY: ${allowedCategorySlugsList}.
 Allowed "templateType" values ONLY: "software-web-app-showcase" | "ai-platform-showcase" | "mobile-app-showcase" | "marketing-video-showcase" | "marketing-branding-showcase" | "image-gallery-showcase".
-CLASSIFICATION RULES:
-- Use "ai-platforms" + "ai-platform-showcase" when the project centers on an AI platform, LLM/agent orchestration product, machine learning engine, RAG/copilot, or intelligent automation SaaS (distinct from general "software" web apps).
-- Use "marketing-branding" + "marketing-branding-showcase" when the project combines branding & marketing deliverables in a compact scope (typically 1-2 hero videos and/or 1-2 key visual boards rather than a large multi-episode video series or huge gallery).
-- Otherwise choose the closest matching categorySlug and templateType.
+CLASSIFICATION RULES (categorySlug and templateType are selected INDEPENDENTLY):
+- "categorySlug" defines the story's business/filter category (from the allowed list above).
+- "templateType" defines ONLY how the deliverables media section is laid out ("software-web-app-showcase", "ai-platform-showcase", "mobile-app-showcase", "marketing-video-showcase", "marketing-branding-showcase", "image-gallery-showcase"). Any category may use any showcase template depending on what deliverables exist in the reference.
 Return STRICT JSON matching this exact schema:
 {
-  "client": "Exact client organization name from reference",
+  "partner": {
+    "en": "Optional partner company/agency name ONLY if explicitly credited as a partner in the reference, otherwise empty string \"\"",
+    "ar": "اسم الشريك بالعربية فقط إذا ذُكر صراحةً كشريك في المرجع، وإلا اتركه فارغاً \"\""
+  },
+  "client": {
+    "en": "Exact client organization name from reference in English",
+    "ar": "اسم العميل / المؤسسة بالعربية"
+  },
   "slug": "seo-friendly-lowercase-hyphenated-slug",
-  "categorySlug": "software",
+  "categorySlug": "${firstCategorySlug}",
   "templateType": "software-web-app-showcase",
   "topic": { "en": "Industry / Niche in English", "ar": "المجال / الصناعة بالعربية" },
   "region": { "en": "Geographic market e.g. Saudi Arabia & GCC", "ar": "المنطقة الجغرافية بالعربية" },
@@ -447,9 +468,26 @@ Return STRICT JSON matching this exact schema:
 }`;
       break;
 
+    case 'partner':
+      fieldInstructions = `TARGET: Partner Organization Name (Optional, Bilingual EN & AR).
+Return STRICT JSON:
+{
+  "partner": {
+    "en": "Exact partner organization/agency name ONLY if explicitly credited as a partner in the reference; otherwise empty string \"\"",
+    "ar": "اسم الشريك بالعربية فقط إذا ذُكر صراحةً كشريك في المرجع؛ وإلا اتركه فارغاً \"\""
+  }
+}`;
+      break;
+
     case 'client':
-      fieldInstructions = `TARGET: Client Organization Name.
-Return STRICT JSON: { "client": "Concise official client brand/company name from the reference" }`;
+      fieldInstructions = `TARGET: Client Organization Name (Bilingual EN & AR).
+Return STRICT JSON:
+{
+  "client": {
+    "en": "Concise official client brand/company name in English from the reference",
+    "ar": "الاسم الرسمي للعميل أو العلامة التجارية بالعربية"
+  }
+}`;
       break;
 
     case 'slug':
@@ -627,19 +665,20 @@ Return STRICT JSON:
 
     case 'all':
       fieldInstructions = `TARGET: Generate ALL sections of the complete Persici Client Story from the Reference Document cleanly without cross-section repetition.
-Allowed "categorySlug": "software" | "ai-platforms" | "branding" | "marketing" | "marketing-branding" | "video-production".
+Allowed "categorySlug": ${allowedCategorySlugsList}.
 Allowed "templateType": "software-web-app-showcase" | "ai-platform-showcase" | "mobile-app-showcase" | "marketing-video-showcase" | "marketing-branding-showcase" | "image-gallery-showcase".
-CLASSIFICATION RULES:
-- Choose "ai-platforms" + "ai-platform-showcase" whenever the story showcases an AI platform, LLM/agent product, AI copilot, or ML pipeline (separated from regular "software" web applications).
-- Choose "marketing-branding" + "marketing-branding-showcase" whenever the story showcases a combined marketing & branding engagement (compact 1-2 videos and/or 1-2 visuals rather than a huge gallery).
+CLASSIFICATION RULES (categorySlug and templateType are independent choices):
+- Choose the best matching "categorySlug" for the story's industry/service domain.
+- Independently choose the "templateType" showcase layout ("ai-platform-showcase", "software-web-app-showcase", "mobile-app-showcase", "marketing-video-showcase", "marketing-branding-showcase", or "image-gallery-showcase") matching how deliverables should be visually presented.
 Allowed "techStack[].category": "frontend" | "backend" | "database" | "cloud" | "tool" | "design".
 For "relatedSlugs", choose 3 slugs STRICTLY from the AVAILABLE DATABASE CLIENT STORIES list matching category, services, or industry.
 Return STRICT JSON matching this complete schema:
 {
   "meta": {
-    "client": "Client Name",
+    "partner": { "en": "", "ar": "" },
+    "client": { "en": "Client Name", "ar": "اسم العميل" },
     "slug": "seo-hyphenated-slug",
-    "categorySlug": "software",
+    "categorySlug": "${firstCategorySlug}",
     "templateType": "software-web-app-showcase",
     "topic": { "en": "...", "ar": "..." },
     "region": { "en": "...", "ar": "..." },
@@ -756,7 +795,11 @@ export async function POST(request: NextRequest) {
         : '';
 
     const needsDbCatalog = targetField === 'related_slugs' || targetField === 'all';
-    const dbStories = needsDbCatalog ? await getAllProjectsFromDb(true) : [];
+    const needsCategories = targetField === 'meta' || targetField === 'all';
+    const [dbStories, availableCategories] = await Promise.all([
+      needsDbCatalog ? getAllProjectsFromDb(true) : Promise.resolve([]),
+      needsCategories ? getAllProjectCategoriesFromDb() : Promise.resolve([]),
+    ]);
     const availableStoriesCatalog = needsDbCatalog
       ? buildStoriesCatalogSummary(dbStories, storySlug)
       : undefined;
@@ -770,6 +813,7 @@ export async function POST(request: NextRequest) {
       codeBlockIndex: body.codeBlockIndex,
       codeLanguage: body.codeLanguage,
       availableStoriesCatalog,
+      availableCategories,
     });
 
     if (targetField === 'related_slugs') {

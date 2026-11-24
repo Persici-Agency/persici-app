@@ -34,7 +34,7 @@ export function ClientStoryDetailView({
       {/* 2. Executive Summary & Split CountUp Stats */}
       <StorySummaryStatsSection story={story} lang={lang} />
 
-      {/* 3. 4-Column Metadata Strip */}
+      {/* 3. Metadata Strip (Partner [optional], Client, Topic, Services, Region) */}
       <StoryMetadataStrip story={story} lang={lang} />
 
       {/* 4. Main Body with Sticky Left Rail */}

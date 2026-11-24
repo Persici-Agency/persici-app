@@ -808,7 +808,8 @@ export interface FeaturedClientStoryItem {
   ctaText?: string | LocalizedString;
   ctaHref?: string;
   tags?: string[];
-  client?: string;
+  partner?: string | LocalizedString;
+  client?: string | LocalizedString;
   category?: string | LocalizedString;
   subtitle?: string | LocalizedString;
   summary?: string | LocalizedString;
