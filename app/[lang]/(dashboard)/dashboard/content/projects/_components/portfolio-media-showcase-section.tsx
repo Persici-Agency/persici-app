@@ -24,19 +24,29 @@ import {
   TbSortDescending,
   TbChevronDown,
   TbCheck,
+  TbLayoutRows,
 } from 'react-icons/tb';
 import { RichTextEditor } from '@dashboard-shared/components';
 import type { MediaItem } from '@dashboard-shared/components/media/types';
-import type {
-  ClientStoryDetail,
-  StoryVideoItem,
-  StorySoftwareDeviceMockup,
-  StoryGalleryImage,
-  StoryGalleryDesign,
-  StoryGalleryOrder,
-  StoryTechBadge,
+import {
+  DEFAULT_GALLERY_ROWS_CONFIG,
+  type ClientStoryDetail,
+  type StoryVideoItem,
+  type StorySoftwareDeviceMockup,
+  type StoryGalleryImage,
+  type StoryGalleryDesign,
+  type StoryGalleryOrder,
+  type StoryGalleryRowsConfig,
+  type StoryGalleryRowFit,
+  type StoryGalleryVerticalPos,
+  type StoryGalleryHorizontalPos,
+  type StoryTechBadge,
 } from '@/app/[lang]/(site)/client-stories/_client-stories/types';
-import { AiFieldTrigger, type StoryAiFieldControls } from './ai-field-trigger';
+import {
+  AiFieldTrigger,
+  AiTranslateTrigger,
+  type StoryAiFieldControls,
+} from './ai-field-trigger';
 
 interface GalleryDesignMeta {
   id: StoryGalleryDesign;
@@ -91,6 +101,13 @@ const GALLERY_DESIGN_OPTIONS: GalleryDesignMeta[] = [
     descEn: 'Alternates full-width panoramic hero frames with curated 60/40 asymmetric story pairs.',
     descAr: 'يتناوب بين إطارات بانورامية كاملة العرض وثنائيات غير متماثلة بأسلوب المجلات العالمية.',
   },
+  {
+    id: 'stacked-rows',
+    nameEn: 'Stacked Full-Width Rows',
+    nameAr: 'صفوف كاملة متتابعة (كل صورة في صف)',
+    descEn: 'Displays each image on its own full-width row sequentially with customizable shared height, fit, and alignment.',
+    descAr: 'يعرض كل صورة في صف كامل مستقل واحدة تلو الأخرى مع التحكم الموحد بالارتفاع ونوع العرض والمحاذاة.',
+  },
 ];
 
 function renderGalleryDesignIcon(id: StoryGalleryDesign, className = 'w-4 h-4') {
@@ -105,6 +122,8 @@ function renderGalleryDesignIcon(id: StoryGalleryDesign, className = 'w-4 h-4') 
       return <TbSlideshow className={className} />;
     case 'magazine-spread':
       return <TbBook2 className={className} />;
+    case 'stacked-rows':
+      return <TbLayoutRows className={className} />;
     default:
       return <TbLayoutCollage className={className} />;
   }
@@ -154,6 +173,39 @@ export function PortfolioMediaShowcaseSection({
       updated.description = { ...updated.description, ar: val };
     }
     onChange({ ...story, mediaShowcase: updated });
+  };
+
+  const translateShowcaseField = (params: {
+    key: string;
+    text: string;
+    sourceLang: 'en' | 'ar';
+    targetLang: 'en' | 'ar';
+    isHtml?: boolean;
+    fieldHint: string;
+    patchShowcase: (
+      sc: NonNullable<ClientStoryDetail['mediaShowcase']>,
+      translated: string
+    ) => NonNullable<ClientStoryDetail['mediaShowcase']>;
+  }) => {
+    if (!aiControls?.onTranslate) return;
+    void aiControls.onTranslate({
+      key: params.key,
+      text: params.text,
+      sourceLang: params.sourceLang,
+      targetLang: params.targetLang,
+      isHtml: params.isHtml,
+      fieldHint: params.fieldHint,
+      updateStory: (prev, translated) => {
+        const baseShowcase = prev.mediaShowcase || {
+          title: { en: 'Deliverables & Production', ar: 'معرض المخرجات والإنتاج' },
+          description: { en: '', ar: '' },
+        };
+        return {
+          ...prev,
+          mediaShowcase: params.patchShowcase(baseShowcase, translated),
+        };
+      },
+    });
   };
 
   // ==========================================
@@ -255,6 +307,25 @@ export function PortfolioMediaShowcaseSection({
       document.removeEventListener('keydown', handleKeyDown);
     };
   }, [galleryDropdownOpen]);
+
+  const activeRowsConfig: StoryGalleryRowsConfig = {
+    ...DEFAULT_GALLERY_ROWS_CONFIG,
+    ...(showcase.galleryRowsConfig || {}),
+  };
+
+  const handleUpdateRowsConfig = (patch: Partial<StoryGalleryRowsConfig>) => {
+    const nextConfig: StoryGalleryRowsConfig = {
+      ...activeRowsConfig,
+      ...patch,
+    };
+    onChange({
+      ...story,
+      mediaShowcase: {
+        ...showcase,
+        galleryRowsConfig: nextConfig,
+      },
+    });
+  };
 
   const handleGalleryOrderChange = (order: StoryGalleryOrder) => {
     onChange({
@@ -495,9 +566,33 @@ export function PortfolioMediaShowcaseSection({
       {/* 1. Showcase Header (EN & AR) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label className="block text-xs font-semibold text-slate-700 mb-1">
-            {isRtl ? 'عنوان المعرض (EN)' : 'Showcase Heading (EN)'}
-          </label>
+          <div className="flex items-center justify-between gap-2 mb-1">
+            <label className="block text-xs font-semibold text-slate-700">
+              {isRtl ? 'عنوان المعرض (EN)' : 'Showcase Heading (EN)'}
+            </label>
+            {aiControls?.onTranslate && (
+              <AiTranslateTrigger
+                size="xs"
+                lang={lang}
+                targetLang="en"
+                sourceText={showcase.title?.ar || ''}
+                isLoading={Boolean(aiControls.translatingKeys?.['showcase:title:en'])}
+                onTranslate={() =>
+                  translateShowcaseField({
+                    key: 'showcase:title:en',
+                    text: showcase.title?.ar || '',
+                    sourceLang: 'ar',
+                    targetLang: 'en',
+                    fieldHint: 'Media Showcase Heading',
+                    patchShowcase: (sc, translated) => ({
+                      ...sc,
+                      title: { en: translated, ar: sc.title?.ar || '' },
+                    }),
+                  })
+                }
+              />
+            )}
+          </div>
           <input
             type="text"
             value={showcase.title?.en || ''}
@@ -507,9 +602,33 @@ export function PortfolioMediaShowcaseSection({
           />
         </div>
         <div>
-          <label className="block text-xs font-semibold text-slate-700 mb-1">
-            {isRtl ? 'عنوان المعرض (AR)' : 'Showcase Heading (AR)'}
-          </label>
+          <div className="flex items-center justify-between gap-2 mb-1">
+            <label className="block text-xs font-semibold text-slate-700">
+              {isRtl ? 'عنوان المعرض (AR)' : 'Showcase Heading (AR)'}
+            </label>
+            {aiControls?.onTranslate && (
+              <AiTranslateTrigger
+                size="xs"
+                lang={lang}
+                targetLang="ar"
+                sourceText={showcase.title?.en || ''}
+                isLoading={Boolean(aiControls.translatingKeys?.['showcase:title:ar'])}
+                onTranslate={() =>
+                  translateShowcaseField({
+                    key: 'showcase:title:ar',
+                    text: showcase.title?.en || '',
+                    sourceLang: 'en',
+                    targetLang: 'ar',
+                    fieldHint: 'Media Showcase Heading',
+                    patchShowcase: (sc, translated) => ({
+                      ...sc,
+                      title: { en: sc.title?.en || '', ar: translated },
+                    }),
+                  })
+                }
+              />
+            )}
+          </div>
           <input
             type="text"
             dir="rtl"
@@ -524,10 +643,32 @@ export function PortfolioMediaShowcaseSection({
       <RichTextEditor
         label={isRtl ? 'وصف المعرض (Showcase Description)' : 'Showcase Description (EN / AR)'}
         rows={3}
+        uiLang={lang}
         valueEn={showcase.description?.en || ''}
         valueAr={showcase.description?.ar || ''}
         onChangeEn={(val) => handleUpdateHeader('descEn', val)}
         onChangeAr={(val) => handleUpdateHeader('descAr', val)}
+        isTranslating={Boolean(aiControls?.translatingKeys?.['showcase:desc:rte'])}
+        onTranslate={
+          aiControls?.onTranslate
+            ? ({ sourceLang, targetLang, text }) =>
+                translateShowcaseField({
+                  key: 'showcase:desc:rte',
+                  text,
+                  sourceLang,
+                  targetLang,
+                  isHtml: true,
+                  fieldHint: 'Media Showcase Description',
+                  patchShowcase: (sc, translated) => ({
+                    ...sc,
+                    description: {
+                      en: targetLang === 'en' ? translated : sc.description?.en || '',
+                      ar: targetLang === 'ar' ? translated : sc.description?.ar || '',
+                    },
+                  }),
+                })
+            : undefined
+        }
       />
 
       {/* ========================================================================= */}
@@ -592,15 +733,50 @@ export function PortfolioMediaShowcaseSection({
 
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                       <div className="sm:col-span-2">
-                        <label className="block text-[11px] font-semibold text-slate-700 mb-1">
-                          {isRtl ? 'عنوان المقطع (English)' : 'Cut Title (English)'}
-                        </label>
+                        <div className="flex items-center justify-between gap-1.5 mb-1">
+                          <label className="block text-[11px] font-semibold text-slate-700">
+                            {isRtl ? 'عنوان المقطع (English)' : 'Cut Title (English)'}
+                          </label>
+                          {aiControls?.onTranslate && (
+                            <AiTranslateTrigger
+                              size="xs"
+                              lang={lang}
+                              targetLang="en"
+                              sourceText={vid.title?.ar || ''}
+                              isLoading={Boolean(
+                                aiControls.translatingKeys?.[`video:${vIdx}:title:en`]
+                              )}
+                              onTranslate={() =>
+                                translateShowcaseField({
+                                  key: `video:${vIdx}:title:en`,
+                                  text: vid.title?.ar || '',
+                                  sourceLang: 'ar',
+                                  targetLang: 'en',
+                                  fieldHint: 'Video Cut Title',
+                                  patchShowcase: (sc, translated) => {
+                                    const nextVideos = [...(sc.videos || [])];
+                                    if (nextVideos[vIdx]) {
+                                      nextVideos[vIdx] = {
+                                        ...nextVideos[vIdx],
+                                        title: {
+                                          en: translated,
+                                          ar: nextVideos[vIdx].title?.ar || '',
+                                        },
+                                      };
+                                    }
+                                    return { ...sc, videos: nextVideos };
+                                  },
+                                })
+                              }
+                            />
+                          )}
+                        </div>
                         <input
                           type="text"
                           value={vid.title?.en || ''}
                           onChange={(e) => handleUpdateVideo(vIdx, 'titleEn', e.target.value)}
                           placeholder="Episode 1: The Main Commercial"
-                          className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg"
+                          className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg focus:border-persici-crimson outline-none"
                         />
                       </div>
                       <div>
@@ -612,22 +788,57 @@ export function PortfolioMediaShowcaseSection({
                           value={vid.duration || ''}
                           onChange={(e) => handleUpdateVideo(vIdx, 'duration', e.target.value)}
                           placeholder="0:35"
-                          className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg font-mono"
+                          className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg font-mono focus:border-persici-crimson outline-none"
                         />
                       </div>
                     </div>
 
                     <div>
-                      <label className="block text-[11px] font-semibold text-slate-700 mb-1">
-                        {isRtl ? 'عنوان المقطع (العربية)' : 'Cut Title (Arabic)'}
-                      </label>
+                      <div className="flex items-center justify-between gap-1.5 mb-1">
+                        <label className="block text-[11px] font-semibold text-slate-700">
+                          {isRtl ? 'عنوان المقطع (العربية)' : 'Cut Title (Arabic)'}
+                        </label>
+                        {aiControls?.onTranslate && (
+                          <AiTranslateTrigger
+                            size="xs"
+                            lang={lang}
+                            targetLang="ar"
+                            sourceText={vid.title?.en || ''}
+                            isLoading={Boolean(
+                              aiControls.translatingKeys?.[`video:${vIdx}:title:ar`]
+                            )}
+                            onTranslate={() =>
+                              translateShowcaseField({
+                                key: `video:${vIdx}:title:ar`,
+                                text: vid.title?.en || '',
+                                sourceLang: 'en',
+                                targetLang: 'ar',
+                                fieldHint: 'Video Cut Title',
+                                patchShowcase: (sc, translated) => {
+                                  const nextVideos = [...(sc.videos || [])];
+                                  if (nextVideos[vIdx]) {
+                                    nextVideos[vIdx] = {
+                                      ...nextVideos[vIdx],
+                                      title: {
+                                        en: nextVideos[vIdx].title?.en || '',
+                                        ar: translated,
+                                      },
+                                    };
+                                  }
+                                  return { ...sc, videos: nextVideos };
+                                },
+                              })
+                            }
+                          />
+                        )}
+                      </div>
                       <input
                         type="text"
                         dir="rtl"
                         value={vid.title?.ar || ''}
                         onChange={(e) => handleUpdateVideo(vIdx, 'titleAr', e.target.value)}
                         placeholder="الحلقة الأولى: الإعلان الرئيسي"
-                        className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg font-arabic"
+                        className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg font-arabic focus:border-persici-crimson outline-none"
                       />
                     </div>
 
@@ -809,28 +1020,98 @@ export function PortfolioMediaShowcaseSection({
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div>
-                        <label className="block text-[11px] font-semibold text-slate-700 mb-1">
-                          {isRtl ? 'عنوان الشاشة (EN)' : 'Screen Title (EN)'}
-                        </label>
+                        <div className="flex items-center justify-between gap-1.5 mb-1">
+                          <label className="block text-[11px] font-semibold text-slate-700">
+                            {isRtl ? 'عنوان الشاشة (EN)' : 'Screen Title (EN)'}
+                          </label>
+                          {aiControls?.onTranslate && (
+                            <AiTranslateTrigger
+                              size="xs"
+                              lang={lang}
+                              targetLang="en"
+                              sourceText={mockup.title?.ar || ''}
+                              isLoading={Boolean(
+                                aiControls.translatingKeys?.[`mockup:${mIdx}:title:en`]
+                              )}
+                              onTranslate={() =>
+                                translateShowcaseField({
+                                  key: `mockup:${mIdx}:title:en`,
+                                  text: mockup.title?.ar || '',
+                                  sourceLang: 'ar',
+                                  targetLang: 'en',
+                                  fieldHint: 'Device Screen Mockup Title',
+                                  patchShowcase: (sc, translated) => {
+                                    const nextMockups = [...(sc.mockups || [])];
+                                    if (nextMockups[mIdx]) {
+                                      nextMockups[mIdx] = {
+                                        ...nextMockups[mIdx],
+                                        title: {
+                                          en: translated,
+                                          ar: nextMockups[mIdx].title?.ar || '',
+                                        },
+                                      };
+                                    }
+                                    return { ...sc, mockups: nextMockups };
+                                  },
+                                })
+                              }
+                            />
+                          )}
+                        </div>
                         <input
                           type="text"
                           value={mockup.title?.en || ''}
                           onChange={(e) => handleUpdateMockup(mIdx, 'titleEn', e.target.value)}
                           placeholder="e.g. Real-Time Analytics Dashboard"
-                          className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg"
+                          className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg focus:border-persici-crimson outline-none"
                         />
                       </div>
                       <div>
-                        <label className="block text-[11px] font-semibold text-slate-700 mb-1">
-                          {isRtl ? 'عنوان الشاشة (AR)' : 'Screen Title (AR)'}
-                        </label>
+                        <div className="flex items-center justify-between gap-1.5 mb-1">
+                          <label className="block text-[11px] font-semibold text-slate-700">
+                            {isRtl ? 'عنوان الشاشة (AR)' : 'Screen Title (AR)'}
+                          </label>
+                          {aiControls?.onTranslate && (
+                            <AiTranslateTrigger
+                              size="xs"
+                              lang={lang}
+                              targetLang="ar"
+                              sourceText={mockup.title?.en || ''}
+                              isLoading={Boolean(
+                                aiControls.translatingKeys?.[`mockup:${mIdx}:title:ar`]
+                              )}
+                              onTranslate={() =>
+                                translateShowcaseField({
+                                  key: `mockup:${mIdx}:title:ar`,
+                                  text: mockup.title?.en || '',
+                                  sourceLang: 'en',
+                                  targetLang: 'ar',
+                                  fieldHint: 'Device Screen Mockup Title',
+                                  patchShowcase: (sc, translated) => {
+                                    const nextMockups = [...(sc.mockups || [])];
+                                    if (nextMockups[mIdx]) {
+                                      nextMockups[mIdx] = {
+                                        ...nextMockups[mIdx],
+                                        title: {
+                                          en: nextMockups[mIdx].title?.en || '',
+                                          ar: translated,
+                                        },
+                                      };
+                                    }
+                                    return { ...sc, mockups: nextMockups };
+                                  },
+                                })
+                              }
+                            />
+                          )}
+                        </div>
                         <input
                           type="text"
                           dir="rtl"
                           value={mockup.title?.ar || ''}
                           onChange={(e) => handleUpdateMockup(mIdx, 'titleAr', e.target.value)}
                           placeholder="مثال: لوحة التحكم والتحليلات اللحظية"
-                          className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg font-arabic"
+                          className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg font-arabic focus:border-persici-crimson outline-none"
                         />
                       </div>
                     </div>
@@ -1082,7 +1363,7 @@ export function PortfolioMediaShowcaseSection({
             <p className="text-[11px] text-slate-500 mt-0.5">
               {isRtl
                 ? 'اختر نمط عرض المعرض المناسب (الافتراضي: شبكة التحرير Bento)، ثم حدد صوراً متعددة دفعة واحدة أو ارفع مجلداً كاملاً من مكتبة R2.'
-                : 'Choose one of 6 gallery layouts (Editorial Bento is selected by default), and bulk-select or bulk-upload multiple images into any folder/subfolder.'}
+                : 'Choose one of 7 gallery layouts (Editorial Bento is selected by default), and bulk-select or bulk-upload multiple images into any folder/subfolder.'}
             </p>
           </div>
 
@@ -1301,6 +1582,150 @@ export function PortfolioMediaShowcaseSection({
               </div>
             </div>
           </div>
+
+          {activeGalleryDesign === 'stacked-rows' && (
+            <div className="mt-4 pt-4 border-t border-slate-200/80 space-y-3">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <div>
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+                    <TbLayoutRows className="w-3.5 h-3.5 text-persici-crimson" />
+                    <span>
+                      {isRtl
+                        ? 'إعدادات عرض الصفوف المتتابعة (تُطبق على جميع صور المعرض)'
+                        : 'Stacked Rows Image Layout Settings (Applies to All Gallery Images)'}
+                    </span>
+                  </span>
+                  <p className="text-[11px] text-slate-500 mt-0.5">
+                    {isRtl
+                      ? 'تُعرض كل صورة في صف كامل مستقل؛ حدد الارتفاع الموحد ونوع الاحتواء وموضع الصورة.'
+                      : 'Each gallery image appears in its own full-width row with shared height, image fit, and focal alignment.'}
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-1.5">
+                  {[420, 560, 720, 900].map((preset) => {
+                    const isPresetActive = activeRowsConfig.height === preset;
+                    return (
+                      <button
+                        key={preset}
+                        type="button"
+                        onClick={() => handleUpdateRowsConfig({ height: preset })}
+                        className={`px-2 py-1 rounded-lg text-[10px] font-mono font-bold border transition-colors cursor-pointer ${
+                          isPresetActive
+                            ? 'bg-slate-900 text-white border-slate-900'
+                            : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300'
+                        }`}
+                      >
+                        {preset}px{preset === DEFAULT_GALLERY_ROWS_CONFIG.height ? ' (Default)' : ''}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
+                {/* 1. Row Height (px) */}
+                <div>
+                  <label className="block text-[11px] font-semibold text-slate-700 mb-1">
+                    {isRtl ? 'ارتفاع الصورة (px)' : 'Row Height (px)'}
+                  </label>
+                  <div className="flex items-center h-9 bg-white border border-slate-200 rounded-xl overflow-hidden focus-within:border-persici-crimson">
+                    <input
+                      type="number"
+                      min={160}
+                      max={2200}
+                      step={10}
+                      value={activeRowsConfig.height}
+                      onChange={(e) => {
+                        const raw = Number(e.target.value);
+                        const clamped = Number.isFinite(raw)
+                          ? Math.min(2200, Math.max(160, Math.round(raw)))
+                          : DEFAULT_GALLERY_ROWS_CONFIG.height;
+                        handleUpdateRowsConfig({ height: clamped });
+                      }}
+                      className="w-full px-2.5 text-xs font-mono font-bold text-slate-800 outline-none bg-transparent"
+                    />
+                    <span className="px-2.5 text-[11px] font-mono font-semibold text-slate-400 bg-slate-50 h-full flex items-center border-s border-slate-200 shrink-0">
+                      px
+                    </span>
+                  </div>
+                </div>
+
+                {/* 2. Image Fit (objectFit) */}
+                <div>
+                  <label className="block text-[11px] font-semibold text-slate-700 mb-1">
+                    {isRtl ? 'نوع عرض الصورة (Object Fit)' : 'Image Fit Type'}
+                  </label>
+                  <select
+                    value={activeRowsConfig.objectFit}
+                    onChange={(e) =>
+                      handleUpdateRowsConfig({
+                        objectFit: e.target.value as StoryGalleryRowFit,
+                      })
+                    }
+                    className="w-full h-9 px-2.5 text-xs font-semibold text-slate-800 bg-white border border-slate-200 rounded-xl focus:border-persici-crimson outline-none cursor-pointer"
+                  >
+                    <option value="cover">
+                      {isRtl ? 'ملء الإطار (Cover)' : 'Cover — Fill Row (Default)'}
+                    </option>
+                    <option value="contain">
+                      {isRtl ? 'احتواء كامل بدون قص (Contain)' : 'Contain — Full Image'}
+                    </option>
+                    <option value="scale-down">
+                      {isRtl ? 'تحجيم تلقائي (Scale Down)' : 'Scale Down — Natural Size'}
+                    </option>
+                    <option value="fill">
+                      {isRtl ? 'تمدد لملء الصف (Fill / Stretch)' : 'Fill — Stretch to Frame'}
+                    </option>
+                  </select>
+                </div>
+
+                {/* 3. Vertical Position */}
+                <div>
+                  <label className="block text-[11px] font-semibold text-slate-700 mb-1">
+                    {isRtl ? 'الموضع الرأسي (Vertical)' : 'Vertical Position'}
+                  </label>
+                  <select
+                    value={activeRowsConfig.verticalPosition}
+                    onChange={(e) =>
+                      handleUpdateRowsConfig({
+                        verticalPosition: e.target.value as StoryGalleryVerticalPos,
+                      })
+                    }
+                    className="w-full h-9 px-2.5 text-xs font-semibold text-slate-800 bg-white border border-slate-200 rounded-xl focus:border-persici-crimson outline-none cursor-pointer"
+                  >
+                    <option value="center">
+                      {isRtl ? 'المنتصف (Center)' : 'Center (Default)'}
+                    </option>
+                    <option value="top">{isRtl ? 'أعلى (Top)' : 'Top'}</option>
+                    <option value="bottom">{isRtl ? 'أسفل (Bottom)' : 'Bottom'}</option>
+                  </select>
+                </div>
+
+                {/* 4. Horizontal Position */}
+                <div>
+                  <label className="block text-[11px] font-semibold text-slate-700 mb-1">
+                    {isRtl ? 'الموضع الأفقي (Horizontal)' : 'Horizontal Position'}
+                  </label>
+                  <select
+                    value={activeRowsConfig.horizontalPosition}
+                    onChange={(e) =>
+                      handleUpdateRowsConfig({
+                        horizontalPosition: e.target.value as StoryGalleryHorizontalPos,
+                      })
+                    }
+                    className="w-full h-9 px-2.5 text-xs font-semibold text-slate-800 bg-white border border-slate-200 rounded-xl focus:border-persici-crimson outline-none cursor-pointer"
+                  >
+                    <option value="center">
+                      {isRtl ? 'المنتصف (Center)' : 'Center (Default)'}
+                    </option>
+                    <option value="left">{isRtl ? 'يسار (Left)' : 'Left'}</option>
+                    <option value="right">{isRtl ? 'يمين (Right)' : 'Right'}</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Gallery Images Grid */}
@@ -1420,40 +1845,200 @@ export function PortfolioMediaShowcaseSection({
                   </button>
                 </div>
 
-                <div className="grid grid-cols-2 gap-2">
-                  <input
-                    type="text"
-                    value={img.alt?.en || ''}
-                    onChange={(e) => handleUpdateGalleryImage(gIdx, 'altEn', e.target.value)}
-                    placeholder="Alt Text (EN)"
-                    className="px-2 py-1 text-xs bg-white border border-slate-200 rounded-md"
-                  />
-                  <input
-                    type="text"
-                    dir="rtl"
-                    value={img.alt?.ar || ''}
-                    onChange={(e) => handleUpdateGalleryImage(gIdx, 'altAr', e.target.value)}
-                    placeholder="النص البديل (AR)"
-                    className="px-2 py-1 text-xs bg-white border border-slate-200 rounded-md font-arabic"
-                  />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <div>
+                    <div className="flex items-center justify-between gap-1 mb-1">
+                      <label className="text-[10px] font-semibold text-slate-600">
+                        {isRtl ? 'النص البديل (EN)' : 'Alt Text (EN)'}
+                      </label>
+                      {aiControls?.onTranslate && (
+                        <AiTranslateTrigger
+                          size="xs"
+                          lang={lang}
+                          targetLang="en"
+                          sourceText={img.alt?.ar || ''}
+                          isLoading={Boolean(
+                            aiControls.translatingKeys?.[`gallery:${gIdx}:alt:en`]
+                          )}
+                          onTranslate={() =>
+                            translateShowcaseField({
+                              key: `gallery:${gIdx}:alt:en`,
+                              text: img.alt?.ar || '',
+                              sourceLang: 'ar',
+                              targetLang: 'en',
+                              fieldHint: 'Gallery Image Alt Text',
+                              patchShowcase: (sc, translated) => {
+                                const nextGallery = [...(sc.gallery || [])];
+                                if (nextGallery[gIdx]) {
+                                  nextGallery[gIdx] = {
+                                    ...nextGallery[gIdx],
+                                    alt: {
+                                      en: translated,
+                                      ar: nextGallery[gIdx].alt?.ar || '',
+                                    },
+                                  };
+                                }
+                                return { ...sc, gallery: nextGallery };
+                              },
+                            })
+                          }
+                        />
+                      )}
+                    </div>
+                    <input
+                      type="text"
+                      value={img.alt?.en || ''}
+                      onChange={(e) => handleUpdateGalleryImage(gIdx, 'altEn', e.target.value)}
+                      placeholder="Alt Text (EN)"
+                      className="w-full px-2 py-1 text-xs bg-white border border-slate-200 rounded-md focus:border-persici-crimson outline-none"
+                    />
+                  </div>
+                  <div>
+                    <div className="flex items-center justify-between gap-1 mb-1">
+                      <label className="text-[10px] font-semibold text-slate-600">
+                        {isRtl ? 'النص البديل (AR)' : 'Alt Text (AR)'}
+                      </label>
+                      {aiControls?.onTranslate && (
+                        <AiTranslateTrigger
+                          size="xs"
+                          lang={lang}
+                          targetLang="ar"
+                          sourceText={img.alt?.en || ''}
+                          isLoading={Boolean(
+                            aiControls.translatingKeys?.[`gallery:${gIdx}:alt:ar`]
+                          )}
+                          onTranslate={() =>
+                            translateShowcaseField({
+                              key: `gallery:${gIdx}:alt:ar`,
+                              text: img.alt?.en || '',
+                              sourceLang: 'en',
+                              targetLang: 'ar',
+                              fieldHint: 'Gallery Image Alt Text',
+                              patchShowcase: (sc, translated) => {
+                                const nextGallery = [...(sc.gallery || [])];
+                                if (nextGallery[gIdx]) {
+                                  nextGallery[gIdx] = {
+                                    ...nextGallery[gIdx],
+                                    alt: {
+                                      en: nextGallery[gIdx].alt?.en || '',
+                                      ar: translated,
+                                    },
+                                  };
+                                }
+                                return { ...sc, gallery: nextGallery };
+                              },
+                            })
+                          }
+                        />
+                      )}
+                    </div>
+                    <input
+                      type="text"
+                      dir="rtl"
+                      value={img.alt?.ar || ''}
+                      onChange={(e) => handleUpdateGalleryImage(gIdx, 'altAr', e.target.value)}
+                      placeholder="النص البديل (AR)"
+                      className="w-full px-2 py-1 text-xs bg-white border border-slate-200 rounded-md font-arabic focus:border-persici-crimson outline-none"
+                    />
+                  </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-2">
-                  <input
-                    type="text"
-                    value={img.caption?.en || ''}
-                    onChange={(e) => handleUpdateGalleryImage(gIdx, 'captionEn', e.target.value)}
-                    placeholder="Caption Overlay (EN - optional)"
-                    className="px-2 py-1 text-xs bg-white border border-slate-200 rounded-md"
-                  />
-                  <input
-                    type="text"
-                    dir="rtl"
-                    value={img.caption?.ar || ''}
-                    onChange={(e) => handleUpdateGalleryImage(gIdx, 'captionAr', e.target.value)}
-                    placeholder="التعليق الظاهر (AR - اختياري)"
-                    className="px-2 py-1 text-xs bg-white border border-slate-200 rounded-md font-arabic"
-                  />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <div>
+                    <div className="flex items-center justify-between gap-1 mb-1">
+                      <label className="text-[10px] font-semibold text-slate-600">
+                        {isRtl ? 'التعليق الظاهر (EN)' : 'Caption (EN)'}
+                      </label>
+                      {aiControls?.onTranslate && (
+                        <AiTranslateTrigger
+                          size="xs"
+                          lang={lang}
+                          targetLang="en"
+                          sourceText={img.caption?.ar || ''}
+                          isLoading={Boolean(
+                            aiControls.translatingKeys?.[`gallery:${gIdx}:caption:en`]
+                          )}
+                          onTranslate={() =>
+                            translateShowcaseField({
+                              key: `gallery:${gIdx}:caption:en`,
+                              text: img.caption?.ar || '',
+                              sourceLang: 'ar',
+                              targetLang: 'en',
+                              fieldHint: 'Gallery Image Caption',
+                              patchShowcase: (sc, translated) => {
+                                const nextGallery = [...(sc.gallery || [])];
+                                if (nextGallery[gIdx]) {
+                                  nextGallery[gIdx] = {
+                                    ...nextGallery[gIdx],
+                                    caption: {
+                                      en: translated,
+                                      ar: nextGallery[gIdx].caption?.ar || '',
+                                    },
+                                  };
+                                }
+                                return { ...sc, gallery: nextGallery };
+                              },
+                            })
+                          }
+                        />
+                      )}
+                    </div>
+                    <input
+                      type="text"
+                      value={img.caption?.en || ''}
+                      onChange={(e) => handleUpdateGalleryImage(gIdx, 'captionEn', e.target.value)}
+                      placeholder="Caption Overlay (EN - optional)"
+                      className="w-full px-2 py-1 text-xs bg-white border border-slate-200 rounded-md focus:border-persici-crimson outline-none"
+                    />
+                  </div>
+                  <div>
+                    <div className="flex items-center justify-between gap-1 mb-1">
+                      <label className="text-[10px] font-semibold text-slate-600">
+                        {isRtl ? 'التعليق الظاهر (AR)' : 'Caption (AR)'}
+                      </label>
+                      {aiControls?.onTranslate && (
+                        <AiTranslateTrigger
+                          size="xs"
+                          lang={lang}
+                          targetLang="ar"
+                          sourceText={img.caption?.en || ''}
+                          isLoading={Boolean(
+                            aiControls.translatingKeys?.[`gallery:${gIdx}:caption:ar`]
+                          )}
+                          onTranslate={() =>
+                            translateShowcaseField({
+                              key: `gallery:${gIdx}:caption:ar`,
+                              text: img.caption?.en || '',
+                              sourceLang: 'en',
+                              targetLang: 'ar',
+                              fieldHint: 'Gallery Image Caption',
+                              patchShowcase: (sc, translated) => {
+                                const nextGallery = [...(sc.gallery || [])];
+                                if (nextGallery[gIdx]) {
+                                  nextGallery[gIdx] = {
+                                    ...nextGallery[gIdx],
+                                    caption: {
+                                      en: nextGallery[gIdx].caption?.en || '',
+                                      ar: translated,
+                                    },
+                                  };
+                                }
+                                return { ...sc, gallery: nextGallery };
+                              },
+                            })
+                          }
+                        />
+                      )}
+                    </div>
+                    <input
+                      type="text"
+                      dir="rtl"
+                      value={img.caption?.ar || ''}
+                      onChange={(e) => handleUpdateGalleryImage(gIdx, 'captionAr', e.target.value)}
+                      placeholder="التعليق الظاهر (AR - اختياري)"
+                      className="w-full px-2 py-1 text-xs bg-white border border-slate-200 rounded-md font-arabic focus:border-persici-crimson outline-none"
+                    />
+                  </div>
                 </div>
               </div>
             ))}

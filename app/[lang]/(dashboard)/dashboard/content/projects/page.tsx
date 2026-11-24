@@ -15,6 +15,13 @@ import {
   TbDatabaseImport,
   TbLayout,
   TbCategory,
+  TbFilePencil,
+  TbRotateClockwise2,
+  TbAlertTriangle,
+  TbCloudCheck,
+  TbCheck,
+  TbLoader2,
+  TbTrash,
 } from 'react-icons/tb';
 import { MediaPickerModal } from '@dashboard-shared/components';
 import type {
@@ -26,6 +33,7 @@ import {
   hasAnyBilingualText,
   normalizeBilingualInput,
   resolveBilingualText,
+  slugifyCategorySlug,
   type ClientStoryCategory,
   type ClientStoryDetail,
   type StoryCategorySlug,
@@ -42,8 +50,18 @@ import {
   PortfolioMediaShowcaseSection,
   PortfolioAiReferenceBar,
   AiFieldTrigger,
+  stripDraftMeta,
+  areStoriesContentEqual,
+  readLocalStoryDrafts,
+  writeLocalStoryDraft,
+  removeLocalStoryDraft,
+  readNewStoryLocalDraft,
+  writeNewStoryLocalDraft,
+  clearNewStoryLocalDraft,
   type UploadedReferenceItem,
   type StoryAiFieldControls,
+  type StoryAiTranslateParams,
+  type LocalStoryDraftEntry,
 } from './_components';
 import type {
   StoryAiTargetField,
@@ -59,6 +77,33 @@ function resolveCategoryBySlug(
     list.find((c) => c.slug === slug) ||
     DEFAULT_CLIENT_STORY_CATEGORIES.find((c) => c.slug === slug)
   );
+}
+
+function buildStorySavePayload(
+  story: ClientStoryDetail,
+  refs: UploadedReferenceItem[]
+): ClientStoryDetail {
+  const clean = stripDraftMeta(story);
+  const normalizedTitle = normalizeBilingualInput(clean.title);
+  const normalizedPartner = normalizeBilingualInput(clean.partner);
+  const normalizedClient = normalizeBilingualInput(clean.client);
+
+  return {
+    ...clean,
+    title: {
+      en: normalizedTitle.en.trim(),
+      ar: normalizedTitle.ar.trim(),
+    },
+    partner: {
+      en: normalizedPartner.en.trim(),
+      ar: normalizedPartner.ar.trim(),
+    },
+    client: {
+      en: normalizedClient.en.trim(),
+      ar: normalizedClient.ar.trim(),
+    },
+    aiReferences: refs,
+  };
 }
 
 const DEFAULT_NEW_STORY: ClientStoryDetail = {
@@ -233,16 +278,39 @@ export default function ProjectsManagerPage() {
   const [saving, setSaving] = useState(false);
   const [seeding, setSeeding] = useState(false);
 
-  // Editor State
+  // Editor & Draft State
   const [editingStory, setEditingStory] = useState<ClientStoryDetail | null>(null);
+  const [publishedBaseline, setPublishedBaseline] = useState<ClientStoryDetail | null>(null);
+  const [initialNewStoryBaseline, setInitialNewStoryBaseline] =
+    useState<ClientStoryDetail | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [persistedSlug, setPersistedSlug] = useState<string | null>(null);
   const [activeTocSection, setActiveTocSection] = useState('sec-meta');
+
+  const [localDraftsMap, setLocalDraftsMap] = useState<Record<string, LocalStoryDraftEntry>>({});
+  const [newStoryLocalDraft, setNewStoryLocalDraft] = useState<LocalStoryDraftEntry | null>(null);
+  const [savingDraft, setSavingDraft] = useState(false);
+  const [autoSavedAt, setAutoSavedAt] = useState<string | null>(null);
+  const [draftSavedFeedback, setDraftSavedFeedback] = useState<{
+    at: string;
+    offline?: boolean;
+  } | null>(null);
+  const [publishSuccessInfo, setPublishSuccessInfo] = useState<{ at: string } | null>(null);
+  const [restoredDraftInfo, setRestoredDraftInfo] = useState<{
+    source: 'local' | 'server';
+    savedAt?: string;
+  } | null>(null);
+  const [discardConfirmTarget, setDiscardConfirmTarget] = useState<{
+    mode: 'open-editor' | 'card' | 'new-local-banner';
+    story?: ClientStoryDetail;
+  } | null>(null);
+  const [discardingDraft, setDiscardingDraft] = useState(false);
 
   // AI Studio Reference & Generation State
   const [references, setReferences] = useState<UploadedReferenceItem[]>([]);
   const [isSavingReferences, setIsSavingReferences] = useState(false);
   const [generatingFieldKey, setGeneratingFieldKey] = useState<string | null>(null);
+  const [translatingKeys, setTranslatingKeys] = useState<Record<string, boolean>>({});
   const [isGeneratingAll, setIsGeneratingAll] = useState(false);
   const [referenceWarning, setReferenceWarning] = useState<string | null>(null);
   const [activeAiMeta, setActiveAiMeta] = useState<{
@@ -323,6 +391,9 @@ export default function ProjectsManagerPage() {
         }
 
         if (typeof window !== 'undefined') {
+          setLocalDraftsMap(readLocalStoryDrafts());
+          setNewStoryLocalDraft(readNewStoryLocalDraft());
+
           const sp = new URLSearchParams(window.location.search);
           const pk = sp.get('passkey') || sp.get('key') || '';
           if (pk) setPasskey(pk);
@@ -343,20 +414,28 @@ export default function ProjectsManagerPage() {
                 }
               : { en: newCat, ar: newCat };
 
-            setIsCreating(true);
-            setPersistedSlug(null);
-            setActiveTocSection('sec-meta');
-            setReferences([]);
-            setReferenceWarning(null);
-            setLastUsageBanner(null);
-            setEditingStory({
+            const createdInitial: ClientStoryDetail = {
               ...DEFAULT_NEW_STORY,
               id: `story-${Date.now()}`,
               slug: `case-study-${Date.now()}`,
               categorySlug: fallbackSlug,
               category: fallbackCatName,
               aiReferences: [],
-            });
+            };
+
+            setIsCreating(true);
+            setPersistedSlug(null);
+            setPublishedBaseline(null);
+            setInitialNewStoryBaseline(createdInitial);
+            setActiveTocSection('sec-meta');
+            setReferences([]);
+            setReferenceWarning(null);
+            setLastUsageBanner(null);
+            setAutoSavedAt(null);
+            setDraftSavedFeedback(null);
+            setPublishSuccessInfo(null);
+            setRestoredDraftInfo(null);
+            setEditingStory(createdInitial);
 
             sp.delete('newCategory');
             const nextQs = sp.toString();
@@ -392,6 +471,53 @@ export default function ProjectsManagerPage() {
       active = false;
     };
   }, []);
+
+  // Layer 1 Auto-Save to localStorage (Debounced 350ms) so in-progress edits survive connection drops
+  useEffect(() => {
+    if (!editingStory) return;
+
+    const timer = window.setTimeout(() => {
+      if (isCreating) {
+        if (
+          initialNewStoryBaseline &&
+          !areStoriesContentEqual(editingStory, initialNewStoryBaseline)
+        ) {
+          const entry = writeNewStoryLocalDraft(editingStory);
+          if (entry) {
+            setNewStoryLocalDraft(entry);
+            setAutoSavedAt(entry.savedAt);
+            setPublishSuccessInfo(null);
+          }
+        }
+        return;
+      }
+
+      const storyKey = persistedSlug || editingStory.slug;
+      if (!storyKey) return;
+
+      const isDraftOnly = editingStory.status === 'draft';
+      const differsFromPublished =
+        isDraftOnly ||
+        (publishedBaseline ? !areStoriesContentEqual(editingStory, publishedBaseline) : false);
+
+      if (differsFromPublished) {
+        const entry = writeLocalStoryDraft(storyKey, editingStory);
+        if (entry) {
+          setLocalDraftsMap((prev) => ({ ...prev, [storyKey]: entry }));
+          setAutoSavedAt(entry.savedAt);
+          setPublishSuccessInfo(null);
+        }
+      } else {
+        setLocalDraftsMap((prev) => {
+          if (!prev[storyKey]) return prev;
+          return removeLocalStoryDraft(storyKey);
+        });
+        setAutoSavedAt(null);
+      }
+    }, 350);
+
+    return () => window.clearTimeout(timer);
+  }, [editingStory, isCreating, persistedSlug, publishedBaseline, initialNewStoryBaseline]);
 
   // Open Media Picker helpers (Single & Bulk Multi-Select)
   const handleOpenMediaPicker = (
@@ -446,30 +572,134 @@ export default function ProjectsManagerPage() {
 
   // Open Create Modal
   const openNewProject = () => {
-    setIsCreating(true);
-    setPersistedSlug(null);
-    setActiveTocSection('sec-meta');
-    setReferences([]);
-    setReferenceWarning(null);
-    setLastUsageBanner(null);
-    setEditingStory({
+    const freshStory: ClientStoryDetail = {
       ...DEFAULT_NEW_STORY,
       id: `story-${Date.now()}`,
       slug: `case-study-${Date.now()}`,
       aiReferences: [],
-    });
+    };
+    setIsCreating(true);
+    setPersistedSlug(null);
+    setPublishedBaseline(null);
+    setInitialNewStoryBaseline(freshStory);
+    setActiveTocSection('sec-meta');
+    setReferences([]);
+    setReferenceWarning(null);
+    setLastUsageBanner(null);
+    setTranslatingKeys({});
+    setAutoSavedAt(null);
+    setDraftSavedFeedback(null);
+    setPublishSuccessInfo(null);
+    setRestoredDraftInfo(null);
+    setEditingStory(freshStory);
   };
 
-  // Open Edit Modal
-  const openEditStory = (story: ClientStoryDetail) => {
-    const savedRefs = Array.isArray(story.aiReferences) ? story.aiReferences : [];
-    setIsCreating(false);
-    setPersistedSlug(story.slug);
+  const resumeNewStoryDraft = () => {
+    if (!newStoryLocalDraft?.draftStory) return;
+    const resumed = stripDraftMeta(newStoryLocalDraft.draftStory);
+    const savedRefs = Array.isArray(resumed.aiReferences) ? resumed.aiReferences : [];
+    setIsCreating(true);
+    setPersistedSlug(null);
+    setPublishedBaseline(null);
+    setInitialNewStoryBaseline({
+      ...DEFAULT_NEW_STORY,
+      id: resumed.id || `story-${Date.now()}`,
+      slug: resumed.slug || `case-study-${Date.now()}`,
+      aiReferences: [],
+    });
     setActiveTocSection('sec-meta');
     setReferences(savedRefs);
     setReferenceWarning(null);
     setLastUsageBanner(null);
-    setEditingStory({ ...story, aiReferences: savedRefs });
+    setTranslatingKeys({});
+    setAutoSavedAt(newStoryLocalDraft.savedAt);
+    setDraftSavedFeedback(null);
+    setPublishSuccessInfo(null);
+    setRestoredDraftInfo({ source: 'local', savedAt: newStoryLocalDraft.savedAt });
+    setEditingStory({ ...resumed, aiReferences: savedRefs });
+  };
+
+  // Open Edit Modal (automatically restores local or server draft if present)
+  const openEditStory = (story: ClientStoryDetail) => {
+    const key = story.slug;
+    const localEntry = localDraftsMap[key];
+    const serverDraft = story.draftData;
+    const isDraftOnly = story.status === 'draft';
+    const cleanPublishedBaseline = isDraftOnly ? null : stripDraftMeta(story);
+
+    let chosenStory: ClientStoryDetail = stripDraftMeta(story);
+    let restored: { source: 'local' | 'server'; savedAt?: string } | null = null;
+
+    if (localEntry && serverDraft) {
+      const localMs = new Date(localEntry.savedAt).getTime() || 0;
+      const serverMs = story.draftUpdatedAt
+        ? new Date(story.draftUpdatedAt).getTime() || 0
+        : 0;
+      if (localMs >= serverMs) {
+        chosenStory = stripDraftMeta(localEntry.draftStory);
+        restored = { source: 'local', savedAt: localEntry.savedAt };
+      } else {
+        chosenStory = stripDraftMeta(serverDraft);
+        restored = { source: 'server', savedAt: story.draftUpdatedAt };
+      }
+    } else if (localEntry) {
+      chosenStory = stripDraftMeta(localEntry.draftStory);
+      restored = { source: 'local', savedAt: localEntry.savedAt };
+    } else if (serverDraft) {
+      chosenStory = stripDraftMeta(serverDraft);
+      restored = { source: 'server', savedAt: story.draftUpdatedAt };
+    } else if (isDraftOnly) {
+      restored = { source: 'server', savedAt: story.draftUpdatedAt };
+    }
+
+    const savedRefs = Array.isArray(chosenStory.aiReferences) ? chosenStory.aiReferences : [];
+    setIsCreating(false);
+    setPersistedSlug(story.slug);
+    setPublishedBaseline(cleanPublishedBaseline);
+    setInitialNewStoryBaseline(null);
+    setActiveTocSection('sec-meta');
+    setReferences(savedRefs);
+    setReferenceWarning(null);
+    setLastUsageBanner(null);
+    setTranslatingKeys({});
+    setAutoSavedAt(restored?.savedAt || null);
+    setDraftSavedFeedback(null);
+    setPublishSuccessInfo(null);
+    setRestoredDraftInfo(restored);
+    setEditingStory({ ...chosenStory, aiReferences: savedRefs });
+  };
+
+  const handleCloseEditorModal = () => {
+    if (editingStory) {
+      if (isCreating) {
+        if (
+          initialNewStoryBaseline &&
+          !areStoriesContentEqual(editingStory, initialNewStoryBaseline)
+        ) {
+          const entry = writeNewStoryLocalDraft(editingStory);
+          if (entry) setNewStoryLocalDraft(entry);
+        }
+      } else {
+        const storyKey = persistedSlug || editingStory.slug;
+        const differs =
+          editingStory.status === 'draft' ||
+          (publishedBaseline ? !areStoriesContentEqual(editingStory, publishedBaseline) : false);
+        if (storyKey && differs) {
+          const entry = writeLocalStoryDraft(storyKey, editingStory);
+          if (entry) {
+            setLocalDraftsMap((prev) => ({ ...prev, [storyKey]: entry }));
+          }
+        }
+      }
+    }
+    setEditingStory(null);
+    setPublishedBaseline(null);
+    setInitialNewStoryBaseline(null);
+    setIsCreating(false);
+    setPersistedSlug(null);
+    setRestoredDraftInfo(null);
+    setDraftSavedFeedback(null);
+    setPublishSuccessInfo(null);
   };
 
   const persistStoryReferences = async (nextRefs: UploadedReferenceItem[]) => {
@@ -482,6 +712,9 @@ export default function ProjectsManagerPage() {
           s.slug === persistedSlug ? { ...s, aiReferences: nextRefs } : s
         )
       );
+      setPublishedBaseline((prev) =>
+        prev ? { ...prev, aiReferences: nextRefs } : null
+      );
       setIsSavingReferences(true);
       try {
         await fetch('/api/projects', {
@@ -490,6 +723,7 @@ export default function ProjectsManagerPage() {
           body: JSON.stringify({
             id: editingStory?.id,
             slug: persistedSlug,
+            lookupSlug: persistedSlug,
             aiReferences: nextRefs,
           }),
         });
@@ -806,14 +1040,219 @@ export default function ProjectsManagerPage() {
     }
   };
 
+  const handleTranslateField = async (params: StoryAiTranslateParams) => {
+    const rawText = params.text || '';
+    const hasContent = params.isHtml
+      ? rawText
+          .replace(/<[^>]+>/g, ' ')
+          .replace(/&nbsp;/gi, ' ')
+          .trim().length > 0
+      : rawText.trim().length > 0;
+
+    if (!hasContent || translatingKeys[params.key]) return;
+
+    setReferenceWarning(null);
+    setTranslatingKeys((prev) => ({ ...prev, [params.key]: true }));
+
+    try {
+      const res = await fetch('/api/ai/translate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          text: rawText,
+          sourceLang: params.sourceLang,
+          targetLang: params.targetLang,
+          isHtml: Boolean(params.isHtml),
+          fieldHint: params.fieldHint,
+          storySlug: editingStory?.slug || '',
+          storyContext: editingStory
+            ? {
+                client: resolveBilingualText(editingStory.client, 'en'),
+                partner: resolveBilingualText(editingStory.partner, 'en'),
+                topic: editingStory.topic?.en || editingStory.topic?.ar || '',
+                category: editingStory.category?.en || editingStory.categorySlug || '',
+              }
+            : undefined,
+        }),
+      });
+
+      const payload = await res.json();
+      if (!res.ok || !payload.success || typeof payload.translation !== 'string') {
+        throw new Error(payload.error || 'AI translation failed.');
+      }
+
+      if (payload.usage) {
+        setLastUsageBanner({
+          tokens: payload.usage.totalTokens || 0,
+          costUsd: payload.usage.estimatedCostUsd || 0,
+          isFreeTier: Boolean(payload.usage.isFreeTier),
+        });
+      }
+
+      const translated = payload.translation;
+      params.onSuccess?.(translated);
+
+      if (params.updateStory) {
+        setEditingStory((prev) => (prev ? params.updateStory!(prev, translated) : null));
+      }
+    } catch (err) {
+      console.error('AI translation error:', err);
+      const rawMsg = err instanceof Error ? err.message : 'AI translation failed.';
+      const isOverload = /503|high demand|UNAVAILABLE|overloaded|429|rate.?limit/i.test(rawMsg);
+      setReferenceWarning(
+        isOverload
+          ? isRtl
+            ? `خوادم نموذج الذكاء الاصطناعي تشهد ضغطاً مرتفعاً مؤقتاً (${rawMsg.slice(0, 120)}). حاول مجدداً خلال ثوانٍ أو اختر نموذجاً/مزوداً آخر من AI Studio.`
+            : `The AI provider is temporarily experiencing high demand (${rawMsg.slice(0, 120)}). Please retry in a moment or switch to another model/provider in AI Studio.`
+          : rawMsg
+      );
+      const bar = document.getElementById('ai-reference-bar');
+      if (bar) {
+        bar.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    } finally {
+      setTranslatingKeys((prev) => {
+        const next = { ...prev };
+        delete next[params.key];
+        return next;
+      });
+    }
+  };
+
   const aiControls: StoryAiFieldControls = {
     hasReference: combinedReferenceText.length > 0,
     generatingFieldKey,
     onGenerateField: handleGenerateAiField,
     onMissingReference: handleMissingReference,
+    translatingKeys,
+    onTranslate: handleTranslateField,
   };
 
-  // Save Story (POST or PUT)
+  // Computed Draft Status for Currently Open Modal
+  const currentStoryKey = !isCreating && editingStory ? persistedSlug || editingStory.slug : '';
+  const matchingServerStory = currentStoryKey
+    ? stories.find((s) => s.slug === currentStoryKey)
+    : undefined;
+  const hasServerDraftOnOpen = Boolean(
+    matchingServerStory &&
+      (matchingServerStory.status === 'draft' || Boolean(matchingServerStory.draftData))
+  );
+  const hasLocalDraftOnOpen = Boolean(
+    editingStory &&
+      (isCreating
+        ? Boolean(newStoryLocalDraft) ||
+          Boolean(
+            initialNewStoryBaseline &&
+              !areStoriesContentEqual(editingStory, initialNewStoryBaseline)
+          )
+        : currentStoryKey && Boolean(localDraftsMap[currentStoryKey]))
+  );
+  const isOpenEditorDirtyFromPublished = Boolean(
+    editingStory &&
+      !isCreating &&
+      publishedBaseline &&
+      !areStoriesContentEqual(editingStory, publishedBaseline)
+  );
+  const hasUnsavedOrDraftedEdits = Boolean(
+    editingStory &&
+      (hasServerDraftOnOpen ||
+        hasLocalDraftOnOpen ||
+        isOpenEditorDirtyFromPublished ||
+        editingStory.status === 'draft')
+  );
+  const hasDiscardableDraft = Boolean(
+    editingStory &&
+      (isCreating
+        ? hasLocalDraftOnOpen
+        : hasServerDraftOnOpen || hasLocalDraftOnOpen || isOpenEditorDirtyFromPublished)
+  );
+
+  // Save as Draft (Offline-safe localStorage + Server draft persistence; stays open)
+  const handleSaveDraft = async () => {
+    if (!editingStory) return;
+
+    const fallbackTitle =
+      editingStory.title?.en?.trim() || editingStory.title?.ar?.trim() || '';
+    const safeSlug =
+      editingStory.slug?.trim() ||
+      slugifyCategorySlug(fallbackTitle) ||
+      `draft-${Date.now()}`;
+
+    const draftStory = buildStorySavePayload(
+      {
+        ...editingStory,
+        slug: safeSlug,
+      },
+      references
+    );
+
+    // 1. Always write immediately to localStorage so offline loss never loses work
+    if (isCreating) {
+      const localEntry = writeNewStoryLocalDraft(draftStory);
+      if (localEntry) setNewStoryLocalDraft(localEntry);
+    } else {
+      const key = persistedSlug || safeSlug;
+      const localEntry = writeLocalStoryDraft(key, draftStory);
+      if (localEntry) {
+        setLocalDraftsMap((prev) => ({ ...prev, [key]: localEntry }));
+      }
+    }
+
+    setSavingDraft(true);
+    try {
+      const url = '/api/projects';
+      const method = isCreating ? 'POST' : 'PUT';
+      const lookupSlug = persistedSlug || safeSlug;
+
+      const res = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...draftStory,
+          action: 'save-draft',
+          status: 'draft',
+          ...(isCreating ? {} : { lookupSlug }),
+        }),
+      });
+
+      const payload = await res.json().catch(() => ({}));
+      if (res.ok) {
+        const nowIso =
+          typeof payload.draftUpdatedAt === 'string'
+            ? payload.draftUpdatedAt
+            : new Date().toISOString();
+
+        if (isCreating) {
+          clearNewStoryLocalDraft();
+          setNewStoryLocalDraft(null);
+          const syncedDraft: ClientStoryDetail = { ...draftStory, status: 'draft' };
+          const savedLocal = writeLocalStoryDraft(safeSlug, syncedDraft);
+          if (savedLocal) {
+            setLocalDraftsMap((prev) => ({ ...prev, [safeSlug]: savedLocal }));
+          }
+          setIsCreating(false);
+          setPersistedSlug(safeSlug);
+          setPublishedBaseline(null);
+          setInitialNewStoryBaseline(null);
+          setEditingStory(syncedDraft);
+        }
+
+        setAutoSavedAt(nowIso);
+        setPublishSuccessInfo(null);
+        setDraftSavedFeedback({ at: nowIso, offline: false });
+        void loadStories(false);
+      } else {
+        setDraftSavedFeedback({ at: new Date().toISOString(), offline: true });
+      }
+    } catch (err) {
+      console.warn('Offline or network error while saving draft to server; kept in browser:', err);
+      setDraftSavedFeedback({ at: new Date().toISOString(), offline: true });
+    } finally {
+      setSavingDraft(false);
+    }
+  };
+
+  // Save & Publish Story (POST or PUT — keeps edit modal open & clears drafts)
   const handleSave = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     if (!editingStory) return;
@@ -835,46 +1274,154 @@ export default function ProjectsManagerPage() {
     try {
       const url = '/api/projects';
       const method = isCreating ? 'POST' : 'PUT';
-      const normalizedTitle = normalizeBilingualInput(editingStory.title);
-      const normalizedPartner = normalizeBilingualInput(editingStory.partner);
-      const normalizedClient = normalizeBilingualInput(editingStory.client);
-      const payloadToSave: ClientStoryDetail = {
-        ...editingStory,
-        title: {
-          en: normalizedTitle.en.trim(),
-          ar: normalizedTitle.ar.trim(),
-        },
-        partner: {
-          en: normalizedPartner.en.trim(),
-          ar: normalizedPartner.ar.trim(),
-        },
-        client: {
-          en: normalizedClient.en.trim(),
-          ar: normalizedClient.ar.trim(),
-        },
-        aiReferences: references,
-      };
+      const payloadToSave = buildStorySavePayload(editingStory, references);
+      const lookupSlug = persistedSlug || payloadToSave.slug;
 
       const res = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payloadToSave),
+        body: JSON.stringify({
+          ...payloadToSave,
+          action: 'publish',
+          status: 'published',
+          ...(isCreating ? {} : { lookupSlug }),
+        }),
       });
 
       if (res.ok) {
-        setEditingStory(null);
+        const cleanPublished: ClientStoryDetail = {
+          ...stripDraftMeta(payloadToSave),
+          status: 'published',
+        };
+
+        // Remove any local draft entries associated with old/new slug
+        if (persistedSlug) {
+          removeLocalStoryDraft(persistedSlug);
+        }
+        const remainingMap = removeLocalStoryDraft(cleanPublished.slug);
+        setLocalDraftsMap(remainingMap);
+        if (isCreating) {
+          clearNewStoryLocalDraft();
+          setNewStoryLocalDraft(null);
+        }
+
+        // Keep edit modal open with the freshly published baseline
+        setEditingStory(cleanPublished);
+        setPublishedBaseline(cleanPublished);
+        setInitialNewStoryBaseline(null);
         setIsCreating(false);
-        setPersistedSlug(null);
-        loadStories(false);
+        setPersistedSlug(cleanPublished.slug);
+        setRestoredDraftInfo(null);
+        setAutoSavedAt(null);
+        setDraftSavedFeedback(null);
+        setPublishSuccessInfo({ at: new Date().toISOString() });
+        void loadStories(false);
       } else {
         const errorData = await res.json().catch(() => ({}));
         alert(`Error saving story: ${errorData.error || 'Server error'}`);
       }
     } catch (err) {
       console.error('Failed to save story:', err);
-      alert('Network error while saving case study.');
+      alert(
+        isRtl
+          ? 'تعذر الاتصال بالخادم حالياً — تم حفظ مسودتك تلقائياً في المتصفح ولن تضيع تعديلاتك.'
+          : 'Network error while publishing — your edits remain safely auto-saved in your browser draft.'
+      );
     } finally {
       setSaving(false);
+    }
+  };
+
+  // Confirm & Execute Discard Draft (removes local + server drafts, restores last published version)
+  const handleConfirmDiscardDraft = async () => {
+    if (!discardConfirmTarget) return;
+    setDiscardingDraft(true);
+
+    try {
+      if (discardConfirmTarget.mode === 'new-local-banner') {
+        clearNewStoryLocalDraft();
+        setNewStoryLocalDraft(null);
+        setDiscardConfirmTarget(null);
+        return;
+      }
+
+      if (discardConfirmTarget.mode === 'open-editor') {
+        const keyA = persistedSlug || '';
+        const keyB = editingStory?.slug || '';
+        if (keyA) removeLocalStoryDraft(keyA);
+        if (keyB && keyB !== keyA) removeLocalStoryDraft(keyB);
+        setLocalDraftsMap(readLocalStoryDrafts());
+        if (isCreating) {
+          clearNewStoryLocalDraft();
+          setNewStoryLocalDraft(null);
+        }
+
+        if (!isCreating && (keyA || keyB)) {
+          await fetch('/api/projects', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              action: 'discard-draft',
+              id: editingStory?.id,
+              slug: keyB || keyA,
+              lookupSlug: keyA || keyB,
+            }),
+          }).catch(() => {});
+        }
+
+        if (publishedBaseline) {
+          setEditingStory(publishedBaseline);
+          setReferences(
+            Array.isArray(publishedBaseline.aiReferences)
+              ? publishedBaseline.aiReferences
+              : []
+          );
+          setRestoredDraftInfo(null);
+          setAutoSavedAt(null);
+          setDraftSavedFeedback(null);
+          setPublishSuccessInfo(null);
+          void loadStories(false);
+        } else {
+          // Never-published draft: deleting draft removes the unpublished record and closes modal
+          setEditingStory(null);
+          setPublishedBaseline(null);
+          setInitialNewStoryBaseline(null);
+          setIsCreating(false);
+          setPersistedSlug(null);
+          setRestoredDraftInfo(null);
+          setAutoSavedAt(null);
+          setDraftSavedFeedback(null);
+          setPublishSuccessInfo(null);
+          void loadStories(false);
+        }
+
+        setDiscardConfirmTarget(null);
+        return;
+      }
+
+      if (discardConfirmTarget.mode === 'card' && discardConfirmTarget.story) {
+        const target = discardConfirmTarget.story;
+        const remaining = removeLocalStoryDraft(target.slug);
+        setLocalDraftsMap(remaining);
+
+        if (target.status === 'draft' || target.draftData) {
+          await fetch('/api/projects', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              action: 'discard-draft',
+              id: target.id,
+              slug: target.slug,
+              lookupSlug: target.slug,
+            }),
+          }).catch(() => {});
+        }
+
+        void loadStories(false);
+        setDiscardConfirmTarget(null);
+      }
+    } finally {
+      setDiscardingDraft(false);
     }
   };
 
@@ -890,6 +1437,7 @@ export default function ProjectsManagerPage() {
         method: 'DELETE',
       });
       if (res.ok) {
+        setLocalDraftsMap(removeLocalStoryDraft(slug));
         setStories((prev) => prev.filter((p) => p.slug !== slug));
       } else {
         alert('Failed to delete story');
@@ -1145,6 +1693,53 @@ export default function ProjectsManagerPage() {
         </div>
       </div>
 
+      {/* Unsaved New Story Browser Draft Banner */}
+      {!editingStory && newStoryLocalDraft && (
+        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
+          <div className="flex items-start gap-3 min-w-0">
+            <div className="w-9 h-9 rounded-xl bg-amber-500 text-white flex items-center justify-center shrink-0">
+              <TbFilePencil className="w-4 h-4" />
+            </div>
+            <div className="min-w-0">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-xs font-bold text-amber-950">
+                  {isRtl
+                    ? 'توجد مسودة غير منشورة لقصة عميل جديدة محفوظة تلقائياً'
+                    : 'Unsaved New Client Story Draft Found'}
+                </span>
+                <span className="text-[11px] font-mono text-amber-800/80">
+                  {new Date(newStoryLocalDraft.savedAt).toLocaleString()}
+                </span>
+              </div>
+              <p className="text-xs text-amber-900/80 truncate mt-0.5">
+                {newStoryLocalDraft.draftStory.title?.en ||
+                  newStoryLocalDraft.draftStory.title?.ar ||
+                  newStoryLocalDraft.storyKey}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              type="button"
+              onClick={() => setDiscardConfirmTarget({ mode: 'new-local-banner' })}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-amber-300 bg-white hover:bg-red-50 hover:border-red-200 text-amber-900 hover:text-red-700 text-xs font-semibold transition-colors cursor-pointer"
+            >
+              <TbRotateClockwise2 className="w-3.5 h-3.5" />
+              <span>{isRtl ? 'حذف المسودة' : 'Discard Draft'}</span>
+            </button>
+            <button
+              type="button"
+              onClick={resumeNewStoryDraft}
+              className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold transition-colors shadow-xs cursor-pointer"
+            >
+              <TbFilePencil className="w-3.5 h-3.5" />
+              <span>{isRtl ? 'استكمال تعديل المسودة' : 'Resume Draft'}</span>
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* 4. Stories Grid */}
       {loading ? (
         <div className="bg-white rounded-3xl border border-slate-200/90 p-16 text-center text-slate-400">
@@ -1173,16 +1768,54 @@ export default function ProjectsManagerPage() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredStories.map((story) => (
-            <PortfolioCard
-              key={story.slug}
-              story={story}
-              lang={lang}
-              onEdit={openEditStory}
-              onDelete={handleDelete}
-              onToggleFeatured={handleToggleFeatured}
-            />
-          ))}
+          {filteredStories.map((story) => {
+            const localEntry = localDraftsMap[story.slug];
+            const serverDraft = story.draftData;
+            let previewStory = story;
+            let cardDraftAt = story.draftUpdatedAt;
+
+            if (localEntry && serverDraft) {
+              const localMs = new Date(localEntry.savedAt).getTime() || 0;
+              const serverMs = story.draftUpdatedAt
+                ? new Date(story.draftUpdatedAt).getTime() || 0
+                : 0;
+              if (localMs >= serverMs) {
+                previewStory = localEntry.draftStory;
+                cardDraftAt = localEntry.savedAt;
+              } else {
+                previewStory = serverDraft;
+              }
+            } else if (localEntry) {
+              previewStory = localEntry.draftStory;
+              cardDraftAt = localEntry.savedAt;
+            } else if (serverDraft) {
+              previewStory = serverDraft;
+            }
+
+            const cardDraftStatus: 'none' | 'unpublished-draft' | 'unsaved-edits' =
+              story.status === 'draft'
+                ? 'unpublished-draft'
+                : localEntry || serverDraft
+                ? 'unsaved-edits'
+                : 'none';
+
+            return (
+              <PortfolioCard
+                key={story.slug}
+                story={story}
+                displayStory={previewStory}
+                draftStatus={cardDraftStatus}
+                draftUpdatedAt={cardDraftAt}
+                lang={lang}
+                onEdit={openEditStory}
+                onDelete={handleDelete}
+                onToggleFeatured={handleToggleFeatured}
+                onDiscardDraft={(targetStory) =>
+                  setDiscardConfirmTarget({ mode: 'card', story: targetStory })
+                }
+              />
+            );
+          })}
         </div>
       )}
 
@@ -1193,22 +1826,50 @@ export default function ProjectsManagerPage() {
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
           <div className="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-6xl w-full my-4 flex flex-col max-h-[92vh] overflow-hidden animate-in fade-in zoom-in-95">
             {/* Modal Top Header Bar */}
-            <div className="p-4 sm:px-6 sm:py-4 border-b border-slate-200 flex items-center justify-between gap-4 bg-slate-50/80 shrink-0">
-              <div className="min-w-0">
-                <div className="flex items-center gap-2 text-[11px] font-mono text-slate-500">
+            <div className="p-4 sm:px-6 sm:py-4 border-b border-slate-200 flex flex-wrap items-center justify-between gap-4 bg-slate-50/80 shrink-0">
+              <div className="min-w-0 flex-1">
+                <div className="flex flex-wrap items-center gap-2 text-[11px] font-mono text-slate-500">
                   <span className="font-bold text-persici-crimson uppercase">
                     {isCreating ? (isRtl ? 'إضافة مشروع جديد' : 'New Case Study') : (isRtl ? 'تعديل دراسة الحالة' : 'Edit Story')}
                   </span>
                   <span>•</span>
                   <span className="truncate">/{editingStory.slug}</span>
+
+                  {publishSuccessInfo && !hasUnsavedOrDraftedEdits ? (
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200 text-[10px] font-sans font-bold">
+                      <TbCheck className="w-3 h-3" />
+                      <span>{isRtl ? 'تم الحفظ والنشر بنجاح' : 'Saved & Published Live'}</span>
+                    </span>
+                  ) : hasUnsavedOrDraftedEdits ? (
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200 text-[10px] font-sans font-bold">
+                      <TbCloudCheck className="w-3 h-3" />
+                      <span>
+                        {draftSavedFeedback?.offline
+                          ? isRtl
+                            ? 'مسودة محفوظة محلياً (غير متصل)'
+                            : 'Draft Saved Locally (Offline)'
+                          : draftSavedFeedback
+                          ? isRtl
+                            ? 'تم حفظ المسودة'
+                            : 'Draft Saved'
+                          : autoSavedAt
+                          ? isRtl
+                            ? 'حفظ تلقائي للمسودة'
+                            : 'Auto-saved Draft'
+                          : isRtl
+                          ? 'مسودة غير منشورة'
+                          : 'Draft Active'}
+                      </span>
+                    </span>
+                  ) : null}
                 </div>
                 <h3 className="text-base sm:text-lg font-bold text-slate-900 truncate mt-0.5">
-                  {editingStory.title?.en || 'Untitled Story'}
+                  {editingStory.title?.en || editingStory.title?.ar || 'Untitled Story'}
                 </h3>
               </div>
 
-              <div className="flex items-center gap-2 shrink-0">
-                {!isCreating && (
+              <div className="flex flex-wrap items-center gap-2 shrink-0">
+                {!isCreating && editingStory.status !== 'draft' && (
                   <a
                     href={`/${lang}/client-stories/${editingStory.slug}`}
                     target="_blank"
@@ -1220,25 +1881,121 @@ export default function ProjectsManagerPage() {
                   </a>
                 )}
 
+                {hasDiscardableDraft && (
+                  <button
+                    type="button"
+                    onClick={() => setDiscardConfirmTarget({ mode: 'open-editor' })}
+                    disabled={saving || savingDraft || discardingDraft}
+                    className="inline-flex items-center gap-1.5 px-3 py-2 bg-white hover:bg-red-50 text-amber-800 hover:text-red-700 border border-amber-300 hover:border-red-300 rounded-xl text-xs font-semibold transition-colors disabled:opacity-50 cursor-pointer"
+                    title={
+                      isRtl
+                        ? 'حذف المسودة والعودة لآخر نسخة منشورة'
+                        : 'Discard draft and revert to last published version'
+                    }
+                  >
+                    <TbRotateClockwise2 className="w-3.5 h-3.5" />
+                    <span className="hidden md:inline">
+                      {isRtl ? 'حذف المسودة' : 'Remove Draft'}
+                    </span>
+                  </button>
+                )}
+
+                <button
+                  type="button"
+                  onClick={() => void handleSaveDraft()}
+                  disabled={saving || savingDraft || discardingDraft}
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-xl text-xs font-bold transition-colors disabled:opacity-50 cursor-pointer shadow-2xs"
+                >
+                  {savingDraft ? (
+                    <TbLoader2 className="w-3.5 h-3.5 animate-spin" />
+                  ) : (
+                    <TbFilePencil className="w-3.5 h-3.5" />
+                  )}
+                  <span>
+                    {savingDraft
+                      ? isRtl
+                        ? 'جارٍ حفظ المسودة...'
+                        : 'Saving Draft...'
+                      : isRtl
+                      ? 'حفظ كمسودة'
+                      : 'Save as Draft'}
+                  </span>
+                </button>
+
                 <button
                   type="button"
                   onClick={() => handleSave()}
-                  disabled={saving}
+                  disabled={saving || savingDraft || discardingDraft}
                   className="flex items-center gap-1.5 px-5 py-2 bg-persici-crimson hover:bg-red-700 text-white rounded-xl text-xs font-semibold transition-all shadow-xs disabled:opacity-50 cursor-pointer"
                 >
-                  <TbDeviceFloppy className="w-4 h-4" />
+                  {saving ? (
+                    <TbLoader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <TbDeviceFloppy className="w-4 h-4" />
+                  )}
                   <span>{saving ? (isRtl ? 'جارٍ الحفظ...' : 'Saving...') : (isRtl ? 'حفظ ونشر' : 'Save & Publish')}</span>
                 </button>
 
                 <button
                   type="button"
-                  onClick={() => setEditingStory(null)}
+                  onClick={handleCloseEditorModal}
                   className="p-2 text-slate-400 hover:text-slate-800 rounded-xl hover:bg-slate-200/60 transition-colors cursor-pointer"
+                  title={isRtl ? 'إغلاق (يتم الاحتفاظ بالمسودة تلقائياً)' : 'Close (draft auto-saved)'}
                 >
                   <TbX className="w-5 h-5" />
                 </button>
               </div>
             </div>
+
+            {/* Status / Restored Draft Notification Strip */}
+            {publishSuccessInfo && !hasUnsavedOrDraftedEdits ? (
+              <div className="px-6 py-2 bg-emerald-50 border-b border-emerald-200 flex flex-wrap items-center justify-between gap-2 text-xs text-emerald-900 shrink-0">
+                <div className="flex items-center gap-2 font-semibold">
+                  <TbCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+                  <span>
+                    {isRtl
+                      ? 'تم حفظ ونشر دراسة الحالة بالتعديلات الجديدة بنجاح. يمكنك متابعة التعديل هنا أو إغلاق النافذة عند الانتهاء.'
+                      : 'Client Story saved and published live with your new edits. You can keep editing here or close when finished.'}
+                  </span>
+                </div>
+                <span className="font-mono text-[10px] text-emerald-700">
+                  {new Date(publishSuccessInfo.at).toLocaleTimeString()}
+                </span>
+              </div>
+            ) : restoredDraftInfo || draftSavedFeedback ? (
+              <div className="px-6 py-2 bg-amber-50 border-b border-amber-200 flex flex-wrap items-center justify-between gap-2 text-xs text-amber-950 shrink-0">
+                <div className="flex items-center gap-2 font-medium">
+                  <TbFilePencil className="w-4 h-4 text-amber-600 shrink-0" />
+                  <span>
+                    {draftSavedFeedback?.offline
+                      ? isRtl
+                        ? 'تعذر الوصول للخادم — تم حفظ المسودة محلياً في المتصفح لحين عودة الاتصال بالإنترنت.'
+                        : 'Saved locally in your browser (offline protection active until internet connection returns).'
+                      : draftSavedFeedback
+                      ? isRtl
+                        ? 'تم حفظ المسودة في قاعدة البيانات والمتصفح دون نشرها على الموقع بعد.'
+                        : 'Draft saved safely to database & browser without publishing changes live yet.'
+                      : restoredDraftInfo?.source === 'local'
+                      ? isRtl
+                        ? 'تمت استعادة آخر تعديلاتك غير المنشورة من المسودة التلقائية للمتصفح.'
+                        : 'Restored your unsaved draft edits automatically from your last session.'
+                      : isRtl
+                      ? 'يتم الآن تحرير المسودة المحفوظة لهذه القصة.'
+                      : 'Editing saved draft changes (not yet published live).'}
+                  </span>
+                </div>
+                {hasDiscardableDraft && (
+                  <button
+                    type="button"
+                    onClick={() => setDiscardConfirmTarget({ mode: 'open-editor' })}
+                    className="inline-flex items-center gap-1 text-[11px] font-bold text-red-700 hover:underline cursor-pointer shrink-0"
+                  >
+                    <TbRotateClockwise2 className="w-3.5 h-3.5" />
+                    <span>{isRtl ? 'حذف المسودة' : 'Remove Draft'}</span>
+                  </button>
+                )}
+              </div>
+            ) : null}
 
             {/* Modal Body: Left Table of Contents Rail + Right Scrollable Sections */}
             <div className="flex-1 overflow-y-auto flex flex-col lg:flex-row p-4 sm:p-6 gap-6">
@@ -1369,7 +2126,7 @@ export default function ProjectsManagerPage() {
                   descriptionAr="سياق التدخل الاستشاري، خلفية العميل، ومواءمة الأهداف الاستراتيجية."
                   sectionData={editingStory.intro}
                   onChange={(updated) =>
-                    setEditingStory({ ...editingStory, intro: updated })
+                    setEditingStory((prev) => (prev ? { ...prev, intro: updated } : null))
                   }
                   lang={lang}
                   aiControls={aiControls}
@@ -1389,7 +2146,7 @@ export default function ProjectsManagerPage() {
                   descriptionAr="العقبات الرئيسية، القيود التقنية السابقة، والتحديات التسويقية المعقدة."
                   sectionData={editingStory.problem}
                   onChange={(updated) =>
-                    setEditingStory({ ...editingStory, problem: updated })
+                    setEditingStory((prev) => (prev ? { ...prev, problem: updated } : null))
                   }
                   lang={lang}
                   aiControls={aiControls}
@@ -1409,7 +2166,7 @@ export default function ProjectsManagerPage() {
                   descriptionAr="الهندسة المعمارية المطورة، البرمجيات المتقدمة، أو الحملات الإبداعية المنفذة."
                   sectionData={editingStory.solution}
                   onChange={(updated) =>
-                    setEditingStory({ ...editingStory, solution: updated })
+                    setEditingStory((prev) => (prev ? { ...prev, solution: updated } : null))
                   }
                   lang={lang}
                   aiControls={aiControls}
@@ -1429,7 +2186,7 @@ export default function ProjectsManagerPage() {
                   descriptionAr="العائد الملموس على الاستثمار، نمو المبيعات، والأثر المستدام على أعمال العميل."
                   sectionData={editingStory.impact}
                   onChange={(updated) =>
-                    setEditingStory({ ...editingStory, impact: updated })
+                    setEditingStory((prev) => (prev ? { ...prev, impact: updated } : null))
                   }
                   lang={lang}
                   aiControls={aiControls}
@@ -1538,33 +2295,103 @@ export default function ProjectsManagerPage() {
                     )}
                   </div>
 
-                  <div className="p-6 bg-slate-900 text-white rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <div>
-                      <h5 className="text-sm font-bold">
-                        {isRtl ? 'جاهز لنشر دراسة الحالة؟' : 'Ready to Publish Changes?'}
-                      </h5>
-                      <p className="text-xs text-slate-400 mt-0.5">
+                  <div className="p-6 bg-slate-900 text-white rounded-2xl flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                    <div className="space-y-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <h5 className="text-sm font-bold">
+                          {isRtl ? 'جاهز لنشر دراسة الحالة؟' : 'Ready to Publish Changes?'}
+                        </h5>
+                        {publishSuccessInfo && !hasUnsavedOrDraftedEdits && (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-[10px] font-bold">
+                            <TbCheck className="w-3 h-3" />
+                            <span>{isRtl ? 'تم الحفظ والنشر بنجاح' : 'Saved & Published Live'}</span>
+                          </span>
+                        )}
+                        {draftSavedFeedback && hasUnsavedOrDraftedEdits && (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-200 border border-amber-400/30 text-[10px] font-bold">
+                            <TbCloudCheck className="w-3 h-3" />
+                            <span>
+                              {draftSavedFeedback.offline
+                                ? isRtl
+                                  ? 'مسودة محلية (غير متصل)'
+                                  : 'Saved Locally (Offline)'
+                                : isRtl
+                                ? 'تم حفظ المسودة'
+                                : 'Draft Saved'}
+                            </span>
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-xs text-slate-400">
                         {isRtl
-                          ? 'يتم تحديث الموقع فوراً وإعادة بناء التخزين المؤقت (ISR) لكافة اللغات.'
-                          : 'Saves directly to MongoDB Atlas and triggers on-demand multi-locale ISR cache revalidation.'}
+                          ? 'يتم النشر مباشرة وتظل نافذة التعديل مفتوحة لمتابعة عملك، أو يمكنك الحفظ كمسودة دون نشر.'
+                          : 'Publishes live while keeping this editor open for further edits, or save safely as a draft.'}
                       </p>
                     </div>
 
-                    <div className="flex items-center gap-3">
+                    <div className="flex flex-wrap items-center gap-2.5 shrink-0">
                       <button
                         type="button"
-                        onClick={() => setEditingStory(null)}
-                        className="px-4 py-2 text-xs font-semibold text-slate-300 hover:text-white cursor-pointer"
+                        onClick={handleCloseEditorModal}
+                        className="px-3.5 py-2 text-xs font-semibold text-slate-300 hover:text-white cursor-pointer"
                       >
-                        {isRtl ? 'إلغاء' : 'Cancel'}
+                        {isRtl ? 'إغلاق' : 'Close'}
                       </button>
+
+                      {hasDiscardableDraft && (
+                        <button
+                          type="button"
+                          onClick={() => setDiscardConfirmTarget({ mode: 'open-editor' })}
+                          disabled={saving || savingDraft || discardingDraft}
+                          className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-white/10 hover:bg-red-500/20 text-amber-200 hover:text-red-200 border border-white/15 hover:border-red-400/40 rounded-xl text-xs font-semibold transition-colors disabled:opacity-50 cursor-pointer"
+                        >
+                          <TbRotateClockwise2 className="w-3.5 h-3.5" />
+                          <span>{isRtl ? 'حذف المسودة' : 'Remove Draft'}</span>
+                        </button>
+                      )}
+
+                      <button
+                        type="button"
+                        onClick={() => void handleSaveDraft()}
+                        disabled={saving || savingDraft || discardingDraft}
+                        className="inline-flex items-center gap-1.5 px-4 py-2.5 bg-amber-500/20 hover:bg-amber-500/30 text-amber-100 border border-amber-400/40 rounded-xl text-xs font-bold transition-colors disabled:opacity-50 cursor-pointer"
+                      >
+                        {savingDraft ? (
+                          <TbLoader2 className="w-3.5 h-3.5 animate-spin" />
+                        ) : (
+                          <TbFilePencil className="w-3.5 h-3.5" />
+                        )}
+                        <span>
+                          {savingDraft
+                            ? isRtl
+                              ? 'جارٍ الحفظ...'
+                              : 'Saving Draft...'
+                            : isRtl
+                            ? 'حفظ كمسودة'
+                            : 'Save as Draft'}
+                        </span>
+                      </button>
+
                       <button
                         type="button"
                         onClick={() => handleSave()}
-                        disabled={saving}
-                        className="px-6 py-2.5 bg-persici-crimson hover:bg-red-700 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-persici-crimson/30 cursor-pointer disabled:opacity-50"
+                        disabled={saving || savingDraft || discardingDraft}
+                        className="inline-flex items-center gap-1.5 px-6 py-2.5 bg-persici-crimson hover:bg-red-700 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-persici-crimson/30 cursor-pointer disabled:opacity-50"
                       >
-                        {saving ? (isRtl ? 'جارٍ الحفظ...' : 'Saving...') : (isRtl ? 'تأكيد الحفظ والنشر' : 'Confirm & Publish')}
+                        {saving ? (
+                          <TbLoader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                          <TbDeviceFloppy className="w-4 h-4" />
+                        )}
+                        <span>
+                          {saving
+                            ? isRtl
+                              ? 'جارٍ الحفظ...'
+                              : 'Saving...'
+                            : isRtl
+                            ? 'حفظ ونشر'
+                            : 'Save & Publish'}
+                        </span>
                       </button>
                     </div>
                   </div>
@@ -1574,6 +2401,81 @@ export default function ProjectsManagerPage() {
           </div>
         </div>
       )}
+
+      {/* Discard Draft Warning Confirmation Modal */}
+      {discardConfirmTarget &&
+        (() => {
+          const targetStory =
+            discardConfirmTarget.mode === 'card'
+              ? discardConfirmTarget.story
+              : discardConfirmTarget.mode === 'open-editor'
+              ? publishedBaseline
+              : null;
+          const willDeleteUnpublished =
+            discardConfirmTarget.mode === 'new-local-banner' ||
+            (discardConfirmTarget.mode === 'open-editor' && !publishedBaseline) ||
+            (discardConfirmTarget.mode === 'card' && targetStory?.status === 'draft');
+
+          return (
+            <div className="fixed inset-0 z-[60] bg-black/65 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-md w-full p-6 space-y-4 animate-in fade-in zoom-in-95">
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-red-50 border border-red-200 text-red-600 flex items-center justify-center shrink-0">
+                    <TbAlertTriangle className="w-5 h-5" />
+                  </div>
+                  <div className="space-y-1">
+                    <h4 className="text-base font-bold text-slate-900">
+                      {isRtl
+                        ? 'هل تريد حقاً حذف هذه المسودة؟'
+                        : 'Did you really want to discard this draft?'}
+                    </h4>
+                    <p className="text-xs text-slate-600 leading-relaxed">
+                      {willDeleteUnpublished
+                        ? isRtl
+                          ? 'لم يتم نشر قصة العميل هذه بعد. الموافقة على حذف المسودة ستمسح جميع التعديلات المحفوظة لهذه المسودة نهائياً.'
+                          : 'This client story has not been published yet. Confirming will permanently delete this saved draft and its unsaved changes.'
+                        : isRtl
+                        ? 'سيتم حذف جميع التعديلات المحفوظة في المسودة واستعادة آخر نسخة منشورة ومحفوظة من قصة العميل.'
+                        : 'All unpublished draft edits will be deleted and the story will revert cleanly to the last saved & published version.'}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2.5 pt-2 border-t border-slate-100">
+                  <button
+                    type="button"
+                    disabled={discardingDraft}
+                    onClick={() => setDiscardConfirmTarget(null)}
+                    className="px-4 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700 transition-colors cursor-pointer disabled:opacity-50"
+                  >
+                    {isRtl ? 'إلغاء والاحتفاظ بالمسودة' : 'Cancel'}
+                  </button>
+                  <button
+                    type="button"
+                    disabled={discardingDraft}
+                    onClick={() => void handleConfirmDiscardDraft()}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-xs transition-colors cursor-pointer disabled:opacity-50"
+                  >
+                    {discardingDraft ? (
+                      <TbLoader2 className="w-3.5 h-3.5 animate-spin" />
+                    ) : (
+                      <TbTrash className="w-3.5 h-3.5" />
+                    )}
+                    <span>
+                      {discardingDraft
+                        ? isRtl
+                          ? 'جارٍ الحذف...'
+                          : 'Discarding...'
+                        : isRtl
+                        ? 'نعم، حذف المسودة'
+                        : 'Yes, Discard Draft'}
+                    </span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          );
+        })()}
 
       {/* Media Picker Modal (Supports Single & Bulk Multi-Select + Folder/Subfolder Uploads) */}
       {mediaPickerOpen && (

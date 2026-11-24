@@ -23,7 +23,11 @@ import type {
   StoryHeroSliderConfig,
   StoryHeroSliderImage,
 } from '@/app/[lang]/(site)/client-stories/_client-stories/types';
-import { AiFieldTrigger, type StoryAiFieldControls } from './ai-field-trigger';
+import {
+  AiFieldTrigger,
+  AiTranslateTrigger,
+  type StoryAiFieldControls,
+} from './ai-field-trigger';
 
 const DEFAULT_HERO_SLIDER: StoryHeroSliderConfig = {
   enabled: false,
@@ -205,9 +209,33 @@ export function PortfolioHeroSection({
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-[11px] font-semibold text-slate-600 mb-1">
-              {isRtl ? 'العنوان الرئيسي (English)' : 'Primary Title (English)'}
-            </label>
+            <div className="flex items-center justify-between gap-2 mb-1">
+              <label className="block text-[11px] font-semibold text-slate-600">
+                {isRtl ? 'العنوان الرئيسي (English)' : 'Primary Title (English)'}
+              </label>
+              {aiControls?.onTranslate && (
+                <AiTranslateTrigger
+                  size="xs"
+                  lang={lang}
+                  targetLang="en"
+                  sourceText={story.title?.ar || ''}
+                  isLoading={Boolean(aiControls.translatingKeys?.['title:en'])}
+                  onTranslate={() =>
+                    aiControls.onTranslate!({
+                      key: 'title:en',
+                      text: story.title?.ar || '',
+                      sourceLang: 'ar',
+                      targetLang: 'en',
+                      fieldHint: 'Primary SEO Title',
+                      updateStory: (prev, translated) => ({
+                        ...prev,
+                        title: { en: translated, ar: prev.title?.ar || '' },
+                      }),
+                    })
+                  }
+                />
+              )}
+            </div>
             <input
               type="text"
               required={!story.title?.ar?.trim()}
@@ -223,9 +251,33 @@ export function PortfolioHeroSection({
             />
           </div>
           <div>
-            <label className="block text-[11px] font-semibold text-slate-600 mb-1">
-              {isRtl ? 'العنوان الرئيسي (العربية)' : 'Primary Title (Arabic)'}
-            </label>
+            <div className="flex items-center justify-between gap-2 mb-1">
+              <label className="block text-[11px] font-semibold text-slate-600">
+                {isRtl ? 'العنوان الرئيسي (العربية)' : 'Primary Title (Arabic)'}
+              </label>
+              {aiControls?.onTranslate && (
+                <AiTranslateTrigger
+                  size="xs"
+                  lang={lang}
+                  targetLang="ar"
+                  sourceText={story.title?.en || ''}
+                  isLoading={Boolean(aiControls.translatingKeys?.['title:ar'])}
+                  onTranslate={() =>
+                    aiControls.onTranslate!({
+                      key: 'title:ar',
+                      text: story.title?.en || '',
+                      sourceLang: 'en',
+                      targetLang: 'ar',
+                      fieldHint: 'Primary SEO Title',
+                      updateStory: (prev, translated) => ({
+                        ...prev,
+                        title: { en: prev.title?.en || '', ar: translated },
+                      }),
+                    })
+                  }
+                />
+              )}
+            </div>
             <input
               type="text"
               dir="rtl"
@@ -262,6 +314,7 @@ export function PortfolioHeroSection({
         <RichTextEditor
           label={isRtl ? 'العبارة التقديمية الفرعية (Lead Subtitle Hook)' : 'Lead Subtitle Hook (EN / AR)'}
           rows={3}
+          uiLang={lang}
           valueEn={story.leadSubtitle?.en || ''}
           valueAr={story.leadSubtitle?.ar || ''}
           onChangeEn={(val) =>
@@ -275,6 +328,27 @@ export function PortfolioHeroSection({
               ...story,
               leadSubtitle: { en: story.leadSubtitle?.en || '', ar: val },
             })
+          }
+          isTranslating={Boolean(aiControls?.translatingKeys?.['leadSubtitle:rte'])}
+          onTranslate={
+            aiControls?.onTranslate
+              ? ({ sourceLang, targetLang, text }) =>
+                  aiControls.onTranslate!({
+                    key: 'leadSubtitle:rte',
+                    text,
+                    sourceLang,
+                    targetLang,
+                    isHtml: true,
+                    fieldHint: 'Lead Subtitle Hook',
+                    updateStory: (prev, translated) => ({
+                      ...prev,
+                      leadSubtitle: {
+                        en: targetLang === 'en' ? translated : prev.leadSubtitle?.en || '',
+                        ar: targetLang === 'ar' ? translated : prev.leadSubtitle?.ar || '',
+                      },
+                    }),
+                  })
+              : undefined
           }
         />
       </div>
@@ -297,6 +371,7 @@ export function PortfolioHeroSection({
         <RichTextEditor
           label={isRtl ? 'الملخص التنفيذي الشامل (Executive Summary)' : 'Executive Summary (EN / AR)'}
           rows={4}
+          uiLang={lang}
           valueEn={story.executiveSummary?.en || ''}
           valueAr={story.executiveSummary?.ar || ''}
           onChangeEn={(val) =>
@@ -310,6 +385,29 @@ export function PortfolioHeroSection({
               ...story,
               executiveSummary: { en: story.executiveSummary?.en || '', ar: val },
             })
+          }
+          isTranslating={Boolean(aiControls?.translatingKeys?.['executiveSummary:rte'])}
+          onTranslate={
+            aiControls?.onTranslate
+              ? ({ sourceLang, targetLang, text }) =>
+                  aiControls.onTranslate!({
+                    key: 'executiveSummary:rte',
+                    text,
+                    sourceLang,
+                    targetLang,
+                    isHtml: true,
+                    fieldHint: 'Executive Summary',
+                    updateStory: (prev, translated) => ({
+                      ...prev,
+                      executiveSummary: {
+                        en:
+                          targetLang === 'en' ? translated : prev.executiveSummary?.en || '',
+                        ar:
+                          targetLang === 'ar' ? translated : prev.executiveSummary?.ar || '',
+                      },
+                    }),
+                  })
+              : undefined
           }
         />
       </div>
@@ -858,26 +956,114 @@ export function PortfolioHeroSection({
                           </button>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-2">
-                          <input
-                            type="text"
-                            value={img.alt?.en || ''}
-                            onChange={(e) =>
-                              handleUpdateSliderImage(sIdx, 'altEn', e.target.value)
-                            }
-                            placeholder="Alt Text (EN - optional)"
-                            className="px-2 py-1 text-[11px] bg-white border border-slate-200 rounded-md focus:border-persici-crimson outline-none"
-                          />
-                          <input
-                            type="text"
-                            dir="rtl"
-                            value={img.alt?.ar || ''}
-                            onChange={(e) =>
-                              handleUpdateSliderImage(sIdx, 'altAr', e.target.value)
-                            }
-                            placeholder="النص البديل (AR - اختياري)"
-                            className="px-2 py-1 text-[11px] bg-white border border-slate-200 rounded-md font-arabic focus:border-persici-crimson outline-none"
-                          />
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                          <div>
+                            <div className="flex items-center justify-between gap-1 mb-1">
+                              <label className="text-[10px] font-semibold text-slate-600">
+                                {isRtl ? 'النص البديل (EN)' : 'Alt Text (EN)'}
+                              </label>
+                              {aiControls?.onTranslate && (
+                                <AiTranslateTrigger
+                                  size="xs"
+                                  lang={lang}
+                                  targetLang="en"
+                                  sourceText={img.alt?.ar || ''}
+                                  isLoading={Boolean(
+                                    aiControls.translatingKeys?.[`heroSlide:${sIdx}:alt:en`]
+                                  )}
+                                  onTranslate={() =>
+                                    aiControls.onTranslate!({
+                                      key: `heroSlide:${sIdx}:alt:en`,
+                                      text: img.alt?.ar || '',
+                                      sourceLang: 'ar',
+                                      targetLang: 'en',
+                                      fieldHint: 'Hero Slider Image Alt Text',
+                                      updateStory: (prev, translated) => {
+                                        const currentSlider = prev.heroSlider || DEFAULT_HERO_SLIDER;
+                                        const nextImgs = [...(currentSlider.images || [])];
+                                        if (nextImgs[sIdx]) {
+                                          nextImgs[sIdx] = {
+                                            ...nextImgs[sIdx],
+                                            alt: {
+                                              en: translated,
+                                              ar: nextImgs[sIdx].alt?.ar || '',
+                                            },
+                                          };
+                                        }
+                                        return {
+                                          ...prev,
+                                          heroSlider: { ...currentSlider, images: nextImgs },
+                                        };
+                                      },
+                                    })
+                                  }
+                                />
+                              )}
+                            </div>
+                            <input
+                              type="text"
+                              value={img.alt?.en || ''}
+                              onChange={(e) =>
+                                handleUpdateSliderImage(sIdx, 'altEn', e.target.value)
+                              }
+                              placeholder="Alt Text (EN - optional)"
+                              className="w-full px-2 py-1 text-[11px] bg-white border border-slate-200 rounded-md focus:border-persici-crimson outline-none"
+                            />
+                          </div>
+                          <div>
+                            <div className="flex items-center justify-between gap-1 mb-1">
+                              <label className="text-[10px] font-semibold text-slate-600">
+                                {isRtl ? 'النص البديل (AR)' : 'Alt Text (AR)'}
+                              </label>
+                              {aiControls?.onTranslate && (
+                                <AiTranslateTrigger
+                                  size="xs"
+                                  lang={lang}
+                                  targetLang="ar"
+                                  sourceText={img.alt?.en || ''}
+                                  isLoading={Boolean(
+                                    aiControls.translatingKeys?.[`heroSlide:${sIdx}:alt:ar`]
+                                  )}
+                                  onTranslate={() =>
+                                    aiControls.onTranslate!({
+                                      key: `heroSlide:${sIdx}:alt:ar`,
+                                      text: img.alt?.en || '',
+                                      sourceLang: 'en',
+                                      targetLang: 'ar',
+                                      fieldHint: 'Hero Slider Image Alt Text',
+                                      updateStory: (prev, translated) => {
+                                        const currentSlider = prev.heroSlider || DEFAULT_HERO_SLIDER;
+                                        const nextImgs = [...(currentSlider.images || [])];
+                                        if (nextImgs[sIdx]) {
+                                          nextImgs[sIdx] = {
+                                            ...nextImgs[sIdx],
+                                            alt: {
+                                              en: nextImgs[sIdx].alt?.en || '',
+                                              ar: translated,
+                                            },
+                                          };
+                                        }
+                                        return {
+                                          ...prev,
+                                          heroSlider: { ...currentSlider, images: nextImgs },
+                                        };
+                                      },
+                                    })
+                                  }
+                                />
+                              )}
+                            </div>
+                            <input
+                              type="text"
+                              dir="rtl"
+                              value={img.alt?.ar || ''}
+                              onChange={(e) =>
+                                handleUpdateSliderImage(sIdx, 'altAr', e.target.value)
+                              }
+                              placeholder="النص البديل (AR - اختياري)"
+                              className="w-full px-2 py-1 text-[11px] bg-white border border-slate-200 rounded-md font-arabic focus:border-persici-crimson outline-none"
+                            />
+                          </div>
                         </div>
                       </div>
                     ))}

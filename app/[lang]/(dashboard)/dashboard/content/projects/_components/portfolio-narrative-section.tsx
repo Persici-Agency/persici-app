@@ -26,7 +26,11 @@ import {
   CodeShowcaseBlock,
   getCodeLanguageMeta,
 } from '@/app/[lang]/_shared/components/code-showcase-block';
-import { AiFieldTrigger, type StoryAiFieldControls } from './ai-field-trigger';
+import {
+  AiFieldTrigger,
+  AiTranslateTrigger,
+  type StoryAiFieldControls,
+} from './ai-field-trigger';
 import type { NarrativeSectionRole } from '@/app/api/ai/generate-story-field/route';
 
 interface PortfolioNarrativeSectionProps {
@@ -312,6 +316,44 @@ export function PortfolioNarrativeSection({
     onChange({ ...data, quote: current });
   };
 
+  const sectionKey = (subKey: string) => `${sectionRole}:${subKey}`;
+
+  const translateSectionField = (params: {
+    subKey: string;
+    text: string;
+    sourceLang: 'en' | 'ar';
+    targetLang: 'en' | 'ar';
+    isHtml?: boolean;
+    fieldHint: string;
+    patchSection: (
+      sec: StoryNarrativeSection,
+      translated: string
+    ) => StoryNarrativeSection;
+  }) => {
+    if (!aiControls?.onTranslate) return;
+    void aiControls.onTranslate({
+      key: sectionKey(params.subKey),
+      text: params.text,
+      sourceLang: params.sourceLang,
+      targetLang: params.targetLang,
+      isHtml: params.isHtml,
+      fieldHint: params.fieldHint,
+      updateStory: (prev, translated) => {
+        const baseSection: StoryNarrativeSection = prev[sectionRole] || {
+          id,
+          title: { en: sectionTitleEn, ar: sectionTitleAr },
+          paragraphs: [{ en: '', ar: '' }],
+          bullets: [],
+          codeBlocks: [],
+        };
+        return {
+          ...prev,
+          [sectionRole]: params.patchSection(baseSection, translated),
+        };
+      },
+    });
+  };
+
   return (
     <div id={id} className="space-y-6 pt-2">
       <div className="border-b border-slate-200 pb-3 flex flex-wrap items-center justify-between gap-3">
@@ -369,9 +411,33 @@ export function PortfolioNarrativeSection({
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-[11px] font-semibold text-slate-600 mb-1">
-              {isRtl ? 'عنوان القسم (English)' : 'Section Heading (English)'}
-            </label>
+            <div className="flex items-center justify-between gap-2 mb-1">
+              <label className="block text-[11px] font-semibold text-slate-600">
+                {isRtl ? 'عنوان القسم (English)' : 'Section Heading (English)'}
+              </label>
+              {aiControls?.onTranslate && (
+                <AiTranslateTrigger
+                  size="xs"
+                  lang={lang}
+                  targetLang="en"
+                  sourceText={data.title?.ar || ''}
+                  isLoading={Boolean(aiControls.translatingKeys?.[sectionKey('heading:en')])}
+                  onTranslate={() =>
+                    translateSectionField({
+                      subKey: 'heading:en',
+                      text: data.title?.ar || '',
+                      sourceLang: 'ar',
+                      targetLang: 'en',
+                      fieldHint: `${sectionRole} Section Heading`,
+                      patchSection: (sec, translated) => ({
+                        ...sec,
+                        title: { en: translated, ar: sec.title?.ar || '' },
+                      }),
+                    })
+                  }
+                />
+              )}
+            </div>
             <input
               type="text"
               required
@@ -381,9 +447,33 @@ export function PortfolioNarrativeSection({
             />
           </div>
           <div>
-            <label className="block text-[11px] font-semibold text-slate-600 mb-1">
-              {isRtl ? 'عنوان القسم (العربية)' : 'Section Heading (Arabic)'}
-            </label>
+            <div className="flex items-center justify-between gap-2 mb-1">
+              <label className="block text-[11px] font-semibold text-slate-600">
+                {isRtl ? 'عنوان القسم (العربية)' : 'Section Heading (Arabic)'}
+              </label>
+              {aiControls?.onTranslate && (
+                <AiTranslateTrigger
+                  size="xs"
+                  lang={lang}
+                  targetLang="ar"
+                  sourceText={data.title?.en || ''}
+                  isLoading={Boolean(aiControls.translatingKeys?.[sectionKey('heading:ar')])}
+                  onTranslate={() =>
+                    translateSectionField({
+                      subKey: 'heading:ar',
+                      text: data.title?.en || '',
+                      sourceLang: 'en',
+                      targetLang: 'ar',
+                      fieldHint: `${sectionRole} Section Heading`,
+                      patchSection: (sec, translated) => ({
+                        ...sec,
+                        title: { en: sec.title?.en || '', ar: translated },
+                      }),
+                    })
+                  }
+                />
+              )}
+            </div>
             <input
               type="text"
               dir="rtl"
@@ -630,37 +720,121 @@ export function PortfolioNarrativeSection({
 
             {/* Bilingual Alt & Caption */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <input
-                type="text"
-                value={sectionImage.caption?.en || ''}
-                onChange={(e) =>
-                  ensureSectionImage({
-                    caption: { en: e.target.value, ar: sectionImage.caption?.ar || '' },
-                    alt: {
-                      en: e.target.value || sectionImage.alt?.en || '',
-                      ar: sectionImage.alt?.ar || '',
-                    },
-                  })
-                }
-                placeholder="Optional Image Caption / Alt (English)"
-                className="px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-lg"
-              />
-              <input
-                type="text"
-                dir="rtl"
-                value={sectionImage.caption?.ar || ''}
-                onChange={(e) =>
-                  ensureSectionImage({
-                    caption: { en: sectionImage.caption?.en || '', ar: e.target.value },
-                    alt: {
-                      en: sectionImage.alt?.en || '',
-                      ar: e.target.value || sectionImage.alt?.ar || '',
-                    },
-                  })
-                }
-                placeholder="تسمية أو وصف توضيحي للصورة (اختياري - العربية)"
-                className="px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-lg font-arabic"
-              />
+              <div>
+                <div className="flex items-center justify-between gap-1.5 mb-1">
+                  <label className="text-[10px] font-semibold text-slate-600">
+                    {isRtl ? 'التسمية / النص البديل (EN)' : 'Caption / Alt (EN)'}
+                  </label>
+                  {aiControls?.onTranslate && (
+                    <AiTranslateTrigger
+                      size="xs"
+                      lang={lang}
+                      targetLang="en"
+                      sourceText={sectionImage.caption?.ar || sectionImage.alt?.ar || ''}
+                      isLoading={Boolean(aiControls.translatingKeys?.[sectionKey('secImgCaption:en')])}
+                      onTranslate={() =>
+                        translateSectionField({
+                          subKey: 'secImgCaption:en',
+                          text: sectionImage.caption?.ar || sectionImage.alt?.ar || '',
+                          sourceLang: 'ar',
+                          targetLang: 'en',
+                          fieldHint: `${sectionRole} Section Image Caption`,
+                          patchSection: (sec, translated) => {
+                            const baseImg: StorySectionImage = sec.image || sectionImage;
+                            return {
+                              ...sec,
+                              image: {
+                                ...baseImg,
+                                caption: {
+                                  en: translated,
+                                  ar: baseImg.caption?.ar || '',
+                                },
+                                alt: {
+                                  en: translated,
+                                  ar: baseImg.alt?.ar || '',
+                                },
+                              },
+                            };
+                          },
+                        })
+                      }
+                    />
+                  )}
+                </div>
+                <input
+                  type="text"
+                  value={sectionImage.caption?.en || ''}
+                  onChange={(e) =>
+                    ensureSectionImage({
+                      caption: { en: e.target.value, ar: sectionImage.caption?.ar || '' },
+                      alt: {
+                        en: e.target.value || sectionImage.alt?.en || '',
+                        ar: sectionImage.alt?.ar || '',
+                      },
+                    })
+                  }
+                  placeholder="Optional Image Caption / Alt (English)"
+                  className="w-full px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-lg focus:border-persici-crimson outline-none"
+                />
+              </div>
+              <div>
+                <div className="flex items-center justify-between gap-1.5 mb-1">
+                  <label className="text-[10px] font-semibold text-slate-600">
+                    {isRtl ? 'التسمية / النص البديل (AR)' : 'Caption / Alt (AR)'}
+                  </label>
+                  {aiControls?.onTranslate && (
+                    <AiTranslateTrigger
+                      size="xs"
+                      lang={lang}
+                      targetLang="ar"
+                      sourceText={sectionImage.caption?.en || sectionImage.alt?.en || ''}
+                      isLoading={Boolean(aiControls.translatingKeys?.[sectionKey('secImgCaption:ar')])}
+                      onTranslate={() =>
+                        translateSectionField({
+                          subKey: 'secImgCaption:ar',
+                          text: sectionImage.caption?.en || sectionImage.alt?.en || '',
+                          sourceLang: 'en',
+                          targetLang: 'ar',
+                          fieldHint: `${sectionRole} Section Image Caption`,
+                          patchSection: (sec, translated) => {
+                            const baseImg: StorySectionImage = sec.image || sectionImage;
+                            return {
+                              ...sec,
+                              image: {
+                                ...baseImg,
+                                caption: {
+                                  en: baseImg.caption?.en || '',
+                                  ar: translated,
+                                },
+                                alt: {
+                                  en: baseImg.alt?.en || '',
+                                  ar: translated,
+                                },
+                              },
+                            };
+                          },
+                        })
+                      }
+                    />
+                  )}
+                </div>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={sectionImage.caption?.ar || ''}
+                  onChange={(e) =>
+                    ensureSectionImage({
+                      caption: { en: sectionImage.caption?.en || '', ar: e.target.value },
+                      alt: {
+                        en: sectionImage.alt?.en || '',
+                        ar: e.target.value || sectionImage.alt?.ar || '',
+                      },
+                    })
+                  }
+                  placeholder="تسمية أو وصف توضيحي للصورة (اختياري - العربية)"
+                  className="w-full px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-lg font-arabic focus:border-persici-crimson outline-none"
+                />
+              </div>
             </div>
 
             {/* Live Resized Image Preview */}
@@ -751,10 +925,37 @@ export function PortfolioNarrativeSection({
               <RichTextEditor
                 label={isRtl ? `محتوى الفقرة 0${pIdx + 1}` : `Paragraph #${pIdx + 1} Content (EN / AR)`}
                 rows={4}
+                uiLang={lang}
                 valueEn={p.en}
                 valueAr={p.ar}
                 onChangeEn={(val) => handleUpdateParagraph(pIdx, 'en', val)}
                 onChangeAr={(val) => handleUpdateParagraph(pIdx, 'ar', val)}
+                isTranslating={Boolean(
+                  aiControls?.translatingKeys?.[sectionKey(`paragraph:${pIdx}:rte`)]
+                )}
+                onTranslate={
+                  aiControls?.onTranslate
+                    ? ({ sourceLang, targetLang, text }) =>
+                        translateSectionField({
+                          subKey: `paragraph:${pIdx}:rte`,
+                          text,
+                          sourceLang,
+                          targetLang,
+                          isHtml: true,
+                          fieldHint: `${sectionRole} Paragraph #${pIdx + 1}`,
+                          patchSection: (sec, translated) => {
+                            const nextParas = [...(sec.paragraphs || [])];
+                            if (nextParas[pIdx]) {
+                              nextParas[pIdx] = {
+                                ...nextParas[pIdx],
+                                [targetLang]: translated,
+                              };
+                            }
+                            return { ...sec, paragraphs: nextParas };
+                          },
+                        })
+                    : undefined
+                }
               />
             </div>
           ))}
@@ -797,31 +998,107 @@ export function PortfolioNarrativeSection({
         </div>
 
         {bullets.length > 0 && (
-          <div className="space-y-2">
+          <div className="space-y-2.5">
             {bullets.map((b, bIdx) => (
               <div
                 key={bIdx}
-                className="flex items-center gap-2 p-2 bg-slate-50/70 rounded-xl border border-slate-200"
+                className="flex items-end gap-2.5 p-2.5 bg-slate-50/70 rounded-xl border border-slate-200"
               >
-                <input
-                  type="text"
-                  value={b.en}
-                  onChange={(e) => handleUpdateBullet(bIdx, 'en', e.target.value)}
-                  placeholder="Bullet highlight (English)"
-                  className="flex-1 px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg"
-                />
-                <input
-                  type="text"
-                  dir="rtl"
-                  value={b.ar}
-                  onChange={(e) => handleUpdateBullet(bIdx, 'ar', e.target.value)}
-                  placeholder="نقطة الإبراز (بالعربية)"
-                  className="flex-1 px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg font-arabic"
-                />
+                <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  <div>
+                    <div className="flex items-center justify-between gap-1.5 mb-1">
+                      <label className="text-[10px] font-semibold text-slate-600">
+                        {isRtl ? 'النقطة (EN)' : 'Highlight (EN)'}
+                      </label>
+                      {aiControls?.onTranslate && (
+                        <AiTranslateTrigger
+                          size="xs"
+                          lang={lang}
+                          targetLang="en"
+                          sourceText={b.ar}
+                          isLoading={Boolean(
+                            aiControls.translatingKeys?.[sectionKey(`bullet:${bIdx}:en`)]
+                          )}
+                          onTranslate={() =>
+                            translateSectionField({
+                              subKey: `bullet:${bIdx}:en`,
+                              text: b.ar,
+                              sourceLang: 'ar',
+                              targetLang: 'en',
+                              fieldHint: `${sectionRole} Key Highlight Bullet`,
+                              patchSection: (sec, translated) => {
+                                const nextBullets = [...(sec.bullets || [])];
+                                if (nextBullets[bIdx]) {
+                                  nextBullets[bIdx] = {
+                                    ...nextBullets[bIdx],
+                                    en: translated,
+                                  };
+                                }
+                                return { ...sec, bullets: nextBullets };
+                              },
+                            })
+                          }
+                        />
+                      )}
+                    </div>
+                    <input
+                      type="text"
+                      value={b.en}
+                      onChange={(e) => handleUpdateBullet(bIdx, 'en', e.target.value)}
+                      placeholder="Bullet highlight (English)"
+                      className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg focus:border-persici-crimson outline-none"
+                    />
+                  </div>
+                  <div>
+                    <div className="flex items-center justify-between gap-1.5 mb-1">
+                      <label className="text-[10px] font-semibold text-slate-600">
+                        {isRtl ? 'النقطة (AR)' : 'Highlight (AR)'}
+                      </label>
+                      {aiControls?.onTranslate && (
+                        <AiTranslateTrigger
+                          size="xs"
+                          lang={lang}
+                          targetLang="ar"
+                          sourceText={b.en}
+                          isLoading={Boolean(
+                            aiControls.translatingKeys?.[sectionKey(`bullet:${bIdx}:ar`)]
+                          )}
+                          onTranslate={() =>
+                            translateSectionField({
+                              subKey: `bullet:${bIdx}:ar`,
+                              text: b.en,
+                              sourceLang: 'en',
+                              targetLang: 'ar',
+                              fieldHint: `${sectionRole} Key Highlight Bullet`,
+                              patchSection: (sec, translated) => {
+                                const nextBullets = [...(sec.bullets || [])];
+                                if (nextBullets[bIdx]) {
+                                  nextBullets[bIdx] = {
+                                    ...nextBullets[bIdx],
+                                    ar: translated,
+                                  };
+                                }
+                                return { ...sec, bullets: nextBullets };
+                              },
+                            })
+                          }
+                        />
+                      )}
+                    </div>
+                    <input
+                      type="text"
+                      dir="rtl"
+                      value={b.ar}
+                      onChange={(e) => handleUpdateBullet(bIdx, 'ar', e.target.value)}
+                      placeholder="نقطة الإبراز (بالعربية)"
+                      className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg font-arabic focus:border-persici-crimson outline-none"
+                    />
+                  </div>
+                </div>
                 <button
                   type="button"
                   onClick={() => handleRemoveBullet(bIdx)}
-                  className="p-1.5 text-slate-400 hover:text-red-600 rounded-lg hover:bg-white"
+                  className="p-1.5 text-slate-400 hover:text-red-600 rounded-lg hover:bg-white cursor-pointer shrink-0"
                 >
                   <TbTrash className="w-4 h-4" />
                 </button>
@@ -936,9 +1213,44 @@ export function PortfolioNarrativeSection({
                   {/* Bilingual Title Before Code */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-[10px] font-semibold text-slate-600 mb-1">
-                        {isRtl ? 'عنوان قبل الكود (EN)' : 'Code Heading Before Block (English)'}
-                      </label>
+                      <div className="flex items-center justify-between gap-1.5 mb-1">
+                        <label className="block text-[10px] font-semibold text-slate-600">
+                          {isRtl ? 'عنوان قبل الكود (EN)' : 'Code Heading Before Block (English)'}
+                        </label>
+                        {aiControls?.onTranslate && (
+                          <AiTranslateTrigger
+                            size="xs"
+                            lang={lang}
+                            targetLang="en"
+                            sourceText={block.title?.ar || ''}
+                            isLoading={Boolean(
+                              aiControls.translatingKeys?.[sectionKey(`codeTitle:${cIdx}:en`)]
+                            )}
+                            onTranslate={() =>
+                              translateSectionField({
+                                subKey: `codeTitle:${cIdx}:en`,
+                                text: block.title?.ar || '',
+                                sourceLang: 'ar',
+                                targetLang: 'en',
+                                fieldHint: `${sectionRole} Code Sample Heading`,
+                                patchSection: (sec, translated) => {
+                                  const nextBlocks = [...(sec.codeBlocks || [])];
+                                  if (nextBlocks[cIdx]) {
+                                    nextBlocks[cIdx] = {
+                                      ...nextBlocks[cIdx],
+                                      title: {
+                                        en: translated,
+                                        ar: nextBlocks[cIdx].title?.ar || '',
+                                      },
+                                    };
+                                  }
+                                  return { ...sec, codeBlocks: nextBlocks };
+                                },
+                              })
+                            }
+                          />
+                        )}
+                      </div>
                       <input
                         type="text"
                         value={block.title?.en || ''}
@@ -946,13 +1258,48 @@ export function PortfolioNarrativeSection({
                           handleUpdateCodeBlock(cIdx, { titleEn: e.target.value })
                         }
                         placeholder={langMeta.defaultTitleEn}
-                        className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg font-medium"
+                        className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg font-medium focus:border-persici-crimson outline-none"
                       />
                     </div>
                     <div>
-                      <label className="block text-[10px] font-semibold text-slate-600 mb-1">
-                        {isRtl ? 'عنوان قبل الكود (AR)' : 'Code Heading Before Block (Arabic)'}
-                      </label>
+                      <div className="flex items-center justify-between gap-1.5 mb-1">
+                        <label className="block text-[10px] font-semibold text-slate-600">
+                          {isRtl ? 'عنوان قبل الكود (AR)' : 'Code Heading Before Block (Arabic)'}
+                        </label>
+                        {aiControls?.onTranslate && (
+                          <AiTranslateTrigger
+                            size="xs"
+                            lang={lang}
+                            targetLang="ar"
+                            sourceText={block.title?.en || ''}
+                            isLoading={Boolean(
+                              aiControls.translatingKeys?.[sectionKey(`codeTitle:${cIdx}:ar`)]
+                            )}
+                            onTranslate={() =>
+                              translateSectionField({
+                                subKey: `codeTitle:${cIdx}:ar`,
+                                text: block.title?.en || '',
+                                sourceLang: 'en',
+                                targetLang: 'ar',
+                                fieldHint: `${sectionRole} Code Sample Heading`,
+                                patchSection: (sec, translated) => {
+                                  const nextBlocks = [...(sec.codeBlocks || [])];
+                                  if (nextBlocks[cIdx]) {
+                                    nextBlocks[cIdx] = {
+                                      ...nextBlocks[cIdx],
+                                      title: {
+                                        en: nextBlocks[cIdx].title?.en || '',
+                                        ar: translated,
+                                      },
+                                    };
+                                  }
+                                  return { ...sec, codeBlocks: nextBlocks };
+                                },
+                              })
+                            }
+                          />
+                        )}
+                      </div>
                       <input
                         type="text"
                         dir="rtl"
@@ -961,7 +1308,7 @@ export function PortfolioNarrativeSection({
                           handleUpdateCodeBlock(cIdx, { titleAr: e.target.value })
                         }
                         placeholder={langMeta.defaultTitleAr}
-                        className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg font-arabic"
+                        className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg font-arabic focus:border-persici-crimson outline-none"
                       />
                     </div>
                   </div>
@@ -1049,10 +1396,40 @@ export function PortfolioNarrativeSection({
             <RichTextEditor
               label={isRtl ? 'نص الاقتباس (Quote Text)' : 'Quote Text (EN / AR)'}
               rows={3}
+              uiLang={lang}
               valueEn={quote.text.en}
               valueAr={quote.text.ar}
               onChangeEn={(val) => handleUpdateQuote('textEn', val)}
               onChangeAr={(val) => handleUpdateQuote('textAr', val)}
+              isTranslating={Boolean(
+                aiControls?.translatingKeys?.[sectionKey('quoteText:rte')]
+              )}
+              onTranslate={
+                aiControls?.onTranslate
+                  ? ({ sourceLang, targetLang, text }) =>
+                      translateSectionField({
+                        subKey: 'quoteText:rte',
+                        text,
+                        sourceLang,
+                        targetLang,
+                        isHtml: true,
+                        fieldHint: `${sectionRole} Executive Pull Quote Text`,
+                        patchSection: (sec, translated) => {
+                          const baseQuote = sec.quote || quote;
+                          return {
+                            ...sec,
+                            quote: {
+                              ...baseQuote,
+                              text: {
+                                en: targetLang === 'en' ? translated : baseQuote.text?.en || '',
+                                ar: targetLang === 'ar' ? translated : baseQuote.text?.ar || '',
+                              },
+                            },
+                          };
+                        },
+                      })
+                  : undefined
+              }
             />
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -1065,32 +1442,102 @@ export function PortfolioNarrativeSection({
                   value={quote.author}
                   onChange={(e) => handleUpdateQuote('author', e.target.value)}
                   placeholder="e.g. John Doe, Leadership"
-                  className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg"
+                  className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg focus:border-persici-crimson outline-none"
                 />
               </div>
               <div>
-                <label className="block text-[10px] font-semibold text-slate-600 mb-1">
-                  {isRtl ? 'المسمى الوظيفي (EN)' : 'Author Role (EN)'}
-                </label>
+                <div className="flex items-center justify-between gap-1.5 mb-1">
+                  <label className="block text-[10px] font-semibold text-slate-600">
+                    {isRtl ? 'المسمى الوظيفي (EN)' : 'Author Role (EN)'}
+                  </label>
+                  {aiControls?.onTranslate && (
+                    <AiTranslateTrigger
+                      size="xs"
+                      lang={lang}
+                      targetLang="en"
+                      sourceText={quote.role?.ar || ''}
+                      isLoading={Boolean(
+                        aiControls.translatingKeys?.[sectionKey('quoteRole:en')]
+                      )}
+                      onTranslate={() =>
+                        translateSectionField({
+                          subKey: 'quoteRole:en',
+                          text: quote.role?.ar || '',
+                          sourceLang: 'ar',
+                          targetLang: 'en',
+                          fieldHint: `${sectionRole} Quote Author Role`,
+                          patchSection: (sec, translated) => {
+                            const baseQuote = sec.quote || quote;
+                            return {
+                              ...sec,
+                              quote: {
+                                ...baseQuote,
+                                role: {
+                                  en: translated,
+                                  ar: baseQuote.role?.ar || '',
+                                },
+                              },
+                            };
+                          },
+                        })
+                      }
+                    />
+                  )}
+                </div>
                 <input
                   type="text"
                   value={quote.role?.en || ''}
                   onChange={(e) => handleUpdateQuote('roleEn', e.target.value)}
                   placeholder="VP of Digital Marketing"
-                  className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg"
+                  className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg focus:border-persici-crimson outline-none"
                 />
               </div>
               <div>
-                <label className="block text-[10px] font-semibold text-slate-600 mb-1">
-                  {isRtl ? 'المسمى الوظيفي (AR)' : 'Author Role (AR)'}
-                </label>
+                <div className="flex items-center justify-between gap-1.5 mb-1">
+                  <label className="block text-[10px] font-semibold text-slate-600">
+                    {isRtl ? 'المسمى الوظيفي (AR)' : 'Author Role (AR)'}
+                  </label>
+                  {aiControls?.onTranslate && (
+                    <AiTranslateTrigger
+                      size="xs"
+                      lang={lang}
+                      targetLang="ar"
+                      sourceText={quote.role?.en || ''}
+                      isLoading={Boolean(
+                        aiControls.translatingKeys?.[sectionKey('quoteRole:ar')]
+                      )}
+                      onTranslate={() =>
+                        translateSectionField({
+                          subKey: 'quoteRole:ar',
+                          text: quote.role?.en || '',
+                          sourceLang: 'en',
+                          targetLang: 'ar',
+                          fieldHint: `${sectionRole} Quote Author Role`,
+                          patchSection: (sec, translated) => {
+                            const baseQuote = sec.quote || quote;
+                            return {
+                              ...sec,
+                              quote: {
+                                ...baseQuote,
+                                role: {
+                                  en: baseQuote.role?.en || '',
+                                  ar: translated,
+                                },
+                              },
+                            };
+                          },
+                        })
+                      }
+                    />
+                  )}
+                </div>
                 <input
                   type="text"
                   dir="rtl"
                   value={quote.role?.ar || ''}
                   onChange={(e) => handleUpdateQuote('roleAr', e.target.value)}
                   placeholder="نائب رئيس التسويق الرقمي"
-                  className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg font-arabic"
+                  className="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg font-arabic focus:border-persici-crimson outline-none"
                 />
               </div>
             </div>

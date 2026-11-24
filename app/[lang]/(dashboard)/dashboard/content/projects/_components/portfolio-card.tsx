@@ -14,6 +14,8 @@ import {
   TbPhoto,
   TbCpu,
   TbPalette,
+  TbFilePencil,
+  TbRotateClockwise2,
 } from 'react-icons/tb';
 import {
   resolveBilingualText,
@@ -23,10 +25,14 @@ import {
 
 interface PortfolioCardProps {
   story: ClientStoryDetail;
+  displayStory?: ClientStoryDetail;
   lang: string;
+  draftStatus?: 'none' | 'unpublished-draft' | 'unsaved-edits';
+  draftUpdatedAt?: string;
   onEdit: (story: ClientStoryDetail) => void;
   onDelete: (slug: string) => void;
   onToggleFeatured: (story: ClientStoryDetail) => void;
+  onDiscardDraft?: (story: ClientStoryDetail) => void;
 }
 
 const TEMPLATE_CONFIG: Record<
@@ -73,28 +79,41 @@ const TEMPLATE_CONFIG: Record<
 
 export function PortfolioCard({
   story,
+  displayStory,
   lang,
+  draftStatus = 'none',
+  draftUpdatedAt,
   onEdit,
   onDelete,
   onToggleFeatured,
+  onDiscardDraft,
 }: PortfolioCardProps) {
   const isRtl = lang === 'ar';
-  const title = resolveBilingualText(story.title, lang);
-  const summary = resolveBilingualText(story.executiveSummary, lang);
-  const partnerName = resolveBilingualText(story.partner, lang);
-  const clientName = resolveBilingualText(story.client, lang) || 'Client';
+  const cardStory = displayStory || story;
+  const title = resolveBilingualText(cardStory.title, lang);
+  const summary = resolveBilingualText(cardStory.executiveSummary, lang);
+  const partnerName = resolveBilingualText(cardStory.partner, lang);
+  const clientName = resolveBilingualText(cardStory.client, lang) || 'Client';
+  const isDrafted = draftStatus === 'unpublished-draft' || draftStatus === 'unsaved-edits';
 
-  const template = TEMPLATE_CONFIG[story.templateType] || TEMPLATE_CONFIG['marketing-video-showcase'];
+  const template =
+    TEMPLATE_CONFIG[cardStory.templateType] || TEMPLATE_CONFIG['marketing-video-showcase'];
   const TemplateIcon = template.icon;
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200/90 overflow-hidden shadow-xs hover:shadow-md transition-all duration-200 flex flex-col justify-between group">
+    <div
+      className={`bg-white rounded-2xl border overflow-hidden shadow-xs hover:shadow-md transition-all duration-200 flex flex-col justify-between group ${
+        isDrafted
+          ? 'border-amber-300/90 ring-1 ring-amber-200/60'
+          : 'border-slate-200/90'
+      }`}
+    >
       <div>
         {/* Cover Media Preview */}
         <div className="relative aspect-video bg-slate-900 overflow-hidden">
-          {story.heroImage ? (
+          {cardStory.heroImage ? (
             <Image
-              src={story.heroImage}
+              src={cardStory.heroImage}
               alt={title}
               fill
               className="object-cover group-hover:scale-102 transition-transform duration-500"
@@ -136,11 +155,33 @@ export function PortfolioCard({
             </button>
           </div>
 
-          {/* Category Pill at Bottom-Left of Cover */}
-          <div className="absolute bottom-2.5 start-3 pointer-events-none">
-            <span className="px-2 py-0.5 rounded-md text-[10px] font-semibold uppercase tracking-wider rtl:normal-case rtl:tracking-normal bg-black/60 text-white/90 backdrop-blur-md border border-white/10">
-              {resolveBilingualText(story.category, lang)}
+          {/* Category Pill & Draft Badge at Bottom of Cover */}
+          <div className="absolute bottom-2.5 inset-x-3 flex items-center justify-between gap-2 pointer-events-none">
+            <span className="px-2 py-0.5 rounded-md text-[10px] font-semibold uppercase tracking-wider rtl:normal-case rtl:tracking-normal bg-black/60 text-white/90 backdrop-blur-md border border-white/10 truncate">
+              {resolveBilingualText(cardStory.category, lang)}
             </span>
+
+            {isDrafted && (
+              <span
+                title={
+                  draftUpdatedAt
+                    ? `Draft updated ${new Date(draftUpdatedAt).toLocaleString()}`
+                    : undefined
+                }
+                className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-500 text-white shadow-sm shrink-0"
+              >
+                <TbFilePencil className="w-3 h-3" />
+                <span>
+                  {draftStatus === 'unpublished-draft'
+                    ? isRtl
+                      ? 'مسودة غير منشورة'
+                      : 'Draft (Unpublished)'
+                    : isRtl
+                    ? 'مسودة • غير منشور'
+                    : 'Drafted • Unsaved Edits'}
+                </span>
+              </span>
+            )}
           </div>
         </div>
 
@@ -155,7 +196,7 @@ export function PortfolioCard({
               )}
               <span className="font-semibold text-persici-crimson truncate">{clientName}</span>
             </div>
-            <span className="font-mono text-[11px] text-slate-400 shrink-0">/{story.slug}</span>
+            <span className="font-mono text-[11px] text-slate-400 shrink-0">/{cardStory.slug}</span>
           </div>
 
           <h3 className="text-base font-bold text-slate-900 leading-snug line-clamp-2">
@@ -183,9 +224,9 @@ export function PortfolioCard({
           })()}
 
           {/* Impact Metrics Preview */}
-          {story.metrics && story.metrics.length > 0 && (
+          {cardStory.metrics && cardStory.metrics.length > 0 && (
             <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-100">
-              {story.metrics.slice(0, 2).map((m, mi) => (
+              {cardStory.metrics.slice(0, 2).map((m, mi) => (
                 <div key={mi} className="bg-slate-50/80 p-2 rounded-xl text-center border border-slate-100">
                   <p className="text-sm font-bold font-mono text-slate-900 leading-tight">
                     {m.value}
@@ -201,22 +242,39 @@ export function PortfolioCard({
       </div>
 
       {/* Footer Actions */}
-      <div className="p-4 pt-3 border-t border-slate-100 flex items-center justify-between bg-slate-50/40">
-        <a
-          href={`/${lang}/client-stories/${story.slug}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-persici-crimson transition-colors"
-        >
-          <TbExternalLink className="w-3.5 h-3.5" />
-          <span>{isRtl ? 'عرض القصة المباشرة' : 'View Live Story'}</span>
-        </a>
+      <div className="p-4 pt-3 border-t border-slate-100 flex items-center justify-between gap-2 bg-slate-50/40">
+        {draftStatus === 'unpublished-draft' ? (
+          <span className="inline-flex items-center gap-1.5 text-xs font-medium text-amber-700">
+            <TbFilePencil className="w-3.5 h-3.5" />
+            <span>{isRtl ? 'مسودة — غير منشورة بعد' : 'Draft — Not Published'}</span>
+          </span>
+        ) : (
+          <a
+            href={`/${lang}/client-stories/${story.slug}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-persici-crimson transition-colors"
+          >
+            <TbExternalLink className="w-3.5 h-3.5" />
+            <span>{isRtl ? 'عرض القصة المباشرة' : 'View Live Story'}</span>
+          </a>
+        )}
 
         <div className="flex items-center gap-1">
+          {isDrafted && onDiscardDraft && (
+            <button
+              type="button"
+              onClick={() => onDiscardDraft(story)}
+              className="p-2 text-amber-700 hover:text-red-600 hover:bg-red-50 rounded-lg border border-transparent hover:border-red-100 transition-all cursor-pointer"
+              title={isRtl ? 'حذف المسودة والعودة لآخر نسخة منشورة' : 'Discard Draft'}
+            >
+              <TbRotateClockwise2 className="w-4 h-4" />
+            </button>
+          )}
           <button
             type="button"
             onClick={() => onEdit(story)}
-            className="p-2 text-slate-500 hover:text-slate-900 hover:bg-white rounded-lg border border-transparent hover:border-slate-200 transition-all shadow-none hover:shadow-xs"
+            className="p-2 text-slate-500 hover:text-slate-900 hover:bg-white rounded-lg border border-transparent hover:border-slate-200 transition-all shadow-none hover:shadow-xs cursor-pointer"
             title={isRtl ? 'تعديل دراسة الحالة' : 'Edit Story'}
           >
             <TbEdit className="w-4 h-4" />
@@ -224,7 +282,7 @@ export function PortfolioCard({
           <button
             type="button"
             onClick={() => onDelete(story.slug)}
-            className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg border border-transparent hover:border-red-100 transition-all"
+            className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg border border-transparent hover:border-red-100 transition-all cursor-pointer"
             title={isRtl ? 'حذف دراسة الحالة' : 'Delete Story'}
           >
             <TbTrash className="w-4 h-4" />
