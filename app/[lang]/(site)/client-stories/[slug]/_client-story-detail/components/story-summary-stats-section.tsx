@@ -3,8 +3,10 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import {
+  DEFAULT_CLIENT_STORY_DETAIL_SPACING,
   resolveBilingualText,
   type ClientStoryDetail,
+  type ClientStoryDetailSpacingConfig,
 } from '../../../_client-stories/types';
 import { sectionContainer } from '@shared/constants';
 import { CountUp } from '@shared/components/count-up';
@@ -13,6 +15,7 @@ import { StoryHeroImageSlider, type StoryHeroSlideItem } from './story-hero-imag
 export interface StorySummaryStatsSectionProps {
   story: ClientStoryDetail;
   lang: string;
+  spacingConfig?: ClientStoryDetailSpacingConfig;
 }
 
 function normalizeSummaryHtml(raw: string): string {
@@ -74,7 +77,11 @@ function truncateHtmlPreservingInlineTags(html: string, maxChars: number): strin
   return result.trim();
 }
 
-export function StorySummaryStatsSection({ story, lang }: StorySummaryStatsSectionProps) {
+export function StorySummaryStatsSection({
+  story,
+  lang,
+  spacingConfig = DEFAULT_CLIENT_STORY_DETAIL_SPACING,
+}: StorySummaryStatsSectionProps) {
   const isRtl = lang === 'ar';
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -98,7 +105,11 @@ export function StorySummaryStatsSection({ story, lang }: StorySummaryStatsSecti
     <section
       data-header-luminance="light"
       dir={isRtl ? 'rtl' : 'ltr'}
-      className="relative w-full bg-white py-12 sm:py-16 lg:py-20 border-b border-slate-200/80"
+      style={{
+        paddingTop: `clamp(2rem, 5vw, ${spacingConfig.summarySectionPaddingY}px)`,
+        paddingBottom: `clamp(2rem, 5vw, ${spacingConfig.summarySectionPaddingY}px)`,
+      }}
+      className="relative w-full bg-white border-b border-slate-200/80"
     >
       <div className={sectionContainer}>
         {/* Two-Column Grid: Left Content (Summary + Metrics), Right Visual */}
@@ -107,7 +118,10 @@ export function StorySummaryStatsSection({ story, lang }: StorySummaryStatsSecti
           <div className="lg:col-span-6 flex flex-col justify-between">
             <div>
               {/* Summary Heading */}
-              <h2 className="font-primary text-3xl sm:text-4xl font-normal tracking-tight text-slate-900 mb-4">
+              <h2
+                style={{ marginBottom: `${spacingConfig.summaryTitleGap}px` }}
+                className="font-primary text-3xl sm:text-4xl font-normal tracking-tight text-slate-900"
+              >
                 {isRtl ? 'الملخص' : 'Summary'}
               </h2>
 
@@ -135,7 +149,10 @@ export function StorySummaryStatsSection({ story, lang }: StorySummaryStatsSecti
 
             {/* Metrics Row (placed at the bottom of the left column) */}
             {metrics.length > 0 && (
-              <div className="mt-10 sm:mt-14 lg:mt-16 pt-6 border-t border-slate-100">
+              <div
+                style={{ marginTop: `${spacingConfig.summaryToMetricsGap}px` }}
+                className="pt-6 border-t border-slate-100"
+              >
                 <div
                   className={`grid gap-6 sm:gap-8 items-start ${
                     metrics.length === 2

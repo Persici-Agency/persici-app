@@ -6,16 +6,28 @@ import { ObjectId } from 'mongodb';
 
 export const runtime = 'nodejs';
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const isSilentCheck = request.nextUrl.searchParams.get('check') === '1';
   const user = await getSessionUser();
   if (!user) {
-    return NextResponse.json({ authenticated: false, user: null }, { status: 401 });
+    return NextResponse.json(
+      { authenticated: false, user: null },
+      {
+        status: isSilentCheck ? 200 : 401,
+        headers: { 'Cache-Control': 'private, no-store' },
+      }
+    );
   }
 
-  return NextResponse.json({
-    authenticated: true,
-    user,
-  });
+  return NextResponse.json(
+    {
+      authenticated: true,
+      user,
+    },
+    {
+      headers: { 'Cache-Control': 'private, no-store' },
+    }
+  );
 }
 
 /**

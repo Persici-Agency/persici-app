@@ -1,6 +1,6 @@
 import { getDictionary, hasLocale } from '@dictionaries';
 import { notFound } from 'next/navigation';
-import { Header, Footer, FloatingAppointmentWidget, SiteTrackingInjector } from '@shared/components';
+import { Header, Footer, FloatingAppointmentWidget, SiteTrackingInjector, AdminTopBar } from '@shared/components';
 import { getHeaderNavigationFromDb, getFooterNavigationFromDb } from '@/lib/navigation-server';
 import { getPublicTrackingConfig } from '@/lib/tracking-server';
 import { getCommunicationConfigFromDb } from '@/lib/communication-server';
@@ -26,6 +26,7 @@ export default async function SiteLayout({
   return (
     <>
       <SiteTrackingInjector config={trackingConfig} position="body_top" lang={lang} />
+      <AdminTopBar lang={lang} />
       <Header lang={lang} dict={dict} navData={headerNav} />
       <main className="flex-1">{children}</main>
       <Footer

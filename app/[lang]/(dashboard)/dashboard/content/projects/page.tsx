@@ -22,6 +22,7 @@ import {
   TbCheck,
   TbLoader2,
   TbTrash,
+  TbSpacingVertical,
 } from 'react-icons/tb';
 import { MediaPickerModal } from '@dashboard-shared/components';
 import type {
@@ -50,6 +51,7 @@ import {
   PortfolioMediaShowcaseSection,
   PortfolioAiReferenceBar,
   AiFieldTrigger,
+  StoryDetailSpacingModal,
   stripDraftMeta,
   areStoriesContentEqual,
   readLocalStoryDrafts,
@@ -333,6 +335,7 @@ export default function ProjectsManagerPage() {
   const [featuredOnly, setFeaturedOnly] = useState(false);
 
   // Media Picker Modal & Upload Compression Mode State
+  const [spacingModalOpen, setSpacingModalOpen] = useState(false);
   const [mediaPickerOpen, setMediaPickerOpen] = useState(false);
   const [mediaPickerMultiple, setMediaPickerMultiple] = useState(false);
   const [mediaPickerType, setMediaPickerType] = useState<'image' | 'video' | 'all'>('image');
@@ -391,7 +394,8 @@ export default function ProjectsManagerPage() {
         }
 
         if (typeof window !== 'undefined') {
-          setLocalDraftsMap(readLocalStoryDrafts());
+          const loadedLocalMap = readLocalStoryDrafts();
+          setLocalDraftsMap(loadedLocalMap);
           setNewStoryLocalDraft(readNewStoryLocalDraft());
 
           const sp = new URLSearchParams(window.location.search);
@@ -401,6 +405,72 @@ export default function ProjectsManagerPage() {
           const filterCat = sp.get('category');
           if (filterCat && filterCat !== 'all') {
             setCategoryFilter(filterCat);
+          }
+
+          const editSlug = sp.get('edit');
+          const loadedStories: ClientStoryDetail[] = Array.isArray(projData?.projects)
+            ? projData.projects
+            : [];
+
+          if (editSlug && loadedStories.length > 0) {
+            const matchedStory = loadedStories.find(
+              (s) => s.slug === editSlug || s.id === editSlug
+            );
+            if (matchedStory) {
+              const key = matchedStory.slug;
+              const localEntry = loadedLocalMap[key];
+              const serverDraft = matchedStory.draftData;
+              const isDraftOnly = matchedStory.status === 'draft';
+              const cleanBaseline = isDraftOnly ? null : stripDraftMeta(matchedStory);
+
+              let chosenStory: ClientStoryDetail = stripDraftMeta(matchedStory);
+              let restored: { source: 'local' | 'server'; savedAt?: string } | null = null;
+
+              if (localEntry && serverDraft) {
+                const localMs = new Date(localEntry.savedAt).getTime() || 0;
+                const serverMs = matchedStory.draftUpdatedAt
+                  ? new Date(matchedStory.draftUpdatedAt).getTime() || 0
+                  : 0;
+                if (localMs >= serverMs) {
+                  chosenStory = stripDraftMeta(localEntry.draftStory);
+                  restored = { source: 'local', savedAt: localEntry.savedAt };
+                } else {
+                  chosenStory = stripDraftMeta(serverDraft);
+                  restored = { source: 'server', savedAt: matchedStory.draftUpdatedAt };
+                }
+              } else if (localEntry) {
+                chosenStory = stripDraftMeta(localEntry.draftStory);
+                restored = { source: 'local', savedAt: localEntry.savedAt };
+              } else if (serverDraft) {
+                chosenStory = stripDraftMeta(serverDraft);
+                restored = { source: 'server', savedAt: matchedStory.draftUpdatedAt };
+              } else if (isDraftOnly) {
+                restored = { source: 'server', savedAt: matchedStory.draftUpdatedAt };
+              }
+
+              const savedRefs = Array.isArray(chosenStory.aiReferences)
+                ? chosenStory.aiReferences
+                : [];
+              setIsCreating(false);
+              setPersistedSlug(matchedStory.slug);
+              setPublishedBaseline(cleanBaseline);
+              setInitialNewStoryBaseline(null);
+              setActiveTocSection('sec-meta');
+              setReferences(savedRefs);
+              setReferenceWarning(null);
+              setLastUsageBanner(null);
+              setTranslatingKeys({});
+              setAutoSavedAt(restored?.savedAt || null);
+              setDraftSavedFeedback(null);
+              setPublishSuccessInfo(null);
+              setRestoredDraftInfo(restored);
+              setEditingStory({ ...chosenStory, aiReferences: savedRefs });
+
+              sp.delete('edit');
+              const nextQs = sp.toString();
+              const cleanUrl = `${window.location.pathname}${nextQs ? `?${nextQs}` : ''}`;
+              window.history.replaceState({}, '', cleanUrl);
+            }
           }
 
           const newCat = sp.get('newCategory');
@@ -1550,6 +1620,20 @@ export default function ProjectsManagerPage() {
             <span>{isRtl ? 'التصنيفات' : 'Categories'}</span>
           </Link>
 
+          <button
+            type="button"
+            onClick={() => setSpacingModalOpen(true)}
+            className="flex items-center gap-2 px-3.5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 rounded-xl text-xs font-semibold transition-colors cursor-pointer"
+            title={
+              isRtl
+                ? 'تخصيص مسافات جميع صفحات تفاصيل قصص العملاء'
+                : 'Customize spacing across all Client Story Detail pages'
+            }
+          >
+            <TbSpacingVertical className="w-4 h-4 text-persici-crimson" />
+            <span>{isRtl ? 'مسافات صفحات القصص' : 'Detail Page Spacing'}</span>
+          </button>
+
           <Link
             href={`/${lang}/dashboard/pages/client-stories`}
             className="flex items-center gap-2 px-3.5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-semibold transition-colors shadow-xs"
@@ -2476,6 +2560,15 @@ export default function ProjectsManagerPage() {
             </div>
           );
         })()}
+
+      {/* Global Client Story Detail Page Spacing Modal */}
+      {spacingModalOpen && (
+        <StoryDetailSpacingModal
+          isOpen={spacingModalOpen}
+          onClose={() => setSpacingModalOpen(false)}
+          lang={lang}
+        />
+      )}
 
       {/* Media Picker Modal (Supports Single & Bulk Multi-Select + Folder/Subfolder Uploads) */}
       {mediaPickerOpen && (

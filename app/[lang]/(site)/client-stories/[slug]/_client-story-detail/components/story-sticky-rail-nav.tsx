@@ -107,7 +107,7 @@ export function StoryStickyRailNav({ lang, className = '' }: StoryStickyRailNavP
       {/* Mobile Top Sticky Bar */}
       <div
         dir={isRtl ? 'rtl' : 'ltr'}
-        className="lg:hidden sticky top-16 z-30 w-full bg-white/95 backdrop-blur-md border-b border-slate-200/80 px-4 py-2.5 overflow-x-auto scrollbar-none"
+        className="lg:hidden sticky top-[calc(4rem+var(--persici-admin-bar-offset,0px))] z-30 w-full bg-white/95 backdrop-blur-md border-b border-slate-200/80 px-4 py-2.5 overflow-x-auto scrollbar-none"
       >
         <div className="flex items-center gap-2 min-w-max">
           {STORY_NAV_ITEMS.map((item) => {
@@ -134,7 +134,7 @@ export function StoryStickyRailNav({ lang, className = '' }: StoryStickyRailNavP
       {/* Desktop Sticky Rail */}
       <aside
         dir={isRtl ? 'rtl' : 'ltr'}
-        className={`hidden lg:block sticky top-28 self-start w-64 shrink-0 py-6 pe-6 ${className}`}
+        className={`hidden lg:block sticky top-[calc(7rem+var(--persici-admin-bar-offset,0px))] self-start w-64 shrink-0 py-6 pe-6 ${className}`}
       >
         <div className="border-s-2 border-slate-200 flex flex-col space-y-1 py-1">
           {STORY_NAV_ITEMS.map((item) => {

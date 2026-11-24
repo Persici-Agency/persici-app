@@ -2,7 +2,11 @@ import { notFound } from 'next/navigation';
 import { getDictionary, hasLocale } from '@dictionaries';
 import { createMetadata } from '@lib/metadata';
 import type { Locale } from '@lib/i18n';
-import { getProjectBySlugFromDb, getRelatedProjectsFromDb } from '@/lib/projects-server';
+import {
+  getClientStoryDetailSpacingFromDb,
+  getProjectBySlugFromDb,
+  getRelatedProjectsFromDb,
+} from '@/lib/projects-server';
 import { ClientStoryDetailView } from './_client-story-detail/components/client-story-detail-view';
 
 export const dynamic = 'force-dynamic';
@@ -38,11 +42,16 @@ export default async function ClientStoryDetailPage({ params }: PageProps) {
   const { lang, slug } = await params;
   if (!hasLocale(lang)) notFound();
 
-  const story = await getProjectBySlugFromDb(slug);
+  const [story, spacingConfig] = await Promise.all([
+    getProjectBySlugFromDb(slug),
+    getClientStoryDetailSpacingFromDb(),
+  ]);
   if (!story) notFound();
 
-  const dict = await getDictionary(lang);
-  const relatedStories = await getRelatedProjectsFromDb(slug, 3);
+  const [dict, relatedStories] = await Promise.all([
+    getDictionary(lang),
+    getRelatedProjectsFromDb(slug, 3),
+  ]);
 
   return (
     <ClientStoryDetailView
@@ -50,6 +59,7 @@ export default async function ClientStoryDetailPage({ params }: PageProps) {
       relatedStories={relatedStories}
       lang={lang}
       dict={dict}
+      spacingConfig={spacingConfig}
     />
   );
 }

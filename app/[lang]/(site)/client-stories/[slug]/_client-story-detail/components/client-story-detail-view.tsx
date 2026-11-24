@@ -1,5 +1,9 @@
 import React from 'react';
-import type { ClientStoryDetail } from '../../../_client-stories/types';
+import {
+  DEFAULT_CLIENT_STORY_DETAIL_SPACING,
+  type ClientStoryDetail,
+  type ClientStoryDetailSpacingConfig,
+} from '../../../_client-stories/types';
 import type { Dictionary } from '@dictionaries';
 import { sectionContainer } from '@shared/constants';
 import { StoryDetailHeroSection } from './story-detail-hero-section';
@@ -16,6 +20,7 @@ export interface ClientStoryDetailViewProps {
   relatedStories: ClientStoryDetail[];
   lang: string;
   dict: Dictionary;
+  spacingConfig?: ClientStoryDetailSpacingConfig;
 }
 
 export function ClientStoryDetailView({
@@ -23,6 +28,7 @@ export function ClientStoryDetailView({
   relatedStories,
   lang,
   dict,
+  spacingConfig = DEFAULT_CLIENT_STORY_DETAIL_SPACING,
 }: ClientStoryDetailViewProps) {
   const isRtl = lang === 'ar';
 
@@ -32,21 +38,39 @@ export function ClientStoryDetailView({
       <StoryDetailHeroSection story={story} lang={lang} />
 
       {/* 2. Executive Summary & Split CountUp Stats */}
-      <StorySummaryStatsSection story={story} lang={lang} />
+      <StorySummaryStatsSection
+        story={story}
+        lang={lang}
+        spacingConfig={spacingConfig}
+      />
 
       {/* 3. Metadata Strip (Partner [optional], Client, Topic, Services, Region) */}
       <StoryMetadataStrip story={story} lang={lang} />
 
       {/* 4. Main Body with Sticky Left Rail */}
-      <div className={`w-full py-12 sm:py-16 lg:py-24 ${sectionContainer}`}>
+      <div
+        style={{
+          paddingTop: `clamp(2rem, 5vw, ${spacingConfig.bodyContainerPaddingY}px)`,
+          paddingBottom: `clamp(2rem, 5vw, ${spacingConfig.bodyContainerPaddingY}px)`,
+        }}
+        className={`w-full ${sectionContainer}`}
+      >
         <div className="flex flex-col lg:flex-row gap-12 lg:gap-16 items-start">
           {/* Sticky Left Rail Navigation */}
           <StoryStickyRailNav lang={lang} />
 
           {/* Core Content: Narratives + Adaptive Media Showcase */}
           <div className="flex-1 min-w-0 w-full">
-            <StoryNarrativeSections story={story} lang={lang} />
-            <StoryMediaShowcase story={story} lang={lang} />
+            <StoryNarrativeSections
+              story={story}
+              lang={lang}
+              spacingConfig={spacingConfig}
+            />
+            <StoryMediaShowcase
+              story={story}
+              lang={lang}
+              spacingConfig={spacingConfig}
+            />
           </div>
         </div>
       </div>

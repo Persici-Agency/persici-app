@@ -25,14 +25,21 @@ import {
   TbChevronDown,
   TbCheck,
   TbLayoutRows,
+  TbPlayerPlay,
+  TbHandFinger,
+  TbInfinity,
+  TbGauge,
+  TbArrowForwardUp,
 } from 'react-icons/tb';
 import { RichTextEditor } from '@dashboard-shared/components';
 import type { MediaItem } from '@dashboard-shared/components/media/types';
 import {
+  DEFAULT_GALLERY_CAROUSEL_CONFIG,
   DEFAULT_GALLERY_ROWS_CONFIG,
   type ClientStoryDetail,
   type StoryVideoItem,
   type StorySoftwareDeviceMockup,
+  type StoryGalleryCarouselConfig,
   type StoryGalleryImage,
   type StoryGalleryDesign,
   type StoryGalleryOrder,
@@ -323,6 +330,25 @@ export function PortfolioMediaShowcaseSection({
       mediaShowcase: {
         ...showcase,
         galleryRowsConfig: nextConfig,
+      },
+    });
+  };
+
+  const activeCarouselConfig: StoryGalleryCarouselConfig = {
+    ...DEFAULT_GALLERY_CAROUSEL_CONFIG,
+    ...(showcase.galleryCarouselConfig || {}),
+  };
+
+  const handleUpdateCarouselConfig = (patch: Partial<StoryGalleryCarouselConfig>) => {
+    const nextConfig: StoryGalleryCarouselConfig = {
+      ...activeCarouselConfig,
+      ...patch,
+    };
+    onChange({
+      ...story,
+      mediaShowcase: {
+        ...showcase,
+        galleryCarouselConfig: nextConfig,
       },
     });
   };
@@ -1722,6 +1748,230 @@ export function PortfolioMediaShowcaseSection({
                     <option value="left">{isRtl ? 'يسار (Left)' : 'Left'}</option>
                     <option value="right">{isRtl ? 'يمين (Right)' : 'Right'}</option>
                   </select>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {(activeGalleryDesign === 'interactive-carousel' ||
+            activeGalleryDesign === 'spotlight-filmstrip') && (
+            <div className="mt-4 pt-4 border-t border-slate-200/80 space-y-3.5">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <div>
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+                    {activeGalleryDesign === 'spotlight-filmstrip' ? (
+                      <TbSlideshow className="w-3.5 h-3.5 text-persici-crimson" />
+                    ) : (
+                      <TbCarouselHorizontal className="w-3.5 h-3.5 text-persici-crimson" />
+                    )}
+                    <span>
+                      {isRtl
+                        ? 'إعدادات الحركة والتمرير لشريط العرض (Carousel Settings)'
+                        : 'Carousel Movement & Scrolling Settings'}
+                    </span>
+                  </span>
+                  <p className="text-[11px] text-slate-500 mt-0.5">
+                    {isRtl
+                      ? 'تحكم في التحريك التلقائي أو الثابت، وسرعة التمرير، وعدد الصور في كل نقلة، والتكرار اللانهائي.'
+                      : 'Configure auto-slide vs. static control, transition speed, images moved per step, and infinite looping.'}
+                  </p>
+                </div>
+
+                {/* Infinite Movement Toggle Pill */}
+                <button
+                  type="button"
+                  onClick={() =>
+                    handleUpdateCarouselConfig({
+                      infinite: !activeCarouselConfig.infinite,
+                    })
+                  }
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border transition-colors cursor-pointer ${
+                    activeCarouselConfig.infinite
+                      ? 'bg-emerald-50 border-emerald-300 text-emerald-800'
+                      : 'bg-white border-slate-200 text-slate-600 hover:border-slate-300'
+                  }`}
+                >
+                  <TbInfinity className="w-4 h-4 shrink-0" />
+                  <span>
+                    {activeCarouselConfig.infinite
+                      ? isRtl
+                        ? 'حركة لا نهائية: مفعّلة'
+                        : 'Infinite Movement: On'
+                      : isRtl
+                      ? 'حركة لا نهائية: متوقفة عند النهاية'
+                      : 'Infinite Movement: Off (Stop at Ends)'}
+                  </span>
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
+                {/* 1. Movement Mode: Static vs Auto-Slide */}
+                <div>
+                  <label className="block text-[11px] font-semibold text-slate-700 mb-1">
+                    {isRtl ? 'وضع الحركة (Mode)' : 'Movement Mode'}
+                  </label>
+                  <div className="h-9 p-1 rounded-xl bg-white border border-slate-200 grid grid-cols-2 gap-1">
+                    <button
+                      type="button"
+                      onClick={() => handleUpdateCarouselConfig({ autoPlay: false })}
+                      className={`h-full inline-flex items-center justify-center gap-1 px-2 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
+                        !activeCarouselConfig.autoPlay
+                          ? 'bg-slate-900 text-white shadow-xs'
+                          : 'text-slate-600 hover:text-slate-900'
+                      }`}
+                    >
+                      <TbHandFinger className="w-3.5 h-3.5 shrink-0" />
+                      <span>{isRtl ? 'ثابت / يدوي' : 'Static'}</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleUpdateCarouselConfig({ autoPlay: true })}
+                      className={`h-full inline-flex items-center justify-center gap-1 px-2 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
+                        activeCarouselConfig.autoPlay
+                          ? 'bg-persici-crimson text-white shadow-xs'
+                          : 'text-slate-600 hover:text-slate-900'
+                      }`}
+                    >
+                      <TbPlayerPlay className="w-3.5 h-3.5 shrink-0" />
+                      <span>{isRtl ? 'تلقائي' : 'Auto-Slide'}</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* 2. Scrolling / Glide Speed (ms) — Applies in both Static & Auto-Slide */}
+                <div>
+                  <label className="flex items-center justify-between gap-1 text-[11px] font-semibold text-slate-700 mb-1">
+                    <span className="inline-flex items-center gap-1">
+                      <TbGauge className="w-3.5 h-3.5 text-slate-500" />
+                      <span>{isRtl ? 'سرعة الانتقال (ms)' : 'Scroll Speed (ms)'}</span>
+                    </span>
+                    <span className="font-mono text-[10px] text-slate-400">
+                      {activeCarouselConfig.speedMs}ms
+                    </span>
+                  </label>
+                  <div className="flex items-center h-9 bg-white border border-slate-200 rounded-xl overflow-hidden focus-within:border-persici-crimson">
+                    <input
+                      type="number"
+                      min={150}
+                      max={3000}
+                      step={50}
+                      value={activeCarouselConfig.speedMs}
+                      onChange={(e) => {
+                        const raw = Number(e.target.value);
+                        const clamped = Number.isFinite(raw)
+                          ? Math.min(3000, Math.max(150, Math.round(raw)))
+                          : DEFAULT_GALLERY_CAROUSEL_CONFIG.speedMs;
+                        handleUpdateCarouselConfig({ speedMs: clamped });
+                      }}
+                      className="w-full px-2.5 text-xs font-mono font-bold text-slate-800 outline-none bg-transparent"
+                    />
+                    <span className="px-2 text-[10px] font-mono font-semibold text-slate-400 bg-slate-50 h-full flex items-center border-s border-slate-200 shrink-0">
+                      ms
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1 mt-1.5">
+                    {[
+                      { val: 300, label: isRtl ? 'سريع' : 'Fast' },
+                      { val: 550, label: isRtl ? 'افتراضي' : 'Normal' },
+                      { val: 900, label: isRtl ? 'بطيء' : 'Slow' },
+                    ].map((preset) => (
+                      <button
+                        key={preset.val}
+                        type="button"
+                        onClick={() => handleUpdateCarouselConfig({ speedMs: preset.val })}
+                        className={`px-1.5 py-0.5 rounded text-[10px] font-mono font-semibold border cursor-pointer transition-colors ${
+                          activeCarouselConfig.speedMs === preset.val
+                            ? 'bg-slate-900 text-white border-slate-900'
+                            : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300'
+                        }`}
+                      >
+                        {preset.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 3. Images Per Move */}
+                <div>
+                  <label className="flex items-center gap-1 text-[11px] font-semibold text-slate-700 mb-1">
+                    <TbArrowForwardUp className="w-3.5 h-3.5 text-slate-500" />
+                    <span>{isRtl ? 'عدد الصور لكل حركة' : 'Images Per Move'}</span>
+                  </label>
+                  <div className="h-9 p-1 rounded-xl bg-white border border-slate-200 grid grid-cols-4 gap-1">
+                    {[1, 2, 3, 4].map((count) => {
+                      const selected = activeCarouselConfig.slidesPerMove === count;
+                      return (
+                        <button
+                          key={count}
+                          type="button"
+                          onClick={() => handleUpdateCarouselConfig({ slidesPerMove: count })}
+                          className={`h-full rounded-lg text-xs font-mono font-bold transition-all cursor-pointer ${
+                            selected
+                              ? 'bg-slate-900 text-white shadow-xs'
+                              : 'text-slate-600 hover:bg-slate-100'
+                          }`}
+                        >
+                          {count}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* 4. Auto-Slide Interval Delay (active when Auto-Slide is selected) */}
+                <div>
+                  <label className="flex items-center justify-between gap-1 text-[11px] font-semibold text-slate-700 mb-1">
+                    <span>{isRtl ? 'مدة الثبات قبل النقل (ms)' : 'Auto-Slide Interval (ms)'}</span>
+                    <span className="font-mono text-[10px] text-slate-400">
+                      {(activeCarouselConfig.intervalMs / 1000).toFixed(1)}s
+                    </span>
+                  </label>
+                  <div
+                    className={`flex items-center h-9 border rounded-xl overflow-hidden transition-opacity ${
+                      activeCarouselConfig.autoPlay
+                        ? 'bg-white border-slate-200 focus-within:border-persici-crimson opacity-100'
+                        : 'bg-slate-100/70 border-slate-200 opacity-55'
+                    }`}
+                  >
+                    <input
+                      type="number"
+                      min={1000}
+                      max={20000}
+                      step={250}
+                      disabled={!activeCarouselConfig.autoPlay}
+                      value={activeCarouselConfig.intervalMs}
+                      onChange={(e) => {
+                        const raw = Number(e.target.value);
+                        const clamped = Number.isFinite(raw)
+                          ? Math.min(20000, Math.max(1000, Math.round(raw)))
+                          : DEFAULT_GALLERY_CAROUSEL_CONFIG.intervalMs;
+                        handleUpdateCarouselConfig({ intervalMs: clamped });
+                      }}
+                      className="w-full px-2.5 text-xs font-mono font-bold text-slate-800 outline-none bg-transparent disabled:cursor-not-allowed"
+                    />
+                    <span className="px-2 text-[10px] font-mono font-semibold text-slate-400 bg-slate-50 h-full flex items-center border-s border-slate-200 shrink-0">
+                      ms
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1 mt-1.5">
+                    {[2500, 4000, 6000].map((ms) => (
+                      <button
+                        key={ms}
+                        type="button"
+                        disabled={!activeCarouselConfig.autoPlay}
+                        onClick={() => handleUpdateCarouselConfig({ intervalMs: ms })}
+                        className={`px-1.5 py-0.5 rounded text-[10px] font-mono font-semibold border transition-colors ${
+                          !activeCarouselConfig.autoPlay
+                            ? 'opacity-50 cursor-not-allowed bg-slate-100 text-slate-400 border-slate-200'
+                            : activeCarouselConfig.intervalMs === ms
+                            ? 'bg-persici-crimson text-white border-persici-crimson cursor-pointer'
+                            : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300 cursor-pointer'
+                        }`}
+                      >
+                        {ms / 1000}s
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>

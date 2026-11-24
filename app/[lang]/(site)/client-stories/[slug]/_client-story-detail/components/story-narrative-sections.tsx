@@ -1,8 +1,10 @@
 import React from 'react';
-import type {
-  ClientStoryDetail,
-  StoryNarrativeSection,
-  StorySectionImage,
+import {
+  DEFAULT_CLIENT_STORY_DETAIL_SPACING,
+  type ClientStoryDetail,
+  type ClientStoryDetailSpacingConfig,
+  type StoryNarrativeSection,
+  type StorySectionImage,
 } from '../../../_client-stories/types';
 import { TbCheck, TbQuote } from 'react-icons/tb';
 import { CodeShowcaseBlock } from '@/app/[lang]/_shared/components/code-showcase-block';
@@ -27,31 +29,53 @@ function resolveSectionImageWidthPercent(image: StorySectionImage): number {
 export interface StoryNarrativeSectionsProps {
   story: ClientStoryDetail;
   lang: string;
+  spacingConfig?: ClientStoryDetailSpacingConfig;
 }
 
-export function StoryNarrativeSections({ story, lang }: StoryNarrativeSectionsProps) {
+export function StoryNarrativeSections({
+  story,
+  lang,
+  spacingConfig = DEFAULT_CLIENT_STORY_DETAIL_SPACING,
+}: StoryNarrativeSectionsProps) {
   const isRtl = lang === 'ar';
+  const sectionPadTop = Math.round(spacingConfig.sectionToSectionGap * 0.45);
+  const sectionPadBottom = Math.max(0, spacingConfig.sectionToSectionGap - sectionPadTop);
 
-  const renderSection = (section: StoryNarrativeSection, sectionId: string) => {
+  const renderSection = (
+    section: StoryNarrativeSection,
+    sectionId: string,
+    sectionIdx: number
+  ) => {
     if (!section) return null;
     const title = section.title[lang as 'en' | 'ar'] || section.title.en;
+    const hasImage = Boolean(section.image?.src);
 
     return (
       <section
         key={sectionId}
         id={sectionId}
-        className="scroll-mt-32 pt-8 sm:pt-10 border-b border-slate-100 pb-12 sm:pb-16 first:pt-0"
+        style={{
+          paddingTop: sectionIdx === 0 ? '0px' : `${sectionPadTop}px`,
+          paddingBottom: `${sectionPadBottom}px`,
+        }}
+        className="scroll-mt-32 border-b border-slate-100"
       >
         {/* Section Title */}
-        <h2 className="font-primary text-2xl sm:text-3xl lg:text-4xl font-medium text-slate-900 tracking-tight mb-6">
+        <h2
+          style={{ marginBottom: `${spacingConfig.titleToContentGap}px` }}
+          className="font-primary text-2xl sm:text-3xl lg:text-4xl font-medium text-slate-900 tracking-tight"
+        >
           {title}
         </h2>
 
         {/* Optional Section Main Image (After Title, Before Paragraphs) */}
-        {section.image?.src && (
+        {hasImage && section.image && (
           <figure
-            className="mx-auto max-w-full mb-8 space-y-2.5"
-            style={{ width: `${resolveSectionImageWidthPercent(section.image)}%` }}
+            className="mx-auto max-w-full space-y-2.5"
+            style={{
+              width: `${resolveSectionImageWidthPercent(section.image)}%`,
+              marginBottom: `${spacingConfig.imageToContentGap}px`,
+            }}
           >
             <div className="rounded-2xl overflow-hidden border border-slate-200/90 bg-slate-50 shadow-sm">
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -86,7 +110,10 @@ export function StoryNarrativeSections({ story, lang }: StoryNarrativeSectionsPr
         )}
 
         {/* Paragraphs */}
-        <div className="space-y-5 text-base sm:text-lg text-slate-700 leading-relaxed font-normal [&_strong]:font-semibold [&_strong]:text-slate-900 [&_b]:font-semibold [&_b]:text-slate-900 [&_em]:italic [&_i]:italic [&_u]:underline [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:text-slate-900 [&_h2]:mt-4 [&_h2]:mb-2 [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:text-slate-800 [&_h3]:mt-3 [&_h3]:mb-1.5 [&_ul]:list-disc [&_ul]:ps-6 [&_ul]:my-2 [&_ol]:list-decimal [&_ol]:ps-6 [&_ol]:my-2 [&_li]:my-1 [&_blockquote]:border-s-4 [&_blockquote]:border-persici-crimson [&_blockquote]:ps-4 [&_blockquote]:italic [&_a]:text-persici-crimson [&_a]:underline">
+        <div
+          style={{ rowGap: `${spacingConfig.paragraphToParagraphGap}px` }}
+          className="flex flex-col text-base sm:text-lg text-slate-700 leading-relaxed font-normal [&_strong]:font-semibold [&_strong]:text-slate-900 [&_b]:font-semibold [&_b]:text-slate-900 [&_em]:italic [&_i]:italic [&_u]:underline [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:text-slate-900 [&_h2]:mt-4 [&_h2]:mb-2 [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:text-slate-800 [&_h3]:mt-3 [&_h3]:mb-1.5 [&_ul]:list-disc [&_ul]:ps-6 [&_ul]:my-2 [&_ol]:list-decimal [&_ol]:ps-6 [&_ol]:my-2 [&_li]:my-1 [&_blockquote]:border-s-4 [&_blockquote]:border-persici-crimson [&_blockquote]:ps-4 [&_blockquote]:italic [&_a]:text-persici-crimson [&_a]:underline"
+        >
           {section.paragraphs.map((p, idx) => {
             const rawText = p[lang as 'en' | 'ar'] || p.en || '';
             const pText = rawText.replace(
@@ -107,7 +134,13 @@ export function StoryNarrativeSections({ story, lang }: StoryNarrativeSectionsPr
 
         {/* Bullets if present */}
         {section.bullets && section.bullets.length > 0 && (
-          <ul className="mt-6 space-y-3">
+          <ul
+            style={{
+              marginTop: `${spacingConfig.contentToBulletsGap}px`,
+              rowGap: `${spacingConfig.bulletToBulletGap}px`,
+            }}
+            className="flex flex-col"
+          >
             {section.bullets.map((bullet, idx) => {
               const bText = bullet[lang as 'en' | 'ar'] || bullet.en;
               return (
@@ -124,7 +157,13 @@ export function StoryNarrativeSections({ story, lang }: StoryNarrativeSectionsPr
 
         {/* Code Samples if present (After Key Highlights) */}
         {section.codeBlocks && section.codeBlocks.length > 0 && (
-          <div className="mt-8 space-y-6">
+          <div
+            style={{
+              marginTop: `${spacingConfig.contentToCodeGap}px`,
+              rowGap: `${spacingConfig.codeToCodeGap}px`,
+            }}
+            className="flex flex-col"
+          >
             {section.codeBlocks.map((block, cIdx) => {
               if (!block.code) return null;
               const codeTitle =
@@ -143,7 +182,10 @@ export function StoryNarrativeSections({ story, lang }: StoryNarrativeSectionsPr
 
         {/* Pull Quote if present */}
         {section.quote && (section.quote.text?.en || section.quote.text?.ar) && (
-          <blockquote className="mt-8 rounded-2xl border-s-4 border-persici-crimson bg-slate-50/80 p-6 sm:p-8 shadow-xs">
+          <blockquote
+            style={{ marginTop: `${spacingConfig.contentToQuoteGap}px` }}
+            className="rounded-2xl border-s-4 border-persici-crimson bg-slate-50/80 p-6 sm:p-8 shadow-xs"
+          >
             <TbQuote className="h-8 w-8 text-persici-crimson/30 mb-2" />
             {(() => {
               const qText = section.quote.text[lang as 'en' | 'ar'] || section.quote.text.en || '';
@@ -180,10 +222,10 @@ export function StoryNarrativeSections({ story, lang }: StoryNarrativeSectionsPr
 
   return (
     <div dir={isRtl ? 'rtl' : 'ltr'} className="flex-1 min-w-0">
-      {renderSection(story.intro, 'intro')}
-      {renderSection(story.problem, 'the-problem')}
-      {renderSection(story.solution, 'the-solution')}
-      {renderSection(story.impact, 'the-impact')}
+      {renderSection(story.intro, 'intro', 0)}
+      {renderSection(story.problem, 'the-problem', 1)}
+      {renderSection(story.solution, 'the-solution', 2)}
+      {renderSection(story.impact, 'the-impact', 3)}
     </div>
   );
 }
