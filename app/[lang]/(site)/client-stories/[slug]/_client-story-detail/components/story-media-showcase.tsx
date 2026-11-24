@@ -3,8 +3,10 @@
 import React, { useState, useRef } from 'react';
 import Image from 'next/image';
 import {
+  DEFAULT_CLIENT_STORY_DETAIL_SPACING,
   resolveBilingualText,
   type ClientStoryDetail,
+  type ClientStoryDetailSpacingConfig,
   type StoryVideoItem,
 } from '../../../_client-stories/types';
 import { VideoPlayer } from '@shared/components/video-player';
@@ -24,9 +26,14 @@ import {
 export interface StoryMediaShowcaseProps {
   story: ClientStoryDetail;
   lang: string;
+  spacingConfig?: ClientStoryDetailSpacingConfig;
 }
 
-export function StoryMediaShowcase({ story, lang }: StoryMediaShowcaseProps) {
+export function StoryMediaShowcase({
+  story,
+  lang,
+  spacingConfig = DEFAULT_CLIENT_STORY_DETAIL_SPACING,
+}: StoryMediaShowcaseProps) {
   const isRtl = lang === 'ar';
   const { mediaShowcase, templateType } = story;
 
@@ -105,10 +112,11 @@ export function StoryMediaShowcase({ story, lang }: StoryMediaShowcaseProps) {
     <section
       id="media-showcase"
       dir={isRtl ? 'rtl' : 'ltr'}
-      className="scroll-mt-32 pt-10 sm:pt-14 pb-16 sm:pb-24 border-b border-slate-100"
+      style={{ paddingTop: `${spacingConfig.deliverablesTopGap}px` }}
+      className="scroll-mt-32 pb-16 sm:pb-24 border-b border-slate-100"
     >
       {/* Header */}
-      <div className="mb-8 sm:mb-12">
+      <div style={{ marginBottom: `${spacingConfig.deliverablesHeaderGap}px` }}>
         <span className="font-mono text-xs font-semibold uppercase tracking-wider text-persici-crimson mb-2 block">
           {templateType === 'ai-platform-showcase'
             ? isRtl
@@ -134,13 +142,17 @@ export function StoryMediaShowcase({ story, lang }: StoryMediaShowcaseProps) {
             if (normalizedDesc.includes('<') && normalizedDesc.includes('>')) {
               return (
                 <div
-                  className="mt-3 text-base sm:text-lg text-slate-600 max-w-3xl leading-relaxed [&_strong]:font-semibold [&_b]:font-semibold [&_em]:italic [&_i]:italic [&_u]:underline"
+                  style={{ marginTop: `${spacingConfig.deliverablesTitleToDescGap}px` }}
+                  className="text-base sm:text-lg text-slate-600 max-w-3xl leading-relaxed [&_strong]:font-semibold [&_b]:font-semibold [&_em]:italic [&_i]:italic [&_u]:underline"
                   dangerouslySetInnerHTML={{ __html: normalizedDesc }}
                 />
               );
             }
             return (
-              <p className="mt-3 text-base sm:text-lg text-slate-600 max-w-3xl leading-relaxed">
+              <p
+                style={{ marginTop: `${spacingConfig.deliverablesTitleToDescGap}px` }}
+                className="text-base sm:text-lg text-slate-600 max-w-3xl leading-relaxed"
+              >
                 {normalizedDesc}
               </p>
             );
@@ -151,10 +163,13 @@ export function StoryMediaShowcase({ story, lang }: StoryMediaShowcaseProps) {
       {/* TEMPLATE A & E: MARKETING VIDEO CAMPAIGN & MARKETING & BRANDING           */}
       {/* ========================================================================= */}
       {templateType === 'marketing-branding-showcase' && videos.length > 0 && (
-        <div className="flex flex-col gap-8">
+        <div
+          className="flex flex-col"
+          style={{ gap: `${spacingConfig.showcaseBlockGap}px` }}
+        >
           {videos.length === 1 ? (
             <div className="space-y-3">
-              <div className="relative w-full aspect-16/9 rounded-2xl sm:rounded-3xl overflow-hidden bg-black shadow-2xl border border-slate-800">
+              <div className="relative w-full aspect-16/9 rounded-2xl sm:rounded-3xl overflow-hidden bg-black shadow-2xl border border-slate-400/20">
                 <VideoPlayer
                   key={videos[0].videoUrl}
                   src={videos[0].videoUrl}
@@ -183,7 +198,7 @@ export function StoryMediaShowcase({ story, lang }: StoryMediaShowcaseProps) {
                     key={vid.id || idx}
                     className="flex flex-col gap-3 rounded-2xl sm:rounded-3xl border border-slate-200/80 bg-slate-50/70 p-3 sm:p-4"
                   >
-                    <div className="relative w-full aspect-16/9 rounded-xl sm:rounded-2xl overflow-hidden bg-black shadow-lg border border-slate-800/80">
+                    <div className="relative w-full aspect-16/9 rounded-xl sm:rounded-2xl overflow-hidden bg-black shadow-lg border border-slate-400/20">
                       <VideoPlayer
                         key={vid.videoUrl || idx}
                         src={vid.videoUrl}
@@ -213,10 +228,13 @@ export function StoryMediaShowcase({ story, lang }: StoryMediaShowcaseProps) {
       )}
 
       {templateType === 'marketing-video-showcase' && videos.length > 0 && (
-        <div className="flex flex-col gap-8">
+        <div
+          className="flex flex-col"
+          style={{ gap: `${spacingConfig.showcaseBlockGap}px` }}
+        >
           {/* Master Video Player */}
           {currentVideo && (
-            <div className="relative w-full aspect-16/9 rounded-2xl sm:rounded-3xl overflow-hidden bg-black shadow-2xl border border-slate-800">
+            <div className="relative w-full aspect-16/9 rounded-2xl sm:rounded-3xl overflow-hidden bg-black shadow-2xl border border-slate-400/20">
               <VideoPlayer
                 key={currentVideo.videoUrl}
                 src={currentVideo.videoUrl}
@@ -295,7 +313,10 @@ export function StoryMediaShowcase({ story, lang }: StoryMediaShowcaseProps) {
       {/* ========================================================================= */}
       {(templateType === 'software-web-app-showcase' ||
         templateType === 'ai-platform-showcase') && (
-        <div className="flex flex-col gap-10">
+        <div
+          className="flex flex-col"
+          style={{ gap: `${spacingConfig.showcaseBlockGap}px` }}
+        >
           {/* Device Mockup Switcher Controls */}
           {mockups.length > 1 && (
             <div className="flex flex-col items-center gap-3">
@@ -381,9 +402,9 @@ export function StoryMediaShowcase({ story, lang }: StoryMediaShowcaseProps) {
             <div className="flex flex-col items-center w-full">
               {/* 1. DESKTOP BROWSER FRAME */}
               {currentDeviceType === 'desktop' && (
-                <div className="relative mx-auto w-full max-w-5xl rounded-2xl sm:rounded-3xl overflow-hidden border border-slate-700/80 bg-slate-900 shadow-2xl transition-all duration-300">
+                <div className="relative mx-auto w-full max-w-5xl rounded-2xl sm:rounded-3xl overflow-hidden border border-slate-400/20 bg-slate-900 shadow-2xl transition-all duration-300">
                   {/* Browser Chrome Header */}
-                  <div className="flex items-center justify-between px-4 py-3 border-b border-slate-800 bg-slate-950/80 backdrop-blur-xs select-none">
+                  <div className="flex items-center justify-between px-4 py-3 border-b border-white/10 bg-slate-950/80 backdrop-blur-xs select-none">
                     {/* Traffic Lights */}
                     <div className="flex items-center gap-2">
                       <span className="h-3 w-3 rounded-full bg-[#FF5F56] border border-[#E0443E]/60 inline-block" />
@@ -392,7 +413,7 @@ export function StoryMediaShowcase({ story, lang }: StoryMediaShowcaseProps) {
                     </div>
 
                     {/* Centered URL Address Bar */}
-                    <div className="flex items-center justify-center gap-2 bg-slate-800/80 border border-slate-700/60 px-4 py-1 rounded-lg text-slate-300 text-xs font-mono max-w-md w-full mx-4 shadow-inner">
+                    <div className="flex items-center justify-center gap-2 bg-slate-800/80 border border-white/10 px-4 py-1 rounded-lg text-slate-300 text-xs font-mono max-w-md w-full mx-4 shadow-inner">
                       <TbLock className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
                       <span className="truncate">
                         https://
@@ -436,10 +457,10 @@ export function StoryMediaShowcase({ story, lang }: StoryMediaShowcaseProps) {
 
               {/* 2. TABLET CHASSIS FRAME */}
               {currentDeviceType === 'tablet' && (
-                <div className="relative mx-auto w-full max-w-[560px] sm:max-w-[620px] rounded-[2.2rem] sm:rounded-[2.8rem] p-3.5 sm:p-4 border-[6px] sm:border-[8px] border-slate-800 bg-slate-950 shadow-2xl transition-all duration-300">
+                <div className="relative mx-auto w-full max-w-[560px] sm:max-w-[620px] rounded-[2.2rem] sm:rounded-[2.8rem] p-3.5 sm:p-4 border-[4px] sm:border-[6px] border-slate-400/20 bg-slate-950 shadow-2xl transition-all duration-300">
                   {/* Top Tablet Bezel with Front Camera Dot */}
                   <div className="flex items-center justify-center pb-2.5 pt-0.5 select-none">
-                    <div className="h-2.5 w-2.5 rounded-full bg-slate-800 border border-slate-700/60 shadow-inner" />
+                    <div className="h-2.5 w-2.5 rounded-full bg-slate-800 border border-white/15 shadow-inner" />
                   </div>
 
                   {/* Scrollable Viewport: Full Width, Auto Height, Scroll Y */}
@@ -469,11 +490,11 @@ export function StoryMediaShowcase({ story, lang }: StoryMediaShowcaseProps) {
 
               {/* 3. MOBILE SMARTPHONE CHASSIS FRAME */}
               {currentDeviceType === 'mobile' && (
-                <div className="relative mx-auto w-full max-w-[320px] sm:max-w-[350px] rounded-[3rem] sm:rounded-[3.4rem] p-2.5 sm:p-3 border-[6px] sm:border-[8px] border-slate-800 bg-slate-950 shadow-2xl transition-all duration-300">
+                <div className="relative mx-auto w-full max-w-[320px] sm:max-w-[350px] rounded-[3rem] sm:rounded-[3.4rem] p-2.5 sm:p-3 border-[4px] sm:border-[6px] border-slate-400/20 bg-slate-950 shadow-2xl transition-all duration-300">
                   {/* Top Phone Bezel with Dynamic Island */}
                   <div className="flex items-center justify-center pb-2 pt-0.5 select-none">
-                    <div className="h-4.5 sm:h-5 w-24 sm:w-28 rounded-full bg-black border border-slate-800 flex items-center justify-end pe-2.5 shadow-inner">
-                      <div className="h-2 w-2 rounded-full bg-slate-900 border border-slate-800" />
+                    <div className="h-4.5 sm:h-5 w-24 sm:w-28 rounded-full bg-black border border-white/10 flex items-center justify-end pe-2.5 shadow-inner">
+                      <div className="h-2 w-2 rounded-full bg-slate-900 border border-white/10" />
                     </div>
                   </div>
 
@@ -520,7 +541,7 @@ export function StoryMediaShowcase({ story, lang }: StoryMediaShowcaseProps) {
               <h3 className="text-xs font-mono font-medium uppercase tracking-wider text-slate-500 mb-4">
                 {isRtl ? 'عرض فيديو تطبيقي حي' : 'Interactive App Demo Video'}
               </h3>
-              <div className="relative w-full aspect-16/9 rounded-2xl sm:rounded-3xl overflow-hidden bg-black shadow-2xl border border-slate-800">
+              <div className="relative w-full aspect-16/9 rounded-2xl sm:rounded-3xl overflow-hidden bg-black shadow-2xl border border-slate-400/20">
                 <VideoPlayer
                   src={mediaShowcase.demoVideo}
                   poster={mediaShowcase.demoVideoPoster || story.heroImage}
@@ -568,7 +589,10 @@ export function StoryMediaShowcase({ story, lang }: StoryMediaShowcaseProps) {
       {/* TEMPLATE D: MOBILE APPLICATION SHOWCASE (Phone/Tablet Carousel & Demos)    */}
       {/* ========================================================================= */}
       {templateType === 'mobile-app-showcase' && (
-        <div className="flex flex-col gap-10">
+        <div
+          className="flex flex-col"
+          style={{ gap: `${spacingConfig.showcaseBlockGap}px` }}
+        >
           {/* Top Carousel Tabs & Device Controls */}
           {currentMobileAssets.length > 0 && (
             <div className="w-full">
@@ -730,11 +754,11 @@ export function StoryMediaShowcase({ story, lang }: StoryMediaShowcaseProps) {
 
                 {/* MOBILE SMARTPHONE CHASSIS */}
                 {mobileAppDevice === 'mobile' && (
-                  <div className="relative w-full max-w-[340px] sm:max-w-[360px] rounded-[3.2rem] sm:rounded-[3.6rem] p-3 border-[8px] border-slate-800 bg-slate-950 shadow-2xl transition-all duration-300">
+                  <div className="relative w-full max-w-[340px] sm:max-w-[360px] rounded-[3.2rem] sm:rounded-[3.6rem] p-3 border-[4px] sm:border-[6px] border-slate-400/20 bg-slate-950 shadow-2xl transition-all duration-300">
                     {/* Dynamic Island Pill */}
                     <div className="flex items-center justify-center pb-2.5 pt-0.5 select-none">
-                      <div className="h-5 w-28 rounded-full bg-black border border-slate-800 flex items-center justify-end pe-2.5 shadow-inner">
-                        <div className="h-2 w-2 rounded-full bg-slate-900 border border-slate-800" />
+                      <div className="h-5 w-28 rounded-full bg-black border border-white/10 flex items-center justify-end pe-2.5 shadow-inner">
+                        <div className="h-2 w-2 rounded-full bg-slate-900 border border-white/10" />
                       </div>
                     </div>
 
@@ -789,9 +813,9 @@ export function StoryMediaShowcase({ story, lang }: StoryMediaShowcaseProps) {
 
                 {/* TABLET CHASSIS (if tablet mode active) */}
                 {mobileAppDevice === 'tablet' && (
-                  <div className="relative w-full max-w-[560px] sm:max-w-[620px] rounded-[2.2rem] sm:rounded-[2.8rem] p-3.5 sm:p-4 border-[6px] sm:border-[8px] border-slate-800 bg-slate-950 shadow-2xl transition-all duration-300">
+                  <div className="relative w-full max-w-[560px] sm:max-w-[620px] rounded-[2.2rem] sm:rounded-[2.8rem] p-3.5 sm:p-4 border-[4px] sm:border-[6px] border-slate-400/20 bg-slate-950 shadow-2xl transition-all duration-300">
                     <div className="flex items-center justify-center pb-2.5 pt-0.5 select-none">
-                      <div className="h-2.5 w-2.5 rounded-full bg-slate-800 border border-slate-700/60 shadow-inner" />
+                      <div className="h-2.5 w-2.5 rounded-full bg-slate-800 border border-white/15 shadow-inner" />
                     </div>
 
                     <div
@@ -921,9 +945,11 @@ export function StoryMediaShowcase({ story, lang }: StoryMediaShowcaseProps) {
           galleryDesign={mediaShowcase.galleryDesign}
           galleryOrder={mediaShowcase.galleryOrder}
           galleryRowsConfig={mediaShowcase.galleryRowsConfig}
+          carouselConfig={mediaShowcase.galleryCarouselConfig}
           templateType={templateType}
           lang={lang}
           hasPrimaryContent={hasPrimaryShowcaseContent}
+          topSpacingPx={spacingConfig.showcaseBlockGap}
         />
       )}
     </section>

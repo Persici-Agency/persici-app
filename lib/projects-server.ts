@@ -8,6 +8,8 @@ import {
 } from '@/app/[lang]/(site)/client-stories/_client-stories/data/client-stories.data';
 import {
   DEFAULT_CLIENT_STORY_CATEGORIES,
+  DEFAULT_CLIENT_STORY_DETAIL_SPACING,
+  DEFAULT_GALLERY_CAROUSEL_CONFIG,
   hasAnyBilingualText,
   normalizeBilingualInput,
   resolveBilingualText,
@@ -15,6 +17,8 @@ import {
   DEFAULT_GALLERY_ROWS_CONFIG,
   type ClientStoryCategory,
   type ClientStoryDetail,
+  type ClientStoryDetailSpacingConfig,
+  type StoryGalleryCarouselConfig,
   type StoryGalleryHorizontalPos,
   type StoryGalleryRowFit,
   type StoryGalleryRowsConfig,
@@ -58,6 +62,39 @@ function normalizeGalleryRowsConfig(raw: unknown): StoryGalleryRowsConfig | unde
     objectFit,
     verticalPosition,
     horizontalPosition,
+  };
+}
+
+function normalizeGalleryCarouselConfig(raw: unknown): StoryGalleryCarouselConfig | undefined {
+  if (!raw || typeof raw !== 'object') return undefined;
+  const obj = raw as Record<string, unknown>;
+  return {
+    autoPlay:
+      obj.autoPlay !== undefined
+        ? Boolean(obj.autoPlay)
+        : DEFAULT_GALLERY_CAROUSEL_CONFIG.autoPlay,
+    intervalMs: clampNumber(
+      obj.intervalMs,
+      1000,
+      20000,
+      DEFAULT_GALLERY_CAROUSEL_CONFIG.intervalMs
+    ),
+    speedMs: clampNumber(
+      obj.speedMs,
+      150,
+      3000,
+      DEFAULT_GALLERY_CAROUSEL_CONFIG.speedMs
+    ),
+    slidesPerMove: clampNumber(
+      obj.slidesPerMove,
+      1,
+      6,
+      DEFAULT_GALLERY_CAROUSEL_CONFIG.slidesPerMove
+    ),
+    infinite:
+      obj.infinite !== undefined
+        ? Boolean(obj.infinite)
+        : DEFAULT_GALLERY_CAROUSEL_CONFIG.infinite,
   };
 }
 
@@ -201,9 +238,13 @@ function mapDocToClientStory(
           description: { en: '', ar: '' },
         };
   const normalizedRowsCfg = normalizeGalleryRowsConfig(rawShowcase.galleryRowsConfig);
+  const normalizedCarouselCfg = normalizeGalleryCarouselConfig(
+    rawShowcase.galleryCarouselConfig
+  );
   const mediaShowcase: ClientStoryDetail['mediaShowcase'] = {
     ...rawShowcase,
     ...(normalizedRowsCfg ? { galleryRowsConfig: normalizedRowsCfg } : {}),
+    ...(normalizedCarouselCfg ? { galleryCarouselConfig: normalizedCarouselCfg } : {}),
   };
 
   const rawPartner =
@@ -677,4 +718,111 @@ export async function getProjectCategoriesWithCounts(): Promise<{
     categories,
     totalStories: stories.length,
   };
+}
+
+const DETAIL_SPACING_SETTINGS_KEY = 'client_story_detail_spacing';
+
+export function normalizeClientStoryDetailSpacing(
+  raw: unknown
+): ClientStoryDetailSpacingConfig {
+  const obj = raw && typeof raw === 'object' ? (raw as Record<string, unknown>) : {};
+  const d = DEFAULT_CLIENT_STORY_DETAIL_SPACING;
+  return {
+    summarySectionPaddingY: clampNumber(obj.summarySectionPaddingY, 16, 160, d.summarySectionPaddingY),
+    summaryTitleGap: clampNumber(obj.summaryTitleGap, 0, 80, d.summaryTitleGap),
+    summaryToMetricsGap: clampNumber(obj.summaryToMetricsGap, 8, 120, d.summaryToMetricsGap),
+    bodyContainerPaddingY: clampNumber(obj.bodyContainerPaddingY, 16, 160, d.bodyContainerPaddingY),
+    sectionToSectionGap: clampNumber(obj.sectionToSectionGap, 16, 200, d.sectionToSectionGap),
+    titleToContentGap: clampNumber(obj.titleToContentGap, 0, 100, d.titleToContentGap),
+    imageToContentGap: clampNumber(obj.imageToContentGap, 0, 120, d.imageToContentGap),
+    paragraphToParagraphGap: clampNumber(obj.paragraphToParagraphGap, 0, 80, d.paragraphToParagraphGap),
+    contentToBulletsGap: clampNumber(obj.contentToBulletsGap, 0, 100, d.contentToBulletsGap),
+    bulletToBulletGap: clampNumber(obj.bulletToBulletGap, 0, 48, d.bulletToBulletGap),
+    contentToCodeGap: clampNumber(obj.contentToCodeGap, 0, 120, d.contentToCodeGap),
+    codeToCodeGap: clampNumber(obj.codeToCodeGap, 0, 96, d.codeToCodeGap),
+    contentToQuoteGap: clampNumber(obj.contentToQuoteGap, 0, 120, d.contentToQuoteGap),
+    deliverablesTopGap: clampNumber(obj.deliverablesTopGap, 12, 160, d.deliverablesTopGap),
+    deliverablesTitleToDescGap: clampNumber(
+      obj.deliverablesTitleToDescGap,
+      0,
+      60,
+      d.deliverablesTitleToDescGap
+    ),
+    deliverablesHeaderGap: clampNumber(obj.deliverablesHeaderGap, 8, 120, d.deliverablesHeaderGap),
+    showcaseBlockGap: clampNumber(obj.showcaseBlockGap, 12, 140, d.showcaseBlockGap),
+  };
+}
+
+/**
+ * Fetches global Client Story Detail spacing settings from MongoDB Atlas (with defaults fallback).
+ */
+export async function getClientStoryDetailSpacingFromDb(): Promise<ClientStoryDetailSpacingConfig> {
+  try {
+    const db = await getDb();
+    if (!db) return DEFAULT_CLIENT_STORY_DETAIL_SPACING;
+
+    const doc = await db
+      .collection(COLLECTIONS.SETTINGS)
+      .findOne({ key: DETAIL_SPACING_SETTINGS_KEY });
+
+    if (!doc || !doc.spacing) {
+      return DEFAULT_CLIENT_STORY_DETAIL_SPACING;
+    }
+
+    return normalizeClientStoryDetailSpacing(doc.spacing);
+  } catch (err) {
+    console.warn('[ClientStoryDetailSpacing DB] Failed to fetch spacing config, using defaults:', err);
+    return DEFAULT_CLIENT_STORY_DETAIL_SPACING;
+  }
+}
+
+/**
+ * Persists global Client Story Detail spacing settings in MongoDB Atlas.
+ */
+export async function saveClientStoryDetailSpacingToDb(
+  raw: unknown
+): Promise<ClientStoryDetailSpacingConfig> {
+  const normalized = normalizeClientStoryDetailSpacing(raw);
+  const db = await getDb();
+  if (!db) {
+    throw new Error('Database unavailable');
+  }
+
+  await db.collection(COLLECTIONS.SETTINGS).updateOne(
+    { key: DETAIL_SPACING_SETTINGS_KEY },
+    {
+      $set: {
+        key: DETAIL_SPACING_SETTINGS_KEY,
+        spacing: normalized,
+        updatedAt: new Date(),
+      },
+    },
+    { upsert: true }
+  );
+
+  return normalized;
+}
+
+/**
+ * Resets global Client Story Detail spacing settings back to system defaults.
+ */
+export async function resetClientStoryDetailSpacingInDb(): Promise<ClientStoryDetailSpacingConfig> {
+  const db = await getDb();
+  if (!db) {
+    throw new Error('Database unavailable');
+  }
+
+  await db.collection(COLLECTIONS.SETTINGS).updateOne(
+    { key: DETAIL_SPACING_SETTINGS_KEY },
+    {
+      $set: {
+        key: DETAIL_SPACING_SETTINGS_KEY,
+        spacing: DEFAULT_CLIENT_STORY_DETAIL_SPACING,
+        updatedAt: new Date(),
+      },
+    },
+    { upsert: true }
+  );
+
+  return DEFAULT_CLIENT_STORY_DETAIL_SPACING;
 }

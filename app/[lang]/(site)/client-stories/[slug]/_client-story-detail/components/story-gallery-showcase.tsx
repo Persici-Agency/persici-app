@@ -9,7 +9,9 @@ import {
   TbChevronLeft,
 } from 'react-icons/tb';
 import {
+  DEFAULT_GALLERY_CAROUSEL_CONFIG,
   DEFAULT_GALLERY_ROWS_CONFIG,
+  type StoryGalleryCarouselConfig,
   type StoryGalleryDesign,
   type StoryGalleryImage,
   type StoryGalleryOrder,
@@ -22,9 +24,15 @@ export interface StoryGalleryShowcaseProps {
   galleryDesign?: StoryGalleryDesign;
   galleryOrder?: StoryGalleryOrder;
   galleryRowsConfig?: StoryGalleryRowsConfig;
+  carouselConfig?: StoryGalleryCarouselConfig;
   templateType: StoryTemplateType;
   lang: string;
   hasPrimaryContent?: boolean;
+  topSpacingPx?: number;
+}
+
+function easeInOutCubic(t: number): number {
+  return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 }
 
 export function StoryGalleryShowcase({
@@ -32,9 +40,11 @@ export function StoryGalleryShowcase({
   galleryDesign = 'editorial-bento',
   galleryOrder = 'normal',
   galleryRowsConfig,
+  carouselConfig,
   templateType,
   lang,
   hasPrimaryContent = false,
+  topSpacingPx,
 }: StoryGalleryShowcaseProps) {
   const isRtl = lang === 'ar';
   const activeDesign: StoryGalleryDesign = galleryDesign || 'editorial-bento';
@@ -51,26 +61,203 @@ export function StoryGalleryShowcase({
       galleryRowsConfig?.horizontalPosition || DEFAULT_GALLERY_ROWS_CONFIG.horizontalPosition,
   };
 
+  const activeCarouselCfg: StoryGalleryCarouselConfig = {
+    autoPlay:
+      carouselConfig?.autoPlay !== undefined
+        ? Boolean(carouselConfig.autoPlay)
+        : DEFAULT_GALLERY_CAROUSEL_CONFIG.autoPlay,
+    intervalMs: Math.min(
+      20000,
+      Math.max(
+        1000,
+        Number(carouselConfig?.intervalMs) || DEFAULT_GALLERY_CAROUSEL_CONFIG.intervalMs
+      )
+    ),
+    speedMs: Math.min(
+      3000,
+      Math.max(150, Number(carouselConfig?.speedMs) || DEFAULT_GALLERY_CAROUSEL_CONFIG.speedMs)
+    ),
+    slidesPerMove: Math.min(
+      6,
+      Math.max(
+        1,
+        Math.round(
+          Number(carouselConfig?.slidesPerMove) || DEFAULT_GALLERY_CAROUSEL_CONFIG.slidesPerMove
+        )
+      )
+    ),
+    infinite:
+      carouselConfig?.infinite !== undefined
+        ? Boolean(carouselConfig.infinite)
+        : DEFAULT_GALLERY_CAROUSEL_CONFIG.infinite,
+  };
+
   const validGallery = useMemo(() => {
     const filtered = gallery.filter((img) => Boolean(img.src && img.src.trim()));
     return isReverseOrder ? [...filtered].reverse() : filtered;
   }, [gallery, isReverseOrder]);
 
-  // Lightbox state (shared across all 6 designs)
+  // Lightbox state (shared across all 7 designs)
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   // Spotlight & Filmstrip state
   const [spotlightIndex, setSpotlightIndex] = useState<number>(0);
+  const [spotlightHovered, setSpotlightHovered] = useState<boolean>(false);
+  const filmstripRef = useRef<HTMLDivElement | null>(null);
 
   // Interactive Carousel state + pointer drag panning
   const carouselRef = useRef<HTMLDivElement | null>(null);
+  const scrollAnimRafRef = useRef<number | null>(null);
   const [carouselIndex, setCarouselIndex] = useState<number>(0);
+  const [carouselHovered, setCarouselHovered] = useState<boolean>(false);
   const dragStateRef = useRef<{
     isDragging: boolean;
     startX: number;
     scrollLeft: number;
     movedPx: number;
   }>({ isDragging: false, startX: 0, scrollLeft: 0, movedPx: 0 });
+
+  const animateTrackToTarget = (
+    container: HTMLElement | null,
+    targetScrollLeft: number,
+    durationMs: number
+  ) => {
+    if (!container) return;
+    if (scrollAnimRafRef.current !== null) {
+      cancelAnimationFrame(scrollAnimRafRef.current);
+      scrollAnimRafRef.current = null;
+    }
+
+    const startScrollLeft = container.scrollLeft;
+    const distance = targetScrollLeft - startScrollLeft;
+    if (Math.abs(distance) < 1) return;
+
+    const prevSnapType = container.style.scrollSnapType;
+    container.style.scrollSnapType = 'none';
+    const startTime = performance.now();
+
+    const tick = (now: number) => {
+      const elapsed = now - startTime;
+      const progress = Math.min(1, elapsed / Math.max(150, durationMs));
+      container.scrollLeft = startScrollLeft + distance * easeInOutCubic(progress);
+      if (progress < 1) {
+        scrollAnimRafRef.current = requestAnimationFrame(tick);
+      } else {
+        container.style.scrollSnapType = prevSnapType;
+        scrollAnimRafRef.current = null;
+      }
+    };
+
+    scrollAnimRafRef.current = requestAnimationFrame(tick);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (scrollAnimRafRef.current !== null) {
+        cancelAnimationFrame(scrollAnimRafRef.current);
+      }
+    };
+  }, []);
+
+  const stepTargetIndex = (currentIdx: number, delta: number, total: number): number => {
+    if (total <= 1) return 0;
+    if (activeCarouselCfg.infinite) {
+      return ((currentIdx + delta) % total + total) % total;
+    }
+    return Math.min(total - 1, Math.max(0, currentIdx + delta));
+  };
+
+  const scrollCarouselToIndex = (targetIdx: number) => {
+    const total = validGallery.length;
+    if (total === 0) return;
+    const clamped = activeCarouselCfg.infinite
+      ? ((targetIdx % total) + total) % total
+      : Math.min(total - 1, Math.max(0, targetIdx));
+    setCarouselIndex(clamped);
+
+    const el = carouselRef.current;
+    if (!el) return;
+    const child = el.children[clamped] as HTMLElement | undefined;
+    if (!child) return;
+
+    const containerRect = el.getBoundingClientRect();
+    const childRect = child.getBoundingClientRect();
+    const targetScrollLeft =
+      el.scrollLeft +
+      (childRect.left - containerRect.left) -
+      (containerRect.width - childRect.width) / 2;
+
+    animateTrackToTarget(el, targetScrollLeft, activeCarouselCfg.speedMs);
+  };
+
+  // Auto-Slide timer for 'interactive-carousel' & 'spotlight-filmstrip'
+  useEffect(() => {
+    if (
+      !activeCarouselCfg.autoPlay ||
+      validGallery.length <= 1 ||
+      lightboxIndex !== null
+    ) {
+      return;
+    }
+
+    if (activeDesign === 'interactive-carousel' && !carouselHovered) {
+      const timer = window.setInterval(() => {
+        setCarouselIndex((prev) => {
+          const next = stepTargetIndex(
+            prev,
+            activeCarouselCfg.slidesPerMove,
+            validGallery.length
+          );
+          const el = carouselRef.current;
+          const child = el?.children[next] as HTMLElement | undefined;
+          if (el && child) {
+            const cRect = el.getBoundingClientRect();
+            const chRect = child.getBoundingClientRect();
+            const target =
+              el.scrollLeft + (chRect.left - cRect.left) - (cRect.width - chRect.width) / 2;
+            animateTrackToTarget(el, target, activeCarouselCfg.speedMs);
+          }
+          return next;
+        });
+      }, activeCarouselCfg.intervalMs);
+      return () => window.clearInterval(timer);
+    }
+
+    if (activeDesign === 'spotlight-filmstrip' && !spotlightHovered) {
+      const timer = window.setInterval(() => {
+        setSpotlightIndex((prev) => {
+          const next = stepTargetIndex(
+            prev,
+            activeCarouselCfg.slidesPerMove,
+            validGallery.length
+          );
+          const strip = filmstripRef.current;
+          const thumb = strip?.children[next] as HTMLElement | undefined;
+          if (strip && thumb) {
+            const sRect = strip.getBoundingClientRect();
+            const tRect = thumb.getBoundingClientRect();
+            const target =
+              strip.scrollLeft + (tRect.left - sRect.left) - (sRect.width - tRect.width) / 2;
+            animateTrackToTarget(strip, target, activeCarouselCfg.speedMs);
+          }
+          return next;
+        });
+      }, activeCarouselCfg.intervalMs);
+      return () => window.clearInterval(timer);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    activeCarouselCfg.autoPlay,
+    activeCarouselCfg.intervalMs,
+    activeCarouselCfg.speedMs,
+    activeCarouselCfg.slidesPerMove,
+    activeCarouselCfg.infinite,
+    activeDesign,
+    carouselHovered,
+    spotlightHovered,
+    lightboxIndex,
+    validGallery.length,
+  ]);
 
   // Keyboard navigation when Lightbox is open
   useEffect(() => {
@@ -108,19 +295,26 @@ export function StoryGalleryShowcase({
     spotlightIndex < validGallery.length ? spotlightIndex : 0;
   const activeSpotlight = validGallery[safeSpotlightIdx] || validGallery[0];
 
-  const scrollCarouselToIndex = (targetIdx: number) => {
-    const clamped =
-      targetIdx < 0
-        ? validGallery.length - 1
-        : targetIdx >= validGallery.length
-        ? 0
-        : targetIdx;
-    setCarouselIndex(clamped);
-    const el = carouselRef.current;
-    if (!el) return;
-    const child = el.children[clamped] as HTMLElement | undefined;
-    if (child) {
-      child.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  const canPrevCarousel =
+    activeCarouselCfg.infinite || carouselIndex > 0;
+  const canNextCarousel =
+    activeCarouselCfg.infinite || carouselIndex < validGallery.length - 1;
+  const canPrevSpotlight =
+    activeCarouselCfg.infinite || safeSpotlightIdx > 0;
+  const canNextSpotlight =
+    activeCarouselCfg.infinite || safeSpotlightIdx < validGallery.length - 1;
+
+  const moveSpotlightBy = (delta: number) => {
+    const next = stepTargetIndex(safeSpotlightIdx, delta, validGallery.length);
+    setSpotlightIndex(next);
+    const strip = filmstripRef.current;
+    const thumb = strip?.children[next] as HTMLElement | undefined;
+    if (strip && thumb) {
+      const sRect = strip.getBoundingClientRect();
+      const tRect = thumb.getBoundingClientRect();
+      const target =
+        strip.scrollLeft + (tRect.left - sRect.left) - (sRect.width - tRect.width) / 2;
+      animateTrackToTarget(strip, target, activeCarouselCfg.speedMs);
     }
   };
 
@@ -157,7 +351,14 @@ export function StoryGalleryShowcase({
       : 'Campaign Photography & Production Stills';
 
   return (
-    <div className={hasPrimaryContent ? 'mt-12 sm:mt-16' : ''}>
+    <div
+      className={hasPrimaryContent && topSpacingPx === undefined ? 'mt-12 sm:mt-16' : ''}
+      style={
+        hasPrimaryContent && topSpacingPx !== undefined
+          ? { marginTop: `${topSpacingPx}px` }
+          : undefined
+      }
+    >
       {(hasPrimaryContent || activeDesign === 'interactive-carousel') && (
         <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
           <h3 className="text-xs font-mono font-medium uppercase tracking-wider text-slate-500">
@@ -172,17 +373,23 @@ export function StoryGalleryShowcase({
               </span>
               <button
                 type="button"
-                onClick={() => scrollCarouselToIndex(carouselIndex - 1)}
+                disabled={!canPrevCarousel}
+                onClick={() =>
+                  scrollCarouselToIndex(carouselIndex - activeCarouselCfg.slidesPerMove)
+                }
                 aria-label="Previous slide"
-                className="w-9 h-9 rounded-full border border-slate-200 bg-white hover:bg-slate-900 hover:text-white text-slate-700 flex items-center justify-center shadow-2xs transition-colors cursor-pointer"
+                className="w-9 h-9 rounded-full border border-slate-200 bg-white hover:bg-slate-900 hover:text-white text-slate-700 flex items-center justify-center shadow-2xs transition-colors cursor-pointer disabled:opacity-35 disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:text-slate-700"
               >
                 <TbChevronLeft className={`w-4 h-4 ${isRtl ? 'rotate-180' : ''}`} />
               </button>
               <button
                 type="button"
-                onClick={() => scrollCarouselToIndex(carouselIndex + 1)}
+                disabled={!canNextCarousel}
+                onClick={() =>
+                  scrollCarouselToIndex(carouselIndex + activeCarouselCfg.slidesPerMove)
+                }
                 aria-label="Next slide"
-                className="w-9 h-9 rounded-full border border-slate-200 bg-white hover:bg-slate-900 hover:text-white text-slate-700 flex items-center justify-center shadow-2xs transition-colors cursor-pointer"
+                className="w-9 h-9 rounded-full border border-slate-200 bg-white hover:bg-slate-900 hover:text-white text-slate-700 flex items-center justify-center shadow-2xs transition-colors cursor-pointer disabled:opacity-35 disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:text-slate-700"
               >
                 <TbChevronRight className={`w-4 h-4 ${isRtl ? 'rotate-180' : ''}`} />
               </button>
@@ -304,9 +511,36 @@ export function StoryGalleryShowcase({
       {/* DESIGN 3: INTERACTIVE CAROUSEL / SWIPER                             */}
       {/* =================================================================== */}
       {activeDesign === 'interactive-carousel' && (
-        <div className="space-y-4">
+        <div
+          className="space-y-4"
+          onMouseEnter={() => setCarouselHovered(true)}
+          onMouseLeave={() => {
+            setCarouselHovered(false);
+            dragStateRef.current.isDragging = false;
+          }}
+        >
           <div
             ref={carouselRef}
+            onScroll={() => {
+              if (scrollAnimRafRef.current !== null) return;
+              const el = carouselRef.current;
+              if (!el || el.children.length === 0) return;
+              const elRect = el.getBoundingClientRect();
+              const centerX = elRect.left + elRect.width / 2;
+              let closestIdx = 0;
+              let minDist = Number.POSITIVE_INFINITY;
+              Array.from(el.children).forEach((child, idx) => {
+                const r = (child as HTMLElement).getBoundingClientRect();
+                const dist = Math.abs(r.left + r.width / 2 - centerX);
+                if (dist < minDist) {
+                  minDist = dist;
+                  closestIdx = idx;
+                }
+              });
+              if (closestIdx !== carouselIndex) {
+                setCarouselIndex(closestIdx);
+              }
+            }}
             onMouseDown={(e) => {
               const el = carouselRef.current;
               if (!el) return;
@@ -333,7 +567,7 @@ export function StoryGalleryShowcase({
             onMouseLeave={() => {
               dragStateRef.current.isDragging = false;
             }}
-            className="flex gap-4 sm:gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-3 scrollbar-none select-none cursor-grab active:cursor-grabbing"
+            className="flex gap-4 sm:gap-6 overflow-x-auto snap-x snap-mandatory pb-3 scrollbar-none select-none cursor-grab active:cursor-grabbing"
           >
             {validGallery.map((img, idx) => {
               const alt = getAlt(img, idx);
@@ -349,7 +583,7 @@ export function StoryGalleryShowcase({
                     setCarouselIndex(idx);
                     setLightboxIndex(idx);
                   }}
-                  className={`group relative shrink-0 snap-center overflow-hidden rounded-2xl sm:rounded-3xl border border-slate-200/80 bg-slate-900 shadow-md hover:shadow-xl transition-all ${
+                  className={`group relative shrink-0 snap-center overflow-hidden rounded-2xl sm:rounded-3xl border border-slate-300/20 bg-slate-100/60 shadow-sm hover:shadow-lg transition-all ${
                     validGallery.length === 1
                       ? 'w-full aspect-16/9'
                       : 'w-[86%] sm:w-[70%] lg:w-[58%] aspect-16/10'
@@ -450,11 +684,15 @@ export function StoryGalleryShowcase({
       {/* DESIGN 5: SPOTLIGHT STAGE + INTERACTIVE THUMBNAIL FILMSTRIP         */}
       {/* =================================================================== */}
       {activeDesign === 'spotlight-filmstrip' && activeSpotlight && (
-        <div className="space-y-4 sm:space-y-5">
+        <div
+          className="space-y-4 sm:space-y-5"
+          onMouseEnter={() => setSpotlightHovered(true)}
+          onMouseLeave={() => setSpotlightHovered(false)}
+        >
           {/* Master Stage */}
           <div
             onClick={() => setLightboxIndex(safeSpotlightIdx)}
-            className="group relative w-full aspect-16/9 rounded-2xl sm:rounded-3xl overflow-hidden bg-slate-950 border border-slate-800/80 shadow-2xl cursor-pointer"
+            className="group relative w-full aspect-16/9 rounded-2xl sm:rounded-3xl overflow-hidden bg-slate-950 border border-slate-300/20 shadow-xl cursor-pointer"
           >
             <Image
               key={activeSpotlight.src}
@@ -463,7 +701,8 @@ export function StoryGalleryShowcase({
               fill
               unoptimized
               sizes="100vw"
-              className="object-contain transition-transform duration-500 group-hover:scale-102"
+              style={{ transitionDuration: `${activeCarouselCfg.speedMs}ms` }}
+              className="object-contain transition-all group-hover:scale-102"
             />
 
             {/* Expand Badge */}
@@ -483,27 +722,25 @@ export function StoryGalleryShowcase({
               <>
                 <button
                   type="button"
+                  disabled={!canPrevSpotlight}
                   onClick={(e) => {
                     e.stopPropagation();
-                    setSpotlightIndex((prev) =>
-                      prev > 0 ? prev - 1 : validGallery.length - 1
-                    );
+                    moveSpotlightBy(-activeCarouselCfg.slidesPerMove);
                   }}
                   aria-label="Previous image"
-                  className="absolute start-3 sm:start-5 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white/90 hover:bg-white text-slate-900 flex items-center justify-center shadow-lg transition-transform hover:scale-105 cursor-pointer"
+                  className="absolute start-3 sm:start-5 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white/90 hover:bg-white text-slate-900 flex items-center justify-center shadow-lg transition-transform hover:scale-105 cursor-pointer disabled:opacity-35 disabled:cursor-not-allowed disabled:hover:scale-100"
                 >
                   <TbChevronLeft className={`w-5 h-5 ${isRtl ? 'rotate-180' : ''}`} />
                 </button>
                 <button
                   type="button"
+                  disabled={!canNextSpotlight}
                   onClick={(e) => {
                     e.stopPropagation();
-                    setSpotlightIndex((prev) =>
-                      prev < validGallery.length - 1 ? prev + 1 : 0
-                    );
+                    moveSpotlightBy(activeCarouselCfg.slidesPerMove);
                   }}
                   aria-label="Next image"
-                  className="absolute end-3 sm:end-5 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white/90 hover:bg-white text-slate-900 flex items-center justify-center shadow-lg transition-transform hover:scale-105 cursor-pointer"
+                  className="absolute end-3 sm:end-5 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white/90 hover:bg-white text-slate-900 flex items-center justify-center shadow-lg transition-transform hover:scale-105 cursor-pointer disabled:opacity-35 disabled:cursor-not-allowed disabled:hover:scale-100"
                 >
                   <TbChevronRight className={`w-5 h-5 ${isRtl ? 'rotate-180' : ''}`} />
                 </button>
@@ -523,18 +760,22 @@ export function StoryGalleryShowcase({
 
           {/* Clickable Thumbnail Filmstrip */}
           {validGallery.length > 1 && (
-            <div className="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-thin">
+            <div
+              ref={filmstripRef}
+              className="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-thin"
+            >
               {validGallery.map((img, idx) => {
                 const isActive = safeSpotlightIdx === idx;
                 return (
                   <button
                     key={`${img.src}-thumb-${idx}`}
                     type="button"
-                    onClick={() => setSpotlightIndex(idx)}
-                    className={`relative shrink-0 w-24 sm:w-32 aspect-16/10 rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${
+                    onClick={() => moveSpotlightBy(idx - safeSpotlightIdx)}
+                    style={{ transitionDuration: `${Math.min(600, activeCarouselCfg.speedMs)}ms` }}
+                    className={`relative shrink-0 w-24 sm:w-32 aspect-16/10 rounded-xl overflow-hidden border transition-all cursor-pointer ${
                       isActive
-                        ? 'border-persici-crimson ring-2 ring-persici-crimson/30 scale-[1.02]'
-                        : 'border-slate-200 opacity-70 hover:opacity-100 hover:border-slate-400'
+                        ? 'border-slate-400/45 ring-1 ring-slate-900/15 shadow-sm scale-[1.02] opacity-100'
+                        : 'border-slate-300/20 opacity-55 hover:opacity-95 hover:border-slate-300/45'
                     }`}
                   >
                     <Image

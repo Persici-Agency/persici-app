@@ -1,5 +1,6 @@
 export * from './logo';
 export * from './language-switcher';
+export * from './admin-top-bar';
 export * from './header';
 export * from './footer';
 export * from './home-button';

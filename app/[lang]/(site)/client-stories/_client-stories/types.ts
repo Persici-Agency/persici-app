@@ -31,10 +31,87 @@ export interface StoryGalleryRowsConfig {
 }
 
 export const DEFAULT_GALLERY_ROWS_CONFIG: StoryGalleryRowsConfig = {
-  height: 560,
+  height: 350,
   objectFit: 'cover',
   verticalPosition: 'center',
   horizontalPosition: 'center',
+};
+
+export interface StoryGalleryCarouselConfig {
+  autoPlay: boolean;
+  /** Auto-slide delay in milliseconds when autoPlay is true (1000..20000, default 4000) */
+  intervalMs: number;
+  /** Scroll / transition speed in milliseconds in both Static & Auto-Slide modes (150..3000, default 550) */
+  speedMs: number;
+  /** Number of images to advance per move (1..6, default 1) */
+  slidesPerMove: number;
+  /** Whether navigation wraps infinitely at start/end (default true) */
+  infinite: boolean;
+}
+
+export const DEFAULT_GALLERY_CAROUSEL_CONFIG: StoryGalleryCarouselConfig = {
+  autoPlay: false,
+  intervalMs: 4000,
+  speedMs: 550,
+  slidesPerMove: 1,
+  infinite: true,
+};
+
+export interface ClientStoryDetailSpacingConfig {
+  /** Summary & Metrics section vertical padding in px */
+  summarySectionPaddingY: number;
+  /** Space between Summary heading and summary text in px */
+  summaryTitleGap: number;
+  /** Space between Summary text and Metrics strip in px */
+  summaryToMetricsGap: number;
+  /** Main body container vertical padding in px */
+  bodyContainerPaddingY: number;
+  /** Total space between one narrative section and the next across the divider in px */
+  sectionToSectionGap: number;
+  /** Space between section title and first child (image or paragraphs) in px */
+  titleToContentGap: number;
+  /** Space below in-section image to content in px */
+  imageToContentGap: number;
+  /** Space between consecutive paragraphs in the same section in px */
+  paragraphToParagraphGap: number;
+  /** Space above Key Highlights bullet list in px */
+  contentToBulletsGap: number;
+  /** Space between individual bullet items in px */
+  bulletToBulletGap: number;
+  /** Space above Code Samples container in px */
+  contentToCodeGap: number;
+  /** Space between consecutive Code Sample blocks in px */
+  codeToCodeGap: number;
+  /** Space above Pull Quote blockquote in px */
+  contentToQuoteGap: number;
+  /** Top space before Deliverables & Production showcase section in px */
+  deliverablesTopGap: number;
+  /** Space between Deliverables heading and description in px */
+  deliverablesTitleToDescGap: number;
+  /** Space between Deliverables header and showcase content in px */
+  deliverablesHeaderGap: number;
+  /** Space between blocks inside Deliverables & Media Showcase (mockups, demo, tech stack, gallery) in px */
+  showcaseBlockGap: number;
+}
+
+export const DEFAULT_CLIENT_STORY_DETAIL_SPACING: ClientStoryDetailSpacingConfig = {
+  summarySectionPaddingY: 64,
+  summaryTitleGap: 16,
+  summaryToMetricsGap: 48,
+  bodyContainerPaddingY: 64,
+  sectionToSectionGap: 80,
+  titleToContentGap: 24,
+  imageToContentGap: 32,
+  paragraphToParagraphGap: 20,
+  contentToBulletsGap: 24,
+  bulletToBulletGap: 12,
+  contentToCodeGap: 32,
+  codeToCodeGap: 24,
+  contentToQuoteGap: 32,
+  deliverablesTopGap: 52,
+  deliverablesTitleToDescGap: 12,
+  deliverablesHeaderGap: 40,
+  showcaseBlockGap: 44,
 };
 
 export type ClientStoryPublishStatus = 'published' | 'draft';
@@ -267,6 +344,7 @@ export interface ClientStoryDetail {
     galleryDesign?: StoryGalleryDesign;
     galleryOrder?: StoryGalleryOrder;
     galleryRowsConfig?: StoryGalleryRowsConfig;
+    galleryCarouselConfig?: StoryGalleryCarouselConfig;
     // Template C (Software demo & mockups)
     mockups?: StorySoftwareDeviceMockup[];
     demoVideo?: string;

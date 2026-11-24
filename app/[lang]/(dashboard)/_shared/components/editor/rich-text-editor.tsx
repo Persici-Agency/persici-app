@@ -627,10 +627,9 @@ export function RichTextEditor({
           sourceLang: 'en' as const,
           targetLang: 'ar' as const,
           switchTabTo: null as 'en' | 'ar' | null,
-          label: uiRtl ? 'ترجمة' : 'Translate',
           tooltip: uiRtl
-            ? 'ترجمة المحتوى الإنجليزي إلى العربية بالذكاء الاصطناعي'
-            : 'Translate English content → Arabic with AI',
+            ? 'ترجمة من الإنجليزية إلى العربية بالذكاء الاصطناعي'
+            : 'Translate English to Arabic with AI',
         };
       }
       if (hasArText) {
@@ -639,10 +638,9 @@ export function RichTextEditor({
           sourceLang: 'ar' as const,
           targetLang: 'en' as const,
           switchTabTo: 'en' as 'en' | 'ar' | null,
-          label: uiRtl ? 'ترجمة للإنجليزية' : 'Translate → EN',
           tooltip: uiRtl
-            ? 'ترجمة المحتوى العربي الحالي إلى الإنجليزية بالذكاء الاصطناعي'
-            : 'Translate Arabic content → English with AI',
+            ? 'ترجمة من العربية إلى الإنجليزية بالذكاء الاصطناعي'
+            : 'Translate Arabic to English with AI',
         };
       }
       return {
@@ -650,10 +648,9 @@ export function RichTextEditor({
         sourceLang: 'en' as const,
         targetLang: 'ar' as const,
         switchTabTo: null as 'en' | 'ar' | null,
-        label: uiRtl ? 'ترجمة' : 'Translate',
         tooltip: uiRtl
-          ? 'أدخل المحتوى بالإنجليزية أو العربية أولاً للترجمة'
-          : 'Enter English or Arabic content first to translate',
+          ? 'ترجمة من الإنجليزية إلى العربية بالذكاء الاصطناعي (أدخل محتوى أولاً)'
+          : 'Translate English to Arabic with AI (enter content first)',
       };
     }
 
@@ -664,10 +661,9 @@ export function RichTextEditor({
         sourceLang: 'ar' as const,
         targetLang: 'en' as const,
         switchTabTo: null as 'en' | 'ar' | null,
-        label: uiRtl ? 'ترجمة' : 'Translate',
         tooltip: uiRtl
-          ? 'ترجمة المحتوى العربي إلى الإنجليزية بالذكاء الاصطناعي'
-          : 'Translate Arabic content → English with AI',
+          ? 'ترجمة من العربية إلى الإنجليزية بالذكاء الاصطناعي'
+          : 'Translate Arabic to English with AI',
       };
     }
     if (hasEnText) {
@@ -676,10 +672,9 @@ export function RichTextEditor({
         sourceLang: 'en' as const,
         targetLang: 'ar' as const,
         switchTabTo: 'ar' as 'en' | 'ar' | null,
-        label: uiRtl ? 'ترجمة للعربية' : 'Translate → AR',
         tooltip: uiRtl
-          ? 'ترجمة المحتوى الإنجليزي الحالي إلى العربية بالذكاء الاصطناعي'
-          : 'Translate English content → Arabic with AI',
+          ? 'ترجمة من الإنجليزية إلى العربية بالذكاء الاصطناعي'
+          : 'Translate English to Arabic with AI',
       };
     }
     return {
@@ -687,10 +682,9 @@ export function RichTextEditor({
       sourceLang: 'ar' as const,
       targetLang: 'en' as const,
       switchTabTo: null as 'en' | 'ar' | null,
-      label: uiRtl ? 'ترجمة' : 'Translate',
       tooltip: uiRtl
-        ? 'أدخل المحتوى بالإنجليزية أو العربية أولاً للترجمة'
-        : 'Enter English or Arabic content first to translate',
+        ? 'ترجمة من العربية إلى الإنجليزية بالذكاء الاصطناعي (أدخل محتوى أولاً)'
+        : 'Translate Arabic to English with AI (enter content first)',
     };
   })();
 
@@ -719,9 +713,17 @@ export function RichTextEditor({
     });
   };
 
+  const activeRichTooltip = translateConfig
+    ? isTranslating
+      ? uiRtl
+        ? 'جاري الترجمة بالذكاء الاصطناعي...'
+        : 'Translating with AI...'
+      : translateConfig.tooltip
+    : '';
+
   return (
     <div className="space-y-2">
-      {/* Header Row: Label + Language Tabs + [Translate] + [Normal | Code] Toggle Buttons */}
+      {/* Header Row: Label + Language Tabs + [Translate Icon] + [Normal | Code] Toggle Buttons */}
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div>
           <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
@@ -758,30 +760,33 @@ export function RichTextEditor({
           </div>
 
           {translateConfig && (
-            <button
-              type="button"
-              onClick={handleTriggerRichTranslate}
-              disabled={!translateConfig.canTranslate || isTranslating}
-              title={translateConfig.tooltip}
-              className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold border transition-all ${
-                translateConfig.canTranslate
-                  ? 'bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border-indigo-200 cursor-pointer'
-                  : 'bg-slate-100 text-slate-400 border-slate-200 cursor-not-allowed opacity-65'
-              }`}
-            >
-              {isTranslating ? (
-                <TbLoader2 className="w-3.5 h-3.5 animate-spin shrink-0" />
-              ) : (
-                <TbLanguage className="w-3.5 h-3.5 shrink-0" />
-              )}
-              <span>
-                {isTranslating
-                  ? uiRtl
-                    ? 'جاري الترجمة...'
-                    : 'Translating...'
-                  : translateConfig.label}
+            <span className="relative inline-flex group/rtetranslate">
+              <button
+                type="button"
+                onClick={handleTriggerRichTranslate}
+                disabled={!translateConfig.canTranslate || isTranslating}
+                aria-label={activeRichTooltip}
+                title={activeRichTooltip}
+                className={`w-7 h-7 rounded-lg inline-flex items-center justify-center border transition-all ${
+                  translateConfig.canTranslate
+                    ? 'bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border-indigo-200 cursor-pointer shadow-2xs'
+                    : 'bg-slate-100 text-slate-400 border-slate-200 cursor-not-allowed opacity-65'
+                }`}
+              >
+                {isTranslating ? (
+                  <TbLoader2 className="w-4 h-4 animate-spin shrink-0" />
+                ) : (
+                  <TbLanguage className="w-4 h-4 shrink-0" />
+                )}
+              </button>
+
+              <span
+                role="tooltip"
+                className="pointer-events-none opacity-0 group-hover/rtetranslate:opacity-100 transition-opacity duration-150 absolute bottom-full mb-1.5 end-0 z-40 px-2.5 py-1 rounded-lg bg-slate-900 text-white text-[11px] font-semibold whitespace-nowrap shadow-lg"
+              >
+                {activeRichTooltip}
               </span>
-            </button>
+            </span>
           )}
 
           {/* Two WordPress-Style Mode Toggle Buttons ("Normal" and "Code") */}

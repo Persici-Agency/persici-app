@@ -192,6 +192,7 @@ function isPointDark(x: number, y: number, headerEl: HTMLElement | null): boolea
   const candidateElements = elements.filter((el) => {
     if (!el || el === document.documentElement) return false;
     if (headerEl && (headerEl === el || headerEl.contains(el))) return false;
+    if (el.closest?.('[data-admin-top-bar]')) return false;
     return true;
   }) as HTMLElement[];
 
@@ -398,11 +399,12 @@ export function Header({ lang, dict, navData }: HeaderProps) {
     };
   }, [pathname, evaluateHeaderTheme]);
 
-  const rawLinks = (navData?.links && Array.isArray(navData.links) && navData.links.length > 0)
-    ? navData.links
-    : siteNavLinks;
+  const rawLinks: NavLink[] =
+    navData?.links && Array.isArray(navData.links) && navData.links.length > 0
+      ? (navData.links as NavLink[])
+      : siteNavLinks;
 
-  const navLinks: NavLink[] = rawLinks.map((link: any): NavLink => ({
+  const navLinks: NavLink[] = rawLinks.map((link): NavLink => ({
     ...link,
     href: link.href === '/' ? `/${lang}` : (link.href?.startsWith(`/${lang}`) ? link.href : `/${lang}${link.href || ''}`),
   }));
@@ -438,7 +440,7 @@ export function Header({ lang, dict, navData }: HeaderProps) {
   return (
     <header
       ref={headerRef}
-      className={`fixed top-0 z-50 w-full transition-colors duration-300 ${
+      className={`fixed top-[var(--persici-admin-bar-offset,0px)] z-50 w-full transition-colors duration-300 ${
         isHeaderHidden && !mobileMenuOpen ? '-translate-y-full opacity-0 pointer-events-none' : 'translate-y-0 opacity-100'
       } ${
         isMobileHeaderWhite
@@ -646,7 +648,7 @@ export function Header({ lang, dict, navData }: HeaderProps) {
 
       {/* Mobile/Tablet Menu Drawer (Publicis Sapient Style with Persici Identity) */}
       {mobileMenuOpen && (
-        <div className="w-full bg-white h-[calc(100vh-5rem)] h-[calc(100dvh-5rem)] overflow-y-auto border-t border-gray-100 lg:hidden">
+        <div className="w-full bg-white h-[calc(100vh-5rem-var(--persici-admin-bar-offset,0px))] h-[calc(100dvh-5rem-var(--persici-admin-bar-offset,0px))] overflow-y-auto border-t border-gray-100 lg:hidden">
           <div className={`${sectionContainer} max-w-8xl py-3 sm:py-5 flex flex-col min-h-full justify-between`}>
             <nav className="flex flex-col" aria-label="Mobile and tablet navigation">
               {navLinks.map((link) => {
